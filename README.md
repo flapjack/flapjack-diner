@@ -61,19 +61,21 @@ Flapjack::Diner.unscheduled_maintenances('example.com', 'ping')
 ```
 
 Acknowledge the current state for a check on an entity:
-  Summary (String, optional)
 
 ```ruby
+# summary (String, optional)
 Flapjack::Diner.acknowledge!('example.com', 'ping', :summary => 'ack')
 ```
 
 Create a scheduled maintenance period for a check on an entity:
-  Start time (Integer, required) is a UTC timestamp
-  Duration (Integer, required) is measured in seconds
-  Summary (String, optional)
 
 ```ruby
-Flapjack::Diner.create_scheduled_maintenance!('example.com', 'ping', :start_time => , :duration => 60 * 60, :summary => 'changing stuff')
+# start time (Integer, required) is a UTC timestamp
+# duration (Integer, required) is measured in seconds
+# summary (String, optional)
+Flapjack::Diner.create_scheduled_maintenance!('example.com', 'ping',
+  :start_time => Time.now.to_i - (30 * 60), :duration => (60 * 60),
+  :summary => 'changing stuff')
 ```
 
 ## Contributing
