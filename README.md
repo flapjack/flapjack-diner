@@ -48,16 +48,52 @@ Return a single check status for an entity
 Flapjack::Diner.check_status('example.com', 'ping')
 ```
 
+Return lists of scheduled maintenance periods for all checks on an entity:
+
+```ruby
+Flapjack::Diner.scheduled_maintenances('example.com')
+```
+
 Return a list of scheduled maintenance periods for a check on an entity:
 
 ```ruby
 Flapjack::Diner.scheduled_maintenances('example.com', 'ping')
 ```
 
+Return lists of unscheduled maintenance periods for all checks on an entity:
+
+```ruby
+Flapjack::Diner.unscheduled_maintenances('example.com')
+```
+
 Return a list of unscheduled maintenance periods for a check on an entity:
 
 ```ruby
 Flapjack::Diner.unscheduled_maintenances('example.com', 'ping')
+```
+
+Return lists of outages for all checks on an entity (all times for which said checks failed):
+
+```ruby
+Flapjack::Diner.outages('example.com')
+```
+
+Return a list of outages for a check on an entity (all times for which the check failed):
+
+```ruby
+Flapjack::Diner.outages('example.com', 'ping')
+```
+
+Return a list of downtimes for all checks on an entity (outages outside of scheduled maintenance periods):
+
+```ruby
+Flapjack::Diner.downtime('example.com')
+```
+
+Return a list of downtimes for a check on an entity (outages outside of scheduled maintenance periods):
+
+```ruby
+Flapjack::Diner.downtime('example.com', 'ping')
 ```
 
 Acknowledge the current state for a check on an entity:
