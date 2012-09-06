@@ -70,24 +70,53 @@ module Flapjack
         jsonify( post(create_sch_maint_url, :body => create_sch_maint_params) )
       end
 
-      def scheduled_maintenances(entity, check)
+      def scheduled_maintenances(entity, check = nil)
         entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check, :required => 'check')
+        check_esc = prepare(check)
 
-        jsonify( get("/scheduled_maintenances/#{entity_esc}/#{check_esc}") )
+        sm_url = "/scheduled_maintenances/#{entity_esc}"
+        sm_url += "/#{check_esc}" if check_esc
+
+        jsonify( get(sm_url) )
       end
 
-      def unscheduled_maintenances(entity, check)
+      def unscheduled_maintenances(entity, check = nil)
         entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check, :required => 'check')
+        check_esc = prepare(check)
 
-        jsonify( get("/unscheduled_maintenances/#{entity_esc}/#{check_esc}") )
+        um_url = "/unscheduled_maintenances/#{entity_esc}"
+        um_url += "/#{check_esc}" if check_esc
+
+        jsonify( get(um_url) )
+      end
+
+      def outages(entity, check = nil)
+        entity_esc = prepare(entity, :required => 'entity')
+        check_esc = prepare(check)
+
+        o_url = "/outages/#{entity_esc}"
+        o_url += "/#{check_esc}" if check_esc
+
+        jsonify( get(o_url) )
+      end
+
+      def downtime(entity, check = nil)
+        entity_esc = prepare(entity, :required => 'entity')
+        check_esc = prepare(check)
+
+        d_url = "/downtime/#{entity_esc}"
+        d_url += "/#{check_esc}" if check_esc
+
+        jsonify( get(d_url) )
       end
 
     private
 
       def prepare(data, opts = {})
-        raise "#{opts[:required].upcase} is required" if opts[:required] && data.nil?
+        if data.nil?
+          raise "#{opts[:required].upcase} is required" if opts[:required]
+          return
+        end
         URI.escape(data.to_s)
       end
 

@@ -62,6 +62,17 @@ describe Flapjack::Diner do
     result.should == api_result
   end
 
+  it "returns a list of scheduled maintenance periods for all checks on an entity" do
+    req = stub_request(:get, "http://#{server}/scheduled_maintenances/#{entity}").to_return(
+      :body => response_body)
+    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+
+    result = Flapjack::Diner.scheduled_maintenances(entity)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == api_result
+  end
+
   it "returns a list of scheduled maintenance periods for a check on an entity" do
     req = stub_request(:get, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").to_return(
       :body => response_body)
@@ -73,12 +84,67 @@ describe Flapjack::Diner do
     result.should == api_result
   end
 
+  it "returns a list of unscheduled maintenance periods for all checks on an entity" do
+    req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}").to_return(
+      :body => response_body)
+    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+
+    result = Flapjack::Diner.unscheduled_maintenances(entity)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == api_result
+  end
+
   it "returns a list of unscheduled maintenance periods for a check on an entity" do
     req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}/#{check}").to_return(
       :body => response_body)
     JSON.should_receive(:parse).with(response_body).and_return(api_result)
 
     result = Flapjack::Diner.unscheduled_maintenances(entity, check)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == api_result
+  end
+
+  it "returns a list of outages for all checks on an entity" do
+    req = stub_request(:get, "http://#{server}/outages/#{entity}").to_return(
+      :body => response_body)
+    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+
+    result = Flapjack::Diner.outages(entity)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == api_result
+  end
+
+  it "returns a list of outages for a check on an entity" do
+    req = stub_request(:get, "http://#{server}/outages/#{entity}/#{check}").to_return(
+      :body => response_body)
+    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+
+    result = Flapjack::Diner.outages(entity, check)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == api_result
+  end
+
+  it "returns a list of downtimes for all checks on an entity" do
+    req = stub_request(:get, "http://#{server}/downtime/#{entity}").to_return(
+      :body => response_body)
+    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+
+    result = Flapjack::Diner.downtime(entity)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == api_result
+  end
+
+  it "returns a list of downtimes for a check on an entity" do
+    req = stub_request(:get, "http://#{server}/downtime/#{entity}/#{check}").to_return(
+      :body => response_body)
+    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+
+    result = Flapjack::Diner.downtime(entity, check)
     req.should have_been_requested
     result.should_not be_nil
     result.should == api_result
