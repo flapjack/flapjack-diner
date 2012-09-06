@@ -56,7 +56,7 @@ describe Flapjack::Diner do
       :body => response_body)
     JSON.should_receive(:parse).with(response_body).and_return(api_result)
 
-    result = Flapjack::Diner.check_status(entity, check)
+    result = Flapjack::Diner.status(entity, check)
     req.should have_been_requested
     result.should_not be_nil
     result.should == api_result

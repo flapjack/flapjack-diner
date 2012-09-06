@@ -24,7 +24,7 @@ Set the URI of the Flapjack server:
 Flapjack::Diner.base_uri('127.0.0.1:5000')
 ```
 
-Return a list of monitored entities, and their statuses:
+Return a list of monitored entities, and their statuses for all associated checks:
 
 ```ruby
 Flapjack::Diner.entities
@@ -36,16 +36,16 @@ Return a list of checks for an entity:
 Flapjack::Diner.checks('example.com')
 ```
 
-Return a list of check statuses for an entity
+Return the statuses for all checks on an entity
 
 ```ruby
 Flapjack::Diner.status('example.com')
 ```
 
-Return a single check status for an entity
+Return the status for a check on an entity
 
 ```ruby
-Flapjack::Diner.check_status('example.com', 'ping')
+Flapjack::Diner.status('example.com', 'ping')
 ```
 
 Return lists of scheduled maintenance periods for all checks on an entity:

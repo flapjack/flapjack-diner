@@ -25,17 +25,14 @@ module Flapjack
         jsonify( get("/checks/#{entity_esc}") )
       end
 
-      def status(entity)
+      def status(entity, check = nil)
         entity_esc = prepare(entity, :required => 'entity')
+        check_esc = prepare(check)
 
-        jsonify( get("/status/#{entity_esc}") )
-      end
+        s_url = "/status/#{entity_esc}"
+        s_url += "/#{check_esc}" if check_esc
 
-      def check_status(entity, check)
-        entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check, :required => 'check')
-
-        jsonify( get("/status/#{entity_esc}/#{check_esc}") )
+        jsonify( get(s_url) )
       end
 
       def acknowledge!(entity, check, options = {})
