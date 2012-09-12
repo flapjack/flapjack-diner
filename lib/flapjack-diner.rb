@@ -20,101 +20,150 @@ module Flapjack
       end
 
       def checks(entity)
-        entity_esc = prepare(entity, :required => 'entity')
+        args = prepare(:entity => {:value => entity, :required => true})
 
-        jsonify( get("/checks/#{entity_esc}") )
+        pr, ho, po = protocol_host_port
+        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
+          :path => "/checks/#{args[:entity]}")
+
+        jsonify( get(uri.request_uri) )
       end
 
       def status(entity, check = nil)
-        entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check)
+        args = prepare(:entity     => {:value => entity, :required => true},
+                       :check      => {:value => check})
 
-        s_url = "/status/#{entity_esc}"
-        s_url += "/#{check_esc}" if check_esc
+        path = "/status/#{args[:entity]}"
+        path += "/#{args[:check]}" if args[:check]
 
-        jsonify( get(s_url) )
+        pr, ho, po = protocol_host_port
+        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
+          :path => path)
+
+        jsonify( get(uri.request_uri) )
       end
 
       def acknowledge!(entity, check, options = {})
-        entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check, :required => 'check')
+        args = prepare(:entity   => {:value => entity, :required => true},
+                       :check    => {:value => check, :required => true})
+        query = prepare(:summary => {:value => options[:summary]})
 
-        acknowledge_url = "/acknowledgments/#{entity_esc}/#{check_esc}"
-        acknowledge_params = ""
+        path = "/acknowledgments/#{args[:entity]}/#{args[:check]}"
+        params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
 
-        if options[:summary]
-          summary_esc = prepare(options[:summary])
-          acknowledge_params = "summary=#{summary_esc}"
-        end
-
-        jsonify( post(acknowledge_url, :body => acknowledge_params) )
+        jsonify( post(path, :body => params) )
       end
 
-      def create_scheduled_maintenance!(entity, check, options = {})
-        entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check, :required => 'check')
-        start_time_esc = prepare(options[:start_time], :required => 'start time')
-        duration_esc = prepare(options[:duration], :required => 'duration')
+      def create_scheduled_maintenance!(entity, check, start_time, duration, options = {})
+        args = prepare(:entity     => {:value => entity, :required => true},
+                       :check      => {:value => check, :required => true})
+        query = prepare(:start_time => {:value => start_time, :required => true, :class => Time},
+                        :duration   => {:value => duration, :required => true, :class => Integer},
+                        :summary    => {:value => options[:summary]})
 
-        create_sch_maint_url ="/scheduled_maintenances/#{entity_esc}/#{check_esc}"
-        create_sch_maint_params = "start_time=#{start_time_esc}&duration=#{duration_esc}"
+        path ="/scheduled_maintenances/#{args[:entity]}/#{args[:check]}"
+        params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
 
-        if options[:summary]
-          summary_esc = prepare(options[:summary])
-          create_sch_maint_params += "&summary=#{summary_esc}"
-        end
-
-        jsonify( post(create_sch_maint_url, :body => create_sch_maint_params) )
+        jsonify( post(path, :body => params) )
       end
 
-      def scheduled_maintenances(entity, check = nil)
-        entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check)
+      def scheduled_maintenances(entity, check = nil, options = {})
+        args = prepare(:entity      => {:value => entity, :required => true},
+                       :check       => {:value => check})
+        query = prepare(:start_time => {:value => options[:start_time], :class => Time},
+                        :end_time   => {:value => options[:end_time], :class => Time})
 
-        sm_url = "/scheduled_maintenances/#{entity_esc}"
-        sm_url += "/#{check_esc}" if check_esc
+        path = "/scheduled_maintenances/#{args[:entity]}"
+        path += "/#{args[:check]}" if args[:check]
 
-        jsonify( get(sm_url) )
+        params = query.collect{|k,v| "#{k.to_s}=#{v}"}
+
+        pr, ho, po = protocol_host_port
+        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
+          :path => path, :query => params.empty? ? nil : params.join('&'))
+
+        jsonify( get(uri.request_uri) )
       end
 
-      def unscheduled_maintenances(entity, check = nil)
-        entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check)
+      def unscheduled_maintenances(entity, check = nil, options = {})
+        args = prepare(:entity      => {:value => entity, :required => true},
+                       :check       => {:value => check})
+        query = prepare(:start_time => {:value => options[:start_time], :class => Time},
+                        :end_time   => {:value => options[:end_time], :class => Time})
 
-        um_url = "/unscheduled_maintenances/#{entity_esc}"
-        um_url += "/#{check_esc}" if check_esc
+        path = "/unscheduled_maintenances/#{args[:entity]}"
+        path += "/#{args[:check]}" if args[:check]
 
-        jsonify( get(um_url) )
+        params = query.collect{|k,v| "#{k.to_s}=#{v}"}
+
+        pr, ho, po = protocol_host_port
+        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
+          :path => path, :query => params.empty? ? nil : params.join('&'))
+
+        jsonify( get(uri.request_uri) )
       end
 
-      def outages(entity, check = nil)
-        entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check)
+      def outages(entity, check = nil, options = {})
+        args = prepare(:entity      => {:value => entity, :required => true},
+                       :check       => {:value => check})
+        query = prepare(:start_time => {:value => options[:start_time], :class => Time},
+                        :end_time   => {:value => options[:end_time], :class => Time})
 
-        o_url = "/outages/#{entity_esc}"
-        o_url += "/#{check_esc}" if check_esc
+        path = "/outages/#{args[:entity]}"
+        path += "/#{args[:check]}" if args[:check]
 
-        jsonify( get(o_url) )
+        params = query.collect{|k,v| "#{k.to_s}=#{v}"}
+
+        pr, ho, po = protocol_host_port
+        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po, :path => path,
+          :query => params.empty? ? nil : params.join('&'))
+
+        jsonify( get(uri.request_uri) )
       end
 
-      def downtime(entity, check = nil)
-        entity_esc = prepare(entity, :required => 'entity')
-        check_esc = prepare(check)
+      def downtime(entity, check = nil, options = {})
+        args = prepare(:entity      => {:value => entity, :required => true},
+                       :check       => {:value => check})
+        query = prepare(:start_time => {:value => options[:start_time], :class => Time},
+                        :end_time   => {:value => options[:end_time], :class => Time})
 
-        d_url = "/downtime/#{entity_esc}"
-        d_url += "/#{check_esc}" if check_esc
+        path = "/downtime/#{args[:entity]}"
+        path += "/#{args[:check]}" if args[:check]
 
-        jsonify( get(d_url) )
+        params = query.collect{|k,v| "#{k.to_s}=#{v}"}
+
+        pr, ho, po = protocol_host_port
+        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
+          :path => path, :query => params.empty? ? nil : params.join('&'))
+
+        jsonify( get(uri.request_uri) )
       end
 
     private
 
-      def prepare(data, opts = {})
-        if data.nil?
-          raise "#{opts[:required].upcase} is required" if opts[:required]
-          return
-        end
-        URI.escape(data.to_s)
+      def protocol_host_port
+        self.base_uri =~ /$(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(?::\d+)?/i
+        protocol = ($1 || 'http').downcase
+        host = $2
+        port = $3 || ('https'.eql?(protocol) ? 443 : 80)
+
+        [protocol, host, port]
+      end
+
+      def prepare(data = {})
+        data.merge!(data) {|k,ov,nv|
+          if ov[:value].nil?
+            raise "'#{k.to_s}' is required" if ov[:required]
+            nil
+          else
+            raise "'#{k.to_s}' must be a #{ov[:class]}" if ov[:class] && !ov[:value].is_a?(ov[:class])
+            if ov[:value].is_a?(Time)
+              URI.escape(ov[:value].iso8601)
+            else
+              URI.escape(ov[:value].to_s)
+            end
+          end
+        }.reject {|k,v| v.nil? }
       end
 
       def jsonify(response)

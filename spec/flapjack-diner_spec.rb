@@ -163,17 +163,17 @@ describe Flapjack::Diner do
   end
 
   it "creates a scheduled maintenance period for an entity" do
-    start_time = Time.now.to_i
+    start_time = Time.now
     duration = 60 * 30 # in seconds, so 30 minutes
     summary = "fixing everything"
 
     req = stub_request(:post, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").with(
-      :body => "start_time=#{start_time}&duration=#{duration}&summary=fixing%20everything").to_return(
+      :body => "start_time=#{start_time.iso8601}&duration=#{duration}&summary=fixing%20everything").to_return(
       :body => response_body, :status => 201)
     JSON.should_receive(:parse).with(response_body).and_return(api_result)
 
     result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
-      :start_time => start_time, :duration => duration, :summary => summary)
+      start_time, duration, :summary => summary)
     req.should have_been_requested
     result.should_not be_nil
     result.should == api_result
