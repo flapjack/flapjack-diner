@@ -135,10 +135,10 @@ The data is returned as a list of associative arrays, where each associative arr
 // CHECK is a string, e.g. 'ssh', 'ping'
 // SCHED_MAINT is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.scheduled_maintenances(entity, check)
 [{"check" : CHECK,
- "scheduled_maintenance" : [SCHED_MAINT, SCHED_MAINT]
+  "scheduled_maintenance" : [SCHED_MAINT, SCHED_MAINT]
  },
  {"check" : CHECK,
- "scheduled_maintenance" : [SCHED_MAINT, SCHED_MAINT]
+  "scheduled_maintenance" : [SCHED_MAINT, SCHED_MAINT]
  }]
 ```
 
@@ -182,10 +182,10 @@ The data is returned as a list of associative arrays, where each associative arr
 // CHECK is a string, e.g. 'ssh', 'ping'
 // UNSCHED_MAINT is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
 [{"check" : CHECK,
- "unscheduled_maintenance" : [UNSCHED_MAINT, UNSCHED_MAINT]
+  "unscheduled_maintenance" : [UNSCHED_MAINT, UNSCHED_MAINT]
  },
  {"check" : CHECK,
- "unscheduled_maintenance" : [UNSCHED_MAINT, UNSCHED_MAINT]
+  "unscheduled_maintenance" : [UNSCHED_MAINT, UNSCHED_MAINT]
  }]
 ```
 
@@ -227,10 +227,10 @@ The data is returned as a list of associative arrays, where each associative arr
 // CHECK is a string, e.g. 'ssh', 'ping'
 // OUTAGE is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check)
 [{"check" : CHECK,
- "outages" : [OUTAGE, OUTAGE]
+  "outages" : [OUTAGE, ...]
  },
  {"check" : CHECK,
- "outages" : [OUTAGE, OUTAGE]
+  "outages" : [OUTAGE, ...]
  }]
 ```
 
@@ -244,6 +244,18 @@ Return a list of downtimes for a check on an entity (outages outside of schedule
 Flapjack::Diner.downtime('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
+Returns an associative array with some statistics about the downtimes, including a list of the downtimes themselves.
+
+```
+// TOTAL SECONDS
+// PERCENTAGE integer, representing the . Will be null if either start or end time were not provided in the request.
+// OUTAGE is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check)
+{"total_seconds" : TOTAL_SECONDS,
+ "percentage" : PERCENTAGE,
+ "downtime" : [OUTAGE, ...]
+}
+```
+
 ---
 
 Return a list of downtimes for all checks on an entity (outages outside of scheduled maintenance periods):
@@ -252,6 +264,19 @@ Return a list of downtimes for all checks on an entity (outages outside of sched
 # start time (ISO 8601-formatted String, optional)
 # end time (ISO 8601-formatted String, optional)
 Flapjack::Diner.downtime('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+```
+
+The data is returned as a list of associative arrays, where each associative array represents a downtime associative array for a check under the entity:
+
+```
+// CHECK is a string, e.g. 'ssh', 'ping'
+// DOWNTIME is an associative array with the same format those returned from Flapjack::Diner.downtime(entity, check)
+[{"check" : CHECK,
+  "downtime" : [DOWNTIME, ...]
+ },
+ {"check" : CHECK,
+  "downtime" : [DOWNTIME, ...]
+ }]
 ```
 
 ---
