@@ -64,6 +64,22 @@ Return the status for a check on an entity
 Flapjack::Diner.status('example.com', 'ping')
 ```
 
+The data is returned as a JSON associative array:
+
+```
+// CHECK is a string, e.g. 'ssh', 'ping'
+// STATE is a string, one of 'critical', 'warning', 'ok', 'unknown'
+// the TIMESTAMPs are integers representing UTC times for the named events
+{"name" : CHECK,
+ "state" : STATE,
+ "in_unscheduled_maintenance" : BOOLEAN,
+ "in_scheduled_maintenance" : BOOLEAN,
+ "last_update" : TIMESTAMP,
+ "last_problem_notification" : TIMESTAMP,
+ "last_recovery_notification" : TIMESTAMP,
+ "last_acknowledgement_notification" : TIMESTAMP}
+ ```
+
 ---
 
 Return the statuses for all checks on an entity
@@ -89,6 +105,20 @@ Return a list of scheduled maintenance periods for a check on an entity:
 Flapjack::Diner.scheduled_maintenances('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
+The data is returned as a JSON list of scheduled maintenance periods, with each element of the list being an associative array containing data about that maintenance period.
+
+```
+// the TIMESTAMPs are integers representing UTC times for the named events
+// DURATION is an integer representing the length of the period in seconds
+// SUMMARY is a string providing a description of the period, may be empty
+[{"start_time" : TIMESTAMP,
+  "duration" : DURATION,
+  "summary" : SUMMARY,
+  "end_time" : TIMESTAMP},
+  {...},
+  ...]
+```
+
 ---
 
 Return lists of scheduled maintenance periods for all checks on an entity:
@@ -97,6 +127,19 @@ Return lists of scheduled maintenance periods for all checks on an entity:
 # start time (ISO 8601-formatted String, optional)
 # end time (ISO 8601-formatted String, optional)
 Flapjack::Diner.scheduled_maintenances('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+```
+
+The data is returned as a list of associative arrays, where each associative array represents a separate check under the entity:
+
+```
+// CHECK is a string, e.g. 'ssh', 'ping'
+// SCHED_MAINT is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.scheduled_maintenances(entity, check)
+[{"check" : CHECK,
+ "scheduled_maintenance" : [SCHED_MAINT, SCHED_MAINT]
+ },
+ {"check" : CHECK,
+ "scheduled_maintenance" : [SCHED_MAINT, SCHED_MAINT]
+ }]
 ```
 
 ---
