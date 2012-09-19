@@ -35,14 +35,14 @@ Flapjack::Diner.entities
 The data is returned as a JSON list where each element is an associative array representing an entity:
 
 ```json
-/*
-ID    is an integer, to hold e.g. database id from an external system
-NAME  is a string
-CHECK is as defined under Flapjack::Diner.status(entity, check)
-*/
-["id"     => ID,
- "name"   => NAME,
- "checks" => [CHECK, CHECK]]
+// ID    is an integer, to hold e.g. database id from an external system
+// NAME  is a string
+// CHECK is as defined under Flapjack::Diner.status(entity, check)
+[{"id"     : ID,
+  "name"   : NAME,
+  "checks" : [CHECK, CHECK, ...]},
+ {},
+ ...]
 ```
 ---
 
