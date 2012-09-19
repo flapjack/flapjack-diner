@@ -135,10 +135,10 @@ The data is returned as a list of associative arrays, where each associative arr
 // CHECK is a string, e.g. 'ssh', 'ping'
 // SCHED_MAINT is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.scheduled_maintenances(entity, check)
 [{"check" : CHECK,
-  "scheduled_maintenance" : [SCHED_MAINT, SCHED_MAINT]
+  "scheduled_maintenance" : [SCHED_MAINT, ...]
  },
  {"check" : CHECK,
-  "scheduled_maintenance" : [SCHED_MAINT, SCHED_MAINT]
+  "scheduled_maintenance" : [SCHED_MAINT, ...]
  }]
 ```
 
@@ -182,10 +182,10 @@ The data is returned as a list of associative arrays, where each associative arr
 // CHECK is a string, e.g. 'ssh', 'ping'
 // UNSCHED_MAINT is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
 [{"check" : CHECK,
-  "unscheduled_maintenance" : [UNSCHED_MAINT, UNSCHED_MAINT]
+  "unscheduled_maintenance" : [UNSCHED_MAINT, ...]
  },
  {"check" : CHECK,
-  "unscheduled_maintenance" : [UNSCHED_MAINT, UNSCHED_MAINT]
+  "unscheduled_maintenance" : [UNSCHED_MAINT, ...]
  }]
 ```
 
