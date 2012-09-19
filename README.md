@@ -129,7 +129,7 @@ Return lists of scheduled maintenance periods for all checks on an entity:
 Flapjack::Diner.scheduled_maintenances('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
-The data is returned as a list of associative arrays, where each associative array represents a separate check under the entity:
+The data is returned as a list of associative arrays, where each associative array represents the scheduled maintenance periods for a check under the entity :
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
@@ -152,6 +152,20 @@ Return a list of unscheduled maintenance periods for a check on an entity:
 Flapjack::Diner.unscheduled_maintenances('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
+The data is returned as a JSON list of unscheduled maintenance periods, with each element of the list being an associative array containing data about that maintenance period.
+
+```
+// the TIMESTAMPs are integers representing UTC times for the named events
+// DURATION is an integer representing the length of the period in seconds
+// SUMMARY is a string providing a description of the period, may be empty
+[{"start_time" : TIMESTAMP,
+  "duration" : DURATION,
+  "summary" : SUMMARY,
+  "end_time" : TIMESTAMP},
+  {...},
+  ...]
+```
+
 ---
 
 Return lists of unscheduled maintenance periods for all checks on an entity:
@@ -162,9 +176,22 @@ Return lists of unscheduled maintenance periods for all checks on an entity:
 Flapjack::Diner.unscheduled_maintenances('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
+The data is returned as a list of associative arrays, where each associative array represents the unscheduled maintenance periods for a check under the entity:
+
+```
+// CHECK is a string, e.g. 'ssh', 'ping'
+// UNSCHED_MAINT is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
+[{"check" : CHECK,
+ "unscheduled_maintenance" : [UNSCHED_MAINT, UNSCHED_MAINT]
+ },
+ {"check" : CHECK,
+ "unscheduled_maintenance" : [UNSCHED_MAINT, UNSCHED_MAINT]
+ }]
+```
+
 ---
 
-Return a list of outages for a check on an entity (all times for which the check failed):
+Return a list of outages for a check on an entity (all times for which the check was failing):
 
 ```ruby
 # start time (ISO 8601-formatted String, optional)
@@ -172,14 +199,39 @@ Return a list of outages for a check on an entity (all times for which the check
 Flapjack::Diner.outages('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
+The data is returned as a JSON list of outage periods, with each element of the list being an associative array containing data about that outage period.
+
+```
+// the TIMESTAMPs are integers representing UTC times for the named events
+// SUMMARY is a string providing a description of the period, may be empty
+[{"start_time" : TIMESTAMP,
+  "summary" : SUMMARY,
+  "end_time" : TIMESTAMP},
+  {...},
+  ...]
+```
+
 ---
 
-Return lists of outages for all checks on an entity (all times for which said checks failed):
+Return lists of outages for all checks on an entity (all times for which said checks were failing):
 
 ```ruby
 # start time (ISO 8601-formatted String, optional)
 # end time (ISO 8601-formatted String, optional)
 Flapjack::Diner.outages('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+```
+
+The data is returned as a list of associative arrays, where each associative array represents the outages for a check under the entity:
+
+```
+// CHECK is a string, e.g. 'ssh', 'ping'
+// OUTAGE is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check)
+[{"check" : CHECK,
+ "outages" : [OUTAGE, OUTAGE]
+ },
+ {"check" : CHECK,
+ "outages" : [OUTAGE, OUTAGE]
+ }]
 ```
 
 ---
