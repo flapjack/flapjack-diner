@@ -6,7 +6,7 @@ Access the API of a [Flapjack](http://flapjack-project.com/) system monitoring s
 
 Add this line to your application's Gemfile:
 
-    gem 'flapjack-diner', :git => 'git://github.com/ali-graham/flapjack-diner.git'
+    gem 'flapjack-diner', :git => 'git://github.com/flpjck/flapjack-diner.git'
 
 And then execute:
 
