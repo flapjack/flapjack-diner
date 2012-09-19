@@ -24,17 +24,35 @@ Set the URI of the Flapjack server:
 Flapjack::Diner.base_uri('127.0.0.1:5000')
 ```
 
+---
+
 Return a list of monitored entities, and their statuses for all associated checks:
 
 ```ruby
 Flapjack::Diner.entities
 ```
 
+The data is returned as a JSON list where each element is an associative array representing an entity:
+
+```json
+/*
+ID    is an integer, to hold e.g. database id from an external system
+NAME  is a string
+CHECK is as defined under Flapjack::Diner.status(entity, check)
+*/
+["id"     => ID,
+ "name"   => NAME,
+ "checks" => [CHECK, CHECK]]
+```
+---
+
 Return a list of checks for an entity:
 
 ```ruby
 Flapjack::Diner.checks('example.com')
 ```
+
+---
 
 Return the statuses for all checks on an entity
 
