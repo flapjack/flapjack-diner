@@ -62,6 +62,14 @@ The data is returned as a JSON list of strings, where each element is a check na
 
 ---
 
+Return the status for a check on an entity
+
+```ruby
+Flapjack::Diner.status('example.com', 'ping')
+```
+
+---
+
 Return the statuses for all checks on an entity
 
 ```ruby
@@ -77,10 +85,12 @@ The data is returned as a JSON list of checks, where each element is an associat
 
 ---
 
-Return the status for a check on an entity
+Return a list of scheduled maintenance periods for a check on an entity:
 
 ```ruby
-Flapjack::Diner.status('example.com', 'ping')
+# start time (ISO 8601-formatted String, optional)
+# end time (ISO 8601-formatted String, optional)
+Flapjack::Diner.scheduled_maintenances('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
 ---
@@ -95,12 +105,12 @@ Flapjack::Diner.scheduled_maintenances('example.com', :start_time => "2012-09-01
 
 ---
 
-Return a list of scheduled maintenance periods for a check on an entity:
+Return a list of unscheduled maintenance periods for a check on an entity:
 
 ```ruby
 # start time (ISO 8601-formatted String, optional)
 # end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.scheduled_maintenances('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+Flapjack::Diner.unscheduled_maintenances('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
 ---
@@ -115,12 +125,12 @@ Flapjack::Diner.unscheduled_maintenances('example.com', :start_time => "2012-09-
 
 ---
 
-Return a list of unscheduled maintenance periods for a check on an entity:
+Return a list of outages for a check on an entity (all times for which the check failed):
 
 ```ruby
 # start time (ISO 8601-formatted String, optional)
 # end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.unscheduled_maintenances('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+Flapjack::Diner.outages('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
 ---
@@ -132,14 +142,15 @@ Return lists of outages for all checks on an entity (all times for which said ch
 # end time (ISO 8601-formatted String, optional)
 Flapjack::Diner.outages('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
+
 ---
 
-Return a list of outages for a check on an entity (all times for which the check failed):
+Return a list of downtimes for a check on an entity (outages outside of scheduled maintenance periods):
 
 ```ruby
 # start time (ISO 8601-formatted String, optional)
 # end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.outages('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+Flapjack::Diner.downtime('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
 ---
@@ -152,15 +163,6 @@ Return a list of downtimes for all checks on an entity (outages outside of sched
 Flapjack::Diner.downtime('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
 ```
 
----
-
-Return a list of downtimes for a check on an entity (outages outside of scheduled maintenance periods):
-
-```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.downtime('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
-```
 ---
 
 Acknowledge the current state for a check on an entity:
