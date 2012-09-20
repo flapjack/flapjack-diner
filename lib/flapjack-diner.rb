@@ -51,7 +51,8 @@ module Flapjack
         path = "/acknowledgments/#{args[:entity]}/#{args[:check]}"
         params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
 
-        jsonify( post(path, :body => params) )
+        response = post(path, :body => params)
+        response.code == 204
       end
 
       def create_scheduled_maintenance!(entity, check, start_time, duration, options = {})
@@ -64,7 +65,8 @@ module Flapjack
         path ="/scheduled_maintenances/#{args[:entity]}/#{args[:check]}"
         params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
 
-        jsonify( post(path, :body => params) )
+        response = post(path, :body => params)
+        response.code == 204
       end
 
       def scheduled_maintenances(entity, check = nil, options = {})

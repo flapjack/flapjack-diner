@@ -153,13 +153,11 @@ describe Flapjack::Diner do
   it "acknowledges a check's state for an entity" do
     req = stub_request(:post, "http://#{server}/acknowledgments/#{entity}/#{check}").with(
       :body => {:summary => 'dealing with it'}).to_return(
-      :body => response_body, :status => 201)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :status => 204)
 
     result = Flapjack::Diner.acknowledge!(entity, check, :summary => 'dealing with it')
     req.should have_been_requested
-    result.should_not be_nil
-    result.should == api_result
+    result.should be_true
   end
 
   it "creates a scheduled maintenance period for an entity" do
@@ -169,14 +167,12 @@ describe Flapjack::Diner do
 
     req = stub_request(:post, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").with(
       :body => "start_time=#{start_time.iso8601}&duration=#{duration}&summary=fixing%20everything").to_return(
-      :body => response_body, :status => 201)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :status => 204)
 
     result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
       start_time, duration, :summary => summary)
     req.should have_been_requested
-    result.should_not be_nil
-    result.should == api_result
+    result.should be_true
   end
 
   it "raises an exception on network failure" do

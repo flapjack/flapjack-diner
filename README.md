@@ -100,9 +100,9 @@ The data is returned as a JSON list of checks, where each element is an associat
 Return a list of scheduled maintenance periods for a check on an entity:
 
 ```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.scheduled_maintenances('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+# start time (Time object, optional)
+# end time (Time object, optional)
+Flapjack::Diner.scheduled_maintenances('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a JSON list of scheduled maintenance periods, with each element of the list being an associative array containing data about that maintenance period.
@@ -124,9 +124,9 @@ The data is returned as a JSON list of scheduled maintenance periods, with each 
 Return lists of scheduled maintenance periods for all checks on an entity:
 
 ```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.scheduled_maintenances('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+# start time (Time object, optional)
+# end time (Time object, optional)
+Flapjack::Diner.scheduled_maintenances('example.com', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a list of associative arrays, where each associative array represents the scheduled maintenance periods for a check under the entity :
@@ -147,9 +147,9 @@ The data is returned as a list of associative arrays, where each associative arr
 Return a list of unscheduled maintenance periods for a check on an entity:
 
 ```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.unscheduled_maintenances('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+# start time (Time object, optional)
+# end time (Time object, optional)
+Flapjack::Diner.unscheduled_maintenances('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a JSON list of unscheduled maintenance periods, with each element of the list being an associative array containing data about that maintenance period.
@@ -171,9 +171,9 @@ The data is returned as a JSON list of unscheduled maintenance periods, with eac
 Return lists of unscheduled maintenance periods for all checks on an entity:
 
 ```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.unscheduled_maintenances('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+# start time (Time object, optional)
+# end time (Time object, optional)
+Flapjack::Diner.unscheduled_maintenances('example.com', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a list of associative arrays, where each associative array represents the unscheduled maintenance periods for a check under the entity:
@@ -194,9 +194,9 @@ The data is returned as a list of associative arrays, where each associative arr
 Return a list of outages for a check on an entity (all times for which the check was failing):
 
 ```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.outages('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+# start time (Time object, optional)
+# end time (Time object, optional)
+Flapjack::Diner.outages('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a JSON list of outage periods, with each element of the list being an associative array containing data about that outage period.
@@ -216,9 +216,9 @@ The data is returned as a JSON list of outage periods, with each element of the 
 Return lists of outages for all checks on an entity (all times for which said checks were failing):
 
 ```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.outages('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+# start time (Time object, optional)
+# end time (Time object, optional)
+Flapjack::Diner.outages('example.com', :start_time => :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a list of associative arrays, where each associative array represents the outages for a check under the entity:
@@ -239,9 +239,9 @@ The data is returned as a list of associative arrays, where each associative arr
 Return a list of downtimes for a check on an entity (outages outside of scheduled maintenance periods):
 
 ```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.downtime('example.com', 'ping', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+# start time (Time object, optional)
+# end time (Time object, optional)
+Flapjack::Diner.downtime('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 Returns an associative array with some statistics about the downtimes, including a list of the downtimes themselves.
@@ -261,9 +261,9 @@ Returns an associative array with some statistics about the downtimes, including
 Return a list of downtimes for all checks on an entity (outages outside of scheduled maintenance periods):
 
 ```ruby
-# start time (ISO 8601-formatted String, optional)
-# end time (ISO 8601-formatted String, optional)
-Flapjack::Diner.downtime('example.com', :start_time => "2012-09-01T00:00:00+09:30", :end_time => "2012-10-01T00:00:00+09:30")
+# start time (Time object, optional)
+# end time (Time object, optional)
+Flapjack::Diner.downtime('example.com', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a list of associative arrays, where each associative array represents a downtime associative array for a check under the entity:
@@ -288,18 +288,22 @@ Acknowledge the current state for a check on an entity:
 Flapjack::Diner.acknowledge!('example.com', 'ping', :summary => 'ack')
 ```
 
+Returns a boolean value representing the success or otherwise of the creation of the acknowledgement by the server.
+
 ---
 
 Create a scheduled maintenance period for a check on an entity:
 
 ```ruby
-# start time (ISO 8601-formatted String, required)
+# start time (Time object, optional)
 # duration (Integer, required) is measured in seconds
 # summary (String, optional)
 Flapjack::Diner.create_scheduled_maintenance!('example.com', 'ping',
-  :start_time => Time.now.to_i - (30 * 60), :duration => (60 * 60),
+  :start_time => Time.local(2012, 12, 01), :duration => (60 * 60),
   :summary => 'changing stuff')
 ```
+
+Returns a boolean value representing the success or otherwise of the creation of the scheduled maintenance period by the server.
 
 ## Contributing
 
