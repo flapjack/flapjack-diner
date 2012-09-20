@@ -16,7 +16,7 @@ module Flapjack
       # e.g., network failures or non-parseable JSON data.
 
       def entities
-        jsonify( get("/entities") )
+        parsed( get("/entities") )
       end
 
       def checks(entity)
@@ -26,7 +26,7 @@ module Flapjack
         uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
           :path => "/checks/#{args[:entity]}")
 
-        jsonify( get(uri.request_uri) )
+        parsed( get(uri.request_uri) )
       end
 
       def status(entity, check = nil)
@@ -40,7 +40,7 @@ module Flapjack
         uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
           :path => path)
 
-        jsonify( get(uri.request_uri) )
+        parsed( get(uri.request_uri) )
       end
 
       def acknowledge!(entity, check, options = {})
@@ -84,7 +84,7 @@ module Flapjack
         uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
           :path => path, :query => params.empty? ? nil : params.join('&'))
 
-        jsonify( get(uri.request_uri) )
+        parsed( get(uri.request_uri) )
       end
 
       def unscheduled_maintenances(entity, check = nil, options = {})
@@ -102,7 +102,7 @@ module Flapjack
         uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
           :path => path, :query => params.empty? ? nil : params.join('&'))
 
-        jsonify( get(uri.request_uri) )
+        parsed( get(uri.request_uri) )
       end
 
       def outages(entity, check = nil, options = {})
@@ -120,7 +120,7 @@ module Flapjack
         uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po, :path => path,
           :query => params.empty? ? nil : params.join('&'))
 
-        jsonify( get(uri.request_uri) )
+        parsed( get(uri.request_uri) )
       end
 
       def downtime(entity, check = nil, options = {})
@@ -138,7 +138,7 @@ module Flapjack
         uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
           :path => path, :query => params.empty? ? nil : params.join('&'))
 
-        jsonify( get(uri.request_uri) )
+        parsed( get(uri.request_uri) )
       end
 
     private
@@ -168,9 +168,9 @@ module Flapjack
         }.reject {|k,v| v.nil? }
       end
 
-      def jsonify(response)
-        return unless response && response.body
-        JSON.parse(response.body)
+      def parsed(response)
+        return unless response && response.respond_to?(:parsed_response)
+        response.parsed_response
       end
 
     end

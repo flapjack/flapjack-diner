@@ -7,8 +7,8 @@ describe Flapjack::Diner do
   let(:entity) { 'ex-abcd-data-17.example.com' }
   let(:check)  { 'ping'}
 
-  let(:response_body) { mock('response') }
-  let(:api_result)    { mock('api_result') }
+  let(:response)      { '{"key":"value"}' }
+  let(:response_body) { {'key' => 'value'} }
 
   before(:each) do
     Flapjack::Diner.base_uri(server)
@@ -20,134 +20,122 @@ describe Flapjack::Diner do
 
   it "returns a json list of entities" do
     req = stub_request(:get, "http://#{server}/entities").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.entities
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a json list of checks for an entity" do
     req = stub_request(:get, "http://#{server}/checks/#{entity}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.checks(entity)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a json list of check statuses for an entity" do
     req = stub_request(:get, "http://#{server}/status/#{entity}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.status(entity)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a single check status for an entity" do
     req = stub_request(:get, "http://#{server}/status/#{entity}/#{check}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.status(entity, check)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a list of scheduled maintenance periods for all checks on an entity" do
     req = stub_request(:get, "http://#{server}/scheduled_maintenances/#{entity}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.scheduled_maintenances(entity)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a list of scheduled maintenance periods for a check on an entity" do
     req = stub_request(:get, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.scheduled_maintenances(entity, check)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a list of unscheduled maintenance periods for all checks on an entity" do
     req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.unscheduled_maintenances(entity)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a list of unscheduled maintenance periods for a check on an entity" do
     req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}/#{check}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.unscheduled_maintenances(entity, check)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a list of outages for all checks on an entity" do
     req = stub_request(:get, "http://#{server}/outages/#{entity}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.outages(entity)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a list of outages for a check on an entity" do
     req = stub_request(:get, "http://#{server}/outages/#{entity}/#{check}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.outages(entity, check)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a list of downtimes for all checks on an entity" do
     req = stub_request(:get, "http://#{server}/downtime/#{entity}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.downtime(entity)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "returns a list of downtimes for a check on an entity" do
     req = stub_request(:get, "http://#{server}/downtime/#{entity}/#{check}").to_return(
-      :body => response_body)
-    JSON.should_receive(:parse).with(response_body).and_return(api_result)
+      :body => response)
 
     result = Flapjack::Diner.downtime(entity, check)
     req.should have_been_requested
     result.should_not be_nil
-    result.should == api_result
+    result.should == response_body
   end
 
   it "acknowledges a check's state for an entity" do
