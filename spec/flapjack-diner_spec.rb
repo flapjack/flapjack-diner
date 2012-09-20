@@ -153,7 +153,7 @@ describe Flapjack::Diner do
   it "acknowledges a check's state for an entity" do
     req = stub_request(:post, "http://#{server}/acknowledgments/#{entity}/#{check}").with(
       :body => {:summary => 'dealing with it'}).to_return(
-      :status => 204)
+      :status => 201)
 
     result = Flapjack::Diner.acknowledge!(entity, check, :summary => 'dealing with it')
     req.should have_been_requested
@@ -167,7 +167,7 @@ describe Flapjack::Diner do
 
     req = stub_request(:post, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").with(
       :body => "start_time=#{start_time.iso8601}&duration=#{duration}&summary=fixing%20everything").to_return(
-      :status => 204)
+      :status => 201)
 
     result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
       start_time, duration, :summary => summary)
