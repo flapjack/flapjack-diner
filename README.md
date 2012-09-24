@@ -249,7 +249,7 @@ Flapjack::Diner.downtime('example.com', 'ping', :start_time => Time.local(2012, 
 Returns an associative array with some statistics about the downtimes, including a list of the downtimes themselves. This may not be the same as would be returned from the 'outages' call for the same time period, as if scheduled maintenance periods overlap any of those times then they will be reduced, split or discarded to fit.
 
 ```
-// TOTAL SECONDS gives the sum of time spent in that state for each check state.
+// TOTAL SECONDS gives the sum of the time spent in that state for each check state.
 // PERCENTAGES represents the proportion of the total time that the check was in each state. Will be null if either start or end time were not provided in the request.
 // OUTAGE is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check).
 {"total_seconds" : {STATE => INTEGER, ...},
