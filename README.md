@@ -202,11 +202,13 @@ Flapjack::Diner.outages('example.com', 'ping', :start_time => Time.local(2012, 0
 The data is returned as a JSON list of outage periods, with each element of the list being an associative array containing data about that outage period.
 
 ```
+// STATE is a string, one of 'critical', 'warning', 'ok', 'unknown'
 // the TIMESTAMPs are integers representing UTC times for the named events
 // SUMMARY is a string providing a description of the period, may be empty
-[{"start_time" : TIMESTAMP,
-  "summary" : SUMMARY,
-  "end_time" : TIMESTAMP},
+[{"state" : STATE,
+  "start_time" : TIMESTAMP,
+  "end_time" : TIMESTAMP,
+  "summary" : SUMMARY},
   {...},
   ...]
 ```
@@ -244,14 +246,14 @@ Return a list of downtimes for a check on an entity (outages outside of schedule
 Flapjack::Diner.downtime('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-Returns an associative array with some statistics about the downtimes, including a list of the downtimes themselves.
+Returns an associative array with some statistics about the downtimes, including a list of the downtimes themselves. This may not be the same as would be returned from the 'outages' call for the same time period, as if scheduled maintenance periods overlap any of those times then they will be reduced, split or discarded to fit.
 
 ```
-// TOTAL SECONDS
-// PERCENTAGE integer, representing the . Will be null if either start or end time were not provided in the request.
-// OUTAGE is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check)
-{"total_seconds" : TOTAL_SECONDS,
- "percentage" : PERCENTAGE,
+// TOTAL SECONDS gives the sum of the time spent in that state for each check state.
+// PERCENTAGES represents the proportion of the total time that the check was in each state. Will be null if either start or end time were not provided in the request.
+// OUTAGE is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check).
+{"total_seconds" : {STATE => INTEGER, ...},
+ "percentages" : {STATE => INTEGER, ...},
  "downtime" : [OUTAGE, ...]
 }
 ```
@@ -266,7 +268,7 @@ Return a list of downtimes for all checks on an entity (outages outside of sched
 Flapjack::Diner.downtime('example.com', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as a list of associative arrays, where each associative array represents a downtime associative array for a check under the entity:
+The data is returned as a list of associative arrays, where each associative array represents a downtime report for a check under the entity:
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'

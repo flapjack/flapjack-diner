@@ -52,7 +52,7 @@ module Flapjack
         params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
 
         response = post(path, :body => params)
-        response.code == 201
+        response.code == 204
       end
 
       def create_scheduled_maintenance!(entity, check, start_time, duration, options = {})
@@ -66,7 +66,7 @@ module Flapjack
         params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
 
         response = post(path, :body => params)
-        response.code == 201
+        response.code == 204
       end
 
       def scheduled_maintenances(entity, check = nil, options = {})
