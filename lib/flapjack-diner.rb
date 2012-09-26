@@ -22,25 +22,14 @@ module Flapjack
       def checks(entity)
         args = prepare(:entity => {:value => entity, :required => true})
 
-        pr, ho, po = protocol_host_port
-        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
-          :path => "/checks/#{args[:entity]}")
-
-        parsed( get(uri.request_uri) )
+        perform_get_request('checks', args)
       end
 
       def status(entity, options = {})
         args = prepare(:entity     => {:value => entity, :required => true},
                        :check      => {:value => options[:check]})
 
-        path = "/status/#{args[:entity]}"
-        path += "/#{args[:check]}" if args[:check]
-
-        pr, ho, po = protocol_host_port
-        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
-          :path => path)
-
-        parsed( get(uri.request_uri) )
+        perform_get_request('status', args)
       end
 
       def acknowledge!(entity, check, options = {})
