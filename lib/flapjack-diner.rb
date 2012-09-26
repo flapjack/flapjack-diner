@@ -170,7 +170,7 @@ module Flapjack
           when Time
             raise "'#{key}' should contain some kind of time object." if !value.respond_to?(:iso8601)
           else
-            raise "'#{key}' must be a #{expected_class}" if !expected_class.nil? && !value.is_a?(expected_class)
+            raise "'#{key}' must be a #{expected_class}" if !expected_class.nil? && !result.is_a?(expected_class)
           end
           result
         end

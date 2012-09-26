@@ -52,7 +52,7 @@ describe Flapjack::Diner do
     req = stub_request(:get, "http://#{server}/status/#{entity}/#{check}").to_return(
       :body => response)
 
-    result = Flapjack::Diner.status(entity, check)
+    result = Flapjack::Diner.status(entity, :check => check)
     req.should have_been_requested
     result.should_not be_nil
     result.should == response_body
