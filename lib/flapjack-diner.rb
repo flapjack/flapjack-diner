@@ -153,14 +153,27 @@ module Flapjack
       end
 
       def prepare(data = {})
-        data.merge!(data) do |k, v|
-          if (value = v[:value]).nil?
-            raise "'#{k.to_s}' is required" if v[:required]
-          else
-            raise "'#{k.to_s}' must be a #{v[:class]}" if v[:class] && !value.is_a?(v[:class])
-            URI.escape(value.respond_to?(:iso8601) ? value.iso8601 : value.to_s)
+        data.inject({}) do |result, (k, v)|
+          if value = ensure_valid_value(k,v)
+            result[k] = URI.escape(value.respond_to?(:iso8601) ? value.iso8601 : value.to_s)
           end
-        end.reject {|k,v| v.nil? }
+
+          result
+        end
+      end
+
+      def ensure_valid_value(key, value)
+        if (result = value[:value]).nil?
+          raise "'#{key}' is required" if value[:required]
+        else
+          case expected_class = value[:class]
+          when Time
+            raise "'#{key}' should contain some kind of time object." if !value.respond_to?(:iso8601)
+          else
+            raise "'#{key}' must be a #{expected_class}" if !expected_class.nil? && !value.is_a?(expected_class)
+          end
+          result
+        end
       end
 
       def parsed(response)
