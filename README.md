@@ -61,7 +61,7 @@ The data is returned as a JSON list of strings, where each element is a check na
 Return the status for a check on an entity
 
 ```ruby
-Flapjack::Diner.status('example.com', 'ping')
+Flapjack::Diner.status('example.com', :check => 'ping')
 ```
 
 The data is returned as a JSON associative array:
@@ -102,7 +102,7 @@ Return a list of scheduled maintenance periods for a check on an entity:
 ```ruby
 # start time (Time object, optional)
 # end time (Time object, optional)
-Flapjack::Diner.scheduled_maintenances('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
+Flapjack::Diner.scheduled_maintenances('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a JSON list of scheduled maintenance periods, with each element of the list being an associative array containing data about that maintenance period.
@@ -149,7 +149,7 @@ Return a list of unscheduled maintenance periods for a check on an entity:
 ```ruby
 # start time (Time object, optional)
 # end time (Time object, optional)
-Flapjack::Diner.unscheduled_maintenances('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
+Flapjack::Diner.unscheduled_maintenances('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a JSON list of unscheduled maintenance periods, with each element of the list being an associative array containing data about that maintenance period.
@@ -196,7 +196,7 @@ Return a list of outages for a check on an entity (all times for which the check
 ```ruby
 # start time (Time object, optional)
 # end time (Time object, optional)
-Flapjack::Diner.outages('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
+Flapjack::Diner.outages('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 The data is returned as a JSON list of outage periods, with each element of the list being an associative array containing data about that outage period.
@@ -243,7 +243,7 @@ Return a list of downtimes for a check on an entity (outages outside of schedule
 ```ruby
 # start time (Time object, optional)
 # end time (Time object, optional)
-Flapjack::Diner.downtime('example.com', 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
+Flapjack::Diner.downtime('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
 Returns an associative array with some statistics about the downtimes, including a list of the downtimes themselves. This may not be the same as would be returned from the 'outages' call for the same time period, as if scheduled maintenance periods overlap any of those times then they will be reduced, split or discarded to fit.

@@ -72,7 +72,7 @@ describe Flapjack::Diner do
     req = stub_request(:get, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").to_return(
       :body => response)
 
-    result = Flapjack::Diner.scheduled_maintenances(entity, check)
+    result = Flapjack::Diner.scheduled_maintenances(entity, :check => check)
     req.should have_been_requested
     result.should_not be_nil
     result.should == response_body
@@ -92,7 +92,7 @@ describe Flapjack::Diner do
     req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}/#{check}").to_return(
       :body => response)
 
-    result = Flapjack::Diner.unscheduled_maintenances(entity, check)
+    result = Flapjack::Diner.unscheduled_maintenances(entity, :check => check)
     req.should have_been_requested
     result.should_not be_nil
     result.should == response_body
@@ -112,7 +112,7 @@ describe Flapjack::Diner do
     req = stub_request(:get, "http://#{server}/outages/#{entity}/#{check}").to_return(
       :body => response)
 
-    result = Flapjack::Diner.outages(entity, check)
+    result = Flapjack::Diner.outages(entity, :check => check)
     req.should have_been_requested
     result.should_not be_nil
     result.should == response_body
@@ -128,11 +128,30 @@ describe Flapjack::Diner do
     result.should == response_body
   end
 
+  it "returns a list of downtimes for all checks on an entity between two times" do
+    start_str  = '2011-08-01T00:00:00+10:00'
+    finish_str = '2011-08-31T00:00:00+10:00'
+
+    start  = Time.iso8601(start_str)
+    finish = Time.iso8601(finish_str)
+
+    start_enc = URI.encode(start.iso8601)
+    finish_enc = URI.encode(finish.iso8601)
+
+    req = stub_request(:get, "http://#{server}/downtime/#{entity}?start_time=#{start_enc}&end_time=#{finish_enc}").to_return(
+      :body => response)
+
+    result = Flapjack::Diner.downtime(entity, :start_time => start, :end_time => finish)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
   it "returns a list of downtimes for a check on an entity" do
     req = stub_request(:get, "http://#{server}/downtime/#{entity}/#{check}").to_return(
       :body => response)
 
-    result = Flapjack::Diner.downtime(entity, check)
+    result = Flapjack::Diner.downtime(entity, :check => check)
     req.should have_been_requested
     result.should_not be_nil
     result.should == response_body
@@ -141,7 +160,7 @@ describe Flapjack::Diner do
   it "acknowledges a check's state for an entity" do
     req = stub_request(:post, "http://#{server}/acknowledgments/#{entity}/#{check}").with(
       :body => {:summary => 'dealing with it'}).to_return(
-      :status => 201)
+      :status => 204)
 
     result = Flapjack::Diner.acknowledge!(entity, check, :summary => 'dealing with it')
     req.should have_been_requested
@@ -155,7 +174,7 @@ describe Flapjack::Diner do
 
     req = stub_request(:post, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").with(
       :body => "start_time=#{start_time.iso8601}&duration=#{duration}&summary=fixing%20everything").to_return(
-      :status => 201)
+      :status => 204)
 
     result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
       start_time, duration, :summary => summary)

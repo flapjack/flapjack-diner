@@ -29,9 +29,9 @@ module Flapjack
         parsed( get(uri.request_uri) )
       end
 
-      def status(entity, check = nil)
+      def status(entity, options = {})
         args = prepare(:entity     => {:value => entity, :required => true},
-                       :check      => {:value => check})
+                       :check      => {:value => options[:check]})
 
         path = "/status/#{args[:entity]}"
         path += "/#{args[:check]}" if args[:check]
@@ -69,9 +69,9 @@ module Flapjack
         response.code == 204
       end
 
-      def scheduled_maintenances(entity, check = nil, options = {})
+      def scheduled_maintenances(entity, options = {})
         args = prepare(:entity      => {:value => entity, :required => true},
-                       :check       => {:value => check})
+                       :check       => {:value => options[:check]})
         query = prepare(:start_time => {:value => options[:start_time], :class => Time},
                         :end_time   => {:value => options[:end_time], :class => Time})
 
@@ -87,9 +87,9 @@ module Flapjack
         parsed( get(uri.request_uri) )
       end
 
-      def unscheduled_maintenances(entity, check = nil, options = {})
+      def unscheduled_maintenances(entity, options = {})
         args = prepare(:entity      => {:value => entity, :required => true},
-                       :check       => {:value => check})
+                       :check       => {:value => options[:check]})
         query = prepare(:start_time => {:value => options[:start_time], :class => Time},
                         :end_time   => {:value => options[:end_time], :class => Time})
 
@@ -105,9 +105,9 @@ module Flapjack
         parsed( get(uri.request_uri) )
       end
 
-      def outages(entity, check = nil, options = {})
+      def outages(entity, options = {})
         args = prepare(:entity      => {:value => entity, :required => true},
-                       :check       => {:value => check})
+                       :check       => {:value => options[:check]})
         query = prepare(:start_time => {:value => options[:start_time], :class => Time},
                         :end_time   => {:value => options[:end_time], :class => Time})
 
@@ -123,9 +123,9 @@ module Flapjack
         parsed( get(uri.request_uri) )
       end
 
-      def downtime(entity, check = nil, options = {})
+      def downtime(entity, options = {})
         args = prepare(:entity      => {:value => entity, :required => true},
-                       :check       => {:value => check})
+                       :check       => {:value => options[:check]})
         query = prepare(:start_time => {:value => options[:start_time], :class => Time},
                         :end_time   => {:value => options[:end_time], :class => Time})
 
