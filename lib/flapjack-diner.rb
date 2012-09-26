@@ -153,19 +153,14 @@ module Flapjack
       end
 
       def prepare(data = {})
-        data.merge!(data) {|k,ov,nv|
-          if ov[:value].nil?
-            raise "'#{k.to_s}' is required" if ov[:required]
-            nil
+        data.merge!(data) do |k, v|
+          if (value = v[:value]).nil?
+            raise "'#{k.to_s}' is required" if v[:required]
           else
-            raise "'#{k.to_s}' must be a #{ov[:class]}" if ov[:class] && !ov[:value].is_a?(ov[:class])
-            if ov[:value].is_a?(Time)
-              URI.escape(ov[:value].iso8601)
-            else
-              URI.escape(ov[:value].to_s)
-            end
+            raise "'#{k.to_s}' must be a #{v[:class]}" if v[:class] && !value.is_a?(v[:class])
+            URI.escape(value.respond_to?(:iso8601) ? value.iso8601 : value.to_s)
           end
-        }.reject {|k,v| v.nil? }
+        end.reject {|k,v| v.nil? }
       end
 
       def parsed(response)
