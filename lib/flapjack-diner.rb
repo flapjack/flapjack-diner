@@ -107,7 +107,7 @@ module Flapjack
 
     private
 
-      def perform_get_request(action, args, query)
+      def perform_get_request(action, args, query = nil)
         prepare_request(action, args, query) do |path, params|
           parsed( get(build_uri(path, params).request_uri) )
         end
@@ -115,7 +115,7 @@ module Flapjack
 
       def prepare_request(action, args, query = nil)
         path = ["/#{action}", args[:entity], args[:check]].compact.join('/')
-        params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
+        params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&') if query
         yield path, params
       end
 
@@ -131,7 +131,7 @@ module Flapjack
       def build_uri(path, params)
         pr, ho, po = protocol_host_port
         URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
-          :path => path, :query => params.empty? ? nil : params)
+          :path => path, :query => (params && params.empty? ? nil : params))
       end
 
       def prepare(data = {})
