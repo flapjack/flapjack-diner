@@ -210,4 +210,18 @@ describe Flapjack::Diner do
     req.should_not have_been_requested
   end
 
+  it "raises an exception if a time argument is provided with the wrong data type" do
+    start_str  = '2011-08-01T00:00:00+10:00'
+    finish_str = '2011-08-31T00:00:00+10:00'
+
+    start  = Time.iso8601(start_str)
+
+    req = stub_request(:get, /http:\/\/#{server}\/*/)
+
+    expect {
+      Flapjack::Diner.downtime(entity, :start_time => start, :end_time => finish_str)
+    }.to raise_error
+    req.should_not have_been_requested
+  end
+
 end

@@ -157,23 +157,22 @@ module Flapjack
           if value = ensure_valid_value(k,v)
             result[k] = URI.escape(value.respond_to?(:iso8601) ? value.iso8601 : value.to_s)
           end
-
           result
         end
       end
 
       def ensure_valid_value(key, value)
-        if (result = value[:value]).nil?
+        unless result = value[:value]
           raise "'#{key}' is required" if value[:required]
-        else
-          case expected_class = value[:class]
-          when Time
-            raise "'#{key}' should contain some kind of time object." if !value.respond_to?(:iso8601)
-          else
-            raise "'#{key}' must be a #{expected_class}" if !expected_class.nil? && !result.is_a?(expected_class)
-          end
-          result
+          return
         end
+        expected_class = value[:class]
+        if Time.eql?(expected_class)
+          raise "'#{key}' should contain some kind of time object." unless result.respond_to?(:iso8601)
+        else
+          raise "'#{key}' must be a #{expected_class}" unless expected_class.nil? || result.is_a?(expected_class)
+        end
+        result
       end
 
       def parsed(response)
