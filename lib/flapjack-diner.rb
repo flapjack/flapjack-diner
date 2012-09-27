@@ -22,25 +22,14 @@ module Flapjack
       def checks(entity)
         args = prepare(:entity => {:value => entity, :required => true})
 
-        pr, ho, po = protocol_host_port
-        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
-          :path => "/checks/#{args[:entity]}")
-
-        parsed( get(uri.request_uri) )
+        perform_get_request('checks', args)
       end
 
       def status(entity, options = {})
         args = prepare(:entity     => {:value => entity, :required => true},
                        :check      => {:value => options[:check]})
 
-        path = "/status/#{args[:entity]}"
-        path += "/#{args[:check]}" if args[:check]
-
-        pr, ho, po = protocol_host_port
-        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
-          :path => path)
-
-        parsed( get(uri.request_uri) )
+        perform_get_request('status', args)
       end
 
       def acknowledge!(entity, check, options = {})
@@ -75,16 +64,7 @@ module Flapjack
         query = prepare(:start_time => {:value => options[:start_time], :class => Time},
                         :end_time   => {:value => options[:end_time], :class => Time})
 
-        path = "/scheduled_maintenances/#{args[:entity]}"
-        path += "/#{args[:check]}" if args[:check]
-
-        params = query.collect{|k,v| "#{k.to_s}=#{v}"}
-
-        pr, ho, po = protocol_host_port
-        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
-          :path => path, :query => params.empty? ? nil : params.join('&'))
-
-        parsed( get(uri.request_uri) )
+        perform_get_request('scheduled_maintenances', args, query)
       end
 
       def unscheduled_maintenances(entity, options = {})
@@ -93,16 +73,7 @@ module Flapjack
         query = prepare(:start_time => {:value => options[:start_time], :class => Time},
                         :end_time   => {:value => options[:end_time], :class => Time})
 
-        path = "/unscheduled_maintenances/#{args[:entity]}"
-        path += "/#{args[:check]}" if args[:check]
-
-        params = query.collect{|k,v| "#{k.to_s}=#{v}"}
-
-        pr, ho, po = protocol_host_port
-        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
-          :path => path, :query => params.empty? ? nil : params.join('&'))
-
-        parsed( get(uri.request_uri) )
+        perform_get_request('unscheduled_maintenances', args, query)
       end
 
       def outages(entity, options = {})
@@ -111,16 +82,7 @@ module Flapjack
         query = prepare(:start_time => {:value => options[:start_time], :class => Time},
                         :end_time   => {:value => options[:end_time], :class => Time})
 
-        path = "/outages/#{args[:entity]}"
-        path += "/#{args[:check]}" if args[:check]
-
-        params = query.collect{|k,v| "#{k.to_s}=#{v}"}
-
-        pr, ho, po = protocol_host_port
-        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po, :path => path,
-          :query => params.empty? ? nil : params.join('&'))
-
-        parsed( get(uri.request_uri) )
+        perform_get_request('outages', args, query)
       end
 
       def downtime(entity, options = {})
@@ -129,19 +91,22 @@ module Flapjack
         query = prepare(:start_time => {:value => options[:start_time], :class => Time},
                         :end_time   => {:value => options[:end_time], :class => Time})
 
-        path = "/downtime/#{args[:entity]}"
-        path += "/#{args[:check]}" if args[:check]
-
-        params = query.collect{|k,v| "#{k.to_s}=#{v}"}
-
-        pr, ho, po = protocol_host_port
-        uri = URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
-          :path => path, :query => params.empty? ? nil : params.join('&'))
-
-        parsed( get(uri.request_uri) )
+        perform_get_request('downtime', args, query)
       end
 
     private
+
+      def perform_get_request(action, args, query = nil)
+        prepare_request(action, args, query) do |path, params|
+          parsed( get(build_uri(path, params).request_uri) )
+        end
+      end
+
+      def prepare_request(action, args, query = nil)
+        path = ["/#{action}", args[:entity], args[:check]].compact.join('/')
+        params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&') if query
+        yield path, params
+      end
 
       def protocol_host_port
         self.base_uri =~ /$(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(?::\d+)?/i
@@ -150,6 +115,12 @@ module Flapjack
         port = $3 || ('https'.eql?(protocol) ? 443 : 80)
 
         [protocol, host, port]
+      end
+
+      def build_uri(path, params)
+        pr, ho, po = protocol_host_port
+        URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
+          :path => path, :query => (params && params.empty? ? nil : params))
       end
 
       def prepare(data = {})
