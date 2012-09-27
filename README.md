@@ -1,6 +1,9 @@
 # Flapjack::Diner
 
-![Travis CI Status](https://secure.travis-ci.org/flpjck/flapjack-diner.png)
+[![Travis CI Status][id_travis_img]][id_travis_link]
+
+[id_travis_link]: https://secure.travis-ci.org/#!/flpjck/flapjack-diner
+[id_travis_img]: https://secure.travis-ci.org/flpjck/flapjack-diner.png
 
 Access the API of a [Flapjack](http://flapjack-project.com/) system monitoring server.
 
