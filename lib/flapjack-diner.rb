@@ -6,6 +6,7 @@ require "flapjack-diner/version"
 
 module Flapjack
   module Diner
+    SUCCESS_STATUS_CODE = 204
 
     include HTTParty
     format :json
@@ -37,11 +38,7 @@ module Flapjack
                        :check    => {:value => check, :required => true})
         query = prepare(:summary => {:value => options[:summary]})
 
-        path = "/acknowledgments/#{args[:entity]}/#{args[:check]}"
-        params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
-
-        response = post(path, :body => params)
-        response.code == 204
+        perform_post_request('acknowledgments', args, query)
       end
 
       def create_scheduled_maintenance!(entity, check, start_time, duration, options = {})
@@ -51,11 +48,7 @@ module Flapjack
                         :duration   => {:value => duration, :required => true, :class => Integer},
                         :summary    => {:value => options[:summary]})
 
-        path ="/scheduled_maintenances/#{args[:entity]}/#{args[:check]}"
-        params = query.collect{|k,v| "#{k.to_s}=#{v}"}.join('&')
-
-        response = post(path, :body => params)
-        response.code == 204
+        perform_post_request('scheduled_maintenances', args, query)
       end
 
       def scheduled_maintenances(entity, options = {})
@@ -99,6 +92,12 @@ module Flapjack
       def perform_get_request(action, args, query = nil)
         prepare_request(action, args, query) do |path, params|
           parsed( get(build_uri(path, params).request_uri) )
+        end
+      end
+
+      def perform_post_request(action, args, query = nil)
+        prepare_request(action, args, query) do |path, params|
+          post(path, :body => params).code == SUCCESS_STATUS_CODE
         end
       end
 
