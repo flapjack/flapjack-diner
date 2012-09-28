@@ -10,7 +10,12 @@ module Flapjack
     SUCCESS_STATUS_CODE = 204
 
     include HTTParty
+    extend ArgumentValidator::Helper
+
     format :json
+
+    validate_all :path => :entity, :as => :required
+    validate_all :query => [:start_time, :end_time], :as => :time
 
     class << self
 
@@ -22,25 +27,17 @@ module Flapjack
       end
 
       def checks(entity)
-        perform_get_request('checks', :path => {:entity => entity}) do
-          validate :path  => :entity, :as => :required
-        end
+        perform_get_request('checks', :path => {:entity => entity})
       end
 
       def status(entity, options = {})
         args = {:entity => entity, :check => options.delete(:check)}
-
-        perform_get_request('status', :path => args) do
-          validate :path  => :entity, :as => :required
-        end
+        perform_get_request('status', :path => args)
       end
 
       def acknowledge!(entity, check, options = {})
         args = {:entity => entity, :check => check}
-
-        perform_post_request('acknowledgments', :path => args, :query => options) do
-          validate :path  => :entity, :as => :required
-        end
+        perform_post_request('acknowledgments', :path => args, :query => options)
       end
 
       def create_scheduled_maintenance!(entity, check, start_time, duration, options = {})
@@ -57,38 +54,22 @@ module Flapjack
 
       def scheduled_maintenances(entity, options = {})
         args = {:entity => entity, :check => options.delete(:check)}
-
-        perform_get_request('scheduled_maintenances', :path => args, :query => options) do
-          validate :path  => :entity, :as => :required
-          validate :query => [:start_time, :end_time], :as => :time
-        end
+        perform_get_request('scheduled_maintenances', :path => args, :query => options)
       end
 
       def unscheduled_maintenances(entity, options = {})
         args = {:entity => entity, :check => options.delete(:check)}
-
-        perform_get_request('unscheduled_maintenances', :path => args, :query => options) do
-          validate :path  => :entity, :as => :required
-          validate :query => [:start_time, :end_time], :as => :time
-        end
+        perform_get_request('unscheduled_maintenances', :path => args, :query => options)
       end
 
       def outages(entity, options = {})
         args = {:entity => entity, :check => options.delete(:check)}
-
-        perform_get_request('outages', :path => args, :query => options) do
-          validate :path  => :entity, :as => :required
-          validate :query => [:start_time, :end_time], :as => :time
-        end
+        perform_get_request('outages', :path => args, :query => options)
       end
 
       def downtime(entity, options = {})
         args = {:entity => entity, :check => options.delete(:check)}
-
-        perform_get_request('downtime', :path => args, :query => options) do
-          validate :path  => :entity, :as => :required
-          validate :query => [:start_time, :end_time], :as => :time
-        end
+        perform_get_request('downtime', :path => args, :query => options)
       end
 
     private
@@ -107,12 +88,11 @@ module Flapjack
         args = options[:path]
         query = options[:query]
 
-        ArgumentValidator.new(args, query).instance_eval(&validation) if block_given?
+        (block_given? ? [validation] : @validations).each do |validation|
+          ArgumentValidator.new(args, query).instance_eval(&validation)
+        end
 
-        path = ["/#{action}", args[:entity], args[:check]].compact.map {|v| prepare_value(v) }.join('/')
-        params = query.collect{|k,v| "#{k.to_s}=#{prepare_value(v)}"}.join('&') if query
-
-        [path, params]
+        [prepare_path(action, args), prepare_query(query)]
       end
 
       def protocol_host_port
@@ -132,6 +112,18 @@ module Flapjack
 
       def prepare_value(value)
         URI.escape value.respond_to?(:iso8601) ? value.iso8601 : value.to_s
+      end
+
+      def prepare_path(action, args)
+        ["/#{action}", args[:entity], args[:check]].compact.map do |value|
+          prepare_value(value)
+        end.join('/')
+      end
+
+      def prepare_query(query)
+        query.collect do |key, value|
+          [key, prepare_value(value)].join('=')
+        end.join('&') if query
       end
 
       def parsed(response)

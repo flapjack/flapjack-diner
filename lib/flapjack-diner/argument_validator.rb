@@ -1,5 +1,14 @@
 module Flapjack
   class ArgumentValidator
+    module Helper
+      def validate_all(validation_hash)
+        @validations ||= []
+        @validations << Proc.new do
+          validate(validation_hash)
+        end
+      end
+    end
+
     attr_reader :path, :query
 
     def initialize(path, query)
@@ -12,6 +21,7 @@ module Flapjack
     end
 
     def validate(args)
+      args = args.dup
       validations = args.delete(:as)
       validations = [validations] unless validations.is_a?(Array)
 
@@ -31,7 +41,7 @@ module Flapjack
 
     def time(key, elements)
       elements.each do |element|
-        if target = @data[key][element]
+        if target = @data[key] && @data[key][element]
           @errors << "'#{target}' should contain some kind of time object which responds to." unless target.respond_to?(:iso8601)
         end
       end
