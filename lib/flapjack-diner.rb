@@ -3,6 +3,7 @@ require 'json'
 require 'uri'
 
 require "flapjack-diner/version"
+require "flapjack-diner/argument_validator"
 
 module Flapjack
   module Diner
