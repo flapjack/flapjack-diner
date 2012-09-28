@@ -72,7 +72,7 @@ module Flapjack
         perform_get_request('downtime', :path => args, :query => options)
       end
 
-    private
+      private
 
       def perform_get_request(action, options, &validation)
         path, params = prepare_request(action, options, &validation)
@@ -130,8 +130,6 @@ module Flapjack
         return unless response && response.respond_to?(:parsed_response)
         response.parsed_response
       end
-
     end
-
   end
 end
