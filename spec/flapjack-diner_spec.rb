@@ -138,7 +138,7 @@ describe Flapjack::Diner do
     start_enc = URI.encode(start.iso8601)
     finish_enc = URI.encode(finish.iso8601)
 
-    req = stub_request(:get, "http://#{server}/downtime/#{entity}?start_time=#{start_enc}&end_time=#{finish_enc}").to_return(
+    req = stub_request(:get, "http://#{server}/downtime/#{entity}?end_time=#{finish_enc}&start_time=#{start_enc}").to_return(
       :body => response)
 
     result = Flapjack::Diner.downtime(entity, :start_time => start, :end_time => finish)
@@ -173,7 +173,7 @@ describe Flapjack::Diner do
     summary = "fixing everything"
 
     req = stub_request(:post, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").with(
-      :body => "start_time=#{start_time.iso8601}&duration=#{duration}&summary=fixing%20everything").to_return(
+      :body => "summary=fixing%20everything&duration=#{duration}&start_time=#{start_time.iso8601}").to_return(
       :status => 204)
 
     result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
