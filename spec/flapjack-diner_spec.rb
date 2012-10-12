@@ -173,11 +173,11 @@ describe Flapjack::Diner do
     summary = "fixing everything"
 
     req = stub_request(:post, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").with(
-      :body => "summary=fixing%20everything&duration=#{duration}&start_time=#{start_time.iso8601}").to_return(
+      :body => "start_time=#{start_time.iso8601}&duration=#{duration}&summary=fixing%20everything").to_return(
       :status => 204)
 
     result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
-      start_time, duration, :summary => summary)
+      :start_time => start_time, :duration => duration, :summary => summary)
     req.should have_been_requested
     result.should be_true
   end
