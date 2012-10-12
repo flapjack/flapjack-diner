@@ -40,15 +40,13 @@ module Flapjack
         perform_post_request('acknowledgments', :path => args, :query => options)
       end
 
-      def create_scheduled_maintenance!(entity, check, start_time, duration, options = {})
+      def create_scheduled_maintenance!(entity, check, options = {})
         args = {:entity => entity, :check => check}
-        options.merge!({:duration => duration, :start_time => start_time})
 
         perform_post_request('scheduled_maintenances', :path => args, :query => options) do
           validate :path  => [:entity, :check], :as => :required
           validate :query => :start_time, :as => :required
-          validate :query => :end_time, :as => :time
-          validate :query => :duration, :as => :integer
+          validate :query => :duration, :as => [:required, :integer]
         end
       end
 
