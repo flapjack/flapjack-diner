@@ -158,7 +158,7 @@ describe Flapjack::Diner do
   end
 
   it "acknowledges a check's state for an entity" do
-    req = stub_request(:post, "http://#{server}/acknowledgments/#{entity}/#{check}").with(
+    req = stub_request(:post, "http://#{server}/acknowledgements/#{entity}/#{check}").with(
       :body => {:summary => 'dealing with it'}).to_return(
       :status => 204)
 

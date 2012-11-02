@@ -37,7 +37,7 @@ module Flapjack
 
       def acknowledge!(entity, check, options = {})
         args = {:entity => entity, :check => check}
-        perform_post_request('acknowledgments', :path => args, :query => options)
+        perform_post_request('acknowledgements', :path => args, :query => options)
       end
 
       def create_scheduled_maintenance!(entity, check, options = {})
