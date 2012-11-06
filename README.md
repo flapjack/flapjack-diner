@@ -299,6 +299,18 @@ Returns a boolean value representing the success or otherwise of the creation of
 
 ---
 
+Generate test notifications for a check on an entity:
+
+```ruby
+# summary (String, optional)
+Flapjack::Diner.test_notifications!('example.com', 'HOST', :summary => 'Testing notifications to all contacts interested in the HOST check on example.com')
+```
+
+Returns a boolean value representing the success or otherwise of the creation of the acknowledgement by the server.
+
+---
+---
+
 Create a scheduled maintenance period for a check on an entity:
 
 ```ruby
