@@ -167,6 +167,16 @@ describe Flapjack::Diner do
     result.should be_true
   end
 
+  it "generates test notifications for a check on an entity" do
+    req = stub_request(:post, "http://#{server}/test_notifications/#{entity}/#{check}").with(
+      :body => {:summary => 'testing notifications'}).to_return(
+      :status => 204)
+
+    result = Flapjack::Diner.test_notifications!(entity, check, :summary => 'testing notifications')
+    req.should have_been_requested
+    result.should be_true
+  end
+
   it "creates a scheduled maintenance period for an entity" do
     start_time = Time.now
     duration = 60 * 30 # in seconds, so 30 minutes
