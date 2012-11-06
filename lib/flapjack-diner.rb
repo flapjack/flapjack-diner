@@ -40,6 +40,11 @@ module Flapjack
         perform_post_request('acknowledgements', :path => args, :query => options)
       end
 
+      def test_notifications!(entity, check, options = {})
+        args = {:entity => entity, :check => check}
+        perform_post_request('test_notifications', :path => args, :query => options)
+      end
+
       def create_scheduled_maintenance!(entity, check, options = {})
         args = {:entity => entity, :check => check}
 
