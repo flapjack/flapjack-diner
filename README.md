@@ -25,6 +25,12 @@ Set the URI of the Flapjack server:
 Flapjack::Diner.base_uri('127.0.0.1:5000')
 ```
 
+Optionally, set a logger to log requests & responses:
+
+```ruby
+Flapjack::Diner.logger = Logger.new("logs/flapjack_diner.log")
+```
+
 ---
 
 Return a list of monitored entities, and their statuses for all associated checks:

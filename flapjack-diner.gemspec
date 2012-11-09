@@ -21,6 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('bundler')
   gem.add_development_dependency('rake')
   gem.add_development_dependency('rspec', '>= 2.0.0')
+  gem.add_development_dependency('simplecov')
   gem.add_development_dependency('webmock')
-  gem.add_development_dependency('typhoeus', '= 0.4.2') # webmock breaks with the prerelease of 0.5.0
 end
