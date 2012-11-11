@@ -12,6 +12,7 @@ describe Flapjack::Diner do
 
   before(:each) do
     Flapjack::Diner.base_uri(server)
+    Flapjack::Diner.logger = nil
   end
 
   after(:each) do
@@ -192,46 +193,99 @@ describe Flapjack::Diner do
     result.should be_true
   end
 
-  it "raises an exception on network failure" do
-    req = stub_request(:get, "http://#{server}/entities").to_timeout
+  context "logging" do
 
-    expect {
-      Flapjack::Diner.entities
-    }.to raise_error
-    req.should have_been_requested
+    let(:logger) { mock('logger') }
+
+    before do
+      Flapjack::Diner.logger = logger
+    end
+
+    it "logs a GET request without a path" do
+      req = stub_request(:get, "http://#{server}/entities").to_return(
+        :body => response)
+
+      logger.should_receive(:info).with("GET http://#{server}/entities")
+      logger.should_receive(:info).with("  Response: #{response.to_json}")
+
+      result = Flapjack::Diner.entities
+      req.should have_been_requested
+      result.should_not be_nil
+      result.should == response_body
+    end
+
+    it "logs a GET request with a path" do
+      req = stub_request(:get, "http://#{server}/checks/#{entity}").to_return(
+        :body => response)
+
+      logger.should_receive(:info).with("GET http://#{server}/checks/#{entity}")
+      logger.should_receive(:info).with("  Response: #{response.to_json}")
+
+      result = Flapjack::Diner.checks(entity)
+      req.should have_been_requested
+      result.should_not be_nil
+      result.should == response_body
+    end
+
+    it "logs a POST request" do
+      req = stub_request(:post, "http://#{server}/acknowledgements/#{entity}/#{check}").with(
+        :body => {:summary => 'dealing with it'}).to_return(
+        :status => 204)
+      logger.should_receive(:info).with("POST http://#{server}/acknowledgements/#{entity}/#{check}\n" +
+        "  Params: \"summary=dealing%20with%20it\"")
+      logger.should_receive(:info).with("  Response code: 204")
+
+      result = Flapjack::Diner.acknowledge!(entity, check, :summary => 'dealing with it')
+      req.should have_been_requested
+      result.should be_true
+    end
+
   end
 
-  it "raises an exception on invalid JSON data" do
-    req = stub_request(:get, "http://#{server}/entities").to_return(
-      :body => "{")
+  context "problems" do
 
-    expect {
-      Flapjack::Diner.entities
-    }.to raise_error
-    req.should have_been_requested
-  end
+    it "raises an exception on network failure" do
+      req = stub_request(:get, "http://#{server}/entities").to_timeout
 
-  it "raises an exception if a required argument is not provided" do
-    req = stub_request(:get, /http:\/\/#{server}\/*/)
+      expect {
+        Flapjack::Diner.entities
+      }.to raise_error
+      req.should have_been_requested
+    end
 
-    expect {
-      Flapjack::Diner.check_status(entity, nil)
-    }.to raise_error
-    req.should_not have_been_requested
-  end
+    it "raises an exception on invalid JSON data" do
+      req = stub_request(:get, "http://#{server}/entities").to_return(
+        :body => "{")
 
-  it "raises an exception if a time argument is provided with the wrong data type" do
-    start_str  = '2011-08-01T00:00:00+10:00'
-    finish_str = '2011-08-31T00:00:00+10:00'
+      expect {
+        Flapjack::Diner.entities
+      }.to raise_error
+      req.should have_been_requested
+    end
 
-    start  = Time.iso8601(start_str)
+    it "raises an exception if a required argument is not provided" do
+      req = stub_request(:get, /http:\/\/#{server}\/*/)
 
-    req = stub_request(:get, /http:\/\/#{server}\/*/)
+      expect {
+        Flapjack::Diner.check_status(entity, nil)
+      }.to raise_error
+      req.should_not have_been_requested
+    end
 
-    expect {
-      Flapjack::Diner.downtime(entity, :start_time => start, :end_time => finish_str)
-    }.to raise_error
-    req.should_not have_been_requested
+    it "raises an exception if a time argument is provided with the wrong data type" do
+      start_str  = '2011-08-01T00:00:00+10:00'
+      finish_str = '2011-08-31T00:00:00+10:00'
+
+      start  = Time.iso8601(start_str)
+
+      req = stub_request(:get, /http:\/\/#{server}\/*/)
+
+      expect {
+        Flapjack::Diner.downtime(entity, :start_time => start, :end_time => finish_str)
+      }.to raise_error
+      req.should_not have_been_requested
+    end
+
   end
 
 end

@@ -19,11 +19,18 @@ module Flapjack
 
     class << self
 
+      attr_accessor :logger
+
       # NB: clients will need to handle any exceptions caused by,
       # e.g., network failures or non-parseable JSON data.
 
       def entities
-        parsed( get("/entities") )
+        path = '/entities'
+        req_uri = build_uri(path)
+        logger.info "GET #{req_uri}" if logger
+        resp = get(req_uri.request_uri)
+        logger.info "  Response: #{resp.body.inspect}" if logger
+        parsed(resp)
       end
 
       def checks(entity)
@@ -79,12 +86,20 @@ module Flapjack
 
       def perform_get_request(action, options, &validation)
         path, params = prepare_request(action, options, &validation)
-        parsed( get(build_uri(path, params).request_uri) )
+        req_uri = build_uri(path, params)
+        logger.info "GET #{req_uri}" if logger
+        resp = get(req_uri.request_uri)
+        logger.info "  Response: #{resp.body.inspect}" if logger
+        parsed(resp)
       end
 
       def perform_post_request(action, options, &validation)
         path, params = prepare_request(action, options, &validation)
-        post(path, :body => params).code == SUCCESS_STATUS_CODE
+        req_uri = build_uri(path)
+        logger.info "POST #{req_uri}\n  Params: #{params.inspect}" if logger
+        code = post(path, :body => params).code
+        logger.info "  Response code: #{code}" if logger
+        code == SUCCESS_STATUS_CODE
       end
 
       def prepare_request(action, options, &validation)
@@ -99,7 +114,7 @@ module Flapjack
       end
 
       def protocol_host_port
-        self.base_uri =~ /$(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(?::\d+)?/i
+        self.base_uri =~ /^(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(?::\d+)?/i
         protocol = ($1 || 'http').downcase
         host = $2
         port = $3 || ('https'.eql?(protocol) ? 443 : 80)
@@ -107,7 +122,7 @@ module Flapjack
         [protocol, host, port]
       end
 
-      def build_uri(path, params)
+      def build_uri(path, params = nil)
         pr, ho, po = protocol_host_port
         URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
           :path => path, :query => (params && params.empty? ? nil : params))
