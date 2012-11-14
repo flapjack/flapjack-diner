@@ -184,7 +184,7 @@ describe Flapjack::Diner do
     summary = "fixing everything"
 
     req = stub_request(:post, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").with(
-      :body => "start_time=#{start_time.iso8601}&duration=#{duration}&summary=fixing%20everything").to_return(
+      :body => "start_time=#{CGI.escape(start_time.iso8601)}&duration=#{duration}&summary=fixing+everything").to_return(
       :status => 204)
 
     result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
@@ -232,7 +232,7 @@ describe Flapjack::Diner do
         :body => {:summary => 'dealing with it'}).to_return(
         :status => 204)
       logger.should_receive(:info).with("POST http://#{server}/acknowledgements/#{entity}/#{check}\n" +
-        "  Params: \"summary=dealing%20with%20it\"")
+        "  Params: \"summary=dealing+with+it\"")
       logger.should_receive(:info).with("  Response code: 204")
 
       result = Flapjack::Diner.acknowledge!(entity, check, :summary => 'dealing with it')

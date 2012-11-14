@@ -1,6 +1,7 @@
 require 'httparty'
 require 'json'
 require 'uri'
+require 'cgi'
 
 require "flapjack-diner/version"
 require "flapjack-diner/argument_validator"
@@ -129,7 +130,7 @@ module Flapjack
       end
 
       def prepare_value(value)
-        URI.escape value.respond_to?(:iso8601) ? value.iso8601 : value.to_s
+        value.respond_to?(:iso8601) ? value.iso8601 : value.to_s
       end
 
       def prepare_path(action, args)
@@ -140,7 +141,7 @@ module Flapjack
 
       def prepare_query(query)
         query.collect do |key, value|
-          [key, prepare_value(value)].join('=')
+          [CGI.escape(key.to_s), CGI.escape(prepare_value(value))].join('=')
         end.join('&') if query
       end
 
