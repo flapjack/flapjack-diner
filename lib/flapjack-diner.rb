@@ -83,6 +83,10 @@ module Flapjack
         perform_get_request('downtime', :path => args, :query => options)
       end
 
+      def timezone(contact_id, options = {})
+        perform_get_request("/contact/#{contact_id}/timezone")
+      end
+
       private
 
       def perform_get_request(action, options, &validation)

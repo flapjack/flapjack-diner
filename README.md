@@ -39,15 +39,15 @@ Return a list of monitored entities, and their statuses for all associated check
 Flapjack::Diner.entities
 ```
 
-The data is returned as a JSON list where each element is an associative array representing an entity.
+The data is returned as an array where each element is a hash representing an entity.
 
 ```
 // ID     is an integer, to hold e.g. database id from an external system
 // NAME   is a string
-// STATUS is an associative array with the format returned from Flapjack::Diner.status(entity, check)
-[{"id"     : ID,
-  "name"   : NAME,
-  "checks" : [STATUS, STATUS, ...]},
+// STATUS is a hash with the format returned from Flapjack::Diner.status(entity, check)
+[{"id"     => ID,
+  "name"   => NAME,
+  "checks" => [STATUS, STATUS, ...]},
  {},
  ...]
 ```
@@ -60,7 +60,7 @@ Return a list of checks for an entity:
 Flapjack::Diner.checks('example.com')
 ```
 
-The data is returned as a JSON list of strings, where each element is a check name for the provided entity.
+The data is returned as an array of strings, where each element is a check name for the provided entity.
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
@@ -75,20 +75,20 @@ Return the status for a check on an entity
 Flapjack::Diner.status('example.com', :check => 'ping')
 ```
 
-The data is returned as a JSON associative array:
+The data is returned as a hash:
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
 // STATE is a string, one of 'critical', 'warning', 'ok', 'unknown'
 // the TIMESTAMPs are integers representing UTC times for the named events
-{"name" : CHECK,
- "state" : STATE,
- "in_unscheduled_maintenance" : BOOLEAN,
- "in_scheduled_maintenance" : BOOLEAN,
- "last_update" : TIMESTAMP,
- "last_problem_notification" : TIMESTAMP,
- "last_recovery_notification" : TIMESTAMP,
- "last_acknowledgement_notification" : TIMESTAMP}
+{"name" => CHECK,
+ "state" => STATE,
+ "in_unscheduled_maintenance" => BOOLEAN,
+ "in_scheduled_maintenance" => BOOLEAN,
+ "last_update" => TIMESTAMP,
+ "last_problem_notification" => TIMESTAMP,
+ "last_recovery_notification" => TIMESTAMP,
+ "last_acknowledgement_notification" => TIMESTAMP}
  ```
 
 ---
@@ -99,10 +99,10 @@ Return the statuses for all checks on an entity
 Flapjack::Diner.status('example.com')
 ```
 
-The data is returned as a JSON list of checks, where each element is an associative array with the format returned from Flapjack::Diner.status(entity, check)
+The data is returned as an array of checks, where each element is a hash with the format returned from Flapjack::Diner.status(entity, check)
 
 ```
-// STATUS is an associative array with the format returned from Flapjack::Diner.status(entity, check)
+// STATUS is a hash with the format returned from Flapjack::Diner.status(entity, check)
 [STATUS, STATUS, ...]
 ```
 
@@ -116,16 +116,16 @@ Return a list of scheduled maintenance periods for a check on an entity:
 Flapjack::Diner.scheduled_maintenances('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as a JSON list of scheduled maintenance periods, with each element of the list being an associative array containing data about that maintenance period.
+The data is returned as an array of scheduled maintenance periods, with each element of the list being a hash containing data about that maintenance period.
 
 ```
 // the TIMESTAMPs are integers representing UTC times for the named events
 // DURATION is an integer representing the length of the period in seconds
 // SUMMARY is a string providing a description of the period, may be empty
-[{"start_time" : TIMESTAMP,
-  "duration" : DURATION,
-  "summary" : SUMMARY,
-  "end_time" : TIMESTAMP},
+[{"start_time" => TIMESTAMP,
+  "duration" => DURATION,
+  "summary" => SUMMARY,
+  "end_time" => TIMESTAMP},
   {...},
   ...]
 ```
@@ -144,12 +144,12 @@ The data is returned as a list of associative arrays, where each associative arr
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
-// SCHED_MAINT is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.scheduled_maintenances(entity, check)
-[{"check" : CHECK,
-  "scheduled_maintenance" : [SCHED_MAINT, ...]
+// SCHED_MAINT is a hash with the same format as an individual element of the list returned from Flapjack::Diner.scheduled_maintenances(entity, check)
+[{"check" => CHECK,
+  "scheduled_maintenance" => [SCHED_MAINT, ...]
  },
- {"check" : CHECK,
-  "scheduled_maintenance" : [SCHED_MAINT, ...]
+ {"check" => CHECK,
+  "scheduled_maintenance" => [SCHED_MAINT, ...]
  }]
 ```
 
@@ -163,16 +163,16 @@ Return a list of unscheduled maintenance periods for a check on an entity:
 Flapjack::Diner.unscheduled_maintenances('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as a JSON list of unscheduled maintenance periods, with each element of the list being an associative array containing data about that maintenance period.
+The data is returned as an array of unscheduled maintenance periods, with each element of the list being a hash containing data about that maintenance period.
 
 ```
 // the TIMESTAMPs are integers representing UTC times for the named events
 // DURATION is an integer representing the length of the period in seconds
 // SUMMARY is a string providing a description of the period, may be empty
-[{"start_time" : TIMESTAMP,
-  "duration" : DURATION,
-  "summary" : SUMMARY,
-  "end_time" : TIMESTAMP},
+[{"start_time" => TIMESTAMP,
+  "duration" => DURATION,
+  "summary" => SUMMARY,
+  "end_time" => TIMESTAMP},
   {...},
   ...]
 ```
@@ -191,12 +191,12 @@ The data is returned as a list of associative arrays, where each associative arr
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
-// UNSCHED_MAINT is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
-[{"check" : CHECK,
-  "unscheduled_maintenance" : [UNSCHED_MAINT, ...]
+// UNSCHED_MAINT is a hash with the same format as an individual element of the list returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
+[{"check" => CHECK,
+  "unscheduled_maintenance" => [UNSCHED_MAINT, ...]
  },
- {"check" : CHECK,
-  "unscheduled_maintenance" : [UNSCHED_MAINT, ...]
+ {"check" => CHECK,
+  "unscheduled_maintenance" => [UNSCHED_MAINT, ...]
  }]
 ```
 
@@ -210,16 +210,16 @@ Return a list of outages for a check on an entity (all times for which the check
 Flapjack::Diner.outages('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as a JSON list of outage periods, with each element of the list being an associative array containing data about that outage period.
+The data is returned as an array of outage periods, with each element of the list being a hash containing data about that outage period.
 
 ```
 // STATE is a string, one of 'critical', 'warning', 'ok', 'unknown'
 // the TIMESTAMPs are integers representing UTC times for the named events
 // SUMMARY is a string providing a description of the period, may be empty
-[{"state" : STATE,
-  "start_time" : TIMESTAMP,
-  "end_time" : TIMESTAMP,
-  "summary" : SUMMARY},
+[{"state" => STATE,
+  "start_time" => TIMESTAMP,
+  "end_time" => TIMESTAMP,
+  "summary" => SUMMARY},
   {...},
   ...]
 ```
@@ -238,12 +238,12 @@ The data is returned as a list of associative arrays, where each associative arr
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
-// OUTAGE is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check)
-[{"check" : CHECK,
-  "outages" : [OUTAGE, ...]
+// OUTAGE is a hash with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check)
+[{"check" => CHECK,
+  "outages" => [OUTAGE, ...]
  },
- {"check" : CHECK,
-  "outages" : [OUTAGE, ...]
+ {"check" => CHECK,
+  "outages" => [OUTAGE, ...]
  }]
 ```
 
@@ -257,15 +257,15 @@ Return a list of downtimes for a check on an entity (outages outside of schedule
 Flapjack::Diner.downtime('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-Returns an associative array with some statistics about the downtimes, including a list of the downtimes themselves. This may not be the same as would be returned from the 'outages' call for the same time period, as if scheduled maintenance periods overlap any of those times then they will be reduced, split or discarded to fit.
+Returns a hash with some statistics about the downtimes, including a list of the downtimes themselves. This may not be the same as would be returned from the 'outages' call for the same time period, as if scheduled maintenance periods overlap any of those times then they will be reduced, split or discarded to fit.
 
 ```
 // TOTAL SECONDS gives the sum of the time spent in that state for each check state.
 // PERCENTAGES represents the proportion of the total time that the check was in each state. Will be null if either start or end time were not provided in the request.
-// OUTAGE is an associative array with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check).
-{"total_seconds" : {STATE => INTEGER, ...},
- "percentages" : {STATE => INTEGER, ...},
- "downtime" : [OUTAGE, ...]
+// OUTAGE is a hash with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check).
+{"total_seconds" => {STATE => INTEGER, ...},
+ "percentages" => {STATE => INTEGER, ...},
+ "downtime" => [OUTAGE, ...]
 }
 ```
 
@@ -283,12 +283,12 @@ The data is returned as a list of associative arrays, where each associative arr
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
-// DOWNTIME is an associative array with the same format those returned from Flapjack::Diner.downtime(entity, check)
-[{"check" : CHECK,
-  "downtime" : [DOWNTIME, ...]
+// DOWNTIME is a hash with the same format those returned from Flapjack::Diner.downtime(entity, check)
+[{"check" => CHECK,
+  "downtime" => [DOWNTIME, ...]
  },
- {"check" : CHECK,
-  "downtime" : [DOWNTIME, ...]
+ {"check" => CHECK,
+  "downtime" => [DOWNTIME, ...]
  }]
 ```
 
