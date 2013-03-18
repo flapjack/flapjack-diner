@@ -33,7 +33,7 @@ Flapjack::Diner.logger = Logger.new("logs/flapjack_diner.log")
 
 ---
 
-Return a list of monitored entities, and their statuses for all associated checks:
+Return an array of monitored entities, and their statuses for all associated checks:
 
 ```ruby
 Flapjack::Diner.entities
@@ -54,7 +54,7 @@ The data is returned as an array where each element is a hash representing an en
 
 ---
 
-Return a list of checks for an entity:
+Return an array of checks for an entity:
 
 ```ruby
 Flapjack::Diner.checks('example.com')
@@ -108,7 +108,7 @@ The data is returned as an array of checks, where each element is a hash with th
 
 ---
 
-Return a list of scheduled maintenance periods for a check on an entity:
+Return an array of scheduled maintenance periods for a check on an entity:
 
 ```ruby
 # start time (Time object, optional)
@@ -116,7 +116,7 @@ Return a list of scheduled maintenance periods for a check on an entity:
 Flapjack::Diner.scheduled_maintenances('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as an array of scheduled maintenance periods, with each element of the list being a hash containing data about that maintenance period.
+The data is returned as an array of scheduled maintenance periods, with each element of the array being a hash containing data about that maintenance period.
 
 ```
 // the TIMESTAMPs are integers representing UTC times for the named events
@@ -140,11 +140,11 @@ Return lists of scheduled maintenance periods for all checks on an entity:
 Flapjack::Diner.scheduled_maintenances('example.com', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as a list of associative arrays, where each associative array represents the scheduled maintenance periods for a check under the entity :
+The data is returned as an array of hashes, where each hash represents the scheduled maintenance periods for a check under the entity :
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
-// SCHED_MAINT is a hash with the same format as an individual element of the list returned from Flapjack::Diner.scheduled_maintenances(entity, check)
+// SCHED_MAINT is a hash with the same format as an individual element of the array returned from Flapjack::Diner.scheduled_maintenances(entity, check)
 [{"check" => CHECK,
   "scheduled_maintenance" => [SCHED_MAINT, ...]
  },
@@ -155,7 +155,7 @@ The data is returned as a list of associative arrays, where each associative arr
 
 ---
 
-Return a list of unscheduled maintenance periods for a check on an entity:
+Return an array of unscheduled maintenance periods for a check on an entity:
 
 ```ruby
 # start time (Time object, optional)
@@ -163,7 +163,7 @@ Return a list of unscheduled maintenance periods for a check on an entity:
 Flapjack::Diner.unscheduled_maintenances('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as an array of unscheduled maintenance periods, with each element of the list being a hash containing data about that maintenance period.
+The data is returned as an array of unscheduled maintenance periods, with each element of the array being a hash containing data about that maintenance period.
 
 ```
 // the TIMESTAMPs are integers representing UTC times for the named events
@@ -187,11 +187,11 @@ Return lists of unscheduled maintenance periods for all checks on an entity:
 Flapjack::Diner.unscheduled_maintenances('example.com', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as a list of associative arrays, where each associative array represents the unscheduled maintenance periods for a check under the entity:
+The data is returned as an array of hashes, where each hash represents the unscheduled maintenance periods for a check under the entity:
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
-// UNSCHED_MAINT is a hash with the same format as an individual element of the list returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
+// UNSCHED_MAINT is a hash with the same format as an individual element of the array returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
 [{"check" => CHECK,
   "unscheduled_maintenance" => [UNSCHED_MAINT, ...]
  },
@@ -202,7 +202,7 @@ The data is returned as a list of associative arrays, where each associative arr
 
 ---
 
-Return a list of outages for a check on an entity (all times for which the check was failing):
+Return an array of outages for a check on an entity (all times for which the check was failing):
 
 ```ruby
 # start time (Time object, optional)
@@ -210,7 +210,7 @@ Return a list of outages for a check on an entity (all times for which the check
 Flapjack::Diner.outages('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as an array of outage periods, with each element of the list being a hash containing data about that outage period.
+The data is returned as an array of outage periods, with each element of the array being a hash containing data about that outage period.
 
 ```
 // STATE is a string, one of 'critical', 'warning', 'ok', 'unknown'
@@ -234,11 +234,11 @@ Return lists of outages for all checks on an entity (all times for which said ch
 Flapjack::Diner.outages('example.com', :start_time => :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as a list of associative arrays, where each associative array represents the outages for a check under the entity:
+The data is returned as an array of hashes, where each hash represents the outages for a check under the entity:
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
-// OUTAGE is a hash with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check)
+// OUTAGE is a hash with the same format as an individual element of the array returned from Flapjack::Diner.outages(entity, check)
 [{"check" => CHECK,
   "outages" => [OUTAGE, ...]
  },
@@ -249,7 +249,7 @@ The data is returned as a list of associative arrays, where each associative arr
 
 ---
 
-Return a list of downtimes for a check on an entity (outages outside of scheduled maintenance periods):
+Return an array of downtimes for a check on an entity (outages outside of scheduled maintenance periods):
 
 ```ruby
 # start time (Time object, optional)
@@ -257,12 +257,12 @@ Return a list of downtimes for a check on an entity (outages outside of schedule
 Flapjack::Diner.downtime('example.com', :check => 'ping', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-Returns a hash with some statistics about the downtimes, including a list of the downtimes themselves. This may not be the same as would be returned from the 'outages' call for the same time period, as if scheduled maintenance periods overlap any of those times then they will be reduced, split or discarded to fit.
+Returns a hash with some statistics about the downtimes, including an array of the downtimes themselves. This may not be the same as would be returned from the 'outages' call for the same time period, as if scheduled maintenance periods overlap any of those times then they will be reduced, split or discarded to fit.
 
 ```
 // TOTAL SECONDS gives the sum of the time spent in that state for each check state.
 // PERCENTAGES represents the proportion of the total time that the check was in each state. Will be null if either start or end time were not provided in the request.
-// OUTAGE is a hash with the same format as an individual element of the list returned from Flapjack::Diner.outages(entity, check).
+// OUTAGE is a hash with the same format as an individual element of the array returned from Flapjack::Diner.outages(entity, check).
 {"total_seconds" => {STATE => INTEGER, ...},
  "percentages" => {STATE => INTEGER, ...},
  "downtime" => [OUTAGE, ...]
@@ -271,7 +271,7 @@ Returns a hash with some statistics about the downtimes, including a list of the
 
 ---
 
-Return a list of downtimes for all checks on an entity (outages outside of scheduled maintenance periods):
+Return an array of downtimes for all checks on an entity (outages outside of scheduled maintenance periods):
 
 ```ruby
 # start time (Time object, optional)
@@ -279,7 +279,7 @@ Return a list of downtimes for all checks on an entity (outages outside of sched
 Flapjack::Diner.downtime('example.com', :start_time => Time.local(2012, 08, 01), :end_time => Time.local(2012, 09, 01))
 ```
 
-The data is returned as a list of associative arrays, where each associative array represents a downtime report for a check under the entity:
+The data is returned as an array of hashes, where each hash represents a downtime report for a check under the entity:
 
 ```
 // CHECK is a string, e.g. 'ssh', 'ping'
