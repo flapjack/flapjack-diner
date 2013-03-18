@@ -81,10 +81,37 @@ module Flapjack
       end
 
       def contacts(options = {})
-        path = '/contacts'
+        case
+        when options[:contact_id]
+          path = "/contacts/#{options[:contact_id]}"
+        else
+          path = '/contacts'
+        end
         response = perform_get_simple(path)
         parsed(response)
       end
+
+      # puts "create a new notification rule: " +
+      #   Flapjack::Diner.create_notification_rule(test_rule.to_json).inspect
+      # puts "a contact's notification rules: " +
+      #   Flapjack::Diner.contact_notification_rules(:contact_id => '21').inspect
+      # puts "a notification rule: " +
+      #   Flapjack::Diner.notification_rules(:rule_id => rule_id).inspect
+      # puts "update a notification rule: " +
+      #   Flapjack::Diner.update_notification_rule!(:rule_id => rule_id).inspect
+      # puts "delete a notification rule: " +
+      #   Flapjack::Diner.delete_notification_rule!(:rule_id => rule_id).inspect
+      # puts "a contact's notification rules: " +
+      #   Flapjack::Diner.contact_notification_rules(:contact_id => '21').inspect
+      #
+      # puts "a contact's media: "
+      #   Flapjack::Diner.contact_media(:contact_id => '21').inspect
+      # puts "update a contact's email media: "
+      #   Flapjack::Diner.update_contact_media!(:contact_id => '21', :media_type => 'email', :address => "dmitri@example.com", :interval => 900).inspect
+      # puts "a contact's email media: "
+      #   Flapjack::Diner.contact_media(:contact_id => '21', :media_type => 'email').inspect
+      # puts "delete a contact's email media: "
+      #   Flapjack::Diner.delete_contact_media!(:contact_id => '21', :media_type => 'email').inspect
 
       def contact_timezone(contact_id, options = {})
         path = "/contacts/#{contact_id}/timezone"
@@ -92,10 +119,15 @@ module Flapjack
         parsed(response)
       end
 
-      def contact_set_timezone(contact_id, options = {})
+      def contact_set_timezone!(contact_id, options = {})
         path = "/contacts/#{contact_id}/timezone"
         body = { :timezone => options[:timezone] }.to_json
         perform_put_json(path, body)
+      end
+
+      def contact_delete_timezone!(contact_id, options = {})
+        path = "/contacts/#{contact_id}/timezone"
+        perform_delete(path)
       end
 
       private
