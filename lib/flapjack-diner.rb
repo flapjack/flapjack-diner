@@ -8,7 +8,7 @@ require "flapjack-diner/argument_validator"
 
 module Flapjack
   module Diner
-    SUCCESS_STATUS_CODE = 204
+    SUCCESS_STATUS_CODES = [200, 204]
 
     include HTTParty
     extend ArgumentValidator::Helper
@@ -27,11 +27,8 @@ module Flapjack
 
       def entities
         path = '/entities'
-        req_uri = build_uri(path)
-        logger.info "GET #{req_uri}" if logger
-        resp = get(req_uri.request_uri)
-        logger.info "  Response: #{resp.body.inspect}" if logger
-        parsed(resp)
+        response = perform_get_simple(path)
+        parsed(response)
       end
 
       def checks(entity)
@@ -85,43 +82,68 @@ module Flapjack
 
       def contacts(options = {})
         path = '/contacts'
-        req_uri = build_uri(path)
-        logger.info "GET #{req_uri} #{req_uri.port}" if logger
-        resp = get(req_uri.request_uri)
-        logger.info "  Response: #{resp.body.inspect}" if logger
-        parsed(resp)
+        response = perform_get_simple(path)
+        parsed(response)
       end
 
       def contact_timezone(contact_id, options = {})
-        path = "/contact/#{contact_id}/timezone"
-        req_uri = build_uri(path)
-        logger.info "GET #{req_uri}" if logger
-        resp = get(req_uri.request_uri)
-        logger.info "  Response: #{resp.body.inspect}" if logger
-        parsed(resp)
+        path = "/contacts/#{contact_id}/timezone"
+        response = perform_get_simple(path)
+        parsed(response)
       end
 
       def contact_set_timezone(contact_id, options = {})
-        tz = options.delete(:timezone)
-        path = "/contact/#{contact_id}/timezone"
-        params = { :timezone => tz }
-        req_uri = build_uri(path)
-        logger.info "POST #{req_uri}" if logger
-        resp = post(req_uri.request_uri, :body => params)
-        code = resp.code
-        logger.info "  Response: #{resp.body.inspect}, Code: #{code}" if logger
-        parsed(resp)
+        path = "/contacts/#{contact_id}/timezone"
+        body = { :timezone => options[:timezone] }.to_json
+        perform_put_json(path, body)
       end
 
       private
+
+      def perform_put_json(path, body)
+        response = put(path, :body => body, :headers => {'Content-Type' => 'application/json'})
+        response_body = response.body ? response.body[0..300] : nil
+        logger.info "PUT #{path}"
+        logger.info "  " + body
+        logger.info "  Response Code: #{response.code} #{response.message}"
+        logger.info "  Response Body: " + response_body
+        SUCCESS_STATUS_CODES.include?(response.code)
+      end
+
+      def perform_post_json(path, body)
+        response = post(path, :body => body, :headers => {'Content-Type' => 'application/json'})
+        response_body = response.body ? response.body[0..300] : nil
+        logger.info "POST #{path}"
+        logger.info "  " + body
+        logger.info "  Response Code: #{response.code} #{response.message}"
+        logger.info "  Response Body: " + response_body
+        SUCCESS_STATUS_CODES.include?(response.code)
+      end
+
+      def perform_get_simple(uri)
+        response = get(uri)
+        response_body = response.body ? response.body[0..300] : nil
+        logger.info "GET #{uri}"
+        logger.info "  Response Code: #{response.code} #{response.message}"
+        logger.info "  Response Body: " + response_body
+        response
+      end
+
+      def perform_delete(uri)
+        response = delete(uri)
+        response_body = response.body ? response.body[0..300] : nil
+        logger.info "DELETE #{uri}"
+        logger.info "  Response Code: #{response.code} #{response.message}"
+        SUCCESS_STATUS_CODES.include?(response.code)
+      end
 
       def perform_get_request(action, options, &validation)
         path, params = prepare_request(action, options, &validation)
         req_uri = build_uri(path, params)
         logger.info "GET #{req_uri}" if logger
-        resp = get(req_uri.request_uri)
-        logger.info "  Response: #{resp.body.inspect}" if logger
-        parsed(resp)
+        response = get(req_uri.request_uri)
+        logger.info "  Response: #{response.body.inspect}" if logger
+        parsed(responce)
       end
 
       def perform_post_request(action, options, &validation)
@@ -130,7 +152,7 @@ module Flapjack
         logger.info "POST #{req_uri}\n  Params: #{params.inspect}" if logger
         code = post(path, :body => params).code
         logger.info "  Response code: #{code}" if logger
-        code == SUCCESS_STATUS_CODE
+        SUCCESS_STATUS_CODES.include?(code)
       end
 
       def prepare_request(action, options, &validation)
@@ -145,7 +167,6 @@ module Flapjack
       end
 
       def protocol_host_port
-        logger.info("base_uri: #{self.base_uri}")
         self.base_uri =~ /^(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(:(\d+))?/i
         protocol = ($1 || 'http').downcase
         host = $2
