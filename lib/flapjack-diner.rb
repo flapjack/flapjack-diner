@@ -83,8 +83,34 @@ module Flapjack
         perform_get_request('downtime', :path => args, :query => options)
       end
 
-      def timezone(contact_id, options = {})
-        perform_get_request("/contact/#{contact_id}/timezone")
+      def contacts(options = {})
+        path = '/contacts'
+        req_uri = build_uri(path)
+        logger.info "GET #{req_uri} #{req_uri.port}" if logger
+        resp = get(req_uri.request_uri)
+        logger.info "  Response: #{resp.body.inspect}" if logger
+        parsed(resp)
+      end
+
+      def contact_timezone(contact_id, options = {})
+        path = "/contact/#{contact_id}/timezone"
+        req_uri = build_uri(path)
+        logger.info "GET #{req_uri}" if logger
+        resp = get(req_uri.request_uri)
+        logger.info "  Response: #{resp.body.inspect}" if logger
+        parsed(resp)
+      end
+
+      def contact_set_timezone(contact_id, options = {})
+        tz = options.delete(:timezone)
+        path = "/contact/#{contact_id}/timezone"
+        params = { :timezone => tz }
+        req_uri = build_uri(path)
+        logger.info "POST #{req_uri}" if logger
+        resp = post(req_uri.request_uri, :body => params)
+        code = resp.code
+        logger.info "  Response: #{resp.body.inspect}, Code: #{code}" if logger
+        parsed(resp)
       end
 
       private
@@ -119,10 +145,11 @@ module Flapjack
       end
 
       def protocol_host_port
-        self.base_uri =~ /^(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(?::\d+)?/i
+        logger.info("base_uri: #{self.base_uri}")
+        self.base_uri =~ /^(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(:(\d+))?/i
         protocol = ($1 || 'http').downcase
         host = $2
-        port = $3 || ('https'.eql?(protocol) ? 443 : 80)
+        port = $4.to_i || ('https'.eql?(protocol) ? 443 : 80)
 
         [protocol, host, port]
       end
