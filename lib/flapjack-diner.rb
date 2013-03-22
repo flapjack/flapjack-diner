@@ -91,14 +91,20 @@ module Flapjack
         parsed(response)
       end
 
-      # puts "create a new notification rule: " +
-      #   Flapjack::Diner.create_notification_rule(test_rule.to_json).inspect
-      # puts "a contact's notification rules: " +
-      #   Flapjack::Diner.contact_notification_rules(:contact_id => '21').inspect
-      # puts "a notification rule: " +
-      #   Flapjack::Diner.notification_rules(:rule_id => rule_id).inspect
-      # puts "update a notification rule: " +
-      #   Flapjack::Diner.update_notification_rule!(:rule_id => rule_id).inspect
+      # create a notification rule
+      def create_notification_rule!(rule, options)
+      end
+
+      # a contact's notification rules
+      def contact_notification_rules(contact_id, options)
+      end
+
+      # a notification rule
+      def notification_rules(rule_id)
+      end
+
+      # update a notification rule
+      def update_notification_rule!(rule_id).inspect
       # puts "delete a notification rule: " +
       #   Flapjack::Diner.delete_notification_rule!(:rule_id => rule_id).inspect
       # puts "a contact's notification rules: " +
