@@ -26,8 +26,7 @@ module Flapjack
       # e.g., network failures or non-parseable JSON data.
 
       def entities
-        path = '/entities'
-        response = perform_get_simple(path)
+        response = perform_get_simple('/entities')
         parsed(response)
       end
 
@@ -104,7 +103,9 @@ module Flapjack
       end
 
       # update a notification rule
-      def update_notification_rule!(rule_id).inspect
+      def update_notification_rule!(rule_id)
+      end
+
       # puts "delete a notification rule: " +
       #   Flapjack::Diner.delete_notification_rule!(:rule_id => rule_id).inspect
       # puts "a contact's notification rules: " +
@@ -139,52 +140,71 @@ module Flapjack
       private
 
       def perform_put_json(path, body)
+        if logger
+          logger.info "PUT #{path}"
+          logger.info "  " + body
+        end
         response = put(path, :body => body, :headers => {'Content-Type' => 'application/json'})
         response_body = response.body ? response.body[0..300] : nil
-        logger.info "PUT #{path}"
-        logger.info "  " + body
-        logger.info "  Response Code: #{response.code} #{response.message}"
-        logger.info "  Response Body: " + response_body
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          logger.info "  Response Body: " + response_body
+        end
         SUCCESS_STATUS_CODES.include?(response.code)
       end
 
       def perform_post_json(path, body)
-        response = post(path, :body => body, :headers => {'Content-Type' => 'application/json'})
-        response_body = response.body ? response.body[0..300] : nil
+        if logger
         logger.info "POST #{path}"
         logger.info "  " + body
-        logger.info "  Response Code: #{response.code} #{response.message}"
-        logger.info "  Response Body: " + response_body
+        end
+        response = post(path, :body => body, :headers => {'Content-Type' => 'application/json'})
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          if response.body
+            logger.info "  Response Body: " + response.body[0..300]
+          end
+        end
         SUCCESS_STATUS_CODES.include?(response.code)
       end
 
-      def perform_get_simple(uri)
-        response = get(uri)
-        response_body = response.body ? response.body[0..300] : nil
-        logger.info "GET #{uri}"
-        logger.info "  Response Code: #{response.code} #{response.message}"
-        logger.info "  Response Body: " + response_body
+      def perform_get_simple(path)
+        req_uri = build_uri(path)
+        logger.info "GET #{req_uri}" if logger
+        response = get(req_uri.request_uri)
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          if response.body
+            logger.info "  Response Body: " + response.body[0..300]
+          end
+        end
         response
       end
 
-      def perform_delete(uri)
+      def perform_delete(path)
+        logger.info "DELETE #{path}" if logger
         response = delete(uri)
-        response_body = response.body ? response.body[0..300] : nil
-        logger.info "DELETE #{uri}"
-        logger.info "  Response Code: #{response.code} #{response.message}"
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+        end
         SUCCESS_STATUS_CODES.include?(response.code)
       end
 
-      def perform_get_request(action, options, &validation)
+      def perform_get_request(action, options = {}, &validation)
         path, params = prepare_request(action, options, &validation)
         req_uri = build_uri(path, params)
         logger.info "GET #{req_uri}" if logger
         response = get(req_uri.request_uri)
-        logger.info "  Response: #{response.body.inspect}" if logger
-        parsed(responce)
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          if response.body
+            logger.info "  Response Body: " + response.body[0..300]
+          end
+        end
+        parsed(response)
       end
 
-      def perform_post_request(action, options, &validation)
+      def perform_post_request(action, options = {}, &validation)
         path, params = prepare_request(action, options, &validation)
         req_uri = build_uri(path)
         logger.info "POST #{req_uri}\n  Params: #{params.inspect}" if logger
@@ -193,7 +213,7 @@ module Flapjack
         SUCCESS_STATUS_CODES.include?(code)
       end
 
-      def prepare_request(action, options, &validation)
+      def prepare_request(action, options = {}, &validation)
         args = options[:path]
         query = options[:query]
 
@@ -205,10 +225,16 @@ module Flapjack
       end
 
       def protocol_host_port
-        self.base_uri =~ /^(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(:(\d+))?/i
+        self.base_uri =~ /^(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(?::(\d+))?/i
         protocol = ($1 || 'http').downcase
         host = $2
-        port = $4.to_i || ('https'.eql?(protocol) ? 443 : 80)
+        port = $3
+
+        if port.nil? || port.to_i < 1 || port.to_i > 65535
+          port = 'https'.eql?(protocol) ? 443 : 80
+        else
+          port = port.to_i
+        end
 
         [protocol, host, port]
       end

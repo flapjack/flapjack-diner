@@ -29,6 +29,18 @@ describe Flapjack::Diner do
     result.should == response_body
   end
 
+  it "returns a json list of entities from a non-standard port" do
+    Flapjack::Diner.base_uri('flapjack.com:54321')
+
+    req = stub_request(:get, "http://#{server}:54321/entities").to_return(
+      :body => response)
+
+    result = Flapjack::Diner.entities
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
   it "returns a json list of checks for an entity" do
     req = stub_request(:get, "http://#{server}/checks/#{entity}").to_return(
       :body => response)
@@ -206,7 +218,8 @@ describe Flapjack::Diner do
         :body => response)
 
       logger.should_receive(:info).with("GET http://#{server}/entities")
-      logger.should_receive(:info).with("  Response: #{response.to_json}")
+      logger.should_receive(:info).with("  Response Code: 200")
+      logger.should_receive(:info).with("  Response Body: #{response}")
 
       result = Flapjack::Diner.entities
       req.should have_been_requested
@@ -219,7 +232,8 @@ describe Flapjack::Diner do
         :body => response)
 
       logger.should_receive(:info).with("GET http://#{server}/checks/#{entity}")
-      logger.should_receive(:info).with("  Response: #{response.to_json}")
+      logger.should_receive(:info).with("  Response Code: 200")
+      logger.should_receive(:info).with("  Response Body: #{response}")
 
       result = Flapjack::Diner.checks(entity)
       req.should have_been_requested
