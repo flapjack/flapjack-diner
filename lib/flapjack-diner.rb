@@ -105,17 +105,13 @@ module Flapjack
       end
 
       def delete_notification_rule!(rule_id)
-        perform_delete_request('notification_rules/#{rule_id}')
+        perform_delete("notification_rules/#{rule_id}")
       end
 
       def contact_media(contact_id, media_type = nil)
         path = media_type ? "contacts/#{contact_id}/media/#{media_type}" :
                             "contacts/#{contact_id}/media"
         perform_get_simple(path)
-      end
-
-      def create_contact_media!(contact_id, media_type, media)
-        perform_post_json("contacts/#{contact_id}/media/#{media_type}", media.to_json)
       end
 
       def update_contact_media!(contact_id, media_type, media)
@@ -126,16 +122,16 @@ module Flapjack
         perform_delete("contacts/#{contact_id}/media/#{media_type}")
       end
 
-      def contact_timezone(contact_id, options = {})
+      def contact_timezone(contact_id)
         perform_get_simple("contacts/#{contact_id}/timezone")
       end
 
-      def update_contact_timezone!(contact_id, options = {})
+      def update_contact_timezone!(contact_id, timezone)
         perform_put_json("contacts/#{contact_id}/timezone",
-                         { :timezone => options[:timezone] }.to_json)
+                         {:timezone => timezone}.to_json)
       end
 
-      def delete_contact_timezone!(contact_id, options = {})
+      def delete_contact_timezone!(contact_id)
         perform_delete("contacts/#{contact_id}/timezone")
       end
 
@@ -181,28 +177,14 @@ module Flapjack
         req_uri = build_uri("/#{path}")
         logger.info "PUT /#{req_uri}\n  #{body}" if logger
         response = put(req_uri.request_uri, :body => body, :headers => {'Content-Type' => 'application/json'})
-        if logger
-          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
-          response_body = response.body ? response.body[0..300] : nil
-          if response_body
-            logger.info "  Response Body: " + response_body
-          end
-        end
-        SUCCESS_STATUS_CODES.include?(response.code)
+        handle_json_response(response)
       end
 
       def perform_post_json(path, body)
         req_uri = build_uri("/#{path}")
         logger.info "POST /#{req_uri}\n  #{body}" if logger
         response = post(req_uri.request_uri, :body => body, :headers => {'Content-Type' => 'application/json'})
-        if logger
-          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
-          response_body = response.body ? response.body[0..300] : nil
-          if response_body
-            logger.info "  Response Body: " + response_body
-          end
-        end
-        SUCCESS_STATUS_CODES.include?(response.code)
+        handle_json_response(response)
       end
 
       def perform_delete(path)
@@ -213,6 +195,16 @@ module Flapjack
           logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
         end
         SUCCESS_STATUS_CODES.include?(response.code)
+      end
+
+      def handle_json_response(response)
+        response_body = response.body
+        response_start = response_body ? response_body[0..300] : nil
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          logger.info "  Response Body: #{response_start}" if response_start
+        end
+        parsed(response)
       end
 
       def prepare_request(action, options = {}, &validation)

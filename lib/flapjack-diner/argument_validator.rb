@@ -53,6 +53,7 @@ module Flapjack
       end
     end
 
+    # TODO should also implement "respond_to?"
     def method_missing(name, *args)
       if klass = classify_name(name)
         key, elements = args
