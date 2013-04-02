@@ -205,6 +205,49 @@ describe Flapjack::Diner do
     result.should be_true
   end
 
+  it "returns a list of contacts" do
+    req = stub_request(:get, "http://#{server}/contacts").to_return(
+      :body => response)
+
+    result = Flapjack::Diner.contacts
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
+  it "returns a single contact" do
+    contact_id = '21'
+    req = stub_request(:get, "http://#{server}/contacts/#{contact_id}").to_return(
+      :body => response)
+
+    result = Flapjack::Diner.contact(contact_id)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
+  it "returns notification rules for a contact" do
+    contact_id = '21'
+    req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/notification_rules").to_return(
+      :body => response)
+
+    result = Flapjack::Diner.notification_rules(contact_id)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
+  it "returns a single notification rule" do
+    rule_id = '00001'
+    req = stub_request(:get, "http://#{server}/notification_rules/#{rule_id}").to_return(
+      :body => response)
+
+    result = Flapjack::Diner.notification_rule(rule_id)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
   context "logging" do
 
     let(:logger) { mock('logger') }

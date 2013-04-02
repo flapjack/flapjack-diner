@@ -26,8 +26,7 @@ module Flapjack
       # e.g., network failures or non-parseable JSON data.
 
       def entities
-        response = perform_get_simple('/entities')
-        parsed(response)
+        perform_get_simple('entities')
       end
 
       def checks(entity)
@@ -39,11 +38,13 @@ module Flapjack
         perform_get_request('status', :path => args)
       end
 
+      # maybe rename 'create_acknowledgement!' ?
       def acknowledge!(entity, check, options = {})
         args = {:entity => entity, :check => check}
         perform_post_request('acknowledgements', :path => args, :query => options)
       end
 
+      # maybe rename 'create_test_notifications!' ?
       def test_notifications!(entity, check, options = {})
         args = {:entity => entity, :check => check}
         perform_post_request('test_notifications', :path => args, :query => options)
@@ -79,97 +80,69 @@ module Flapjack
         perform_get_request('downtime', :path => args, :query => options)
       end
 
-      def contacts(options = {})
-        case
-        when options[:contact_id]
-          path = "/contacts/#{options[:contact_id]}"
-        else
-          path = '/contacts'
-        end
-        response = perform_get_simple(path)
-        parsed(response)
+      def contacts
+        perform_get_simple('contacts')
       end
 
-      # create a notification rule
-      def create_notification_rule!(rule, options)
+      def contact(contact_id)
+        perform_get_simple("contacts/#{contact_id}")
       end
 
-      # a contact's notification rules
-      def contact_notification_rules(contact_id, options)
+      def notification_rules(contact_id)
+        perform_get_simple("contacts/#{contact_id}/notification_rules")
       end
 
-      # a notification rule
-      def notification_rules(rule_id)
+      def notification_rule(rule_id)
+        perform_get_simple("notification_rules/#{rule_id}")
       end
 
-      # update a notification rule
-      def update_notification_rule!(rule_id)
+      def create_notification_rule!(rule)
+        perform_post_json('notification_rules', rule.to_json)
       end
 
-      # puts "delete a notification rule: " +
-      #   Flapjack::Diner.delete_notification_rule!(:rule_id => rule_id).inspect
-      # puts "a contact's notification rules: " +
-      #   Flapjack::Diner.contact_notification_rules(:contact_id => '21').inspect
-      #
-      # puts "a contact's media: "
-      #   Flapjack::Diner.contact_media(:contact_id => '21').inspect
-      # puts "update a contact's email media: "
-      #   Flapjack::Diner.update_contact_media!(:contact_id => '21', :media_type => 'email', :address => "dmitri@example.com", :interval => 900).inspect
-      # puts "a contact's email media: "
-      #   Flapjack::Diner.contact_media(:contact_id => '21', :media_type => 'email').inspect
-      # puts "delete a contact's email media: "
-      #   Flapjack::Diner.delete_contact_media!(:contact_id => '21', :media_type => 'email').inspect
+      def update_notification_rule!(rule_id, rule)
+        perform_put_json("notification_rules/#{rule_id}", rule.to_json)
+      end
+
+      def delete_notification_rule!(rule_id)
+        perform_delete_request('notification_rules/#{rule_id}')
+      end
+
+      def contact_media(contact_id, media_type = nil)
+        path = media_type ? "contacts/#{contact_id}/media/#{media_type}" :
+                            "contacts/#{contact_id}/media"
+        perform_get_simple(path)
+      end
+
+      def create_contact_media!(contact_id, media_type, media)
+        perform_post_json("contacts/#{contact_id}/media/#{media_type}", media.to_json)
+      end
+
+      def update_contact_media!(contact_id, media_type, media)
+        perform_put_json("contacts/#{contact_id}/media/#{media_type}", media.to_json)
+      end
+
+      def delete_contact_media!(contact_id, media_type)
+        perform_delete("contacts/#{contact_id}/media/#{media_type}")
+      end
 
       def contact_timezone(contact_id, options = {})
-        path = "/contacts/#{contact_id}/timezone"
-        response = perform_get_simple(path)
-        parsed(response)
+        perform_get_simple("contacts/#{contact_id}/timezone")
       end
 
-      def contact_set_timezone!(contact_id, options = {})
-        path = "/contacts/#{contact_id}/timezone"
-        body = { :timezone => options[:timezone] }.to_json
-        perform_put_json(path, body)
+      def update_contact_timezone!(contact_id, options = {})
+        perform_put_json("contacts/#{contact_id}/timezone",
+                         { :timezone => options[:timezone] }.to_json)
       end
 
-      def contact_delete_timezone!(contact_id, options = {})
-        path = "/contacts/#{contact_id}/timezone"
-        perform_delete(path)
+      def delete_contact_timezone!(contact_id, options = {})
+        perform_delete("contacts/#{contact_id}/timezone")
       end
 
       private
 
-      def perform_put_json(path, body)
-        if logger
-          logger.info "PUT #{path}"
-          logger.info "  " + body
-        end
-        response = put(path, :body => body, :headers => {'Content-Type' => 'application/json'})
-        response_body = response.body ? response.body[0..300] : nil
-        if logger
-          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
-          logger.info "  Response Body: " + response_body
-        end
-        SUCCESS_STATUS_CODES.include?(response.code)
-      end
-
-      def perform_post_json(path, body)
-        if logger
-        logger.info "POST #{path}"
-        logger.info "  " + body
-        end
-        response = post(path, :body => body, :headers => {'Content-Type' => 'application/json'})
-        if logger
-          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
-          if response.body
-            logger.info "  Response Body: " + response.body[0..300]
-          end
-        end
-        SUCCESS_STATUS_CODES.include?(response.code)
-      end
-
       def perform_get_simple(path)
-        req_uri = build_uri(path)
+        req_uri = build_uri("/#{path}")
         logger.info "GET #{req_uri}" if logger
         response = get(req_uri.request_uri)
         if logger
@@ -178,16 +151,7 @@ module Flapjack
             logger.info "  Response Body: " + response.body[0..300]
           end
         end
-        response
-      end
-
-      def perform_delete(path)
-        logger.info "DELETE #{path}" if logger
-        response = delete(uri)
-        if logger
-          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
-        end
-        SUCCESS_STATUS_CODES.include?(response.code)
+        parsed(response)
       end
 
       def perform_get_request(action, options = {}, &validation)
@@ -211,6 +175,44 @@ module Flapjack
         code = post(path, :body => params).code
         logger.info "  Response code: #{code}" if logger
         SUCCESS_STATUS_CODES.include?(code)
+      end
+
+      def perform_put_json(path, body)
+        req_uri = build_uri("/#{path}")
+        logger.info "PUT /#{req_uri}\n  #{body}" if logger
+        response = put(req_uri.request_uri, :body => body, :headers => {'Content-Type' => 'application/json'})
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          response_body = response.body ? response.body[0..300] : nil
+          if response_body
+            logger.info "  Response Body: " + response_body
+          end
+        end
+        SUCCESS_STATUS_CODES.include?(response.code)
+      end
+
+      def perform_post_json(path, body)
+        req_uri = build_uri("/#{path}")
+        logger.info "POST /#{req_uri}\n  #{body}" if logger
+        response = post(req_uri.request_uri, :body => body, :headers => {'Content-Type' => 'application/json'})
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          response_body = response.body ? response.body[0..300] : nil
+          if response_body
+            logger.info "  Response Body: " + response_body
+          end
+        end
+        SUCCESS_STATUS_CODES.include?(response.code)
+      end
+
+      def perform_delete(path)
+        req_uri = build_uri("/#{path}")
+        logger.info "DELETE /#{req_uri}" if logger
+        response = delete(req_uri.request_uri)
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+        end
+        SUCCESS_STATUS_CODES.include?(response.code)
       end
 
       def prepare_request(action, options = {}, &validation)
