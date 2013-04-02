@@ -248,6 +248,28 @@ describe Flapjack::Diner do
     result.should == response_body
   end
 
+  it "creates a notification rule"
+
+  it "updates a notification rule"
+
+  it "deletes a notification rule"
+
+  it "returns a list of a contact's media values"
+
+  it "returns a single contact's medium values"
+
+  it "creates a contact's medium"
+
+  it "updates a contact's medium"
+
+  it "deletes a contact's medium"
+
+  it "returns a contact's timezone"
+
+  it "updates a contact's timezone"
+
+  it "deletes a contact's timezone"
+
   context "logging" do
 
     let(:logger) { mock('logger') }
