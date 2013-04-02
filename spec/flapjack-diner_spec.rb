@@ -294,7 +294,7 @@ describe Flapjack::Diner do
     result.should be_true
   end
 
-  it "returns a list of a contact's media values" do
+  it "returns a list of a contact's notification media values" do
     contact_id = '21'
     req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/media").to_return(
       :body => response)
@@ -305,19 +305,19 @@ describe Flapjack::Diner do
     result.should == response_body
   end
 
-  it "returns a single contact's medium values" do
+  it "returns the values for a contact's notification medium" do
     contact_id = '21'
     media = 'sms'
     req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/media/#{media}").to_return(
       :body => response)
 
-    result = Flapjack::Diner.contact_media(contact_id, media)
+    result = Flapjack::Diner.contact_medium(contact_id, media)
     req.should have_been_requested
     result.should_not be_nil
     result.should == response_body
   end
 
-  it "updates a contact's medium" do
+  it "updates a contact's notification medium" do
     contact_id = '21'
     media_type = 'sms'
     media_data = {"address" => "dmitri@example.com",
@@ -326,18 +326,18 @@ describe Flapjack::Diner do
     req = stub_request(:put, "http://#{server}/contacts/#{contact_id}/media/#{media_type}").with(
       :body => media_data.to_json).to_return(:body => media_data.to_json)
 
-    result = Flapjack::Diner.update_contact_media!(contact_id, media_type, media_data)
+    result = Flapjack::Diner.update_contact_medium!(contact_id, media_type, media_data)
     req.should have_been_requested
     result.should == media_data
   end
 
-  it "deletes a contact's medium" do
+  it "deletes a contact's notification medium" do
     contact_id = '21'
     media = 'sms'
     req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/media/#{media}").to_return(
       :status => 204)
 
-    result = Flapjack::Diner.delete_contact_media!(contact_id, media)
+    result = Flapjack::Diner.delete_contact_medium!(contact_id, media)
     req.should have_been_requested
     result.should be_true
   end

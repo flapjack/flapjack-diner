@@ -97,28 +97,33 @@ module Flapjack
       end
 
       def create_notification_rule!(rule)
-        perform_post_json('notification_rules', rule.to_json)
+        perform_post_json('notification_rules',
+                          rule.to_json)
       end
 
       def update_notification_rule!(rule_id, rule)
-        perform_put_json("notification_rules/#{rule_id}", rule.to_json)
+        perform_put_json("notification_rules/#{rule_id}",
+                         rule.to_json)
       end
 
       def delete_notification_rule!(rule_id)
         perform_delete("notification_rules/#{rule_id}")
       end
 
-      def contact_media(contact_id, media_type = nil)
-        path = media_type ? "contacts/#{contact_id}/media/#{media_type}" :
-                            "contacts/#{contact_id}/media"
-        perform_get_simple(path)
+      def contact_media(contact_id)
+        perform_get_simple("contacts/#{contact_id}/media")
       end
 
-      def update_contact_media!(contact_id, media_type, media)
-        perform_put_json("contacts/#{contact_id}/media/#{media_type}", media.to_json)
+      def contact_medium(contact_id, media_type)
+        perform_get_simple("contacts/#{contact_id}/media/#{media_type}")
       end
 
-      def delete_contact_media!(contact_id, media_type)
+      def update_contact_medium!(contact_id, media_type, media)
+        perform_put_json("contacts/#{contact_id}/media/#{media_type}",
+                         media.to_json)
+      end
+
+      def delete_contact_medium!(contact_id, media_type)
         perform_delete("contacts/#{contact_id}/media/#{media_type}")
       end
 
