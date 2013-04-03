@@ -496,10 +496,10 @@ Returns a hash represeting the created notification rule. This is the same data 
   'id' => RULE_ID,
   'contact_id' => CONTACT_ID,
   'entity_tags' => [STRING, ...]
-  'entities' => [STRING, ...
+  'entities' => [STRING, ...],
   'time_restrictions' => [],
   'warning_media' => [STRING, ...],
-  'critical_media' => [STRING, ...]
+  'critical_media' => [STRING, ...],
   'warning_blackhole' => BOOLEAN,
   'critical_blackhole' => BOOLEAN
 }
@@ -543,10 +543,10 @@ Returns a hash represeting the updated notification rule. This is the same data 
   'id' => RULE_ID,
   'contact_id' => CONTACT_ID,
   'entity_tags' => [STRING, ...]
-  'entities' => [STRING, ...
+  'entities' => [STRING, ...],
   'time_restrictions' => [],
   'warning_media' => [STRING, ...],
-  'critical_media' => [STRING, ...]
+  'critical_media' => [STRING, ...],
   'warning_blackhole' => BOOLEAN,
   'critical_blackhole' => BOOLEAN
 }
