@@ -8,7 +8,7 @@ require "flapjack-diner/argument_validator"
 
 module Flapjack
   module Diner
-    SUCCESS_STATUS_CODE = 204
+    SUCCESS_STATUS_CODES = [200, 204]
 
     include HTTParty
     extend ArgumentValidator::Helper
@@ -26,12 +26,7 @@ module Flapjack
       # e.g., network failures or non-parseable JSON data.
 
       def entities
-        path = '/entities'
-        req_uri = build_uri(path)
-        logger.info "GET #{req_uri}" if logger
-        resp = get(req_uri.request_uri)
-        logger.info "  Response: #{resp.body.inspect}" if logger
-        parsed(resp)
+        perform_get_simple('entities')
       end
 
       def checks(entity)
@@ -43,11 +38,13 @@ module Flapjack
         perform_get_request('status', :path => args)
       end
 
+      # maybe rename 'create_acknowledgement!' ?
       def acknowledge!(entity, check, options = {})
         args = {:entity => entity, :check => check}
         perform_post_request('acknowledgements', :path => args, :query => options)
       end
 
+      # maybe rename 'create_test_notifications!' ?
       def test_notifications!(entity, check, options = {})
         args = {:entity => entity, :check => check}
         perform_post_request('test_notifications', :path => args, :query => options)
@@ -83,27 +80,139 @@ module Flapjack
         perform_get_request('downtime', :path => args, :query => options)
       end
 
+      def contacts
+        perform_get_simple('contacts')
+      end
+
+      def contact(contact_id)
+        perform_get_simple("contacts/#{contact_id}")
+      end
+
+      def notification_rules(contact_id)
+        perform_get_simple("contacts/#{contact_id}/notification_rules")
+      end
+
+      def notification_rule(rule_id)
+        perform_get_simple("notification_rules/#{rule_id}")
+      end
+
+      def create_notification_rule!(rule)
+        perform_post_json('notification_rules',
+                          rule.to_json)
+      end
+
+      def update_notification_rule!(rule_id, rule)
+        perform_put_json("notification_rules/#{rule_id}",
+                         rule.to_json)
+      end
+
+      def delete_notification_rule!(rule_id)
+        perform_delete("notification_rules/#{rule_id}")
+      end
+
+      def contact_media(contact_id)
+        perform_get_simple("contacts/#{contact_id}/media")
+      end
+
+      def contact_medium(contact_id, media_type)
+        perform_get_simple("contacts/#{contact_id}/media/#{media_type}")
+      end
+
+      def update_contact_medium!(contact_id, media_type, media)
+        perform_put_json("contacts/#{contact_id}/media/#{media_type}",
+                         media.to_json)
+      end
+
+      def delete_contact_medium!(contact_id, media_type)
+        perform_delete("contacts/#{contact_id}/media/#{media_type}")
+      end
+
+      def contact_timezone(contact_id)
+        perform_get_simple("contacts/#{contact_id}/timezone")
+      end
+
+      def update_contact_timezone!(contact_id, timezone)
+        perform_put_json("contacts/#{contact_id}/timezone",
+                         {:timezone => timezone}.to_json)
+      end
+
+      def delete_contact_timezone!(contact_id)
+        perform_delete("contacts/#{contact_id}/timezone")
+      end
+
       private
 
-      def perform_get_request(action, options, &validation)
+      def perform_get_simple(path)
+        req_uri = build_uri("/#{path}")
+        logger.info "GET #{req_uri}" if logger
+        response = get(req_uri.request_uri)
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          if response.body
+            logger.info "  Response Body: " + response.body[0..300]
+          end
+        end
+        parsed(response)
+      end
+
+      def perform_get_request(action, options = {}, &validation)
         path, params = prepare_request(action, options, &validation)
         req_uri = build_uri(path, params)
         logger.info "GET #{req_uri}" if logger
-        resp = get(req_uri.request_uri)
-        logger.info "  Response: #{resp.body.inspect}" if logger
-        parsed(resp)
+        response = get(req_uri.request_uri)
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          if response.body
+            logger.info "  Response Body: " + response.body[0..300]
+          end
+        end
+        parsed(response)
       end
 
-      def perform_post_request(action, options, &validation)
+      def perform_post_request(action, options = {}, &validation)
         path, params = prepare_request(action, options, &validation)
         req_uri = build_uri(path)
         logger.info "POST #{req_uri}\n  Params: #{params.inspect}" if logger
         code = post(path, :body => params).code
         logger.info "  Response code: #{code}" if logger
-        code == SUCCESS_STATUS_CODE
+        SUCCESS_STATUS_CODES.include?(code)
       end
 
-      def prepare_request(action, options, &validation)
+      def perform_put_json(path, body)
+        req_uri = build_uri("/#{path}")
+        logger.info "PUT /#{req_uri}\n  #{body}" if logger
+        response = put(req_uri.request_uri, :body => body, :headers => {'Content-Type' => 'application/json'})
+        handle_json_response(response)
+      end
+
+      def perform_post_json(path, body)
+        req_uri = build_uri("/#{path}")
+        logger.info "POST /#{req_uri}\n  #{body}" if logger
+        response = post(req_uri.request_uri, :body => body, :headers => {'Content-Type' => 'application/json'})
+        handle_json_response(response)
+      end
+
+      def perform_delete(path)
+        req_uri = build_uri("/#{path}")
+        logger.info "DELETE /#{req_uri}" if logger
+        response = delete(req_uri.request_uri)
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+        end
+        SUCCESS_STATUS_CODES.include?(response.code)
+      end
+
+      def handle_json_response(response)
+        response_body = response.body
+        response_start = response_body ? response_body[0..300] : nil
+        if logger
+          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          logger.info "  Response Body: #{response_start}" if response_start
+        end
+        parsed(response)
+      end
+
+      def prepare_request(action, options = {}, &validation)
         args = options[:path]
         query = options[:query]
 
@@ -115,10 +224,16 @@ module Flapjack
       end
 
       def protocol_host_port
-        self.base_uri =~ /^(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(?::\d+)?/i
+        self.base_uri =~ /^(?:(https?):\/\/)?([a-zA-Z0-9][a-zA-Z0-9\.\-]*[a-zA-Z0-9])(?::(\d+))?/i
         protocol = ($1 || 'http').downcase
         host = $2
-        port = $3 || ('https'.eql?(protocol) ? 443 : 80)
+        port = $3
+
+        if port.nil? || port.to_i < 1 || port.to_i > 65535
+          port = 'https'.eql?(protocol) ? 443 : 80
+        else
+          port = port.to_i
+        end
 
         [protocol, host, port]
       end
