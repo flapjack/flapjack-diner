@@ -43,6 +43,12 @@ Flapjack::Diner.logger = Logger.new('logs/flapjack_diner.log')
 * [acknowledge](#acknowledge)
 * [test notifications](#test_notifications)
 * [create scheduled maintenance period](#create_scheduled_maintenance)
+* [get entity tags](#get_entity_tags)
+* [add entity tags](#add_entity_tags)
+* [delete entity tags](#delete_entity_tags)
+* [get contact tags](#get_contact_tags)
+* [add contact tags](#add_contact_tags)
+* [delete contact tags](#delete_contact_tags)
 * [contacts](#contacts)
 * [contact](#contact)
 * [notification rules](#notification_rules)
@@ -357,6 +363,76 @@ Flapjack::Diner.create_scheduled_maintenance!('example.com', 'ping',
 ```
 
 Returns a boolean value representing the success or otherwise of the creation of the scheduled maintenance period by the server.
+
+---
+<a name="get_entity_tags">&nbsp;</a>
+Get all tags for an entity.
+
+```ruby
+# entity name (String, required)
+Flapjack::Diner.entity_tags('example.com')
+```
+
+The data is returned as an array of strings; each string is a named tag set on the entity. The array may be empty.
+
+---
+<a name="add_entity_tags">&nbsp;</a>
+Add one or more tags to an entity.
+
+```ruby
+# entity name (String, required)
+# *tags (at least one String)
+Flapjack::Diner.add_entity_tags!('example.com', 'tag1', 'tag2')
+```
+
+The data is returned as an array of strings; each string is a named tag set on the entity. The array will, at a minimum, contain the tag(s) added by the request.
+
+---
+<a name="delete_entity tags">&nbsp;</a>
+Delete one or more tags from an entity.
+
+```ruby
+# entity name (String, required)
+# *tags (at least one String)
+Flapjack::Diner.delete_entity_tags!('example.com', 'tag1')
+```
+
+Returns a boolean representing the success (or otherwise) of the tag deletion.
+
+---
+<a name="get_contact_tags">&nbsp;</a>
+Get all tags for a contact.
+
+```ruby
+# contact ID (String, required)
+Flapjack::Diner.contact_tags('21')
+```
+
+The data is returned as an array of strings; each string is a named tag set on the contact. The array may be empty.
+
+---
+<a name="add_contact_tags">&nbsp;</a>
+Add one or more tags to a contact.
+
+```ruby
+# contact ID (String, required)
+# *tags (at least one String)
+Flapjack::Diner.add_contact_tags!('21', 'tag1', 'tag2')
+```
+
+The data is returned as an array of strings; each string is a named tag set on the contact. The array will, at a minimum, contain the tag(s) added by the request.
+
+---
+<a name="delete_contact_tags">&nbsp;</a>
+Delete one or more tags from a contact.
+
+```ruby
+# contact ID (String, required)
+# *tags (at least one String)
+Flapjack::Diner.delete_contact_tags!('21', 'tag1')
+```
+
+Returns a boolean representing the success (or otherwise) of the tag deletion.
 
 ---
 <a name="contacts">&nbsp;</a>
