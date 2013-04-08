@@ -305,7 +305,7 @@ describe Flapjack::Diner do
 
   it "adds tags to an entity" do
     req = stub_request(:post, "http://#{server}/entities/#{entity}/tags").
-            with(:body => {:tags => ['web', 'app']}.to_json,
+            with(:body => {:tag => ['web', 'app']}.to_json,
                  :headers => {'Content-Type'=>'application/json'}).
             to_return(:body => ['web', 'app'].to_json)
 
@@ -316,7 +316,7 @@ describe Flapjack::Diner do
 
   it "deletes tags from an entity" do
     req = stub_request(:delete, "http://#{server}/entities/#{entity}/tags").
-            with(:body => {:tags => ['web']}.to_json,
+            with(:body => {:tag => ['web']}.to_json,
                  :headers => {'Content-Type'=>'application/json'}).
             to_return(:status => 204)
 
@@ -338,7 +338,7 @@ describe Flapjack::Diner do
   it "adds tags to a contact" do
     contact_id = 21
     req = stub_request(:post, "http://#{server}/contacts/#{contact_id}/tags").
-            with(:body => {:tags => ['admin', 'user']}.to_json,
+            with(:body => {:tag => ['admin', 'user']}.to_json,
                  :headers => {'Content-Type'=>'application/json'}).
             to_return(:body => ['admin', 'user'].to_json)
 
@@ -350,7 +350,7 @@ describe Flapjack::Diner do
   it "deletes tags from a contact" do
     contact_id = 21
     req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/tags").
-            with(:body => {:tags => ['admin']}.to_json,
+            with(:body => {:tag => ['admin']}.to_json,
                  :headers => {'Content-Type'=>'application/json'}).
             to_return(:status => 204)
 

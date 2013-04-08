@@ -96,12 +96,12 @@ module Flapjack
 
       def add_entity_tags!(entity, *tags)
         perform_post_json("entities/#{entity}/tags",
-                          {:tags => tags}.to_json)
+                          {:tag => tags}.to_json)
       end
 
       def delete_entity_tags!(entity, *tags)
         perform_delete_json("entities/#{entity}/tags",
-                            {:tags => tags}.to_json)
+                            {:tag => tags}.to_json)
       end
 
       def contacts
@@ -118,12 +118,12 @@ module Flapjack
 
       def add_contact_tags!(contact_id, *tags)
         perform_post_json("contacts/#{contact_id}/tags",
-                          {:tags => tags}.to_json)
+                          {:tag => tags}.to_json)
       end
 
       def delete_contact_tags!(contact_id, *tags)
         perform_delete_json("contacts/#{contact_id}/tags",
-                            {:tags => tags}.to_json)
+                            {:tag => tags}.to_json)
       end
 
       def notification_rules(contact_id)
