@@ -294,6 +294,72 @@ describe Flapjack::Diner do
     result.should be_true
   end
 
+  it "gets a list of entity tags" do
+    req = stub_request(:get, "http://#{server}/entities/#{entity}/tags").to_return(
+      :body => ['web', 'app'].to_json)
+
+    result = Flapjack::Diner.entity_tags(entity)
+    req.should have_been_requested
+    result.should == ['web', 'app']
+  end
+
+  it "adds tags to an entity" do
+    req = stub_request(:post, "http://#{server}/entities/#{entity}/tags").
+            with(:body => {:tag => ['web', 'app']}.to_json,
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:body => ['web', 'app'].to_json)
+
+    result = Flapjack::Diner.add_entity_tags!(entity, 'web', 'app')
+    req.should have_been_requested
+    result.should == ['web', 'app']
+  end
+
+  it "deletes tags from an entity" do
+    req = stub_request(:delete, "http://#{server}/entities/#{entity}/tags").
+            with(:body => {:tag => ['web']}.to_json,
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:status => 204)
+
+    result = Flapjack::Diner.delete_entity_tags!(entity, 'web')
+    req.should have_been_requested
+    result.should be_true
+  end
+
+  it "gets a list of contact tags" do
+    contact_id = 21
+    req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/tags").to_return(
+      :body => ['user', 'admin'].to_json)
+
+    result = Flapjack::Diner.contact_tags(contact_id)
+    req.should have_been_requested
+    result.should == ['user', 'admin']
+  end
+
+  it "adds tags to a contact" do
+    contact_id = 21
+    req = stub_request(:post, "http://#{server}/contacts/#{contact_id}/tags").
+            with(:body => {:tag => ['admin', 'user']}.to_json,
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:body => ['admin', 'user'].to_json)
+
+    result = Flapjack::Diner.add_contact_tags!(contact_id, 'admin', 'user')
+    req.should have_been_requested
+    result.should == ['admin', 'user']
+  end
+
+  it "deletes tags from a contact" do
+    contact_id = 21
+    req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/tags").
+            with(:body => {:tag => ['admin']}.to_json,
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:status => 204)
+
+    result = Flapjack::Diner.delete_contact_tags!(contact_id, 'admin')
+    req.should have_been_requested
+    result.should be_true
+  end
+
+
   it "returns a list of a contact's notification media values" do
     contact_id = '21'
     req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/media").to_return(
