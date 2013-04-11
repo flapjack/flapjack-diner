@@ -589,7 +589,6 @@ Updates a notification rule for a contact.
 # rule_id (String, required)
 # rule_data (Hash, will be converted via to_json)
 #   contact_id (String, required)
-#   rule_id (String, required, matching the one provided as a main parameter)
 #   entity_tags (Array of Strings, may be empty; either this or 'entities' must have some content)
 #   entities (Array of Strings, may be empty; either this or 'entity_tags' must have some content)
 #   time_restrictions (TBD)
@@ -599,7 +598,6 @@ Updates a notification rule for a contact.
 #   critical_blackhole (Boolean, required)
 Flapjack::Diner.update_notification_rule!('08f607c7-618d-460a-b3fe-868464eb6045', {
   'contact_id' => 'contact23',
-  'rule_id' => '08f607c7-618d-460a-b3fe-868464eb6045',
   'entity_tags' => ['database'],
   'entities' => ['app-1.example.com']
   'time_restrictions' => [],
