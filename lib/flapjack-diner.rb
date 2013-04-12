@@ -116,14 +116,30 @@ module Flapjack
         perform_get_request("/contacts/#{contact_id}/tags")
       end
 
+      def contact_entitytags(contact_id)
+        perform_get_request("/contacts/#{contact_id}/entity_tags")
+      end
+
       def add_contact_tags!(contact_id, *tags)
         perform_post_json("contacts/#{contact_id}/tags",
                           {:tag => tags}.to_json)
       end
 
+      # TODO better checking of provided data
+      def add_contact_entitytags!(contact_id, entity_tags = {})
+        perform_post_json("contacts/#{contact_id}/entity_tags",
+                          {:entity => entity_tags}.to_json)
+      end
+
       def delete_contact_tags!(contact_id, *tags)
         perform_delete_json("contacts/#{contact_id}/tags",
                             {:tag => tags}.to_json)
+      end
+
+      # TODO better checking of provided data
+      def delete_contact_entitytags!(contact_id, entity_tags = {})
+        perform_delete_json("contacts/#{contact_id}/entity_tags",
+                            {:entity => entity_tags}.to_json)
       end
 
       def notification_rules(contact_id)

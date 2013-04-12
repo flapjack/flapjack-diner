@@ -49,6 +49,9 @@ Flapjack::Diner.logger = Logger.new('logs/flapjack_diner.log')
 * [get contact tags](#get_contact_tags)
 * [add contact tags](#add_contact_tags)
 * [delete contact tags](#delete_contact_tags)
+* [get tags for contact's linked entities](#get_contact_entitytags)
+* [add tags to contact's linked entities](#add_contact_entitytags)
+* [delete tags from contact's linked entities](#delete_contact_entitytags)
 * [contacts](#contacts)
 * [contact](#contact)
 * [notification rules](#notification_rules)
@@ -430,6 +433,49 @@ Delete one or more tags from a contact.
 # contact ID (String, required)
 # *tags (at least one String)
 Flapjack::Diner.delete_contact_tags!('21', 'tag1')
+```
+
+Returns a boolean representing the success (or otherwise) of the tag deletion.
+
+---
+<a name="get_contact_entitytags">&nbsp;</a>
+Get all tags for entities linked to a contact.
+
+```ruby
+# contact ID (String, required)
+Flapjack::Diner.contact_entitytags('21')
+```
+
+The data is returned as a Hash, with String keys representing entity names, and Arrays of String values representing the tags for each named entity.
+
+```
+{
+  ENTITY => [TAG, ...],
+  ENTITY => [TAG, ...],
+  ...
+}
+```
+
+---
+<a name="add_contact_entitytags">&nbsp;</a>
+Add one or more tags to entities linked to a contact.
+
+```ruby
+# contact ID (String, required)
+# entity_tags (Hash, required - similar format as returned by 'contact_entitytags')
+Flapjack::Diner.add_contact_entitytags!('21', {'entity1' => ['web'], 'entity2' => ['app']})
+```
+
+The data is returned as a Hash, reflecting the current tags for the contact's linked entities. This is in the same format as the ```contact_entitytags``` call returns.
+
+---
+<a name="delete_contact_entitytags">&nbsp;</a>
+Delete one or more tags from entities linked to a contact.
+
+```ruby
+# contact ID (String, required)
+# entity_tags (Hash, required - similar format as returned by 'contact_entitytags')
+Flapjack::Diner.add_contact_entitytags!('21', {'entity1' => ['web'], 'entity2' => ['app']})
 ```
 
 Returns a boolean representing the success (or otherwise) of the tag deletion.

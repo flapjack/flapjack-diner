@@ -335,6 +335,40 @@ describe Flapjack::Diner do
     result.should == ['user', 'admin']
   end
 
+  it "gets tags for a contact's linked entities" do
+    contact_id = 21
+    req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/entity_tags").to_return(
+      :body => {'entity_1' => ['web', 'app']}.to_json)
+
+    result = Flapjack::Diner.contact_entitytags(contact_id)
+    req.should have_been_requested
+    result.should == {'entity_1' => ['web', 'app']}
+  end
+
+  it "adds tags to a contact's linked entities" do
+    contact_id = 21
+    req = stub_request(:post, "http://#{server}/contacts/#{contact_id}/entity_tags").
+            with(:body => {:entity => {'entity_1' => ['web', 'app']}}.to_json,
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:body => {'entity_1' => ['web', 'app']}.to_json)
+
+    result = Flapjack::Diner.add_contact_entitytags!(contact_id, {'entity_1' => ['web', 'app']})
+    req.should have_been_requested
+    result.should == {'entity_1' => ['web', 'app']}
+  end
+
+  it "deletes tags from a contact's linked entities" do
+    contact_id = 21
+    req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/entity_tags").
+            with(:body => {:entity => {'entity_1' => ['web', 'app']}}.to_json,
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:status => 204)
+
+    result = Flapjack::Diner.delete_contact_entitytags!(contact_id, {'entity_1' => ['web', 'app']})
+    req.should have_been_requested
+    result.should be_true
+  end
+
   it "adds tags to a contact" do
     contact_id = 21
     req = stub_request(:post, "http://#{server}/contacts/#{contact_id}/tags").
