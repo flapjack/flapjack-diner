@@ -393,7 +393,6 @@ describe Flapjack::Diner do
     result.should be_true
   end
 
-
   it "returns a list of a contact's notification media values" do
     contact_id = '21'
     req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/media").to_return(
@@ -473,6 +472,18 @@ describe Flapjack::Diner do
     result = Flapjack::Diner.delete_contact_timezone!(contact_id)
     req.should have_been_requested
     result.should be_true
+  end
+
+  it "returns nil with last_error available when requesting the timezone for a non existant contact" do
+    contact_id = 'jkfldsj'
+    req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/timezone").to_return(
+      :body => '{"errors": ["Not found"]}', :status => 404)
+
+    result = Flapjack::Diner.contact_timezone(contact_id)
+    last_error = Flapjack::Diner.last_error
+    req.should have_been_requested
+    result.should be_nil
+    last_error.should_not be_nil
   end
 
   context "logging" do

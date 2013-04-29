@@ -194,6 +194,10 @@ module Flapjack
         perform_delete("contacts/#{contact_id}/timezone")
       end
 
+      def last_error
+        @last_error
+      end
+
       private
 
       def perform_get_request(path, params = nil)
@@ -206,15 +210,24 @@ module Flapjack
             logger.info "  Response Body: " + response.body[0..300]
           end
         end
+        unless SUCCESS_STATUS_CODES.include?(response.code)
+          self.last_error = {'status_code' => response.code}.merge(parsed(response))
+          return nil
+        end
         parsed(response)
       end
 
       def perform_post_request(path, params = {})
         req_uri = build_uri(path)
         logger.info "POST #{req_uri}\n  Params: #{params.inspect}" if logger
-        code = post(path, :body => params).code
-        logger.info "  Response code: #{code}" if logger
-        SUCCESS_STATUS_CODES.include?(code)
+        response = post(path, :body => params)
+        logger.info "  Response code: #{response.code}" if logger
+        if SUCCESS_STATUS_CODES.include?(response.code)
+          return true
+        else
+          self.last_error = {'status_code' => response.code}.merge(parsed(response))
+          return nil
+        end
       end
 
       def perform_put_json(path, body)
@@ -238,14 +251,22 @@ module Flapjack
         if logger
           logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
         end
-        SUCCESS_STATUS_CODES.include?(response.code)
+        unless SUCCESS_STATUS_CODES.include?(response.code)
+          self.last_error = {'status_code' => response.code}.merge(parsed(response))
+          return nil
+        end
+        true
       end
 
       def perform_delete_json(path, body)
         req_uri = build_uri("/#{path}")
         logger.info "DELETE /#{req_uri}\n  #{body}" if logger
         response = delete(req_uri.request_uri, :body => body, :headers => {'Content-Type' => 'application/json'})
-        SUCCESS_STATUS_CODES.include?(response.code)
+        unless SUCCESS_STATUS_CODES.include?(response.code)
+          self.last_error = {'status_code' => response.code}.merge(parsed(response))
+          return nil
+        end
+        true
       end
 
       def handle_json_response(response)
@@ -254,6 +275,10 @@ module Flapjack
         if logger
           logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
           logger.info "  Response Body: #{response_start}" if response_start
+        end
+        unless SUCCESS_STATUS_CODES.include?(response.code)
+          self.last_error = {'status_code' => response.code}.merge(parsed(response))
+          return nil
         end
         parsed(response)
       end
@@ -309,6 +334,11 @@ module Flapjack
         return unless response && response.respond_to?(:parsed_response)
         response.parsed_response
       end
+
+      def last_error=(error)
+        @last_error = error
+      end
+
     end
   end
 end
