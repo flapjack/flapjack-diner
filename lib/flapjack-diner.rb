@@ -222,12 +222,11 @@ module Flapjack
         logger.info "POST #{req_uri}\n  Params: #{params.inspect}" if logger
         response = post(path, :body => params)
         logger.info "  Response code: #{response.code}" if logger
-        if SUCCESS_STATUS_CODES.include?(response.code)
-          return true
-        else
+        unless SUCCESS_STATUS_CODES.include?(response.code)
           self.last_error = {'status_code' => response.code}.merge(parsed(response))
           return nil
         end
+        true
       end
 
       def perform_put_json(path, body)
