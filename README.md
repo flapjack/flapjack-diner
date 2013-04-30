@@ -559,16 +559,15 @@ Returns an array of hashes, where a single hash represents a notification rule r
 Gets a single notification rule belonging to a contact.
 
 ```ruby
-# contact_id (String, required)
 # rule_id (String, required)
-Flapjack::Diner.notification_rule('contact23', '08f607c7-618d-460a-b3fe-868464eb6045')
+Flapjack::Diner.notification_rule('08f607c7-618d-460a-b3fe-868464eb6045')
 ```
 
 Returns a hash representing a notification rule record (a singular instance of what is returned in a list of a contact's notification rules). NB 'time_restrictions' have not yet been implemented, but we're noting the use of the field name here as it will be meaningful in the future.
 
 ```ruby
-# contact_id (String, as provided in the request)
-# rule_id (String, as provided in the request)
+# RULE_ID (String, as provided in the request)
+# CONTACT_ID (String)
 {
   'id' => RULE_ID,
   'contact_id' => CONTACT_ID,
