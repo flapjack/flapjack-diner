@@ -40,6 +40,11 @@ module Flapjack
         perform_get_request(path, params)
       end
 
+      def bulk_status(options = {})
+        validate_bulk_arguments(options)
+        perform_get_request('/status', build_nested_query(options))
+      end
+
       # maybe rename 'create_acknowledgement!' ?
       def acknowledge!(entity, check, options = {})
         args = {:entity => entity, :check => check}
@@ -72,10 +77,20 @@ module Flapjack
         perform_get_request(path, params)
       end
 
+      def bulk_scheduled_maintenances(options = {})
+        validate_bulk_arguments(options)
+        perform_get_request('/scheduled_maintenances', build_nested_query(options))
+      end
+
       def unscheduled_maintenances(entity, options = {})
         args = {:entity => entity, :check => options.delete(:check)}
         path, params = prepare_request('unscheduled_maintenances', :path => args, :query => options)
         perform_get_request(path, params)
+      end
+
+      def bulk_unscheduled_maintenances(options = {})
+        validate_bulk_arguments(options)
+        perform_get_request('/unscheduled_maintenances', build_nested_query(options))
       end
 
       def outages(entity, options = {})
@@ -84,10 +99,20 @@ module Flapjack
         perform_get_request(path, params)
       end
 
+      def bulk_outages(options = {})
+        validate_bulk_arguments(options)
+        perform_get_request('/outages', build_nested_query(options))
+      end
+
       def downtime(entity, options = {})
         args = {:entity => entity, :check => options.delete(:check)}
         path, params = prepare_request('downtime', :path => args, :query => options)
         perform_get_request(path, params)
+      end
+
+      def bulk_downtime(options = {})
+        validate_bulk_arguments(options)
+        perform_get_request('/downtime', build_nested_query(options))
       end
 
       def entity_tags(entity)
@@ -295,6 +320,49 @@ module Flapjack
           (["/#{action}"] + args.values).compact.map {|v| prepare_value(v) }.join('/'),
           prepare_query(query)
         ]
+      end
+
+      def validate_bulk_arguments(args = {})
+        entities = args[:entity]
+        checks   = args[:check]
+
+        if entities && !entities.is_a?(String) &&
+           (!entities.is_a?(Array) || !entities.all? {|e| e.is_a?(String)})
+          raise "Entity argument must be a String, or an Array of Strings"
+        end
+
+        if checks && (!checks.is_a?(Hash) || !checks.all? {|k, v|
+          k.is_a?(String) && (v.is_a?(String) || (v.is_a?(Array) && v.all?{|vv| vv.is_a?(String)}))
+        })
+          raise "Check argument must be a Hash with keys String, values either String or Array of Strings"
+        end
+
+        if entities.nil? && checks.nil?
+          raise "Entity and/or check arguments must be provided"
+        end
+      end
+
+      # copied from Rack::Utils
+      def build_nested_query(value, prefix = nil)
+        case value
+        when Array
+          value.map { |v|
+            build_nested_query(v, "#{prefix}[]")
+          }.join("&")
+        when Hash
+          value.map { |k, v|
+            build_nested_query(v, prefix ? "#{prefix}[#{escape(k)}]" : escape(k))
+          }.join("&")
+        when String
+          raise ArgumentError, "value must be a Hash" if prefix.nil?
+          "#{prefix}=#{escape(value)}"
+        else
+          prefix
+        end
+      end
+
+      def escape(s)
+        URI.encode_www_form_component(s)
       end
 
       def protocol_host_port

@@ -73,9 +73,20 @@ describe Flapjack::Diner do
     result.should == response_body
   end
 
+  it "returns a list of entity statuses for a bulk query" do
+    req = stub_request(:get, "http://#{server}/status").
+      with(:query => {:entity => ['abc.net', 'def.com'], :check => {'ghi.net' => 'ping', 'jkl.org' => ['ping', 'ssh']}}).
+      to_return(:body => response)
+
+    result = Flapjack::Diner.bulk_status(:entity => ['abc.net', 'def.com'], :check => {'ghi.net' => 'ping', 'jkl.org' => ['ping', 'ssh']})
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
   it "returns a single check status for an entity" do
-    req = stub_request(:get, "http://#{server}/status/#{entity}/#{check}").to_return(
-      :body => response)
+    req = stub_request(:get, "http://#{server}/status/#{entity}/#{check}").
+      to_return(:body => response)
 
     result = Flapjack::Diner.status(entity, :check => check)
     req.should have_been_requested
@@ -103,6 +114,17 @@ describe Flapjack::Diner do
     result.should == response_body
   end
 
+  it "returns a list of scheduled maintenance periods for a bulk query" do
+    req = stub_request(:get, "http://#{server}/scheduled_maintenances").
+      with(:query => {:entity => 'abc.net', :check => {'def.org' => 'ping'}}).
+      to_return(:body => response)
+
+    result = Flapjack::Diner.bulk_scheduled_maintenances(:entity => 'abc.net', :check => {'def.org' => 'ping'})
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
   it "returns a list of unscheduled maintenance periods for all checks on an entity" do
     req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}").to_return(
       :body => response)
@@ -118,6 +140,17 @@ describe Flapjack::Diner do
       :body => response)
 
     result = Flapjack::Diner.unscheduled_maintenances(entity, :check => check)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
+  it "returns a list of unscheduled maintenance periods for a bulk query" do
+    req = stub_request(:get, "http://#{server}/unscheduled_maintenances").
+      with(:query => {:entity => 'abc.net', :check => {'def.org' => 'ping'}}).
+      to_return(:body => response)
+
+    result = Flapjack::Diner.bulk_unscheduled_maintenances(:entity => 'abc.net', :check => {'def.org' => 'ping'})
     req.should have_been_requested
     result.should_not be_nil
     result.should == response_body
@@ -143,6 +176,17 @@ describe Flapjack::Diner do
     result.should == response_body
   end
 
+  it "returns a list of outages for a bulk query" do
+    req = stub_request(:get, "http://#{server}/outages").
+      with(:query => {:entity => 'abc.net', :check => {'def.org' => 'ping'}}).
+      to_return(:body => response)
+
+    result = Flapjack::Diner.bulk_outages(:entity => 'abc.net', :check => {'def.org' => 'ping'})
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
   it "returns a list of downtimes for all checks on an entity" do
     req = stub_request(:get, "http://#{server}/downtime/#{entity}").to_return(
       :body => response)
@@ -154,11 +198,8 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of downtimes for all checks on an entity between two times" do
-    start_str  = '2011-08-01T00:00:00+10:00'
-    finish_str = '2011-08-31T00:00:00+10:00'
-
-    start  = Time.iso8601(start_str)
-    finish = Time.iso8601(finish_str)
+    start  = Time.iso8601('2011-08-01T00:00:00+10:00')
+    finish = Time.iso8601('2011-08-31T00:00:00+10:00')
 
     start_enc = URI.encode(start.iso8601)
     finish_enc = URI.encode(finish.iso8601)
@@ -177,6 +218,22 @@ describe Flapjack::Diner do
       :body => response)
 
     result = Flapjack::Diner.downtime(entity, :check => check)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
+  it "returns a list of downtimes for a bulk query between two times" do
+    start  = Time.iso8601('2011-08-01T00:00:00+10:00').iso8601
+    finish = Time.iso8601('2011-08-31T00:00:00+10:00').iso8601
+
+    req = stub_request(:get, "http://#{server}/downtime").
+      with(:query => {:entity => 'abc.net', :check => {'def.org' => 'ping'},
+                      :start_time => start, :end_time => finish}).
+      to_return(:body => response)
+
+    result = Flapjack::Diner.bulk_downtime(:entity => 'abc.net', :check => {'def.org' => 'ping'},
+                                           :start_time => start, :end_time => finish)
     req.should have_been_requested
     result.should_not be_nil
     result.should == response_body
@@ -593,6 +650,33 @@ describe Flapjack::Diner do
 
       expect {
         Flapjack::Diner.check_status(entity, nil)
+      }.to raise_error
+      req.should_not have_been_requested
+    end
+
+    it "raises an exception if bulk queries don't have entity or check arguments" do
+      req = stub_request(:get, /http:\/\/#{server}\/*/)
+
+      expect {
+        Flapjack::Diner.bulk_downtime({})
+      }.to raise_error
+      req.should_not have_been_requested
+    end
+
+    it "raises an exception if bulk queries have invalid entity arguments" do
+      req = stub_request(:get, /http:\/\/#{server}\/*/)
+
+      expect {
+        Flapjack::Diner.bulk_scheduled_maintenances(:entity => 23)
+      }.to raise_error
+      req.should_not have_been_requested
+    end
+
+    it "raises an exception if bulk queries have invalid check arguments" do
+      req = stub_request(:get, /http:\/\/#{server}\/*/)
+
+      expect {
+        Flapjack::Diner.bulk_outages(:check => {'abc.com' => ['ping', 5]})
       }.to raise_error
       req.should_not have_been_requested
     end
