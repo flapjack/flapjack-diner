@@ -35,11 +35,11 @@ Flapjack::Diner.logger = Logger.new('logs/flapjack_diner.log')
 
 * [entities](#entities)
 * [checks](#checks)
-* entity status ([single check](#status_check) / [all checks](#status))
-* entity scheduled maintentance periods ([single check](#scheduled_maintenance_check) / [all checks](#scheduled_maintenance))
-* entity unscheduled maintentance periods ([single check](#unscheduled_maintenance_check) / [all checks](#unscheduled_maintenance))
-* entity outages ([single check](#outages_check) / [all checks](#outages))
-* entity downtimes ([single check](#downtimes_check) / [all checks](#downtimes))
+* entity status ([single check](#status_check) / [all checks](#status) / [bulk](#status_bulk))
+* entity scheduled maintentance periods ([single check](#scheduled_maintenance_check) / [all checks](#scheduled_maintenance) / [bulk](#scheduled_maintenance_bulk))
+* entity unscheduled maintentance periods ([single check](#unscheduled_maintenance_check) / [all checks](#unscheduled_maintenance) / [bulk](#unscheduled_maintenance_bulk))
+* entity outages ([single check](#outages_check) / [all checks](#outages) / [bulk](#outages_bulk))
+* entity downtimes ([single check](#downtimes_check) / [all checks](#downtimes) / [bulk](#downtimes_bulk))
 * [acknowledge](#acknowledge)
 * [test notifications](#test_notifications)
 * [create scheduled maintenance period](#create_scheduled_maintenance)
@@ -145,6 +145,28 @@ The data is returned as an array of checks, where each element is a hash with th
 ```
 
 ---
+<a name="status_bulk">&nbsp;</a>
+Return the statuses for all checks on some entities and specified checks on others.
+
+```ruby
+# :entity - optional, may be a String or an Array of Strings (entity names)
+# :check  - optional, Hash, keys are Strings (entity names), values are Strings or Arrays of Strings (check names)
+# At least one of the :entity or :check arguments must be provided
+Flapjack::Diner.bulk_status(:entity => 'example.com', :check => {'example2.com' => ['PING', 'SSH'], 'example3.com' => 'PING'})
+```
+
+The data is returned as an array, where each element is a hash with the format
+
+```
+// ENTITY is a string, one of the entity names provided in the entity or check arguments.
+// CHECK is a string, e.g. 'ssh', 'ping'
+// STATUS is a hash with the format returned from Flapjack::Diner.status(entity, check)
+{'entity' => ENTITY
+ 'check'  => CHECK,
+ 'status' => STATUS}
+```
+
+---
 <a name="scheduled_maintenance_check">&nbsp;</a>
 Return an array of scheduled maintenance periods for a check on an entity:
 
@@ -190,6 +212,31 @@ The data is returned as an array of hashes, where each hash represents the sched
   'scheduled_maintenance' => [SCHED_MAINT, ...]
  }]
 ```
+
+---
+<a name="scheduled_maintenance_bulk">&nbsp;</a>
+Return lists of scheduled maintenance periods for all checks on some entities and specified checks on others.
+
+```ruby
+# :entity - optional, may be a String or an Array of Strings (entity names)
+# :check  - optional, Hash, keys are Strings (entity names), values are Strings or Arrays of Strings (check names)
+# At least one of the :entity or :check arguments must be provided
+Flapjack::Diner.bulk_scheduled_maintenances(:entity => 'example.com', :check => {'example2.com' => ['PING', 'SSH'], 'example3.com' => 'PING'})
+```
+
+The data is returned as an array, where each element is a hash with the format
+
+```
+// ENTITY is a string, one of the entity names provided in the entity or check arguments
+// CHECK is a string, e.g. 'ssh', 'ping'
+// SCHED_MAINT is a hash with the same format as an individual element of the array returned from Flapjack::Diner.scheduled_maintenances(entity, check)
+{'entity' => ENTITY
+ 'check'  => CHECK,
+ 'scheduled_maintenances' => [SCHED_MAINT, ...]}
+```
+
+Please note the plural for the 'scheduled_maintenances' hash key, which is different to
+the other methods.
 
 ---
 <a name="unscheduled_maintenance_check">&nbsp;</a>
@@ -239,6 +286,32 @@ The data is returned as an array of hashes, where each hash represents the unsch
 ```
 
 ---
+<a name="unscheduled_maintenance_bulk">&nbsp;</a>
+Return lists of unscheduled maintenance periods for all checks on some entities and specified checks on others.
+
+```ruby
+# :entity - optional, may be a String or an Array of Strings (entity names)
+# :check  - optional, Hash, keys are Strings (entity names), values are Strings or Arrays of Strings (check names)
+# At least one of the :entity or :check arguments must be provided
+Flapjack::Diner.bulk_unscheduled_maintenances(:entity => 'example.com', :check => {'example2.com' => ['PING', 'SSH'], 'example3.com' => 'PING'})
+```
+
+The data is returned as an array, where each element is a hash with the format
+
+```
+// ENTITY is a string, one of the entity names provided in the entity or check arguments
+// CHECK is a string, e.g. 'ssh', 'ping'
+// UNSCHED_MAINT is a hash with the same format as an individual element of the array returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
+{'entity' => ENTITY
+ 'check'  => CHECK,
+ 'unscheduled_maintenances' => [UNSCHED_MAINT, ...]
+}
+```
+
+Please note the plural for the 'unscheduled_maintenances' hash key, which is different to
+the other methods.
+
+---
 <a name="outages_check">&nbsp;</a>
 Return an array of outages for a check on an entity (all times for which the check was failing):
 
@@ -286,6 +359,29 @@ The data is returned as an array of hashes, where each hash represents the outag
 ```
 
 ---
+<a name="outages_bulk">&nbsp;</a>
+Return lists of outages for all checks on some entities and specified checks on others.
+
+```ruby
+# :entity - optional, may be a String or an Array of Strings (entity names)
+# :check  - optional, Hash, keys are Strings (entity names), values are Strings or Arrays of Strings (check names)
+# At least one of the :entity or :check arguments must be provided
+Flapjack::Diner.bulk_outages(:entity => 'example.com', :check => {'example2.com' => ['PING', 'SSH'], 'example3.com' => 'PING'})
+```
+
+The data is returned as an array, where each element is a hash with the format
+
+```
+// ENTITY is a string, one of the entity names provided in the entity or check arguments
+// CHECK is a string, e.g. 'ssh', 'ping'
+// OUTAGE is a hash with the same format as an individual element of the array returned from Flapjack::Diner.outages(entity, check)
+{'entity' => ENTITY
+ 'check'  => CHECK,
+ 'outages' => [OUTAGE, ...]
+}
+```
+
+---
 <a name="downtimes_check">&nbsp;</a>
 Return an array of downtimes for a check on an entity (outages outside of scheduled maintenance periods):
 
@@ -328,6 +424,30 @@ The data is returned as an array of hashes, where each hash represents a downtim
  {'check' => CHECK,
   'downtime' => [DOWNTIME, ...]
  }]
+```
+
+---
+<a name="downtimes_bulk">&nbsp;</a>
+
+Return lists of downtimes for all checks on some entities and specified checks on others.
+
+```ruby
+# :entity - optional, may be a String or an Array of Strings (entity names)
+# :check  - optional, Hash, keys are Strings (entity names), values are Strings or Arrays of Strings (check names)
+# At least one of the :entity or :check arguments must be provided
+Flapjack::Diner.bulk_downtime(:entity => ['example.com', 'example4.com'], :check => {'example2.com' => ['PING', 'SSH'], 'example3.com' => 'PING'})
+```
+
+The data is returned as an array, where each element is a hash with the format
+
+```
+// ENTITY is a string, one of the entity names provided in the entity or check arguments
+// CHECK is a string, e.g. 'ssh', 'ping'
+// DOWNTIME is a hash with the same format as an individual element of the array returned from Flapjack::Diner.downtime(entity, check)
+{'entity' => ENTITY
+ 'check'  => CHECK,
+ 'downtime' => [DOWNTIME, ...]
+}
 ```
 
 ---
