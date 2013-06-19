@@ -44,13 +44,10 @@ module Flapjack
     end
 
     def method_missing(name, *args)
-      if klass = classify_name(name)
-        elements = args
-        elements.each do |element|
-          @errors << "'#{element}' is expected to be a #{klass}" unless @query[element].is_a?(klass)
-        end
-      else
-        super
+      return super unless klass = classify_name(name)
+      elements = args
+      elements.each do |element|
+        @errors << "'#{element}' is expected to be a #{klass}" unless @query[element].is_a?(klass)
       end
     end
 
