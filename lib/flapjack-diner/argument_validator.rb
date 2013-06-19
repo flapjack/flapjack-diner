@@ -20,7 +20,7 @@ module Flapjack
         end
       end
 
-      raise ArgumentError.new(@errors.join(' ; ')) unless @errors.empty?
+      raise ArgumentError.new(@errors.join('; ')) unless @errors.empty?
     end
 
     private
