@@ -69,7 +69,7 @@ module Flapjack
         args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
 
         validate_bulk_params(args) do
-          validate :query => :start_time, :as => :required
+          validate :query => :start_time, :as => [:required, :time]
           validate :query => :duration, :as => [:required, :integer]
         end
 
@@ -78,7 +78,7 @@ module Flapjack
 
       def bulk_create_scheduled_maintenance!(options = {})
         validate_bulk_params(options) do
-          validate :query => :start_time, :as => :required
+          validate :query => :start_time, :as => [:required, :time]
           validate :query => :duration, :as => [:required, :integer]
         end
 
@@ -101,6 +101,21 @@ module Flapjack
         end
 
         perform_delete('/scheduled_maintenances', options)
+      end
+
+      def delete_unscheduled_maintenance!(entity, check, options = {})
+        args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
+        validate_bulk_params(args) do
+          validate :query => :end_time, :as => :time
+        end
+        perform_delete('/unscheduled_maintenances', args)
+      end
+
+      def bulk_delete_unscheduled_maintenance!(options)
+        validate_bulk_params(options) do
+          validate :query => :end_time, :as => :time
+        end
+        perform_delete('/unscheduled_maintenances', options)
       end
 
       def scheduled_maintenances(entity, options = {})

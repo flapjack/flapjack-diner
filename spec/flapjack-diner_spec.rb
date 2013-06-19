@@ -402,6 +402,50 @@ describe Flapjack::Diner do
     result.should be_true
   end
 
+  it "deletes an unscheduled maintenance period for a check on an entity" do
+    end_time = Time.now
+
+    req = stub_request(:delete, "http://#{server}/unscheduled_maintenances").
+            with(:body => {:check => {entity => check}, :end_time => end_time.iso8601},
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:status => 204)
+
+    result = Flapjack::Diner.delete_unscheduled_maintenance!(entity, check,
+      :end_time => end_time)
+    req.should have_been_requested
+    result.should be_true
+  end
+
+  it "deletes scheduled maintenance periods for all checks on an entity" do
+    end_time = Time.now
+
+    req = stub_request(:delete, "http://#{server}/unscheduled_maintenances").
+            with(:body => {:entity => entity, :end_time => end_time.iso8601},
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:status => 204)
+
+    result = Flapjack::Diner.bulk_delete_unscheduled_maintenance!(:entity => entity,
+      :end_time => end_time)
+    req.should have_been_requested
+    result.should be_true
+  end
+
+  it "deletes scheduled maintenance periods for checks from multiple entities" do
+    end_time = Time.now
+
+    req = stub_request(:delete, "http://#{server}/unscheduled_maintenances").
+            with(:body => {:check => {entity => 'ping', 'pqr.org' => 'ssh'},
+                           :end_time => end_time.iso8601},
+                 :headers => {'Content-Type'=>'application/json'}).
+            to_return(:status => 204)
+
+    result = Flapjack::Diner.bulk_delete_unscheduled_maintenance!(:check => {entity => 'ping', 'pqr.org' => 'ssh'},
+      :end_time => end_time)
+    req.should have_been_requested
+    result.should be_true
+  end
+
+
   it "returns a list of contacts" do
     req = stub_request(:get, "http://#{server}/contacts").to_return(
       :body => response)
