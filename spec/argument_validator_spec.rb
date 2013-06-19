@@ -3,37 +3,41 @@ require "flapjack-diner/argument_validator"
 
 describe Flapjack::ArgumentValidator do
 
-  let(:path) do
-    {:entity => 'myservice', :check => 'HOST'}
-  end
-
-  let(:query) do
-    {:start_time => Time.now, :duration => 10}
-  end
-
-  subject { Flapjack::ArgumentValidator.new(path, query) }
-
   context 'required' do
-    it 'does not raise an exception when path entity is valid' do
-      lambda { subject.validate(:path => :entity, :as => :required) }.should_not raise_exception(ArgumentError)
+
+    let(:query) do
+      {:entity => 'myservice', :check => 'HOST'}
     end
 
-    it 'raises ArgumentError when path entity is invalid' do
-      path[:entity] = nil
-      lambda { subject.validate(:path => :entity, :as => :required) }.should raise_exception(ArgumentError)
+    subject { Flapjack::ArgumentValidator.new(query) }
+
+    it 'does not raise an exception when query entity is valid' do
+      lambda { subject.validate(:query => :entity, :as => :required) }.should_not raise_exception(ArgumentError)
     end
 
-    it 'handles arrays as path values valid' do
-      lambda { subject.validate(:path => [:entity, :check], :as => :required) }.should_not raise_exception(ArgumentError)
+    it 'raises ArgumentError when query entity is invalid' do
+      query[:entity] = nil
+      lambda { subject.validate(:query => :entity, :as => :required) }.should raise_exception(ArgumentError)
     end
 
-    it 'handles arrays as path values valid' do
-      path[:check] = nil
-      lambda { subject.validate(:path => [:entity, :check], :as => :required) }.should raise_exception(ArgumentError)
+    it 'handles arrays as query values valid' do
+      lambda { subject.validate(:query => [:entity, :check], :as => :required) }.should_not raise_exception(ArgumentError)
+    end
+
+    it 'handles arrays as query values invalid' do
+      query[:check] = nil
+      lambda { subject.validate(:query => [:entity, :check], :as => :required) }.should raise_exception(ArgumentError)
     end
   end
 
   context 'time' do
+
+    let(:query) do
+      {:start_time => Time.now, :duration => 10}
+    end
+
+    subject { Flapjack::ArgumentValidator.new(query) }
+
     it 'does not raise an exception when query start_time is valid' do
       lambda { subject.validate(:query => :start_time, :as => :time) }.should_not raise_exception(ArgumentError)
     end
@@ -60,6 +64,13 @@ describe Flapjack::ArgumentValidator do
   end
 
   context 'integer via method missing' do
+
+    let(:query) do
+      {:start_time => Time.now, :duration => 10}
+    end
+
+    subject { Flapjack::ArgumentValidator.new(query) }
+
     it 'does not raise an exception when query duration is valid' do
       lambda { subject.validate(:query => :duration, :as => :integer) }.should_not raise_exception(ArgumentError)
     end
@@ -71,6 +82,13 @@ describe Flapjack::ArgumentValidator do
   end
 
   context 'multiple validations' do
+
+    let(:query) do
+      {:start_time => Time.now, :duration => 10}
+    end
+
+    subject { Flapjack::ArgumentValidator.new(query) }
+
     it 'does not raise an exception when query start_time is valid' do
       lambda { subject.validate(:query => :start_time, :as => [:time, :required]) }.should_not raise_exception(ArgumentError)
     end
