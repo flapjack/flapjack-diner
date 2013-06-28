@@ -1,23 +1,11 @@
 module Flapjack
   class ArgumentValidator
-    module Helper
-      def validate_all(validation_hash)
-        @validations ||= []
-        @validations << Proc.new do
-          validate(validation_hash)
-        end
-      end
-    end
 
-    attr_reader :path, :query
+    attr_reader :query
 
-    def initialize(path, query)
-      @data = {
-        :path => path,
-        :query => query
-      }
-
+    def initialize(query = {})
       @errors = []
+      @query = query
     end
 
     def validate(args)
@@ -25,43 +13,41 @@ module Flapjack
       validations = args.delete(:as)
       validations = [validations] unless validations.is_a?(Array)
 
-      @data.keys.each do |key|
-        if elements = args[key]
-          elements = [elements] unless elements.is_a?(Array)
-          validations.each do |validation|
-            __send__(validation.to_s.downcase, key, elements)
-          end
+      if elements = args[:query]
+        elements = [elements] unless elements.is_a?(Array)
+        validations.each do |validation|
+          __send__(validation.to_s.downcase, *elements)
         end
       end
 
-      raise ArgumentError.new(@errors.join(' ; ')) unless @errors.empty?
+      raise ArgumentError.new(@errors.join('; ')) unless @errors.empty?
     end
 
     private
 
-    def time(key, elements)
+    def time(*elements)
       elements.each do |element|
-        if target = @data[key] && @data[key][element]
+        if target = @query[element]
           @errors << "'#{target}' should contain some kind of time object which responds to." unless target.respond_to?(:iso8601)
         end
       end
     end
 
-    def required(key, elements)
+    def required(*elements)
       elements.each do |element|
-        @errors << "'#{element}' is required." if @data[key][element].nil?
+        @errors << "'#{element}' is required." if @query[element].nil?
       end
     end
 
-    # TODO should also implement "respond_to?"
+    def respond_to?(name, include_private = false)
+      !classify_name(name).nil? || super
+    end
+
     def method_missing(name, *args)
-      if klass = classify_name(name)
-        key, elements = args
-        elements.each do |element|
-          @errors << "'#{element}' is expected to be a #{klass}" unless @data[key][element].is_a?(klass)
-        end
-      else
-        super
+      return super unless klass = classify_name(name)
+      elements = args
+      elements.each do |element|
+        @errors << "'#{element}' is expected to be a #{klass}" unless @query[element].is_a?(klass)
       end
     end
 
