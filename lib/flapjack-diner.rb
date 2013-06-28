@@ -31,9 +31,8 @@ module Flapjack
 
       def status(entity, options = {})
         check = options.delete(:check)
-        args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
-        validate_bulk_params(args)
-        perform_get('/status', args)
+        path = check.nil? ? "/status/#{entity}" : "/status/#{entity}/#{check}"
+        perform_get(path)
       end
 
       def bulk_status(options = {})
