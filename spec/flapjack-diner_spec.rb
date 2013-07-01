@@ -68,6 +68,16 @@ describe Flapjack::Diner do
             with(:query => {:entity => entity}).
             to_return(:body => response)
 
+    result = Flapjack::Diner.bulk_status(:entity => entity)
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
+  it "returns a json list of check statuses for an entity, legacy" do
+    req = stub_request(:get, "http://#{server}/status/#{entity}").
+            to_return(:body => response)
+
     result = Flapjack::Diner.status(entity)
     req.should have_been_requested
     result.should_not be_nil
@@ -88,6 +98,16 @@ describe Flapjack::Diner do
   it "returns a single check status for an entity" do
     req = stub_request(:get, "http://#{server}/status").
             with(:query => {:check => {entity => check}}).
+            to_return(:body => response)
+
+    result = Flapjack::Diner.bulk_status(:check => {entity => check})
+    req.should have_been_requested
+    result.should_not be_nil
+    result.should == response_body
+  end
+
+  it "returns a single check status for an entity, legacy" do
+    req = stub_request(:get, "http://#{server}/status/#{entity}/#{check}").
             to_return(:body => response)
 
     result = Flapjack::Diner.status(entity, :check => check)
