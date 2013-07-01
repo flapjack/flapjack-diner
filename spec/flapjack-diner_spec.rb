@@ -794,7 +794,7 @@ describe Flapjack::Diner do
       timezone_data = {:timezone => "Australia/Perth"}
 
       req = stub_request(:put, "http://#{server}/contacts/#{contact_id}/timezone").with(
-        :body => timezone_data).to_return(:body => timezone_data.to_json, :status => [200, ' OK'])
+        :body => timezone_data).to_return(:body => timezone_data.to_json, :status => [200, 'OK'])
 
       logger.should_receive(:info).
         with("PUT http://#{server}/contacts/#{contact_id}/timezone\n  Params: #{timezone_data.inspect}")
