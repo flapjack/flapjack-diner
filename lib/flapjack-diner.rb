@@ -340,7 +340,7 @@ module Flapjack
         response_body = response.body
         response_start = response_body ? response_body[0..300] : nil
         if logger
-          logger.info "  Response Code: #{response.code}#{response.message ? response.message : ''}"
+          logger.info "  Response Code: #{response.code} #{response.message ? response.message : ''}"
           logger.info "  Response Body: #{response_start}" if response_start
         end
         parsed_response = response.respond_to?(:parsed_response) ? response.parsed_response : nil
