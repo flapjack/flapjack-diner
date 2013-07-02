@@ -28,7 +28,9 @@ module Flapjack
     def time(*elements)
       elements.each do |element|
         if target = @query[element]
-          @errors << "'#{target}' should contain some kind of time object which responds to." unless target.respond_to?(:iso8601)
+          next if target.respond_to?(:iso8601) || (target.is_a?(String) &&
+            (begin; Time.iso8601(target); true; rescue ArgumentError; false; end))
+          @errors << "'#{target}' should be a time object or ISO 8601-formatted string."
         end
       end
     end

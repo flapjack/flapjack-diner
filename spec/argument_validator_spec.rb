@@ -61,6 +61,16 @@ describe Flapjack::ArgumentValidator do
       query[:end_time] = Date.today
       lambda { subject.validate(:query => :end_time, :as => :time) }.should_not raise_exception(ArgumentError)
     end
+
+    it 'handles ISO 8601 strings as query values' do
+      query[:end_time] = Time.now.iso8601
+      lambda { subject.validate(:query => :end_time, :as => :time) }.should_not raise_exception(ArgumentError)
+    end
+
+    it 'raises an exception when invalid time strings are provided' do
+      query[:end_time] = '2011-08-01T00:00'
+      lambda { subject.validate(:query => :end_time, :as => :time) }.should raise_exception(ArgumentError)
+    end
   end
 
   context 'integer via method missing' do

@@ -880,7 +880,7 @@ describe Flapjack::Diner do
 
     it "raises an exception if a time argument is provided with the wrong data type" do
       start_str  = '2011-08-01T00:00:00+10:00'
-      finish_str = '2011-08-31T00:00:00+10:00'
+      finish_str = 'yesterday'
 
       start  = Time.iso8601(start_str)
 
