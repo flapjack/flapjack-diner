@@ -117,8 +117,7 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of scheduled maintenance periods for all checks on an entity" do
-    req = stub_request(:get, "http://#{server}/scheduled_maintenances").
-            with(:query => {:entity => entity}).
+    req = stub_request(:get, "http://#{server}/scheduled_maintenances/#{entity}").
             to_return(:body => response)
 
     result = Flapjack::Diner.scheduled_maintenances(entity)
@@ -128,8 +127,7 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of scheduled maintenance periods for a check on an entity" do
-    req = stub_request(:get, "http://#{server}/scheduled_maintenances").
-            with(:query => {:check => {entity => check}}).
+    req = stub_request(:get, "http://#{server}/scheduled_maintenances/#{entity}/#{check}").
             to_return(:body => response)
 
     result = Flapjack::Diner.scheduled_maintenances(entity, :check => check)
@@ -150,8 +148,7 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of unscheduled maintenance periods for all checks on an entity" do
-    req = stub_request(:get, "http://#{server}/unscheduled_maintenances").
-            with(:query => {:entity => entity}).
+    req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}").
             to_return(:body => response)
 
     result = Flapjack::Diner.unscheduled_maintenances(entity)
@@ -161,8 +158,7 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of unscheduled maintenance periods for a check on an entity" do
-    req = stub_request(:get, "http://#{server}/unscheduled_maintenances").
-            with(:query => {:check => {entity => check}}).
+    req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}/#{check}").
             to_return(:body => response)
 
     result = Flapjack::Diner.unscheduled_maintenances(entity, :check => check)
@@ -183,8 +179,7 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of outages for all checks on an entity" do
-    req = stub_request(:get, "http://#{server}/outages").
-            with(:query => {:entity => entity}).
+    req = stub_request(:get, "http://#{server}/outages/#{entity}").
             to_return(:body => response)
 
     result = Flapjack::Diner.outages(entity)
@@ -194,8 +189,7 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of outages for a check on an entity" do
-    req = stub_request(:get, "http://#{server}/outages").
-            with(:query => {:check => {entity => check}}).
+    req = stub_request(:get, "http://#{server}/outages/#{entity}/#{check}").
             to_return(:body => response)
 
     result = Flapjack::Diner.outages(entity, :check => check)
@@ -216,8 +210,7 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of downtimes for all checks on an entity" do
-    req = stub_request(:get, "http://#{server}/downtime").
-            with(:query => {:entity => entity}).
+    req = stub_request(:get, "http://#{server}/downtime/#{entity}").
             to_return(:body => response)
 
     result = Flapjack::Diner.downtime(entity)
@@ -230,8 +223,8 @@ describe Flapjack::Diner do
     start  = Time.iso8601('2011-08-01T00:00:00+10:00')
     finish = Time.iso8601('2011-08-31T00:00:00+10:00')
 
-    req = stub_request(:get, "http://#{server}/downtime").
-            with(:query => {:entity => entity, :start_time => start.iso8601, :end_time => finish.iso8601}).
+    req = stub_request(:get, "http://#{server}/downtime/#{entity}").
+            with(:query => {:start_time => start.iso8601, :end_time => finish.iso8601}).
             to_return(:body => response)
 
     result = Flapjack::Diner.downtime(entity, :start_time => start, :end_time => finish)
@@ -241,8 +234,7 @@ describe Flapjack::Diner do
   end
 
   it "returns a list of downtimes for a check on an entity" do
-    req = stub_request(:get, "http://#{server}/downtime").
-            with(:query => {:check => {entity => check}}).
+    req = stub_request(:get, "http://#{server}/downtime/#{entity}/#{check}").
             to_return(:body => response)
 
     result = Flapjack::Diner.downtime(entity, :check => check)

@@ -31,7 +31,7 @@ module Flapjack
 
       def status(entity, options = {})
         check = options.delete(:check)
-        path = check.nil? ? "/status/#{entity}" : "/status/#{entity}/#{check}"
+        path = check.nil? ? "/status/#{escape(entity)}" : "/status/#{escape(entity)}/#{escape(check)}"
         perform_get(path)
       end
 
@@ -119,13 +119,13 @@ module Flapjack
 
       def scheduled_maintenances(entity, options = {})
         check = options.delete(:check)
-        args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
 
-        validate_bulk_params(args) do
+        validate_params(options) do
           validate :query => [:start_time, :end_time], :as => :time
         end
 
-        perform_get('/scheduled_maintenances', args)
+        ec_path = entity_check_path(entity, check)
+        perform_get("/scheduled_maintenances/#{ec_path}", options)
       end
 
       def bulk_scheduled_maintenances(options = {})
@@ -138,13 +138,13 @@ module Flapjack
 
       def unscheduled_maintenances(entity, options = {})
         check = options.delete(:check)
-        args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
 
-        validate_bulk_params(args) do
+        validate_params(options) do
           validate :query => [:start_time, :end_time], :as => :time
         end
 
-        perform_get('/unscheduled_maintenances', args)
+        ec_path = entity_check_path(entity, check)
+        perform_get("/unscheduled_maintenances/#{ec_path}", options)
       end
 
       def bulk_unscheduled_maintenances(options = {})
@@ -157,13 +157,13 @@ module Flapjack
 
       def outages(entity, options = {})
         check = options.delete(:check)
-        args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
 
-        validate_bulk_params(args) do
+        validate_params(options) do
           validate :query => [:start_time, :end_time], :as => :time
         end
 
-        perform_get('/outages', args)
+        ec_path = entity_check_path(entity, check)
+        perform_get("/outages/#{ec_path}", options)
       end
 
       def bulk_outages(options = {})
@@ -176,13 +176,14 @@ module Flapjack
 
       def downtime(entity, options = {})
         check = options.delete(:check)
-        args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
 
-        validate_bulk_params(args) do
+        validate_params(options) do
           validate :query => [:start_time, :end_time], :as => :time
         end
 
-        perform_get('/downtime', args)
+        ec_path = entity_check_path(entity, check)
+
+        perform_get("/downtime/#{ec_path}", options)
       end
 
       def bulk_downtime(options = {})
@@ -374,7 +375,15 @@ module Flapjack
           raise ArgumentError.new("Entity and/or check arguments must be provided")
         end
 
+        validate_params(query, &validation)
+      end
+
+      def validate_params(query = {}, &validation)
         ArgumentValidator.new(query).instance_eval(&validation) if block_given?
+      end
+
+      def entity_check_path(entity, check)
+        check.nil? ? "#{escape(entity)}" : "#{escape(entity)}/#{escape(check)}"
       end
 
       # copied from Rack::Utils -- builds the query string for GETs
