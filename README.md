@@ -524,9 +524,9 @@ Returns a boolean value representing the success or otherwise of the creation of
 Delete a scheduled maintenance period for a check on an entity:
 
 ```ruby
-# end_time (Time object, optional)
+# start_time (Time object, required)
 Flapjack::Diner.delete_scheduled_maintenance!('example.com', 'ping',
-  :end_time => Time.local(2012, 12, 01))
+  :start_time => Time.local(2012, 12, 01))
 ```
 
 Returns a boolean value representing the success or otherwise of the deletion of the scheduled maintenance periods by the server.
@@ -536,9 +536,9 @@ Returns a boolean value representing the success or otherwise of the deletion of
 Delete a scheduled maintenance period for all checks on some entities and specified checks on others.
 
 ```ruby
-# end_time (Time object, optional)
+# start_time (Time object, required)
 Flapjack::Diner.bulk_delete_scheduled_maintenance!(:check => {'example.com' => ['ping', 'ssh']},
-  :end_time => Time.local(2012, 12, 01))
+  :start_time => Time.local(2012, 12, 01))
 ```
 
 Returns a boolean value representing the success or otherwise of the deletion of the scheduled maintenance periods by the server.
