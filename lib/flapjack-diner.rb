@@ -25,6 +25,10 @@ module Flapjack
         perform_get('/entities')
       end
 
+      def create_entities!(params = {})
+        perform_post('/entities', params)
+      end
+
       def checks(entity)
         perform_get("/checks/#{escape(entity)}")
       end
@@ -208,6 +212,10 @@ module Flapjack
 
       def contacts
         perform_get('/contacts')
+      end
+
+      def create_contacts!(params = {})
+        perform_post('/contacts', params)
       end
 
       def contact(contact_id)
