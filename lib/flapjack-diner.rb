@@ -219,7 +219,8 @@ module Flapjack
       end
 
       def create_contacts!(params = {})
-        perform_post('/contacts', params)
+        params = [params] if params.respond_to?(:keys)
+        perform_post('/contacts', {'contacts' => params})
       end
 
       def update_contact!(contact_id, contact)
@@ -264,16 +265,22 @@ module Flapjack
         perform_get("/notification_rules/#{escape(rule_id)}")
       end
 
-      def create_notification_rule!(rule)
-        perform_post('/notification_rules', rule)
+      def create_notification_rule!(rules)
+        rules = [rules] if rules.respond_to?(:keys)
+        perform_post('/notification_rules', {'notification_rules' => rules})
       end
 
       def update_notification_rule!(rule_id, rule)
-        perform_put("/notification_rules/#{escape(rule_id)}", rule)
+        perform_put("/notification_rules/#{escape(rule_id)}", {'notification_rules' => [rule]})
       end
 
       def delete_notification_rule!(rule_id)
         perform_delete("/notification_rules/#{escape(rule_id)}")
+      end
+
+      def create_media!(media)
+        media = [media] if media.respond_to?(:keys)
+        perform_post('/media', {'media' => media})
       end
 
       def contact_media(contact_id)
@@ -317,14 +324,14 @@ module Flapjack
         handle_response(response)
       end
 
-      def perform_post(path, body = {})
+      def perform_post(path, data = {})
         req_uri = build_uri(path)
         if logger
           log_post = "POST #{req_uri}"
-          log_post << "\n  Params: #{body.inspect}" if body
+          log_post << "\n  Params: #{data.inspect}" if data
           logger.info log_post
         end
-        opts = body ? {:body => prepare_nested_query(body).to_json, :headers => {'Content-Type' => 'application/json'}} : {}
+        opts = data ? {:body => prepare_nested_query(data).to_json, :headers => {'Content-Type' => 'application/vnd.api+json'}} : {}
         response = post(req_uri.request_uri, opts)
         handle_response(response)
       end
@@ -336,7 +343,7 @@ module Flapjack
           log_put << "\n  Params: #{body.inspect}" if body
           logger.info log_put
         end
-        opts = body ? {:body => prepare_nested_query(body).to_json, :headers => {'Content-Type' => 'application/json'}} : {}
+        opts = body ? {:body => prepare_nested_query(body).to_json, :headers => {'Content-Type' => 'application/vnd.api+json'}} : {}
         response = put(req_uri.request_uri, opts)
         handle_response(response)
       end
