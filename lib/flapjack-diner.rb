@@ -211,11 +211,17 @@ module Flapjack
       end
 
       def contacts(contact_ids = nil)
-        perform_get('/contacts')
+        location = '/contacts'
+        if contact_ids
+          contact_ids = [contact_ids] unless contact_ids.respond_to?(:each)
+          location += '/' + contact_ids.map {|c| escape(c)}.join(',')
+        end
+        perform_get(location)
       end
 
       def contact(contact_id)
-        perform_get("/contacts/#{escape(contact_id)}")
+        #perform_get("/contacts/#{escape(contact_id)}")
+        contacts([contact_id])
       end
 
       def create_contacts!(params = {})
