@@ -210,7 +210,7 @@ module Flapjack
         perform_delete("/entities/#{escape(entity)}/tags", :tag => tags)
       end
 
-      def contacts
+      def contacts(contact_ids = nil)
         perform_get('/contacts')
       end
 

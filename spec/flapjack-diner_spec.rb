@@ -271,8 +271,8 @@ describe Flapjack::Diner do
 
   it "acknowledges all checks on an entity" do
     req = stub_request(:post, "http://#{server}/acknowledgements").with(
-      :body => {:entity => entity, :summary => 'dealing with it'},
-                :headers => {'Content-Type' => 'application/json'}).to_return(
+      :body => {:entity => entity, :summary => 'dealing with it'}.to_json,
+                :headers => {'Content-Type' => 'application/vnd.api+json'}).to_return(
       :status => 204)
 
     result = Flapjack::Diner.bulk_acknowledge!(:entity => entity, :summary => 'dealing with it')
@@ -282,7 +282,8 @@ describe Flapjack::Diner do
 
   it "acknowledges checks from multiple entities" do
     req = stub_request(:post, "http://#{server}/acknowledgements").with(
-      :body => {:entity => [entity, 'lmn.net'], :summary => 'dealing with it'}).to_return(
+      :body => {:entity => [entity, 'lmn.net'], :summary => 'dealing with it'}.to_json,
+                :headers => {'Content-Type' => 'application/vnd.api+json'}).to_return(
       :status => 204)
 
     result = Flapjack::Diner.bulk_acknowledge!(:entity => [entity, 'lmn.net'], :summary => 'dealing with it')
@@ -328,8 +329,8 @@ describe Flapjack::Diner do
     req = stub_request(:post, "http://#{server}/scheduled_maintenances").
             with(:body => {:check => {entity => check}, :start_time => start_time.iso8601,
                            :duration => duration, :summary => summary},
-                 :headers => {'Content-Type'=>'application/json'}).
-            to_return(:status => 204)
+                 :headers => {'Content-Type' => 'application/vnd.api+json'}).to_return(
+            :status => 204)
 
     result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
       :start_time => start_time, :duration => duration, :summary => summary)
@@ -345,7 +346,7 @@ describe Flapjack::Diner do
     req = stub_request(:post, "http://#{server}/scheduled_maintenances").
             with(:body => {:entity => entity, :start_time => start_time.iso8601,
                            :duration => duration, :summary => summary},
-                 :headers => {'Content-Type'=>'application/json'}).
+                 :headers => {'Content-Type' => 'application/vnd.api+json'}).
             to_return(:status => 204)
 
     result = Flapjack::Diner.bulk_create_scheduled_maintenance!(:entity => entity,
@@ -362,7 +363,7 @@ describe Flapjack::Diner do
     req = stub_request(:post, "http://#{server}/scheduled_maintenances").
             with(:body => {:check => {entity => 'ping', 'pqr.org' => 'ssh'}, :start_time => start_time.iso8601,
                            :duration => duration, :summary => summary},
-                 :headers => {'Content-Type'=>'application/json'}).
+                 :headers => {'Content-Type' => 'application/vnd.api+json'}).
             to_return(:status => 204)
 
     result = Flapjack::Diner.bulk_create_scheduled_maintenance!(:check => {entity => 'ping', 'pqr.org' => 'ssh'},
@@ -505,8 +506,8 @@ describe Flapjack::Diner do
     rule_result = rule_data.merge('id' => '00001')
 
     req = stub_request(:post, "http://#{server}/notification_rules").
-            with(:body => rule_data,
-                 :headers => {'Content-Type'=>'application/json'}).
+            with(:body => {'notification_rules'=>[rule_data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:body => rule_result.to_json)
 
     result = Flapjack::Diner.create_notification_rule!(rule_data)
@@ -520,8 +521,8 @@ describe Flapjack::Diner do
     rule_data_with_id = rule_data.merge('id' => rule_id)
 
     req = stub_request(:put, "http://#{server}/notification_rules/#{rule_id}").
-            with(:body => rule_data_with_id,
-                 :headers => {'Content-Type'=>'application/json'}).
+            with(:body => {'notification_rules' => [rule_data_with_id]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:body => rule_data_with_id.to_json)
 
     result = Flapjack::Diner.update_notification_rule!(rule_id, rule_data_with_id)
