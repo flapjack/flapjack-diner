@@ -214,12 +214,20 @@ module Flapjack
         perform_get('/contacts')
       end
 
+      def contact(contact_id)
+        perform_get("/contacts/#{escape(contact_id)}")
+      end
+
       def create_contacts!(params = {})
         perform_post('/contacts', params)
       end
 
-      def contact(contact_id)
-        perform_get("/contacts/#{escape(contact_id)}")
+      def update_contact!(contact_id, contact)
+        perform_put("/contacts/#{escape(contact_id)}", contact)
+      end
+
+      def delete_contact!(contact_id)
+        perform_delete("/contacts/#{escape(contact_id)}")
       end
 
       def contact_tags(contact_id)
