@@ -8,7 +8,7 @@ require "flapjack-diner/argument_validator"
 
 module Flapjack
   module Diner
-    SUCCESS_STATUS_CODES = [200, 204]
+    SUCCESS_STATUS_CODES = [200, 201, 204]
 
     include HTTParty
 
@@ -26,11 +26,14 @@ module Flapjack
       end
 
       def create_entities!(params = {})
-        perform_post('/entities', params)
+        params = [params] if params.respond_to?(:keys)
+        perform_post('/entities', {'entities' => params})
       end
 
       def checks(entity)
-        perform_get("/checks/#{escape(entity)}")
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_get("/checks/#{escape(entity)}")
       end
 
       def status(entity, options = {})
@@ -199,11 +202,15 @@ module Flapjack
       end
 
       def entity_tags(entity)
-        perform_get("/entities/#{escape(entity)}/tags")
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_get("/entities/#{escape(entity)}/tags")
       end
 
       def add_entity_tags!(entity, *tags)
-        perform_post("/entities/#{escape(entity)}/tags", :tag => tags)
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_post("/entities/#{escape(entity)}/tags", :tag => tags)
       end
 
       def delete_entity_tags!(entity, *tags)
@@ -237,34 +244,67 @@ module Flapjack
         perform_delete("/contacts/#{escape(contact_id)}")
       end
 
+      # PATCH /contacts/a346e5f8-8260-43bd-820b-fcb91ba6c940
+      # [{"op":"add","path":"/contacts/0/links/entities/-","value":"foo-app-01.example.com"}]
+      def add_entities_to_contact!(contact_id, entities)
+        entities = [entities] if entities.respond_to?(:keys)
+        entities.each do |entity_id|
+          perform_patch("/contacts/#{escape(contact_id)}",
+                        [{:op    => 'add',
+                          :path  => '/contacts/0/links/entities/-',
+                          :value => entity_id}])
+        end
+      end
+
+      def get_entities_for_contacts(contact_ids)
+        contact_ids = [contact_ids] unless contact_ids.respond_to?(:each)
+        result = perform_get('/contacts/' + contact_ids.map {|c| escape(c)}.join(','))
+        result['linked']['entities']
+      end
+
       def contact_tags(contact_id)
-        perform_get("/contacts/#{escape(contact_id)}/tags")
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_get("/contacts/#{escape(contact_id)}/tags")
       end
 
       def contact_entitytags(contact_id)
-        perform_get("/contacts/#{escape(contact_id)}/entity_tags")
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_get("/contacts/#{escape(contact_id)}/entity_tags")
       end
 
       def add_contact_tags!(contact_id, *tags)
-        perform_post("/contacts/#{escape(contact_id)}/tags", :tag => tags)
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_post("/contacts/#{escape(contact_id)}/tags", :tag => tags)
       end
 
       # TODO better checking of provided data
       def add_contact_entitytags!(contact_id, entity_tags = {})
-        perform_post("/contacts/#{escape(contact_id)}/entity_tags", :entity => entity_tags)
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_post("/contacts/#{escape(contact_id)}/entity_tags", :entity => entity_tags)
       end
 
       def delete_contact_tags!(contact_id, *tags)
-        perform_delete("/contacts/#{escape(contact_id)}/tags", :tag => tags)
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_delete("/contacts/#{escape(contact_id)}/tags", :tag => tags)
       end
 
       # TODO better checking of provided data
       def delete_contact_entitytags!(contact_id, entity_tags = {})
-        perform_delete("/contacts/#{escape(contact_id)}/entity_tags", :entity => entity_tags)
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_delete("/contacts/#{escape(contact_id)}/entity_tags", :entity => entity_tags)
       end
 
       def notification_rules(contact_id)
-        perform_get("/contacts/#{escape(contact_id)}/notification_rules")
+        # FIXME: use GET /contacts/:id (and possibly GET /notification_rules/:id if needs be, but
+        # should be in linked hash)
+        raise "unimplemented"
+        #perform_get("/contacts/#{escape(contact_id)}/notification_rules")
       end
 
       def notification_rule(rule_id)
@@ -290,31 +330,45 @@ module Flapjack
       end
 
       def contact_media(contact_id)
-        perform_get("/contacts/#{escape(contact_id)}/media")
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_get("/contacts/#{escape(contact_id)}/media")
       end
 
       def contact_medium(contact_id, media_type)
-        perform_get("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}")
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_get("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}")
       end
 
       def update_contact_medium!(contact_id, media_type, media)
-        perform_put("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}", media)
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_put("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}", media)
       end
 
       def delete_contact_medium!(contact_id, media_type)
-        perform_delete("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}")
+        # FIXME: make work with new jsonapi endpoints
+        raise "unimplemented"
+        #perform_delete("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}")
       end
 
       def contact_timezone(contact_id)
-        perform_get("/contacts/#{escape(contact_id)}/timezone")
+        # FIXME: make work with new jsonapi endpoints (or remove?)
+        raise "unimplemented"
+        #perform_get("/contacts/#{escape(contact_id)}/timezone")
       end
 
       def update_contact_timezone!(contact_id, timezone)
-        perform_put("/contacts/#{escape(contact_id)}/timezone", :timezone => timezone)
+        # FIXME: make work with new jsonapi endpoints (or remove?)
+        raise "unimplemented"
+        #perform_put("/contacts/#{escape(contact_id)}/timezone", :timezone => timezone)
       end
 
       def delete_contact_timezone!(contact_id)
-        perform_delete("/contacts/#{escape(contact_id)}/timezone")
+        # FIXME: make work with new jsonapi endpoints (or remove?)
+        raise "unimplemented"
+        #perform_delete("/contacts/#{escape(contact_id)}/timezone")
       end
 
       def last_error
@@ -339,6 +393,19 @@ module Flapjack
         end
         opts = data ? {:body => prepare_nested_query(data).to_json, :headers => {'Content-Type' => 'application/vnd.api+json'}} : {}
         response = post(req_uri.request_uri, opts)
+        handle_response(response)
+      end
+
+      def perform_patch(path, data = {})
+        req_uri = build_uri(path)
+        if logger
+          log_patch = "PATCH #{req_uri}"
+          log_patch << "\n  Params: #{data.inspect}" if data
+          logger.info log_patch
+        end
+        opts = data ? {:body    => prepare_nested_query(data).to_json,
+                       :headers => {'Content-Type' => 'application/json-patch+json'}} : {}
+        response = patch(req_uri.request_uri, opts)
         handle_response(response)
       end
 
