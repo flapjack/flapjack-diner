@@ -193,312 +193,162 @@ describe Flapjack::Diner do
   context 'reports' do
     context 'read' do
 
-      it "submits a GET request for a status report on all entities" do
-        req = stub_request(:get, "http://#{server}/status_report/entities").to_return(
-          :body => response)
+      ['status', 'scheduled_maintenance', 'unscheduled_maintenance', 'downtime', 'outage'].each do |report_type|
 
-        result = Flapjack::Diner.status_report_entities
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
+        it "submits a GET request for a #{report_type} report on all entities" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/entities").to_return(
+            :body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a GET request for a #{report_type} report on one entity" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/entities/72").to_return(
+            :body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym, '72')
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a GET request for a #{report_type} report on several entities" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/entities/72,150").to_return(
+            :body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym, '72', '150')
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a GET request for a #{report_type} report on all checks" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks").to_return(
+            :body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a GET request for a #{report_type} report on one check" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com:SSH").to_return(
+            :body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
+            'example.com:SSH')
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a GET request for a #{report_type} report on several checks" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com:SSH,example2.com:PING").to_return(
+            :body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
+            'example.com:SSH', 'example2.com:PING')
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
       end
 
-      it "submits a GET request for a status report on one entity" do
-        req = stub_request(:get, "http://#{server}/status_report/entities/72").to_return(
-          :body => response)
+      ['scheduled_maintenance', 'unscheduled_maintenance', 'downtime', 'outage'].each do |report_type|
 
-        result = Flapjack::Diner.status_report_entities('72')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
+        let(:start_time) { Time.now }
+        let(:end_time)   { start_time + (60 * 60 * 12) }
+
+        it "submits a time-limited GET request for a #{report_type} report on all entities" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/entities").
+            with(:query => {:start_time => start_time.iso8601, :end_time => end_time.iso8601}).
+            to_return(:body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym,
+            :start_time => start_time, :end_time => end_time)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a time-limited GET request for a #{report_type} report on one entity" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/entities/72").
+            with(:query => {:start_time => start_time.iso8601, :end_time => end_time.iso8601}).
+            to_return(:body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym,
+            '72', :start_time => start_time, :end_time => end_time)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a time-limited GET request for a #{report_type} report on several entities" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/entities/72,150").
+            with(:query => {:start_time => start_time.iso8601, :end_time => end_time.iso8601}).
+            to_return(:body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym,
+            '72', '150', :start_time => start_time, :end_time => end_time)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a time-limited GET request for a #{report_type} report on all checks" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks").
+            with(:query => {:start_time => start_time.iso8601, :end_time => end_time.iso8601}).
+            to_return(:body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
+            :start_time => start_time, :end_time => end_time)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a time-limited GET request for a #{report_type} report on one check" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com:SSH").
+            with(:query => {:start_time => start_time.iso8601, :end_time => end_time.iso8601}).
+            to_return(:body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
+            'example.com:SSH', :start_time => start_time, :end_time => end_time)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
+        it "submits a time-limited GET request for a #{report_type} report on several checks" do
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com:SSH,example2.com:PING").
+            with(:query => {:start_time => start_time.iso8601, :end_time => end_time.iso8601}).
+            to_return(:body => response)
+
+          result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
+            'example.com:SSH', 'example2.com:PING',
+            :start_time => start_time, :end_time => end_time)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should == response_body
+        end
+
       end
-
-      it "submits a GET request for a status report on several entities" do
-        req = stub_request(:get, "http://#{server}/status_report/entities/72,150").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.status_report_entities('72', '150')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a status report on all checks" do
-        req = stub_request(:get, "http://#{server}/status_report/checks").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.status_report_checks
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a status report on one entity" do
-        req = stub_request(:get, "http://#{server}/status_report/checks/example.com:SSH").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.status_report_checks('example.com:SSH')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a status report on several entities" do
-        req = stub_request(:get, "http://#{server}/status_report/checks/example.com:SSH,example2.com:PING").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.status_report_checks('example.com:SSH', 'example2.com:PING')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a scheduled maintenance report on all entities" do
-        req = stub_request(:get, "http://#{server}/scheduled_maintenance_report/entities").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.scheduled_maintenance_report_entities
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a scheduled maintenance report on one entity" do
-        req = stub_request(:get, "http://#{server}/scheduled_maintenance_report/entities/72").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.scheduled_maintenance_report_entities('72')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a scheduled maintenance report on several entities" do
-        req = stub_request(:get, "http://#{server}/scheduled_maintenance_report/entities/72,150").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.scheduled_maintenance_report_entities('72', '150')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a scheduled maintenance report on all checks" do
-        req = stub_request(:get, "http://#{server}/scheduled_maintenance_report/checks").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.scheduled_maintenance_report_checks
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a scheduled maintenance report on one entity" do
-        req = stub_request(:get, "http://#{server}/scheduled_maintenance_report/checks/example.com:SSH").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.scheduled_maintenance_report_checks('example.com:SSH')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for a scheduled maintenance report on several entities" do
-        req = stub_request(:get, "http://#{server}/scheduled_maintenance_report/checks/example.com:SSH,example2.com:PING").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.scheduled_maintenance_report_checks('example.com:SSH', 'example2.com:PING')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      # TODO test one of the sched_maint_report calls with valid & invalid start_time
-
-      it "submits a GET request for an unscheduled maintenance report on all entities" do
-        req = stub_request(:get, "http://#{server}/unscheduled_maintenance_report/entities").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.unscheduled_maintenance_report_entities
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for an unscheduled maintenance report on one entity" do
-        req = stub_request(:get, "http://#{server}/unscheduled_maintenance_report/entities/72").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.unscheduled_maintenance_report_entities('72')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for an unscheduled maintenance report on several entities" do
-        req = stub_request(:get, "http://#{server}/unscheduled_maintenance_report/entities/72,150").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.unscheduled_maintenance_report_entities('72', '150')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for an unscheduled maintenance report on all checks" do
-        req = stub_request(:get, "http://#{server}/unscheduled_maintenance_report/checks").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.unscheduled_maintenance_report_checks
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for an unscheduled maintenance report on one entity" do
-        req = stub_request(:get, "http://#{server}/unscheduled_maintenance_report/checks/example.com:SSH").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.unscheduled_maintenance_report_checks('example.com:SSH')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      it "submits a GET request for an unscheduled maintenance report on several entities" do
-        req = stub_request(:get, "http://#{server}/unscheduled_maintenance_report/checks/example.com:SSH,example2.com:PING").to_return(
-          :body => response)
-
-        result = Flapjack::Diner.unscheduled_maintenance_report_checks('example.com:SSH', 'example2.com:PING')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should == response_body
-      end
-
-      # TODO test one of the sched_maint_report calls with valid & invalid end_time
 
     end
   end
 
-  it "returns a json list of entities from a non-standard port" do
-    Flapjack::Diner.base_uri('flapjack.com:54321')
+  # it "returns a json list of entities from a non-standard port" do
+  #   Flapjack::Diner.base_uri('flapjack.com:54321')
 
-    req = stub_request(:get, "http://#{server}:54321/entities").to_return(
-      :body => response)
+  #   req = stub_request(:get, "http://#{server}:54321/entities").to_return(
+  #     :body => response)
 
-    result = Flapjack::Diner.entities
-    req.should have_been_requested
-    result.should_not be_nil
-    result.should == response_body
-  end
-
-  # it "returns a list of unscheduled maintenance periods for all checks on an entity" do
-  #   req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}").
-  #           to_return(:body => response)
-
-  #   result = Flapjack::Diner.unscheduled_maintenances(entity)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of unscheduled maintenance periods for a check on an entity" do
-  #   req = stub_request(:get, "http://#{server}/unscheduled_maintenances/#{entity}/#{check}").
-  #           to_return(:body => response)
-
-  #   result = Flapjack::Diner.unscheduled_maintenances(entity, :check => check)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of unscheduled maintenance periods for a bulk query" do
-  #   req = stub_request(:get, "http://#{server}/unscheduled_maintenances").
-  #     with(:query => {:entity => 'abc.net', :check => {'def.org' => 'ping'}}).
-  #     to_return(:body => response)
-
-  #   result = Flapjack::Diner.bulk_unscheduled_maintenances(:entity => 'abc.net', :check => {'def.org' => 'ping'})
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of outages for all checks on an entity" do
-  #   req = stub_request(:get, "http://#{server}/outages/#{entity}").
-  #           to_return(:body => response)
-
-  #   result = Flapjack::Diner.outages(entity)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of outages for a check on an entity" do
-  #   req = stub_request(:get, "http://#{server}/outages/#{entity}/#{check}").
-  #           to_return(:body => response)
-
-  #   result = Flapjack::Diner.outages(entity, :check => check)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of outages for a bulk query" do
-  #   req = stub_request(:get, "http://#{server}/outages").
-  #     with(:query => {:entity => 'abc.net', :check => {'def.org' => 'ping'}}).
-  #     to_return(:body => response)
-
-  #   result = Flapjack::Diner.bulk_outages(:entity => 'abc.net', :check => {'def.org' => 'ping'})
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of downtimes for all checks on an entity" do
-  #   req = stub_request(:get, "http://#{server}/downtime/#{entity}").
-  #           to_return(:body => response)
-
-  #   result = Flapjack::Diner.downtime(entity)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of downtimes for all checks on an entity between two times" do
-  #   start  = Time.iso8601('2011-08-01T00:00:00+10:00')
-  #   finish = Time.iso8601('2011-08-31T00:00:00+10:00')
-
-  #   req = stub_request(:get, "http://#{server}/downtime/#{entity}").
-  #           with(:query => {:start_time => start.iso8601, :end_time => finish.iso8601}).
-  #           to_return(:body => response)
-
-  #   result = Flapjack::Diner.downtime(entity, :start_time => start, :end_time => finish)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of downtimes for a check on an entity" do
-  #   req = stub_request(:get, "http://#{server}/downtime/#{entity}/#{check}").
-  #           to_return(:body => response)
-
-  #   result = Flapjack::Diner.downtime(entity, :check => check)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a list of downtimes for a bulk query between two times" do
-  #   start  = Time.iso8601('2011-08-01T00:00:00+10:00')
-  #   finish = Time.iso8601('2011-08-31T00:00:00+10:00')
-
-  #   req = stub_request(:get, "http://#{server}/downtime").
-  #     with(:query => {:entity => 'abc.net', :check => {'def.org' => 'ping'},
-  #                     :start_time => start.iso8601, :end_time => finish.iso8601}).
-  #     to_return(:body => response)
-
-  #   result = Flapjack::Diner.bulk_downtime(:entity => 'abc.net', :check => {'def.org' => 'ping'},
-  #                                          :start_time => start, :end_time => finish)
+  #   result = Flapjack::Diner.entities
   #   req.should have_been_requested
   #   result.should_not be_nil
   #   result.should == response_body

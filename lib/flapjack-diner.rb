@@ -40,6 +40,24 @@ module Flapjack
       #   perform_delete("/contacts/#{escape(contact_id)}")
       # end
 
+      # # PATCH /contacts/a346e5f8-8260-43bd-820b-fcb91ba6c940
+      # # [{"op":"add","path":"/contacts/0/links/entities/-","value":"foo-app-01.example.com"}]
+      # def add_entities_to_contact!(contact_id, entities)
+      #   entities = [entities] if entities.respond_to?(:keys)
+      #   entities.each do |entity_id|
+      #     perform_patch("/contacts/#{escape(contact_id)}",
+      #                   [{:op    => 'add',
+      #                     :path  => '/contacts/0/links/entities/-',
+      #                     :value => entity_id}])
+      #   end
+      # end
+
+      # def get_entities_for_contacts(contact_ids)
+      #   contact_ids = [contact_ids] unless contact_ids.respond_to?(:each)
+      #   result = perform_get('/contacts/' + contact_ids.map {|c| escape(c)}.join(','))
+      #   result['linked']['entities']
+      # end
+
 
       # 2: Media
 
@@ -188,99 +206,18 @@ module Flapjack
         perform_get('/status_report/checks', *ids)
       end
 
-      def scheduled_maintenance_report_entities(*args)
-        if args.last.is_a?(Hash)
-          validate_params(args.last) do
-            validate :query => [:start_time, :end_time], :as => :time
+      ['scheduled_maintenance', 'unscheduled_maintenance', 'downtime', 'outage'].each do |report_type|
+        ['entities', 'checks'].each do |data_type|
+          define_method("#{report_type}_report_#{data_type}") do |*args|
+            if args.last.is_a?(Hash)
+              validate_params(args.last) do
+                validate :query => [:start_time, :end_time], :as => :time
+              end
+            end
+            perform_get("/#{report_type}_report/#{data_type}", *args)
           end
         end
-        perform_get('/scheduled_maintenance_report/entities', *args)
       end
-
-      def scheduled_maintenance_report_checks(*args)
-        if args.last.is_a?(Hash)
-          validate_params(args.last) do
-            validate :query => [:start_time, :end_time], :as => :time
-          end
-        end
-        perform_get('/scheduled_maintenance_report/checks', *args)
-      end
-
-      def unscheduled_maintenance_report_entities(*args)
-        if args.last.is_a?(Hash)
-          validate_params(args.last) do
-            validate :query => [:start_time, :end_time], :as => :time
-          end
-        end
-        perform_get('/unscheduled_maintenance_report/entities', *args)
-      end
-
-      def unscheduled_maintenance_report_checks(*args)
-        if args.last.is_a?(Hash)
-          validate_params(args.last) do
-            validate :query => [:start_time, :end_time], :as => :time
-          end
-        end
-        perform_get('/unscheduled_maintenance_report/checks', *args)
-      end
-
-      # def outages(entity, options = {})
-      #   check = options.delete(:check)
-
-      #   validate_params(options) do
-      #     validate :query => [:start_time, :end_time], :as => :time
-      #   end
-
-      #   ec_path = entity_check_path(entity, check)
-      #   perform_get("/outages/#{ec_path}", options)
-      # end
-
-      # def bulk_outages(options = {})
-      #   validate_bulk_params(options) do
-      #     validate :query => [:start_time, :end_time], :as => :time
-      #   end
-
-      #   perform_get('/outages', options)
-      # end
-
-      # def downtime(entity, options = {})
-      #   check = options.delete(:check)
-
-      #   validate_params(options) do
-      #     validate :query => [:start_time, :end_time], :as => :time
-      #   end
-
-      #   ec_path = entity_check_path(entity, check)
-
-      #   perform_get("/downtime/#{ec_path}", options)
-      # end
-
-      # def bulk_downtime(options = {})
-      #   validate_bulk_params(options) do
-      #     validate :query => [:start_time, :end_time], :as => :time
-      #   end
-
-      #   perform_get('/downtime', options)
-      # end
-
-      # # PATCH /contacts/a346e5f8-8260-43bd-820b-fcb91ba6c940
-      # # [{"op":"add","path":"/contacts/0/links/entities/-","value":"foo-app-01.example.com"}]
-      # def add_entities_to_contact!(contact_id, entities)
-      #   entities = [entities] if entities.respond_to?(:keys)
-      #   entities.each do |entity_id|
-      #     perform_patch("/contacts/#{escape(contact_id)}",
-      #                   [{:op    => 'add',
-      #                     :path  => '/contacts/0/links/entities/-',
-      #                     :value => entity_id}])
-      #   end
-      # end
-
-      # def get_entities_for_contacts(contact_ids)
-      #   contact_ids = [contact_ids] unless contact_ids.respond_to?(:each)
-      #   result = perform_get('/contacts/' + contact_ids.map {|c| escape(c)}.join(','))
-      #   result['linked']['entities']
-      # end
-
 
       def last_error
         @last_error
