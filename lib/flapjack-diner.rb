@@ -36,10 +36,6 @@ module Flapjack
       #   perform_put("/contacts/#{escape(contact_id)}", contact)
       # end
 
-      # def delete_contact!(contact_id)
-      #   perform_delete("/contacts/#{escape(contact_id)}")
-      # end
-
       # # PATCH /contacts/a346e5f8-8260-43bd-820b-fcb91ba6c940
       # # [{"op":"add","path":"/contacts/0/links/entities/-","value":"foo-app-01.example.com"}]
       # def add_entities_to_contact!(contact_id, entities)
@@ -52,11 +48,14 @@ module Flapjack
       #   end
       # end
 
-      # def get_entities_for_contacts(contact_ids)
-      #   contact_ids = [contact_ids] unless contact_ids.respond_to?(:each)
-      #   result = perform_get('/contacts/' + contact_ids.map {|c| escape(c)}.join(','))
-      #   result['linked']['entities']
+      # def delete_contact!(contact_id)
+      #   perform_delete("/contacts/#{escape(contact_id)}")
       # end
+
+      def delete_contacts(*ids)
+        # TODO error if ids.empty?
+        perform_delete('/contacts', *ids)
+      end
 
 
       # 2: Media
@@ -76,11 +75,10 @@ module Flapjack
       #   #perform_put("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}", media)
       # end
 
-      # def delete_contact_medium!(contact_id, media_type)
-      #   # FIXME: make work with new jsonapi endpoints
-      #   raise "unimplemented"
-      #   #perform_delete("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}")
-      # end
+      def delete_media(*ids)
+        # TODO error if ids.empty?
+        perform_delete('/media', *ids)
+      end
 
 
       # 3: Notification Rules
@@ -90,17 +88,18 @@ module Flapjack
       #   perform_post('/notification_rules', {'notification_rules' => rules})
       # end
 
-      # def update_notification_rule!(rule_id, rule)
-      #   perform_put("/notification_rules/#{escape(rule_id)}", {'notification_rules' => [rule]})
-      # end
-
       def notification_rules(*ids)
         perform_get('/notification_rules', *ids)
       end
 
-      # def delete_notification_rule!(rule_id)
-      #   perform_delete("/notification_rules/#{escape(rule_id)}")
+      # def update_notification_rule!(rule_id, rule)
+      #   perform_put("/notification_rules/#{escape(rule_id)}", {'notification_rules' => [rule]})
       # end
+
+      def delete_notification_rules(*ids)
+        # TODO error if ids.empty?
+        perform_delete('/notification_rules', *ids)
+      end
 
 
       # 4: Entities
@@ -114,87 +113,65 @@ module Flapjack
         perform_get('/entities', *ids)
       end
 
+      ['entities', 'checks'].each do |data_type|
 
+        define_method("create_scheduled_maintenances_#{data_type}") do |*args|
+          # TODO raise err if args.empty? or any arg is not a hash
+          args.each do |params|
+            validate_params(params) do
+              validate :query => :start_time, :as => [:required, :time]
+              validate :query => :duration, :as => [:required, :integer]
+            end
+          end
+          perform_post("/scheduled_maintenances/#{data_type}", *args)
+        end
 
-      # def create_scheduled_maintenance!(entity, check, options = {})
-      #   args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
+        define_method("create_unscheduled_maintenances_#{data_type}") do |*args|
+          # TODO raise err if args.empty? or any arg is not a hash
+          args.each do |params|
+            validate_params(params) do
+              # TODO check what goes here
+            end
+          end
+          perform_post("/unscheduled_maintenances/#{data_type}", *args)
+        end
 
-      #   validate_bulk_params(args) do
-      #     validate :query => :start_time, :as => [:required, :time]
-      #     validate :query => :duration, :as => [:required, :integer]
-      #   end
+        define_method("create_test_notifications_#{data_type}") do |*args|
+          # TODO raise err if args.empty? or any arg is not a hash
+          args.each do |params|
+            validate_params(params) do
+              # TODO check what goes here
+            end
+          end
+          perform_post("/test_notifications/#{data_type}", *args)
+        end
 
-      #   perform_post('/scheduled_maintenances', args)
-      # end
+        define_method("delete_scheduled_maintenances_#{data_type}") do |*args|
+          if args.last.is_a?(Hash)
+            params = args.pop
+            validate_params(params) do
+              validate :query => [:start_time], :as => [:time, :required]
+            end
+          else
+            params = {}
+          end
+          # TODO err if args.empty? or params.empty?
+          perform_delete("/scheduled_maintenances/#{data_type}", *args, params)
+        end
 
-      # def bulk_create_scheduled_maintenance!(options = {})
-      #   validate_bulk_params(options) do
-      #     validate :query => :start_time, :as => [:required, :time]
-      #     validate :query => :duration, :as => [:required, :integer]
-      #   end
-
-      #   perform_post('/scheduled_maintenances', options)
-      # end
-
-
-      # def delete_scheduled_maintenance!(entity, check, options = {})
-      #   args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
-
-      #   validate_bulk_params(args) do
-      #     validate :query => :start_time, :as => :required
-      #   end
-
-      #   perform_delete('/scheduled_maintenances', args)
-      # end
-
-      # def bulk_delete_scheduled_maintenance!(options = {})
-      #   validate_bulk_params(options) do
-      #     validate :query => :start_time, :as => :required
-      #   end
-
-      #   perform_delete('/scheduled_maintenances', options)
-      # end
-
-
-      # # maybe rename 'create_acknowledgement!' ?
-      # def acknowledge!(entity, check, options = {})
-      #   args = options.merge(:check => {entity => check})
-      #   validate_bulk_params(args)
-      #   perform_post('/acknowledgements', args)
-      # end
-
-      # def bulk_acknowledge!(options = {})
-      #   validate_bulk_params(options)
-      #   perform_post('/acknowledgements', options)
-      # end
-
-      # def delete_unscheduled_maintenance!(entity, check, options = {})
-      #   args = options.merge( check ? {:check => {entity => check}} : {:entity => entity} )
-      #   validate_bulk_params(args) do
-      #     validate :query => :end_time, :as => :time
-      #   end
-      #   perform_delete('/unscheduled_maintenances', args)
-      # end
-
-      # def bulk_delete_unscheduled_maintenance!(options)
-      #   validate_bulk_params(options) do
-      #     validate :query => :end_time, :as => :time
-      #   end
-      #   perform_delete('/unscheduled_maintenances', options)
-      # end
-
-
-      # # maybe rename 'create_test_notifications!' ?
-      # def test_notifications!(entity, check, options = {})
-      #   args = options.merge(:check => {entity => check})
-      #   validate_bulk_params(args)
-      #   perform_post('/test_notifications', args)
-      # end
-
-      # def bulk_test_notifications!(options = {})
-      #   validate_bulk_params(options)
-      #   perform_post('/test_notifications', options)
-      # end
+        define_method("delete_unscheduled_maintenances_#{data_type}") do |*args|
+          if args.last.is_a?(Hash)
+            params = args.pop
+            validate_params(params) do
+              validate :query => [:end_time], :as => :time
+            end
+          else
+            params = {}
+          end
+          # TODO err if args.empty?
+          perform_delete("/unscheduled_maintenances/#{data_type}", *args, params)
+        end
+      end
 
 
       # 6: Reports
@@ -233,8 +210,9 @@ module Flapjack
         handle_response(response)
       end
 
-      def perform_post(path, body = {})
-        req_uri = build_uri(path, nil, body)
+      def perform_post(path, *args)
+        data = args.last.is_a?(Hash) ? args.pop : {}
+        req_uri = build_uri(path, args)
         if logger
           log_post = "POST #{req_uri}"
           log_post << "\n  Params: #{data.inspect}" if data
@@ -246,41 +224,37 @@ module Flapjack
       end
 
       def perform_patch(path, *args)
-        params = args.last.is_a?(Hash) ? args.pop : {}
-        req_uri = build_uri(path, args, params)
-        if logger
-          log_patch = "PATCH #{req_uri}"
-          log_patch << "\n  Params: #{data.inspect}" if data
-          logger.info log_patch
-        end
-        opts = data ? {:body    => prepare_nested_query(data).to_json,
-                       :headers => {'Content-Type' => 'application/json-patch+json'}} : {}
-        response = patch(req_uri.request_uri, opts)
-        handle_response(response)
+        data = args.last.is_a?(Hash) ? args.pop : {}
+        req_uri = build_uri(path, args)
+        # if logger
+        #   log_patch = "PATCH #{req_uri}"
+        #   log_patch << "\n  Params: #{data.inspect}" if data
+        #   logger.info log_patch
+        # end
+        # opts = data ? {:body    => prepare_nested_query(data).to_json,
+        #                :headers => {'Content-Type' => 'application/json-patch+json'}} : {}
+        # response = patch(req_uri.request_uri, opts)
+        # handle_response(response)
       end
 
       def perform_put(path, *args)
-        params = args.last.is_a?(Hash) ? args.pop : {}
-        req_uri = build_uri(path, args, params)
+        data = args.last.is_a?(Hash) ? args.pop : {}
+        req_uri = build_uri(path, args)
         if logger
           log_put = "PUT #{req_uri}"
-          log_put << "\n  Params: #{body.inspect}" if body
+          log_put << "\n  Params: #{data.inspect}" if data
           logger.info log_put
         end
-        opts = body ? {:body => prepare_nested_query(body).to_json, :headers => {'Content-Type' => 'application/vnd.api+json'}} : {}
+        opts = data ? {:body => prepare_nested_query(data).to_json, :headers => {'Content-Type' => 'application/vnd.api+json'}} : {}
         response = put(req_uri.request_uri, opts)
         handle_response(response)
       end
 
-      def perform_delete(path, ids)
-        req_uri = build_uri(path, ids)
-        if logger
-          log_delete = "DELETE #{req_uri}"
-          log_delete << "\n  Params: #{body.inspect}" if body
-          logger.info log_delete
-        end
-        opts = body ? {:body => prepare_nested_query(body).to_json, :headers => {'Content-Type' => 'application/json'}} : {}
-        response = delete(req_uri.request_uri, opts)
+      def perform_delete(path, *args)
+        params = args.last.is_a?(Hash) ? args.pop : {}
+        req_uri = build_uri(path, args, params)
+        logger.info "DELETE #{req_uri}" if logger
+        response = delete(req_uri.request_uri)
         handle_response(response)
       end
 
@@ -301,37 +275,9 @@ module Flapjack
         parsed_response
       end
 
-      # def validate_bulk_params(query = {}, &validation)
-      #   errors = []
-
-      #   entities = query[:entity]
-      #   checks   = query[:check]
-
-      #   if entities && !entities.is_a?(String) &&
-      #      (!entities.is_a?(Array) || !entities.all? {|e| e.is_a?(String)})
-      #     raise ArgumentError.new("Entity argument must be a String, or an Array of Strings")
-      #   end
-
-      #   if checks && (!checks.is_a?(Hash) || !checks.all? {|k, v|
-      #     k.is_a?(String) && (v.is_a?(String) || (v.is_a?(Array) && v.all?{|vv| vv.is_a?(String)}))
-      #   })
-      #     raise ArgumentError.new("Check argument must be a Hash with keys String, values either String or Array of Strings")
-      #   end
-
-      #   if entities.nil? && checks.nil?
-      #     raise ArgumentError.new("Entity and/or check arguments must be provided")
-      #   end
-
-      #   validate_params(query, &validation)
-      # end
-
       def validate_params(query = {}, &validation)
         ArgumentValidator.new(query).instance_eval(&validation) if block_given?
       end
-
-      # def entity_check_path(entity, check)
-      #   check.nil? ? "#{escape(entity)}" : "#{escape(entity)}/#{escape(check)}"
-      # end
 
       # copied from Rack::Utils -- builds the query string for GETs
       def build_nested_query(value, prefix = nil)
@@ -397,7 +343,7 @@ module Flapjack
         [protocol, host, port]
       end
 
-      def build_uri(path, ids = [], params = [])
+      def build_uri(path, ids = [], params = {})
         pr, ho, po = protocol_host_port
         if !ids.nil? && !ids.empty?
           path += '/' + ids.collect{|id| id.to_s}.join(',')

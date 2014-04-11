@@ -5,6 +5,8 @@ describe Flapjack::Diner do
 
   let(:server) { 'flapjack.com' }
 
+  let(:time) { Time.now }
+
   # let(:entity) { 'ex-abcd-data-17.example.com' }
   # let(:check)  { 'ping'}
 
@@ -72,6 +74,25 @@ describe Flapjack::Diner do
     end
 
     context 'delete' do
+      it "submits a DELETE request for one contact" do
+        req = stub_request(:delete, "http://#{server}/contacts/72").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_contacts('72')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for several contacts" do
+        req = stub_request(:delete, "http://#{server}/contacts/72,150").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_contacts('72', '150')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
     end
   end
 
@@ -115,6 +136,25 @@ describe Flapjack::Diner do
     end
 
     context 'delete' do
+      it "submits a DELETE request for one medium" do
+        req = stub_request(:delete, "http://#{server}/media/72_sms").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_media('72_sms')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for several media" do
+        req = stub_request(:delete, "http://#{server}/media/72_sms,150_email").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_media('72_sms', '150_email')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
     end
   end
 
@@ -123,24 +163,96 @@ describe Flapjack::Diner do
     end
 
     context 'read' do
+     it "submits a GET request for all notification rules" do
+        req = stub_request(:get, "http://#{server}/notification_rules").to_return(
+          :body => response)
+
+        result = Flapjack::Diner.notification_rules
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should == response_body
+      end
+
+      it "submits a GET request for one notification rule" do
+        req = stub_request(:get, "http://#{server}/notification_rules/30fd36ae-3922-4957-ae3e-c8f6dd27e543").to_return(
+          :body => response)
+
+        result = Flapjack::Diner.notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should == response_body
+      end
+
+      it "submits a GET request for several media" do
+        req = stub_request(:get, "http://#{server}/notification_rules/30fd36ae-3922-4957-ae3e-c8f6dd27e543,bfd8be61-3d80-4b95-94df-6e77183ce4e3").to_return(
+          :body => response)
+
+        result = Flapjack::Diner.notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543', 'bfd8be61-3d80-4b95-94df-6e77183ce4e3')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should == response_body
+      end
     end
 
     context 'update' do
     end
 
     context 'delete' do
+      it "submits a DELETE request for a notification rule" do
+
+        req = stub_request(:delete, "http://#{server}/notification_rules/30fd36ae-3922-4957-ae3e-c8f6dd27e543").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for several notification rules" do
+        req = stub_request(:delete, "http://#{server}/notification_rules/30fd36ae-3922-4957-ae3e-c8f6dd27e543,bfd8be61-3d80-4b95-94df-6e77183ce4e3").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543', 'bfd8be61-3d80-4b95-94df-6e77183ce4e3')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
     end
   end
 
   context 'entities' do
 
     context 'create' do
+
+      it "submits a POST request for creation of a test notification on an entity" do
+        req = stub_request(:post, "http://#{server}/test_notifications/entities/72").
+          with(:summary => 'testing').
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.create_test_notifications_entities(72, :summary => 'testing')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a POST request for creation of test notifications on several entities" do
+        req = stub_request(:post, "http://#{server}/test_notifications/entities/72,150").
+          with(:summary => 'testing').
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.create_test_notifications_entities(72, 150, :summary => 'testing')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
     end
 
     context 'read' do
       it "submits a GET request for all entities" do
-        req = stub_request(:get, "http://#{server}/entities").to_return(
-          :body => response)
+        req = stub_request(:get, "http://#{server}/entities").
+          to_return(:body => response)
 
         result = Flapjack::Diner.entities
         req.should have_been_requested
@@ -149,8 +261,8 @@ describe Flapjack::Diner do
       end
 
       it "submits a GET request for one entity" do
-        req = stub_request(:get, "http://#{server}/entities/72").to_return(
-          :body => response)
+        req = stub_request(:get, "http://#{server}/entities/72").
+          to_return(:body => response)
 
         result = Flapjack::Diner.entities('72')
         req.should have_been_requested
@@ -173,11 +285,78 @@ describe Flapjack::Diner do
 
     end
 
-    # no deletion of entities
+    context 'delete' do
+
+      it "submits a DELETE request for scheduled maintenances on an entity" do
+        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/entities/72").
+          with(:query => {:start_time => time.iso8601}).
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_scheduled_maintenances_entities('72', :start_time => time.iso8601)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for scheduled maintenances on several entities" do
+        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/entities/72,150").
+          with(:query => {:start_time => time.iso8601}).
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_scheduled_maintenances_entities('72', '150', :start_time => time.iso8601)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for unscheduled maintenances on an entity" do
+        req = stub_request(:delete, "http://#{server}/unscheduled_maintenances/entities/72").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_unscheduled_maintenances_entities('72')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for unscheduled maintenances on several entities" do
+        req = stub_request(:delete, "http://#{server}/unscheduled_maintenances/entities/72,150").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_unscheduled_maintenances_entities('72', '150')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+    end
+
   end
 
   context 'checks' do
     context 'create' do
+
+      it "submits a POST request for creation of a test notification on a check" do
+        req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH").
+          with(:summary => 'testing').
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', :summary => 'testing')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a POST request for creation of test notifications on several checks" do
+        req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH,example2.com:PING").
+          with(:summary => 'testing').
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', 'example2.com:PING', :summary => 'testing')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
     end
 
     context 'read' do
@@ -187,6 +366,49 @@ describe Flapjack::Diner do
     end
 
     context 'delete' do
+
+      it "submits a DELETE request for scheduled maintenances on a check" do
+        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com:SSH").
+          with(:query => {:start_time => time.iso8601}).
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => time.iso8601)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for scheduled maintenances on several checks" do
+        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+          with(:query => {:start_time => time.iso8601}).
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', :start_time => time.iso8601)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for unscheduled maintenances on a check" do
+        req = stub_request(:delete, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_unscheduled_maintenances_checks('example.com:SSH')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a DELETE request for unscheduled maintenances on several checks" do
+        req = stub_request(:delete, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_unscheduled_maintenances_checks('example.com:SSH', 'example2.com:PING')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
     end
   end
 
@@ -386,36 +608,6 @@ describe Flapjack::Diner do
   #   result.should be_true
   # end
 
-  # it "generates test notifications for a check on an entity" do
-  #   req = stub_request(:post, "http://#{server}/test_notifications").with(
-  #     :body => {:check => {entity => check}, :summary => 'testing notifications'}).to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.test_notifications!(entity, check, :summary => 'testing notifications')
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "generates test notifications for all checks on an entity" do
-  #   req = stub_request(:post, "http://#{server}/test_notifications").with(
-  #     :body => {:entity => entity, :summary => 'testing notifications'}).to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.bulk_test_notifications!(:entity => entity, :summary => 'testing notifications')
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "generates test notifications for checks from multiple entities" do
-  #   req = stub_request(:post, "http://#{server}/test_notifications").with(
-  #     :body => {:entity => [entity, 'lmn.net'], :summary => 'testing notifications'}).to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.bulk_test_notifications!(:entity => [entity, 'lmn.net'], :summary => 'testing notifications')
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
   # it "creates a scheduled maintenance period for an entity" do
   #   start_time = Time.now
   #   duration = 60 * 30 # in seconds, so 30 minutes
@@ -467,136 +659,6 @@ describe Flapjack::Diner do
   #   result.should be_true
   # end
 
-  # it "deletes a scheduled maintenance period for a check on an entity" do
-  #   start_time = Time.now
-
-  #   req = stub_request(:delete, "http://#{server}/scheduled_maintenances").
-  #           with(:body => {:check => {entity => check}, :start_time => start_time.iso8601},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.delete_scheduled_maintenance!(entity, check,
-  #     :start_time => start_time)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "deletes scheduled maintenance periods for all checks on an entity" do
-  #   start_time = Time.now
-
-  #   req = stub_request(:delete, "http://#{server}/scheduled_maintenances").
-  #           with(:body => {:entity => entity, :start_time => start_time.iso8601},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.bulk_delete_scheduled_maintenance!(:entity => entity,
-  #     :start_time => start_time)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "deletes scheduled maintenance periods for checks from multiple entities" do
-  #   start_time = Time.now
-
-  #   req = stub_request(:delete, "http://#{server}/scheduled_maintenances").
-  #           with(:body => {:check => {entity => 'ping', 'pqr.org' => 'ssh'},
-  #                          :start_time => start_time.iso8601},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.bulk_delete_scheduled_maintenance!(:check => {entity => 'ping', 'pqr.org' => 'ssh'},
-  #     :start_time => start_time)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "deletes an unscheduled maintenance period for a check on an entity" do
-  #   end_time = Time.now
-
-  #   req = stub_request(:delete, "http://#{server}/unscheduled_maintenances").
-  #           with(:body => {:check => {entity => check}, :end_time => end_time.iso8601},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.delete_unscheduled_maintenance!(entity, check,
-  #     :end_time => end_time)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "deletes scheduled maintenance periods for all checks on an entity" do
-  #   end_time = Time.now
-
-  #   req = stub_request(:delete, "http://#{server}/unscheduled_maintenances").
-  #           with(:body => {:entity => entity, :end_time => end_time.iso8601},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.bulk_delete_unscheduled_maintenance!(:entity => entity,
-  #     :end_time => end_time)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "deletes scheduled maintenance periods for checks from multiple entities" do
-  #   end_time = Time.now
-
-  #   req = stub_request(:delete, "http://#{server}/unscheduled_maintenances").
-  #           with(:body => {:check => {entity => 'ping', 'pqr.org' => 'ssh'},
-  #                          :end_time => end_time.iso8601},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.bulk_delete_unscheduled_maintenance!(:check => {entity => 'ping', 'pqr.org' => 'ssh'},
-  #     :end_time => end_time)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-
-  # it "returns a list of contacts" do
-  #   req = stub_request(:get, "http://#{server}/contacts").to_return(
-  #     :body => response)
-
-  #   result = Flapjack::Diner.contacts
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a single contact" do
-  #   contact_id = '21'
-  #   req = stub_request(:get, "http://#{server}/contacts/#{contact_id}").to_return(
-  #     :body => response)
-
-  #   result = Flapjack::Diner.contact(contact_id)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns notification rules for a contact" do
-  #   contact_id = '21'
-  #   req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/notification_rules").to_return(
-  #     :body => response)
-
-  #   result = Flapjack::Diner.notification_rules(contact_id)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns a single notification rule" do
-  #   rule_id = '00001'
-  #   req = stub_request(:get, "http://#{server}/notification_rules/#{rule_id}").
-  #           to_return(:body => response)
-
-  #   result = Flapjack::Diner.notification_rule(rule_id)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
   # it "creates a notification rule" do
   #   rule_result = rule_data.merge('id' => '00001')
 
@@ -625,138 +687,6 @@ describe Flapjack::Diner do
   #   result.should == rule_data_with_id
   # end
 
-  # it "deletes a notification rule" do
-  #   rule_id = '00001'
-  #   req = stub_request(:delete, "http://#{server}/notification_rules/#{rule_id}").to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.delete_notification_rule!(rule_id)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "gets a list of entity tags" do
-  #   req = stub_request(:get, "http://#{server}/entities/#{entity}/tags").to_return(
-  #     :body => ['web', 'app'].to_json)
-
-  #   result = Flapjack::Diner.entity_tags(entity)
-  #   req.should have_been_requested
-  #   result.should == ['web', 'app']
-  # end
-
-  # it "adds tags to an entity" do
-  #   req = stub_request(:post, "http://#{server}/entities/#{entity}/tags").
-  #           with(:body => {:tag => ['web', 'app']},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:body => ['web', 'app'].to_json)
-
-  #   result = Flapjack::Diner.add_entity_tags!(entity, 'web', 'app')
-  #   req.should have_been_requested
-  #   result.should == ['web', 'app']
-  # end
-
-  # it "deletes tags from an entity" do
-  #   req = stub_request(:delete, "http://#{server}/entities/#{entity}/tags").
-  #           with(:body => {:tag => ['web']},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.delete_entity_tags!(entity, 'web')
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "gets a list of contact tags" do
-  #   contact_id = 21
-  #   req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/tags").to_return(
-  #     :body => ['user', 'admin'].to_json)
-
-  #   result = Flapjack::Diner.contact_tags(contact_id)
-  #   req.should have_been_requested
-  #   result.should == ['user', 'admin']
-  # end
-
-  # it "gets tags for a contact's linked entities" do
-  #   contact_id = 21
-  #   req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/entity_tags").to_return(
-  #     :body => {'entity_1' => ['web', 'app']}.to_json)
-
-  #   result = Flapjack::Diner.contact_entitytags(contact_id)
-  #   req.should have_been_requested
-  #   result.should == {'entity_1' => ['web', 'app']}
-  # end
-
-  # it "adds tags to a contact's linked entities" do
-  #   contact_id = 21
-  #   req = stub_request(:post, "http://#{server}/contacts/#{contact_id}/entity_tags").
-  #           with(:body => {:entity => {'entity_1' => ['web', 'app']}},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:body => {'entity_1' => ['web', 'app']}.to_json)
-
-  #   result = Flapjack::Diner.add_contact_entitytags!(contact_id, {'entity_1' => ['web', 'app']})
-  #   req.should have_been_requested
-  #   result.should == {'entity_1' => ['web', 'app']}
-  # end
-
-  # it "deletes tags from a contact's linked entities" do
-  #   contact_id = 21
-  #   req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/entity_tags").
-  #           with(:body => {:entity => {'entity_1' => ['web', 'app']}},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.delete_contact_entitytags!(contact_id, {'entity_1' => ['web', 'app']})
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "adds tags to a contact" do
-  #   contact_id = 21
-  #   req = stub_request(:post, "http://#{server}/contacts/#{contact_id}/tags").
-  #           with(:body => {:tag => ['admin', 'user']},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:body => ['admin', 'user'].to_json)
-
-  #   result = Flapjack::Diner.add_contact_tags!(contact_id, 'admin', 'user')
-  #   req.should have_been_requested
-  #   result.should == ['admin', 'user']
-  # end
-
-  # it "deletes tags from a contact" do
-  #   contact_id = 21
-  #   req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/tags").
-  #           with(:body => {:tag => ['admin']},
-  #                :headers => {'Content-Type'=>'application/json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.delete_contact_tags!(contact_id, 'admin')
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "returns a list of a contact's notification media values" do
-  #   contact_id = '21'
-  #   req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/media").to_return(
-  #     :body => response)
-
-  #   result = Flapjack::Diner.contact_media(contact_id)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "returns the values for a contact's notification medium" do
-  #   contact_id = '21'
-  #   media = 'sms'
-  #   req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/media/#{media}").to_return(
-  #     :body => response)
-
-  #   result = Flapjack::Diner.contact_medium(contact_id, media)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
   # it "updates a contact's notification medium" do
   #   contact_id = '21'
   #   media_type = 'sms'
@@ -769,62 +699,6 @@ describe Flapjack::Diner do
   #   result = Flapjack::Diner.update_contact_medium!(contact_id, media_type, media_data)
   #   req.should have_been_requested
   #   result.should == media_data
-  # end
-
-  # it "deletes a contact's notification medium" do
-  #   contact_id = '21'
-  #   media = 'sms'
-  #   req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/media/#{media}").to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.delete_contact_medium!(contact_id, media)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "returns a contact's timezone" do
-  #   contact_id = '21'
-  #   req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/timezone").to_return(
-  #     :body => response)
-
-  #   result = Flapjack::Diner.contact_timezone(contact_id)
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
-
-  # it "updates a contact's timezone" do
-  #   contact_id = '21'
-  #   timezone_data = {'timezone' => "Australia/Perth"}
-
-  #   req = stub_request(:put, "http://#{server}/contacts/#{contact_id}/timezone").with(
-  #     :body => timezone_data).to_return(:body => timezone_data.to_json)
-
-  #   result = Flapjack::Diner.update_contact_timezone!(contact_id, timezone_data['timezone'])
-  #   req.should have_been_requested
-  #   result.should == timezone_data
-  # end
-
-  # it "deletes a contact's timezone" do
-  #   contact_id = '21'
-  #   req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/timezone").to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.delete_contact_timezone!(contact_id)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "returns nil with last_error available when requesting the timezone for a non existant contact" do
-  #   contact_id = 'jkfldsj'
-  #   req = stub_request(:get, "http://#{server}/contacts/#{contact_id}/timezone").to_return(
-  #     :body => '{"errors": ["Not found"]}', :status => 404)
-
-  #   result = Flapjack::Diner.contact_timezone(contact_id)
-  #   last_error = Flapjack::Diner.last_error
-  #   req.should have_been_requested
-  #   result.should be_nil
-  #   last_error.should_not be_nil
   # end
 
   # context "logging" do
