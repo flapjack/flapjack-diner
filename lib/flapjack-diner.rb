@@ -22,11 +22,14 @@ module Flapjack
       # e.g., network failures or non-parseable JSON data.
 
       # 1: Contacts
-
-      # def create_contacts!(params = {})
-      #   params = [params] if params.respond_to?(:keys)
-      #   perform_post('/contacts', {'contacts' => params})
-      # end
+      def create_contacts(*args)
+        data = unwrap_params(*args) do |params|
+          validate_params(params) do
+            # TODO check what goes here
+          end
+        end
+        perform_post('/contacts', :contacts => data)
+      end
 
       def contacts(*ids)
         perform_get('/contacts', *ids)
@@ -59,11 +62,15 @@ module Flapjack
 
 
       # 2: Media
-
-      # def create_media!(media)
-      #   media = [media] if media.respond_to?(:keys)
-      #   perform_post('/media', {'media' => media})
-      # end
+      def create_contact_media(*args)
+        ids, data = unwrap_ids_and_params(*args) do |params|
+          validate_params(params) do
+            # TODO check what goes here
+          end
+        end
+        # TODO raise err if ids.nil? or ids.empty?
+        perform_post("/contacts/#{ids.join(',')}/media", :notification_rules => data)
+      end
 
       def media(*ids)
         perform_get('/media', *ids)
@@ -82,11 +89,15 @@ module Flapjack
 
 
       # 3: Notification Rules
-
-      # def create_notification_rule!(rules)
-      #   rules = [rules] if rules.respond_to?(:keys)
-      #   perform_post('/notification_rules', {'notification_rules' => rules})
-      # end
+      def create_contact_notification_rules(*args)
+        ids, data = unwrap_ids_and_params(*args) do |params|
+          validate_params(params) do
+            # TODO check what goes here
+          end
+        end
+        # TODO raise err if ids.nil? or ids.empty?
+        perform_post("/contacts/#{ids.join(',')}/notification_rules", :notification_rules => data)
+      end
 
       def notification_rules(*ids)
         perform_get('/notification_rules', *ids)
@@ -103,11 +114,14 @@ module Flapjack
 
 
       # 4: Entities
-
-      # def create_entities!(params = {})
-      #   params = [params] if params.respond_to?(:keys)
-      #   perform_post('/entities', {'entities' => params})
-      # end
+      def create_entities(*args)
+        data = unwrap_params(*args) do |params|
+          validate_params(params) do
+            # TODO check what goes here
+          end
+        end
+        perform_post('/entities', :entities => data)
+      end
 
       def entities(*ids)
         perform_get('/entities', *ids)
@@ -305,6 +319,14 @@ module Flapjack
 
       def escape(s)
         URI.encode_www_form_component(s)
+      end
+
+      def unwrap_params(*args)
+        data = (args.length == 1 && args.first.is_a?(Array)) ? args.first : args
+        data.each do |params|
+          yield(params) if block_given?
+        end
+        data
       end
 
       def unwrap_ids_and_params(*args)

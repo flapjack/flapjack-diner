@@ -37,16 +37,51 @@ describe Flapjack::Diner do
   context 'contacts' do
     context 'create' do
 
-      it "submits a POST request for a contact"
+      it "submits a POST request for a contact" do
+        data = {:first_name => 'Jim',
+                :last_name  => 'Smith',
+                :email      => 'jims@example.com',
+                :timezone   => 'UTC',
+                :tags       => ['admin', 'night_shift']}
 
-      it "submits a POST request for several contacts"
+        req = stub_request(:post, "http://#{server}/contacts").
+          with(:body => {:contacts => [data]}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.create_contacts(data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a POST request for several contacts" do
+        data = [{:first_name => 'Jim',
+                 :last_name  => 'Smith',
+                 :email      => 'jims@example.com',
+                 :timezone   => 'UTC',
+                 :tags       => ['admin', 'night_shift']},
+                {:first_name => 'Joan',
+                 :last_name  => 'Smith',
+                 :email      => 'joans@example.com'}]
+
+        req = stub_request(:post, "http://#{server}/contacts").
+          with(:body => {:contacts => data}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.create_contacts(data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
     end
 
     context 'read' do
       it "submits a GET request for all contacts" do
         req = stub_request(:get, "http://#{server}/contacts").to_return(
-          :body => response)
+          :status => 200, :body => response)
 
         result = Flapjack::Diner.contacts
         req.should have_been_requested
@@ -109,9 +144,48 @@ describe Flapjack::Diner do
   context 'media' do
     context 'create' do
 
-      it "submits a POST request for a medium"
+      it "submits a POST request for a medium" do
+        data = {
+          'type'             => 'sms',
+          'address'          => '0123456789',
+          'interval'         => 300,
+          'rollup_threshold' => 5
+        }
 
-      it "submits a POST request for several media"
+        req = stub_request(:post, "http://#{server}/contacts/1/media").
+          with(:body => {:notification_rules => [data]}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.create_contact_media(1, data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a POST request for several media" do
+        data = [{
+          'type'             => 'sms',
+          'address'          => '0123456789',
+          'interval'         => 300,
+          'rollup_threshold' => 5
+        }, {
+          'type'             => 'email',
+          'address'          => 'ablated@example.org',
+          'interval'         => 180,
+          'rollup_threshold' => 3
+        }]
+
+        req = stub_request(:post, "http://#{server}/contacts/1/media").
+          with(:body => {:notification_rules => data}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.create_contact_media(1, data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
     end
 
@@ -196,22 +270,57 @@ describe Flapjack::Diner do
 
     context 'create' do
 
-      it "submits a POST request for a notification rule"
+      it "submits a POST request for a notification rule" do
+        data = {
+          "entity_tags"        => ["database","physical"],
+          "entities"           => ["foo-app-01.example.com"],
+          "time_restrictions"  => nil,
+          "warning_media"      => ["email"],
+          "critical_media"     => ["sms", "email"],
+          "warning_blackhole"  => false,
+          "critical_blackhole" => false
+        }
 
-      it "submits a POST request for several notification rules"
+        req = stub_request(:post, "http://#{server}/contacts/1/notification_rules").
+          with(:body => {:notification_rules => [data]}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response)
 
-  # it "creates a notification rule" do
-  #   rule_result = rule_data.merge('id' => '00001')
+        result = Flapjack::Diner.create_contact_notification_rules(1, data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
-  #   req = stub_request(:post, "http://#{server}/notification_rules").
-  #           with(:body => {'notification_rules'=>[rule_data]}.to_json,
-  #                :headers => {'Content-Type'=>'application/vnd.api+json'}).
-  #           to_return(:body => rule_result.to_json)
+      it "submits a POST request for several notification rules" do
+        data = [{
+          "entity_tags"        => ["database","physical"],
+          "entities"           => ["foo-app-01.example.com"],
+          "time_restrictions"  => nil,
+          "warning_media"      => ["email"],
+          "critical_media"     => ["sms", "email"],
+          "warning_blackhole"  => false,
+          "critical_blackhole" => false
+        }, {
+          "entity_tags"        => nil,
+          "entities"           => ["foo-app-02.example.com"],
+          "time_restrictions"  => nil,
+          "warning_media"      => ["email"],
+          "critical_media"     => ["sms", "email"],
+          "warning_blackhole"  => true,
+          "critical_blackhole" => false
+        }]
 
-  #   result = Flapjack::Diner.create_notification_rule!(rule_data)
-  #   req.should have_been_requested
-  #   result.should == rule_result
-  # end
+        req = stub_request(:post, "http://#{server}/contacts/1/notification_rules").
+          with(:body => {:notification_rules => data}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.create_contact_notification_rules(1, data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
     end
 
@@ -298,9 +407,42 @@ describe Flapjack::Diner do
 
     context 'create' do
 
-      it "submits a POST request for an entity"
+     it "submits a POST request for an entity" do
+        data = {
+          'name' => 'example.org',
+          'id'   => '57_example'
+        }
 
-      it "submits a POST request for several entities"
+        req = stub_request(:post, "http://#{server}/entities").
+          with(:body => {:entities => [data]}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.create_entities(data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a POST request for several entities" do
+        data = [{
+          'name' => 'example.org',
+          'id'   => '57_example'
+        }, {
+          'name' => 'example2.org',
+          'id'   => '58'
+        }]
+
+        req = stub_request(:post, "http://#{server}/entities").
+          with(:body => {:entities => data}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.create_entities(data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
       context 'scheduled maintenance periods' do
 
