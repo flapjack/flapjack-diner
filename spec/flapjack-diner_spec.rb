@@ -175,10 +175,10 @@ describe Flapjack::Diner do
 
       it "submits a POST request for a medium" do
         data = [{
-          'type'             => 'sms',
-          'address'          => '0123456789',
-          'interval'         => 300,
-          'rollup_threshold' => 5
+          :type             => 'sms',
+          :address          => '0123456789',
+          :interval         => 300,
+          :rollup_threshold => 5
         }]
 
         req = stub_request(:post, "http://#{server}/contacts/1/media").
@@ -194,15 +194,15 @@ describe Flapjack::Diner do
 
       it "submits a POST request for several media" do
         data = [{
-          'type'             => 'sms',
-          'address'          => '0123456789',
-          'interval'         => 300,
-          'rollup_threshold' => 5
+          :type             => 'sms',
+          :address          => '0123456789',
+          :interval         => 300,
+          :rollup_threshold => 5
         }, {
-          'type'             => 'email',
-          'address'          => 'ablated@example.org',
-          'interval'         => 180,
-          'rollup_threshold' => 3
+          :type             => 'email',
+          :address          => 'ablated@example.org',
+          :interval         => 180,
+          :rollup_threshold => 3
         }]
 
         req = stub_request(:post, "http://#{server}/contacts/1/media").

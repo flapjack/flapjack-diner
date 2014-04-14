@@ -3,8 +3,8 @@ require 'json'
 require 'uri'
 require 'cgi'
 
-require "flapjack-diner/version"
-require "flapjack-diner/argument_validator"
+require 'flapjack-diner/version'
+require 'flapjack-diner/argument_validator'
 
 module Flapjack
   module Diner
@@ -26,7 +26,9 @@ module Flapjack
         ids, params, data = unwrap_ids_and_params(*args)
         data.each do |d|
           validate_params(d) do
-            # TODO check what goes here
+            validate :query => [:first_name, :last_name, :email], :as => [:required, :string]
+            validate :query => :timezone,   :as => :string
+            validate :query => :tags,       :as => :array
           end
         end
         perform_post('/contacts', nil, :contacts => data)
@@ -39,6 +41,11 @@ module Flapjack
       def update_contacts(*args)
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_contacts' requires at least one contact id parameter" if ids.nil? || ids.empty?
+        validate_params(params) do
+            validate :query => [:first_name, :last_name,
+                                :email, :timezone], :as => :string
+            validate :query => :tags,       :as => :array
+        end
         ops = params.inject([]) do |memo, (k,v)|
           case k
           when :add_entity
@@ -88,7 +95,8 @@ module Flapjack
         raise "'create_contact_media' requires at least one contact id parameter" if ids.nil? || ids.empty?
         data.each do |d|
           validate_params(d) do
-            # TODO check what goes here
+            validate :query => [:type, :address], :as => [:required, :string]
+            validate :query => [:interval, :rollup_threshold], :as => [:required, :integer]
           end
         end
         perform_post("/contacts/#{escaped_ids(ids)}/media", nil, :media => data)
@@ -101,6 +109,10 @@ module Flapjack
       def update_media(*args)
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_media' requires at least one media id parameter" if ids.nil? || ids.empty?
+        validate_params(params) do
+          validate :query => :address,                       :as => :string
+          validate :query => [:interval, :rollup_threshold], :as => :integer
+        end
         ops = params.inject([]) do |memo, (k,v)|
           case k
           when :address, :interval, :rollup_threshold
@@ -139,6 +151,9 @@ module Flapjack
       def update_notification_rules(*args)
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_notification_rules' requires at least one notification rule id parameter" if ids.nil? || ids.empty?
+        validate_params(params) do
+          # TODO check what goes here
+        end
         ops = params.inject([]) do |memo, (k,v)|
           case k
           when :entities, :regex_entities, :tags, :regex_tags,
@@ -179,6 +194,9 @@ module Flapjack
       def update_entities(*args)
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_entities' requires at least one entity id parameter" if ids.nil? || ids.empty?
+        validate_params(params) do
+          # TODO check what goes here
+        end
         ops = params.inject([]) do |memo, (k,v)|
           case k
           when :name
@@ -383,7 +401,7 @@ module Flapjack
           when Hash
             params.update(arg)
           when String, Integer
-            ids  << arg.to_s
+            ids << arg.to_s
           else
             raise "Arguments must be a Hash (parameters), String/Integer (ids), or Arrays of Hashes (data)"
           end

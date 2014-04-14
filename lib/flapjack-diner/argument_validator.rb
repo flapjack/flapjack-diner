@@ -49,7 +49,7 @@ module Flapjack
       return super unless klass = classify_name(name)
       elements = args
       elements.each do |element|
-        @errors << "'#{element}' is expected to be a #{klass}" unless @query[element].is_a?(klass)
+        @errors << "'#{element}' is expected to be a #{klass}" unless @query[element].nil? || @query[element].is_a?(klass)
       end
     end
 
