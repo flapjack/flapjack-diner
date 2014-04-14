@@ -18,6 +18,8 @@ module Flapjack
 
       attr_accessor :logger
 
+      # TODO escape ids before .join(',')
+
       # NB: clients will need to handle any exceptions caused by,
       # e.g., network failures or non-parseable JSON data.
 
@@ -34,33 +36,51 @@ module Flapjack
         perform_get('/contacts', ids)
       end
 
-      def update_contact(*args)
+      def update_contacts(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-        validate_params(params) do
-          # TODO check what goes here
+
+        # TODO raise err if ids.nil? or ids.empty?
+
+        ops = params.inject([]) do |memo, (k,v)|
+          case k
+          when :add_entity
+            memo << {:op    => 'add',
+                     :path  => '/contacts/0/links/entities/-',
+                     :value => v}
+          when :remove_entity
+            memo << {:op    => 'remove',
+                     :path  => '/contacts/0/links/entities/-',
+                     :value => v}
+          when :add_medium
+            memo << {:op    => 'add',
+                     :path  => '/contacts/0/links/media/-',
+                     :value => v}
+          when :remove_medium
+            memo << {:op    => 'remove',
+                     :path  => '/contacts/0/links/media/-',
+                     :value => v}
+          when :add_notification_rule
+            memo << {:op    => 'add',
+                     :path  => '/contacts/0/links/notification_rules/-',
+                     :value => v}
+          when :remove_notification_rule
+            memo << {:op    => 'remove',
+                     :path  => '/contacts/0/links/notification_rules/-',
+                     :value => v}
+          when :first_name, :last_name, :email, :timezone, :tags
+            memo << {:op    => 'replace',
+                     :path  => "/contacts/0/#{k.to_s}",
+                     :value => v}
+          else
+            # TODO raise error
+          end
+          memo
         end
 
+        # TODO raise err if ops.nil? or ops.empty?
+
+        perform_patch("/contacts/#{ids.join(',')}", nil, ops)
       end
-
-      # def update_contact!(contact_id, contact)
-      #   perform_put("/contacts/#{escape(contact_id)}", contact)
-      # end
-
-      # # PATCH /contacts/a346e5f8-8260-43bd-820b-fcb91ba6c940
-      # # [{"op":"add","path":"/contacts/0/links/entities/-","value":"foo-app-01.example.com"}]
-      # def add_entities_to_contact!(contact_id, entities)
-      #   entities = [entities] if entities.respond_to?(:keys)
-      #   entities.each do |entity_id|
-      #     perform_patch("/contacts/#{escape(contact_id)}",
-      #                   [{:op    => 'add',
-      #                     :path  => '/contacts/0/links/entities/-',
-      #                     :value => entity_id}])
-      #   end
-      # end
-
-      # def delete_contact!(contact_id)
-      #   perform_delete("/contacts/#{escape(contact_id)}")
-      # end
 
       def delete_contacts(*ids)
         # TODO error if ids.empty?
@@ -82,11 +102,27 @@ module Flapjack
         perform_get('/media', ids)
       end
 
-      # def update_contact_medium!(contact_id, media_type, media)
-      #   # FIXME: make work with new jsonapi endpoints
-      #   raise "unimplemented"
-      #   #perform_put("/contacts/#{escape(contact_id)}/media/#{escape(media_type)}", media)
-      # end
+      def update_media(*args)
+        ids, params, data = unwrap_ids_and_params(*args)
+
+        # TODO raise err if ids.nil? or ids.empty?
+
+        ops = params.inject([]) do |memo, (k,v)|
+          case k
+          when :address, :interval, :rollup_threshold
+            memo << {:op    => 'replace',
+                     :path  => "/media/0/#{k.to_s}",
+                     :value => v}
+          else
+            # TODO raise error
+          end
+          memo
+        end
+
+        # TODO raise err if ops.nil? or ops.empty?
+
+        perform_patch("/media/#{ids.join(',')}", nil, ops)
+      end
 
       def delete_media(*ids)
         # TODO error if ids.empty?
@@ -108,9 +144,30 @@ module Flapjack
         perform_get('/notification_rules', ids)
       end
 
-      # def update_notification_rule!(rule_id, rule)
-      #   perform_put("/notification_rules/#{escape(rule_id)}", {'notification_rules' => [rule]})
-      # end
+      def update_notification_rules(*args)
+        ids, params, data = unwrap_ids_and_params(*args)
+
+        # TODO raise err if ids.nil? or ids.empty?
+
+        ops = params.inject([]) do |memo, (k,v)|
+          case k
+          when :entities, :regex_entities, :tags, :regex_tags,
+            :time_restrictions, :unknown_media, :warning_media, :critical_media,
+            :unknown_blackhole, :warning_blackhole, :critical_blackhole
+
+            memo << {:op    => 'replace',
+                     :path  => "/notification_rules/0/#{k.to_s}",
+                     :value => v}
+          else
+            # TODO raise error
+          end
+          memo
+        end
+
+        # TODO raise err if ops.nil? or ops.empty?
+
+        perform_patch("/notification_rules/#{ids.join(',')}", nil, ops)
+      end
 
       def delete_notification_rules(*ids)
         # TODO error if ids.empty?
@@ -118,7 +175,7 @@ module Flapjack
       end
 
 
-      # 4: Entities
+      # 4: Entities & 5: Checks
       def create_entities(*args)
         ids, params, data = unwrap_ids_and_params(*args)
         validate_params(params) do
@@ -130,6 +187,28 @@ module Flapjack
 
       def entities(*ids)
         perform_get('/entities', ids)
+      end
+
+      def update_entities(*args)
+        ids, params, data = unwrap_ids_and_params(*args)
+
+        # TODO raise err if ids.nil? or ids.empty?
+
+        ops = params.inject([]) do |memo, (k,v)|
+          case k
+          when :name
+            memo << {:op    => 'replace',
+                     :path  => "/entities/0/#{k.to_s}",
+                     :value => v}
+          else
+            # TODO raise error
+          end
+          memo
+        end
+
+        # TODO raise err if ops.nil? or ops.empty?
+
+        perform_patch("/entities/#{ids.join(',')}", nil, ops)
       end
 
       ['entities', 'checks'].each do |data_type|
@@ -236,27 +315,15 @@ module Flapjack
       end
 
       def perform_patch(path, ids = [], data = [])
-        req_uri = build_uri(path, args)
-        # if logger
-        #   log_patch = "PATCH #{req_uri}"
-        #   log_patch << "\n  Params: #{data.inspect}" if data
-        #   logger.info log_patch
-        # end
-        # opts = data ? {:body    => prepare_nested_query(data).to_json,
-        #                :headers => {'Content-Type' => 'application/json-patch+json'}} : {}
-        # response = patch(req_uri.request_uri, opts)
-        # handle_response(response)
-      end
-
-      def perform_put(path, ids = [], data = [])
-        req_uri = build_uri(path, ids, data)
+        req_uri = build_uri(path, ids)
         if logger
-          log_put = "PUT #{req_uri}"
-          log_put << "\n  Params: #{data.inspect}" if data
-          logger.info log_put
+          log_patch = "PATCH #{req_uri}"
+          log_patch << "\n  Params: #{data.inspect}" if data
+          logger.info log_patch
         end
-        opts = data ? {:body => prepare_nested_query(data).to_json, :headers => {'Content-Type' => 'application/vnd.api+json'}} : {}
-        response = put(req_uri.request_uri, opts)
+        opts = data ? {:body    => prepare_nested_query(data).to_json,
+                       :headers => {'Content-Type' => 'application/json-patch+json'}} : {}
+        response = patch(req_uri.request_uri, opts)
         handle_response(response)
       end
 

@@ -97,9 +97,53 @@ describe Flapjack::Diner do
 
     context 'update' do
 
-      it "submits a PATCH request for one contact"
+      it "submits a PATCH request for one contact" do
+        req = stub_request(:patch, "http://#{server}/contacts/23").
+          with(:body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
 
-      it "submits a PATCH request for several contacts"
+        result = Flapjack::Diner.update_contacts(23, :timezone => 'UTC')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a PATCH request for several contacts" do
+        req = stub_request(:patch, "http://#{server}/contacts/23,87").
+          with(:body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.update_contacts(23, 87, :timezone => 'UTC')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a PATCH request to change a link for one contact" do
+        req = stub_request(:patch, "http://#{server}/contacts/23").
+          with(:body => [{:op => 'add', :path => '/contacts/0/links/entities/-', :value => '57'}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.update_contacts(23, :add_entity => '57')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a PATCH request to change links for several contacts" do
+        req = stub_request(:patch, "http://#{server}/contacts/23,87").
+          with(:body => [{:op => 'add', :path => '/contacts/0/links/entities/-', :value => '57'}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
+
+        result = Flapjack::Diner.update_contacts(23, 87, :add_entity => '57')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
     end
 
@@ -208,23 +252,31 @@ describe Flapjack::Diner do
 
     context 'update' do
 
-      it "submits a PATCH request for one medium"
+      it "submits a PATCH request for one medium" do
+        req = stub_request(:patch, "http://#{server}/media/23_email").
+          with(:body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
+                         {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
 
-      it "submits a PATCH request for several media"
+        result = Flapjack::Diner.update_media('23_email', :interval => 50, :rollup_threshold => 3)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
-  # it "updates a contact's notification medium" do
-  #   contact_id = '21'
-  #   media_type = 'sms'
-  #   media_data = {"address" => "dmitri@example.com",
-  #                 "interval" => 900}
+      it "submits a PATCH request for several media" do
+        req = stub_request(:patch, "http://#{server}/media/23_email,87_sms").
+          with(:body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
+                         {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
 
-  #   req = stub_request(:put, "http://#{server}/contacts/#{contact_id}/media/#{media_type}").with(
-  #     :body => media_data).to_return(:body => media_data.to_json)
-
-  #   result = Flapjack::Diner.update_contact_medium!(contact_id, media_type, media_data)
-  #   req.should have_been_requested
-  #   result.should == media_data
-  # end
+        result = Flapjack::Diner.update_media('23_email', '87_sms', :interval => 50, :rollup_threshold => 3)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
     end
 
@@ -343,30 +395,35 @@ describe Flapjack::Diner do
 
     context 'update' do
 
-      it "submits a PATCH request for a notification rule"
+      it "submits a PATCH request for one notification rule" do
+        req = stub_request(:patch, "http://#{server}/notification_rules/30fd36ae-3922-4957-ae3e-c8f6dd27e543").
+          with(:body => [{:op => 'replace', :path => '/notification_rules/0/warning_blackhole', :value => false}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
 
-      it "submits a PATCH request for several notification rules"
+        result = Flapjack::Diner.update_notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543', :warning_blackhole => false)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
-  # it "updates a notification rule" do
-  #   rule_id = '00001'
+      it "submits a PATCH request for several notification rules" do
+        req = stub_request(:patch, "http://#{server}/notification_rules/30fd36ae-3922-4957-ae3e-c8f6dd27e543,bfd8be61-3d80-4b95-94df-6e77183ce4e3").
+          with(:body => [{:op => 'replace', :path => '/notification_rules/0/warning_blackhole', :value => false}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
 
-  #   rule_data_with_id = rule_data.merge('id' => rule_id)
-
-  #   req = stub_request(:put, "http://#{server}/notification_rules/#{rule_id}").
-  #           with(:body => {'notification_rules' => [rule_data_with_id]}.to_json,
-  #                :headers => {'Content-Type'=>'application/vnd.api+json'}).
-  #           to_return(:body => rule_data_with_id.to_json)
-
-  #   result = Flapjack::Diner.update_notification_rule!(rule_id, rule_data_with_id)
-  #   req.should have_been_requested
-  #   result.should == rule_data_with_id
-  # end
+        result = Flapjack::Diner.update_notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543',
+          'bfd8be61-3d80-4b95-94df-6e77183ce4e3', :warning_blackhole => false)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
     end
 
     context 'delete' do
       it "submits a DELETE request for a notification rule" do
-
         req = stub_request(:delete, "http://#{server}/notification_rules/30fd36ae-3922-4957-ae3e-c8f6dd27e543").
           to_return(:status => 204)
 
@@ -621,9 +678,17 @@ describe Flapjack::Diner do
 
     context 'update' do
 
-      it "submits a PATCH request for an entity"
+      it "submits a PATCH request for an entity" do
+        req = stub_request(:patch, "http://#{server}/entities/57").
+          with(:body => [{:op => 'replace', :path => '/entities/0/name', :value => 'example3.com'}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 201, :body => response)
 
-      it "submits a PATCH request for several entities"
+        result = Flapjack::Diner.update_entities('57', :name => 'example3.com')
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
 
     end
 
