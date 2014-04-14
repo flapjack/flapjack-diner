@@ -23,16 +23,23 @@ module Flapjack
 
       # 1: Contacts
       def create_contacts(*args)
-        data = unwrap_params(*args) do |params|
-          validate_params(params) do
-            # TODO check what goes here
-          end
+        ids, params, data = unwrap_ids_and_params(*args)
+        validate_params(params) do
+          # TODO check what goes here
         end
-        perform_post('/contacts', :contacts => data)
+        perform_post('/contacts', nil, :contacts => data)
       end
 
       def contacts(*ids)
-        perform_get('/contacts', *ids)
+        perform_get('/contacts', ids)
+      end
+
+      def update_contact(*args)
+        ids, params, data = unwrap_ids_and_params(*args)
+        validate_params(params) do
+          # TODO check what goes here
+        end
+
       end
 
       # def update_contact!(contact_id, contact)
@@ -57,23 +64,22 @@ module Flapjack
 
       def delete_contacts(*ids)
         # TODO error if ids.empty?
-        perform_delete('/contacts', *ids)
+        perform_delete('/contacts', ids)
       end
 
 
       # 2: Media
       def create_contact_media(*args)
-        ids, data = unwrap_ids_and_params(*args) do |params|
-          validate_params(params) do
-            # TODO check what goes here
-          end
+        ids, params, data = unwrap_ids_and_params(*args)
+        validate_params(params) do
+          # TODO check what goes here
         end
         # TODO raise err if ids.nil? or ids.empty?
-        perform_post("/contacts/#{ids.join(',')}/media", :notification_rules => data)
+        perform_post("/contacts/#{ids.join(',')}/media", nil, :media => data)
       end
 
       def media(*ids)
-        perform_get('/media', *ids)
+        perform_get('/media', ids)
       end
 
       # def update_contact_medium!(contact_id, media_type, media)
@@ -84,23 +90,22 @@ module Flapjack
 
       def delete_media(*ids)
         # TODO error if ids.empty?
-        perform_delete('/media', *ids)
+        perform_delete('/media', ids)
       end
 
 
       # 3: Notification Rules
       def create_contact_notification_rules(*args)
-        ids, data = unwrap_ids_and_params(*args) do |params|
-          validate_params(params) do
-            # TODO check what goes here
-          end
+        ids, params, data = unwrap_ids_and_params(*args)
+        validate_params(params) do
+          # TODO check what goes here
         end
         # TODO raise err if ids.nil? or ids.empty?
-        perform_post("/contacts/#{ids.join(',')}/notification_rules", :notification_rules => data)
+        perform_post("/contacts/#{ids.join(',')}/notification_rules", nil, :notification_rules => data)
       end
 
       def notification_rules(*ids)
-        perform_get('/notification_rules', *ids)
+        perform_get('/notification_rules', ids)
       end
 
       # def update_notification_rule!(rule_id, rule)
@@ -109,103 +114,98 @@ module Flapjack
 
       def delete_notification_rules(*ids)
         # TODO error if ids.empty?
-        perform_delete('/notification_rules', *ids)
+        perform_delete('/notification_rules', ids)
       end
 
 
       # 4: Entities
       def create_entities(*args)
-        data = unwrap_params(*args) do |params|
-          validate_params(params) do
-            # TODO check what goes here
-          end
+        ids, params, data = unwrap_ids_and_params(*args)
+        validate_params(params) do
+          # TODO check what goes here
         end
-        perform_post('/entities', :entities => data)
+
+        perform_post('/entities', nil, :entities => data)
       end
 
       def entities(*ids)
-        perform_get('/entities', *ids)
+        perform_get('/entities', ids)
       end
 
       ['entities', 'checks'].each do |data_type|
 
         define_method("create_scheduled_maintenances_#{data_type}") do |*args|
-          ids, data = unwrap_ids_and_params(*args) do |params|
-            validate_params(params) do
-              validate :query => :start_time, :as => [:required, :time]
-              validate :query => :duration, :as => [:required, :integer]
-            end
+          # ids, data = unwrap_ids_and_params(*args) do |params|
+          #   validate_params(params) do
+          #     validate :query => :start_time, :as => [:required, :time]
+          #     validate :query => :duration, :as => [:required, :integer]
+          #   end
+          # end
+
+          ids, params, data = unwrap_ids_and_params(*args)
+          validate_params(params) do
+            # TODO check what goes here
           end
-          perform_post("/scheduled_maintenances/#{data_type}", *ids,
+
+          perform_post("/scheduled_maintenances/#{data_type}", ids,
             :scheduled_maintenances => data)
         end
 
         define_method("create_unscheduled_maintenances_#{data_type}") do |*args|
-          ids, data = unwrap_ids_and_params(*args) do |params|
-            validate_params(params) do
-              # TODO check what goes here
-            end
+          ids, params, data = unwrap_ids_and_params(*args)
+          validate_params(params) do
+            # TODO check what goes here
           end
-          perform_post("/unscheduled_maintenances/#{data_type}", *ids,
+          perform_post("/unscheduled_maintenances/#{data_type}", ids,
             :unscheduled_maintenances => data)
         end
 
         define_method("create_test_notifications_#{data_type}") do |*args|
-          ids, data = unwrap_ids_and_params(*args) do |params|
-            validate_params(params) do
-              # TODO check what goes here
-            end
+          ids, params, data = unwrap_ids_and_params(*args)
+          validate_params(params) do
+            # TODO check what goes here
           end
-          perform_post("/test_notifications/#{data_type}", *ids,
+          perform_post("/test_notifications/#{data_type}", ids,
             :test_notifications => data)
         end
 
         define_method("delete_scheduled_maintenances_#{data_type}") do |*args|
-          if args.last.is_a?(Hash)
-            params = args.pop
-            validate_params(params) do
-              validate :query => :start_time, :as => [:time, :required]
-            end
-          else
-            params = {}
+          ids, params, data = unwrap_ids_and_params(*args)
+          validate_params(params) do
+            # TODO check what goes here
           end
           # TODO err if args.empty? or params.empty?
-          perform_delete("/scheduled_maintenances/#{data_type}", *args, params)
+          perform_delete("/scheduled_maintenances/#{data_type}", ids, params)
         end
 
         define_method("delete_unscheduled_maintenances_#{data_type}") do |*args|
-          if args.last.is_a?(Hash)
-            params = args.pop
-            validate_params(params) do
-              validate :query => :end_time, :as => :time
-            end
-          else
-            params = {}
+          ids, params, data = unwrap_ids_and_params(*args)
+          validate_params(params) do
+            # TODO check what goes here
           end
           # TODO err if args.empty?
-          perform_delete("/unscheduled_maintenances/#{data_type}", *args, params)
+          perform_delete("/unscheduled_maintenances/#{data_type}", ids, params)
         end
       end
 
 
       # 6: Reports
       def status_report_entities(*ids)
-        perform_get('/status_report/entities', *ids)
+        perform_get('/status_report/entities', ids)
       end
 
       def status_report_checks(*ids)
-        perform_get('/status_report/checks', *ids)
+        perform_get('/status_report/checks', ids)
       end
 
       ['scheduled_maintenance', 'unscheduled_maintenance', 'downtime', 'outage'].each do |report_type|
         ['entities', 'checks'].each do |data_type|
           define_method("#{report_type}_report_#{data_type}") do |*args|
-            if args.last.is_a?(Hash)
-              validate_params(args.last) do
-                validate :query => [:start_time, :end_time], :as => :time
-              end
+            ids, params, data = unwrap_ids_and_params(*args)
+            validate_params(params) do
+              validate :query => [:start_time, :end_time], :as => :time
             end
-            perform_get("/#{report_type}_report/#{data_type}", *args)
+            perform_get("/#{report_type}_report/#{data_type}", ids, params)
           end
         end
       end
@@ -216,17 +216,15 @@ module Flapjack
 
       private
 
-      def perform_get(path, *args)
-        params = args.last.is_a?(Hash) ? args.pop : {}
-        req_uri = build_uri(path, args, params)
+      def perform_get(path, ids = [], data = [])
+        req_uri = build_uri(path, ids, data)
         logger.info "GET #{req_uri}" if logger
         response = get(req_uri.request_uri)
         handle_response(response)
       end
 
-      def perform_post(path, *args)
-        data = args.last.is_a?(Hash) ? args.pop : {}
-        req_uri = build_uri(path, args)
+      def perform_post(path, ids = [], data = [])
+        req_uri = build_uri(path, ids)
         if logger
           log_post = "POST #{req_uri}"
           log_post << "\n  Params: #{data.inspect}" if data
@@ -237,8 +235,7 @@ module Flapjack
         handle_response(response)
       end
 
-      def perform_patch(path, *args)
-        data = args.last.is_a?(Hash) ? args.pop : {}
+      def perform_patch(path, ids = [], data = [])
         req_uri = build_uri(path, args)
         # if logger
         #   log_patch = "PATCH #{req_uri}"
@@ -251,9 +248,8 @@ module Flapjack
         # handle_response(response)
       end
 
-      def perform_put(path, *args)
-        data = args.last.is_a?(Hash) ? args.pop : {}
-        req_uri = build_uri(path, args)
+      def perform_put(path, ids = [], data = [])
+        req_uri = build_uri(path, ids, data)
         if logger
           log_put = "PUT #{req_uri}"
           log_put << "\n  Params: #{data.inspect}" if data
@@ -264,9 +260,8 @@ module Flapjack
         handle_response(response)
       end
 
-      def perform_delete(path, *args)
-        params = args.last.is_a?(Hash) ? args.pop : {}
-        req_uri = build_uri(path, args, params)
+      def perform_delete(path, ids = [], data = [])
+        req_uri = build_uri(path, ids, data)
         logger.info "DELETE #{req_uri}" if logger
         response = delete(req_uri.request_uri)
         handle_response(response)
@@ -321,33 +316,26 @@ module Flapjack
         URI.encode_www_form_component(s)
       end
 
-      def unwrap_params(*args)
-        data = (args.length == 1 && args.first.is_a?(Array)) ? args.first : args
-        data.each do |params|
-          yield(params) if block_given?
-        end
-        data
-      end
-
       def unwrap_ids_and_params(*args)
-        if args.length < 2
-          raise "Insufficient data -- both ids and parameters must be used"
-        end
-        unwrapped = nil
-        data = args.pop
-        case data
-        when Array
-          data.each do |params|
-            yield(params) if block_given?
+        ids    = []
+        params = {}
+        data   = []
+
+        args.each do |arg|
+          case arg
+          when Array
+            raise "Array arguments may only contain data Hashes" unless arg.all? {|a| a.is_a?(Hash)}
+            data += arg
+          when Hash
+            params.update(arg)
+          when String, Integer
+            ids  << arg.to_s
+          else
+            raise "Arguments must be a Hash (parameters), String/Integer (ids), or Arrays of Hashes (data)"
           end
-          unwrapped = data
-        when Hash
-          yield(data) if block_given?
-          unwrapped = [data]
-        else
-          raise "Parameters must be a Hash, or an Array of Hashes"
         end
-        [args, unwrapped]
+
+        [ids, params, data]
       end
 
       # used for the JSON data hashes in POST, PUT, DELETE
@@ -386,7 +374,7 @@ module Flapjack
         [protocol, host, port]
       end
 
-      def build_uri(path, ids = [], params = {})
+      def build_uri(path, ids = [], params = [])
         pr, ho, po = protocol_host_port
         if !ids.nil? && !ids.empty?
           path += '/' + ids.collect{|id| id.to_s}.join(',')
