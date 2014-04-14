@@ -116,34 +116,34 @@ module Flapjack
       ['entities', 'checks'].each do |data_type|
 
         define_method("create_scheduled_maintenances_#{data_type}") do |*args|
-          # TODO raise err if args.empty? or any arg is not a hash
-          args.each do |params|
+          ids, data = unwrap_ids_and_params(*args) do |params|
             validate_params(params) do
               validate :query => :start_time, :as => [:required, :time]
               validate :query => :duration, :as => [:required, :integer]
             end
           end
-          perform_post("/scheduled_maintenances/#{data_type}", *args)
+          perform_post("/scheduled_maintenances/#{data_type}", *ids,
+            :scheduled_maintenances => data)
         end
 
         define_method("create_unscheduled_maintenances_#{data_type}") do |*args|
-          # TODO raise err if args.empty? or any arg is not a hash
-          args.each do |params|
+          ids, data = unwrap_ids_and_params(*args) do |params|
             validate_params(params) do
               # TODO check what goes here
             end
           end
-          perform_post("/unscheduled_maintenances/#{data_type}", *args)
+          perform_post("/unscheduled_maintenances/#{data_type}", *ids,
+            :unscheduled_maintenances => data)
         end
 
         define_method("create_test_notifications_#{data_type}") do |*args|
-          # TODO raise err if args.empty? or any arg is not a hash
-          args.each do |params|
+          ids, data = unwrap_ids_and_params(*args) do |params|
             validate_params(params) do
               # TODO check what goes here
             end
           end
-          perform_post("/test_notifications/#{data_type}", *args)
+          perform_post("/test_notifications/#{data_type}", *ids,
+            :test_notifications => data)
         end
 
         define_method("delete_scheduled_maintenances_#{data_type}") do |*args|
@@ -305,6 +305,27 @@ module Flapjack
 
       def escape(s)
         URI.encode_www_form_component(s)
+      end
+
+      def unwrap_ids_and_params(*args)
+        if args.length < 2
+          raise "Insufficient data -- both ids and parameters must be used"
+        end
+        unwrapped = nil
+        data = args.pop
+        case data
+        when Array
+          data.each do |params|
+            yield(params) if block_given?
+          end
+          unwrapped = data
+        when Hash
+          yield(data) if block_given?
+          unwrapped = [data]
+        else
+          raise "Parameters must be a Hash, or an Array of Hashes"
+        end
+        [args, unwrapped]
       end
 
       # used for the JSON data hashes in POST, PUT, DELETE

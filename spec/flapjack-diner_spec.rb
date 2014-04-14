@@ -225,26 +225,160 @@ describe Flapjack::Diner do
 
     context 'create' do
 
-      it "submits a POST request for creation of a test notification on an entity" do
-        req = stub_request(:post, "http://#{server}/test_notifications/entities/72").
-          with(:summary => 'testing').
-          to_return(:status => 204)
+      context 'scheduled maintenance periods' do
 
-        result = Flapjack::Diner.create_test_notifications_entities(72, :summary => 'testing')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        it "submits a POST request on an entity" do
+          data = {:start_time => time.iso8601, :duration => 3600, :summary => 'working'}
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/entities/72").
+            with(:body => {:scheduled_maintenances => [data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_scheduled_maintenances_entities(72, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request on several entities" do
+          data = {:start_time => time.iso8601, :duration => 3600, :summary => 'working'}
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/entities/72,150").
+            with(:body => {:scheduled_maintenances => [data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_scheduled_maintenances_entities(72, 150, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple periods on an entity" do
+          data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'},
+                  {:start_time => (time + 7200).iso8601, :duration => 3600, :summary => 'more work'}]
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/entities/72").
+            with(:body => {:scheduled_maintenances => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_scheduled_maintenances_entities(72, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple periods on several entities" do
+          data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'},
+                  {:start_time => (time + 7200).iso8601, :duration => 3600, :summary => 'more work'}]
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/entities/72,150").
+            with(:body => {:scheduled_maintenances => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_scheduled_maintenances_entities(72, 150, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
       end
 
-      it "submits a POST request for creation of test notifications on several entities" do
-        req = stub_request(:post, "http://#{server}/test_notifications/entities/72,150").
-          with(:summary => 'testing').
-          to_return(:status => 204)
+      context 'unscheduled maintenance periods' do
 
-        result = Flapjack::Diner.create_test_notifications_entities(72, 150, :summary => 'testing')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        it "submits a POST request on an entity" do
+          data = {:duration => 3600, :summary => 'working'}
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/entities/72").
+            with(:body => {:unscheduled_maintenances => [data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_unscheduled_maintenances_entities(72, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request on several entities" do
+          data = {:duration => 3600, :summary => 'working'}
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/entities/72,150").
+            with(:body => {:unscheduled_maintenances => [data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_unscheduled_maintenances_entities(72, 150, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple periods on several entities" do
+          data = [{:duration => 3600, :summary => 'working'},
+                  {:duration => 3600, :summary => 'more work'}]
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/entities/72,150").
+            with(:body => {:unscheduled_maintenances => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_unscheduled_maintenances_entities(72, 150, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+      end
+
+      context 'test notifications' do
+
+        it "submits a POST request for an entity" do
+          req = stub_request(:post, "http://#{server}/test_notifications/entities/72").
+            with(:body => {:test_notifications => [{:summary => 'testing'}]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_test_notifications_entities(72, :summary => 'testing')
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for several entities" do
+          req = stub_request(:post, "http://#{server}/test_notifications/entities/72,150").
+            with(:body => {:test_notifications => [{:summary => 'testing'}]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_test_notifications_entities(72, 150, :summary => 'testing')
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple notifications on an entity" do
+          data = [{:summary => 'testing'}, {:summary => 'another test'}]
+          req = stub_request(:post, "http://#{server}/test_notifications/entities/72").
+            with(:body => {:test_notifications => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_test_notifications_entities(72, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple notifications on several entities" do
+          data = [{:summary => 'testing'}, {:summary => 'another test'}]
+          req = stub_request(:post, "http://#{server}/test_notifications/entities/72,150").
+            with(:body => {:test_notifications => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_test_notifications_entities(72, 150, data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
       end
 
     end
@@ -335,34 +469,161 @@ describe Flapjack::Diner do
   context 'checks' do
     context 'create' do
 
-      it "submits a POST request for creation of a test notification on a check" do
-        req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH").
-          with(:summary => 'testing').
-          to_return(:status => 204)
+      context 'scheduled maintenance periods' do
 
-        result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', :summary => 'testing')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        it "submits a POST request on a check" do
+          data = {:start_time => time.iso8601, :duration => 3600, :summary => 'working'}
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com:SSH").
+            with(:body => {:scheduled_maintenances => [data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_scheduled_maintenances_checks('example.com:SSH', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request on several checks" do
+          data = {:start_time => time.iso8601, :duration => 3600, :summary => 'working'}
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+            with(:body => {:scheduled_maintenances => [data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_scheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple periods on a check" do
+          data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'},
+                  {:start_time => (time + 7200).iso8601, :duration => 3600, :summary => 'more work'}]
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com:SSH").
+            with(:body => {:scheduled_maintenances => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_scheduled_maintenances_checks('example.com:SSH', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple periods on several checks" do
+          data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'},
+                  {:start_time => (time + 7200).iso8601, :duration => 3600, :summary => 'more work'}]
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+            with(:body => {:scheduled_maintenances => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_scheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
       end
 
-      it "submits a POST request for creation of test notifications on several checks" do
-        req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH,example2.com:PING").
-          with(:summary => 'testing').
-          to_return(:status => 204)
+      context 'unscheduled maintenance periods' do
 
-        result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', 'example2.com:PING', :summary => 'testing')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        it "submits a POST request on a check" do
+          data = {:duration => 3600, :summary => 'working'}
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH").
+            with(:body => {:unscheduled_maintenances => [data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_unscheduled_maintenances_checks('example.com:SSH', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request on several checks" do
+          data = {:duration => 3600, :summary => 'working'}
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+            with(:body => {:unscheduled_maintenances => [data]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_unscheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple periods on several checks" do
+          data = [{:duration => 3600, :summary => 'working'},
+                  {:duration => 3600, :summary => 'more work'}]
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+            with(:body => {:unscheduled_maintenances => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_unscheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
       end
 
-    end
+      context 'test notifications' do
 
-    context 'read' do
-    end
+        it "submits a POST request for a check" do
+          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH").
+            with(:body => {:test_notifications => [{:summary => 'testing'}]}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
 
-    context 'update' do
+          result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', :summary => 'testing')
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for several checks" do
+          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH,example2.com:PING").
+            with(:test_notifications => [{:summary => 'testing'}]).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', 'example2.com:PING', :summary => 'testing')
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple notifications on a check" do
+          data = [{:summary => 'testing'}, {:summary => 'more testing'}]
+          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH").
+            with(:body => {:test_notifications => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+        it "submits a POST request for multiple notifications on several checks" do
+          data = [{:summary => 'testing'}, {:summary => 'more testing'}]
+          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH,example2.com:PING").
+            with(:body => {:test_notifications => data}.to_json,
+                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
+            to_return(:status => 204)
+
+          result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', 'example2.com:PING', data)
+          req.should have_been_requested
+          result.should_not be_nil
+          result.should be_true
+        end
+
+      end
+
     end
 
     context 'delete' do
@@ -574,89 +835,6 @@ describe Flapjack::Diner do
   #   req.should have_been_requested
   #   result.should_not be_nil
   #   result.should == response_body
-  # end
-
-  # it "acknowledges a check's state for an entity" do
-  #   req = stub_request(:post, "http://#{server}/acknowledgements").with(
-  #     :body => {:check => {entity => check}, :summary => 'dealing with it'}).to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.acknowledge!(entity, check, :summary => 'dealing with it')
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "acknowledges all checks on an entity" do
-  #   req = stub_request(:post, "http://#{server}/acknowledgements").with(
-  #     :body => {:entity => entity, :summary => 'dealing with it'}.to_json,
-  #               :headers => {'Content-Type' => 'application/vnd.api+json'}).to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.bulk_acknowledge!(:entity => entity, :summary => 'dealing with it')
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "acknowledges checks from multiple entities" do
-  #   req = stub_request(:post, "http://#{server}/acknowledgements").with(
-  #     :body => {:entity => [entity, 'lmn.net'], :summary => 'dealing with it'}.to_json,
-  #               :headers => {'Content-Type' => 'application/vnd.api+json'}).to_return(
-  #     :status => 204)
-
-  #   result = Flapjack::Diner.bulk_acknowledge!(:entity => [entity, 'lmn.net'], :summary => 'dealing with it')
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "creates a scheduled maintenance period for an entity" do
-  #   start_time = Time.now
-  #   duration = 60 * 30 # in seconds, so 30 minutes
-  #   summary = "fixing everything"
-
-  #   req = stub_request(:post, "http://#{server}/scheduled_maintenances").
-  #           with(:body => {:check => {entity => check}, :start_time => start_time.iso8601,
-  #                          :duration => duration, :summary => summary},
-  #                :headers => {'Content-Type' => 'application/vnd.api+json'}).to_return(
-  #           :status => 204)
-
-  #   result = Flapjack::Diner.create_scheduled_maintenance!(entity, check,
-  #     :start_time => start_time, :duration => duration, :summary => summary)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "creates scheduled maintenance periods for all checks on an entity" do
-  #   start_time = Time.now
-  #   duration = 60 * 30 # in seconds, so 30 minutes
-  #   summary = "fixing everything"
-
-  #   req = stub_request(:post, "http://#{server}/scheduled_maintenances").
-  #           with(:body => {:entity => entity, :start_time => start_time.iso8601,
-  #                          :duration => duration, :summary => summary},
-  #                :headers => {'Content-Type' => 'application/vnd.api+json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.bulk_create_scheduled_maintenance!(:entity => entity,
-  #     :start_time => start_time, :duration => duration, :summary => summary)
-  #   req.should have_been_requested
-  #   result.should be_true
-  # end
-
-  # it "creates scheduled maintenance periods for checks from multiple entities" do
-  #   start_time = Time.now
-  #   duration = 60 * 30 # in seconds, so 30 minutes
-  #   summary = "fixing everything"
-
-  #   req = stub_request(:post, "http://#{server}/scheduled_maintenances").
-  #           with(:body => {:check => {entity => 'ping', 'pqr.org' => 'ssh'}, :start_time => start_time.iso8601,
-  #                          :duration => duration, :summary => summary},
-  #                :headers => {'Content-Type' => 'application/vnd.api+json'}).
-  #           to_return(:status => 204)
-
-  #   result = Flapjack::Diner.bulk_create_scheduled_maintenance!(:check => {entity => 'ping', 'pqr.org' => 'ssh'},
-  #     :start_time => start_time, :duration => duration, :summary => summary)
-  #   req.should have_been_requested
-  #   result.should be_true
   # end
 
   # it "creates a notification rule" do
