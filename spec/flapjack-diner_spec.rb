@@ -1137,7 +1137,7 @@ describe Flapjack::Diner do
         with(:query => {:start_time => time.iso8601}).
         to_return(:status => 204)
 
-      logger.should_receive(:info).with("DELETE http://#{server}/scheduled_maintenances/checks/example.com:SSH?start_time=#{CGI.escape(time.iso8601)}")
+      logger.should_receive(:info).with("DELETE http://#{server}/scheduled_maintenances/checks/#{CGI.escape('example.com:SSH')}?start_time=#{CGI.escape(time.iso8601)}")
       logger.should_receive(:info).with("  Response Code: 204")
 
       result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => time)

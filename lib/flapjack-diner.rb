@@ -18,16 +18,16 @@ module Flapjack
 
       attr_accessor :logger
 
-      # TODO escape ids before .join(',')
-
       # NB: clients will need to handle any exceptions caused by,
       # e.g., network failures or non-parseable JSON data.
 
       # 1: Contacts
       def create_contacts(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-        validate_params(params) do
-          # TODO check what goes here
+        data.each do |d|
+          validate_params(d) do
+            # TODO check what goes here
+          end
         end
         perform_post('/contacts', nil, :contacts => data)
       end
@@ -38,9 +38,7 @@ module Flapjack
 
       def update_contacts(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-
-        # TODO raise err if ids.nil? or ids.empty?
-
+        raise "'update_contacts' requires at least one contact id parameter" if ids.nil? || ids.empty?
         ops = params.inject([]) do |memo, (k,v)|
           case k
           when :add_entity
@@ -71,19 +69,15 @@ module Flapjack
             memo << {:op    => 'replace',
                      :path  => "/contacts/0/#{k.to_s}",
                      :value => v}
-          else
-            # TODO raise error
           end
           memo
         end
-
-        # TODO raise err if ops.nil? or ops.empty?
-
-        perform_patch("/contacts/#{ids.join(',')}", nil, ops)
+        raise "'update_contacts' did not find any valid update fields" if ops.empty?
+        perform_patch("/contacts/#{escaped_ids(ids)}", nil, ops)
       end
 
       def delete_contacts(*ids)
-        # TODO error if ids.empty?
+        raise "'delete_contacts' requires at least one contact id parameter" if ids.nil? || ids.empty?
         perform_delete('/contacts', ids)
       end
 
@@ -91,11 +85,13 @@ module Flapjack
       # 2: Media
       def create_contact_media(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-        validate_params(params) do
-          # TODO check what goes here
+        raise "'create_contact_media' requires at least one contact id parameter" if ids.nil? || ids.empty?
+        data.each do |d|
+          validate_params(d) do
+            # TODO check what goes here
+          end
         end
-        # TODO raise err if ids.nil? or ids.empty?
-        perform_post("/contacts/#{ids.join(',')}/media", nil, :media => data)
+        perform_post("/contacts/#{escaped_ids(ids)}/media", nil, :media => data)
       end
 
       def media(*ids)
@@ -104,28 +100,22 @@ module Flapjack
 
       def update_media(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-
-        # TODO raise err if ids.nil? or ids.empty?
-
+        raise "'update_media' requires at least one media id parameter" if ids.nil? || ids.empty?
         ops = params.inject([]) do |memo, (k,v)|
           case k
           when :address, :interval, :rollup_threshold
             memo << {:op    => 'replace',
                      :path  => "/media/0/#{k.to_s}",
                      :value => v}
-          else
-            # TODO raise error
           end
           memo
         end
-
-        # TODO raise err if ops.nil? or ops.empty?
-
-        perform_patch("/media/#{ids.join(',')}", nil, ops)
+        raise "'update_media' did not find any valid update fields" if ops.empty?
+        perform_patch("/media/#{escaped_ids(ids)}", nil, ops)
       end
 
       def delete_media(*ids)
-        # TODO error if ids.empty?
+        raise "'delete_media' requires at least one media id parameter" if ids.nil? || ids.empty?
         perform_delete('/media', ids)
       end
 
@@ -133,11 +123,13 @@ module Flapjack
       # 3: Notification Rules
       def create_contact_notification_rules(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-        validate_params(params) do
-          # TODO check what goes here
+        raise "'create_contact_notification_rules' requires at least one contact id parameter" if ids.nil? || ids.empty?
+        data.each do |d|
+          validate_params(d) do
+            # TODO check what goes here
+          end
         end
-        # TODO raise err if ids.nil? or ids.empty?
-        perform_post("/contacts/#{ids.join(',')}/notification_rules", nil, :notification_rules => data)
+        perform_post("/contacts/#{escaped_ids(ids)}/notification_rules", nil, :notification_rules => data)
       end
 
       def notification_rules(*ids)
@@ -146,9 +138,7 @@ module Flapjack
 
       def update_notification_rules(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-
-        # TODO raise err if ids.nil? or ids.empty?
-
+        raise "'update_notification_rules' requires at least one notification rule id parameter" if ids.nil? || ids.empty?
         ops = params.inject([]) do |memo, (k,v)|
           case k
           when :entities, :regex_entities, :tags, :regex_tags,
@@ -158,19 +148,15 @@ module Flapjack
             memo << {:op    => 'replace',
                      :path  => "/notification_rules/0/#{k.to_s}",
                      :value => v}
-          else
-            # TODO raise error
           end
           memo
         end
-
-        # TODO raise err if ops.nil? or ops.empty?
-
-        perform_patch("/notification_rules/#{ids.join(',')}", nil, ops)
+        raise "'update_notification_rules' did not find any valid update fields" if ops.empty?
+        perform_patch("/notification_rules/#{escaped_ids(ids)}", nil, ops)
       end
 
       def delete_notification_rules(*ids)
-        # TODO error if ids.empty?
+        raise "'delete_notification_rules' requires at least one notification rule id parameter" if ids.nil? || ids.empty?
         perform_delete('/notification_rules', ids)
       end
 
@@ -178,10 +164,11 @@ module Flapjack
       # 4: Entities & 5: Checks
       def create_entities(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-        validate_params(params) do
-          # TODO check what goes here
+        data.each do |d|
+          validate_params(d) do
+            # TODO check what goes here
+          end
         end
-
         perform_post('/entities', nil, :entities => data)
       end
 
@@ -191,49 +178,42 @@ module Flapjack
 
       def update_entities(*args)
         ids, params, data = unwrap_ids_and_params(*args)
-
-        # TODO raise err if ids.nil? or ids.empty?
-
+        raise "'update_entities' requires at least one entity id parameter" if ids.nil? || ids.empty?
         ops = params.inject([]) do |memo, (k,v)|
           case k
           when :name
             memo << {:op    => 'replace',
                      :path  => "/entities/0/#{k.to_s}",
                      :value => v}
-          else
-            # TODO raise error
           end
           memo
         end
-
-        # TODO raise err if ops.nil? or ops.empty?
-
-        perform_patch("/entities/#{ids.join(',')}", nil, ops)
+        raise "'update_entities' did not find any valid update fields" if ops.empty?
+        perform_patch("/entities/#{escaped_ids(ids)}", nil, ops)
       end
 
       ['entities', 'checks'].each do |data_type|
 
         define_method("create_scheduled_maintenances_#{data_type}") do |*args|
-          # ids, data = unwrap_ids_and_params(*args) do |params|
-          #   validate_params(params) do
-          #     validate :query => :start_time, :as => [:required, :time]
-          #     validate :query => :duration, :as => [:required, :integer]
-          #   end
-          # end
-
           ids, params, data = unwrap_ids_and_params(*args)
-          validate_params(params) do
-            # TODO check what goes here
+          raise "'create_scheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
+          data.each do |d|
+            validate_params(d) do
+              validate :query => :start_time, :as => [:required, :time]
+              validate :query => :duration, :as => [:required, :integer]
+            end
           end
-
           perform_post("/scheduled_maintenances/#{data_type}", ids,
             :scheduled_maintenances => data)
         end
 
         define_method("create_unscheduled_maintenances_#{data_type}") do |*args|
           ids, params, data = unwrap_ids_and_params(*args)
-          validate_params(params) do
-            # TODO check what goes here
+          raise "'create_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
+          data.each do |d|
+            validate_params(d) do
+              # TODO check what goes here
+            end
           end
           perform_post("/unscheduled_maintenances/#{data_type}", ids,
             :unscheduled_maintenances => data)
@@ -241,8 +221,11 @@ module Flapjack
 
         define_method("create_test_notifications_#{data_type}") do |*args|
           ids, params, data = unwrap_ids_and_params(*args)
-          validate_params(params) do
-            # TODO check what goes here
+          raise "'create_test_notifications_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
+          data.each do |d|
+            validate_params(d) do
+              # TODO check what goes here
+            end
           end
           perform_post("/test_notifications/#{data_type}", ids,
             :test_notifications => data)
@@ -250,19 +233,19 @@ module Flapjack
 
         define_method("delete_scheduled_maintenances_#{data_type}") do |*args|
           ids, params, data = unwrap_ids_and_params(*args)
+          raise "'delete_scheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
             # TODO check what goes here
           end
-          # TODO err if args.empty? or params.empty?
           perform_delete("/scheduled_maintenances/#{data_type}", ids, params)
         end
 
         define_method("delete_unscheduled_maintenances_#{data_type}") do |*args|
           ids, params, data = unwrap_ids_and_params(*args)
+          raise "'delete_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
             # TODO check what goes here
           end
-          # TODO err if args.empty?
           perform_delete("/unscheduled_maintenances/#{data_type}", ids, params)
         end
       end
@@ -379,6 +362,10 @@ module Flapjack
         end
       end
 
+      def escaped_ids(ids = [])
+        ids.collect{|id| CGI.escape(id.to_s)}.join(',')
+      end
+
       def escape(s)
         URI.encode_www_form_component(s)
       end
@@ -444,7 +431,7 @@ module Flapjack
       def build_uri(path, ids = [], params = [])
         pr, ho, po = protocol_host_port
         if !ids.nil? && !ids.empty?
-          path += '/' + ids.collect{|id| id.to_s}.join(',')
+          path += '/' + escaped_ids(ids)
         end
         URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
           :path => path, :query => (params.nil? || params.empty? ? nil : build_nested_query(params)))
