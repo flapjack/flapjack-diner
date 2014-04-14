@@ -36,6 +36,11 @@ describe Flapjack::Diner do
 
   context 'contacts' do
     context 'create' do
+
+      it "submits a POST request for a contact"
+
+      it "submits a POST request for several contacts"
+
     end
 
     context 'read' do
@@ -71,6 +76,11 @@ describe Flapjack::Diner do
     end
 
     context 'update' do
+
+      it "submits a PATCH request for one contact"
+
+      it "submits a PATCH request for several contacts"
+
     end
 
     context 'delete' do
@@ -98,6 +108,11 @@ describe Flapjack::Diner do
 
   context 'media' do
     context 'create' do
+
+      it "submits a POST request for a medium"
+
+      it "submits a POST request for several media"
+
     end
 
     context 'read' do
@@ -133,6 +148,25 @@ describe Flapjack::Diner do
     end
 
     context 'update' do
+
+      it "submits a PATCH request for one medium"
+
+      it "submits a PATCH request for several media"
+
+  # it "updates a contact's notification medium" do
+  #   contact_id = '21'
+  #   media_type = 'sms'
+  #   media_data = {"address" => "dmitri@example.com",
+  #                 "interval" => 900}
+
+  #   req = stub_request(:put, "http://#{server}/contacts/#{contact_id}/media/#{media_type}").with(
+  #     :body => media_data).to_return(:body => media_data.to_json)
+
+  #   result = Flapjack::Diner.update_contact_medium!(contact_id, media_type, media_data)
+  #   req.should have_been_requested
+  #   result.should == media_data
+  # end
+
     end
 
     context 'delete' do
@@ -159,7 +193,26 @@ describe Flapjack::Diner do
   end
 
   context 'notification rules' do
+
     context 'create' do
+
+      it "submits a POST request for a notification rule"
+
+      it "submits a POST request for several notification rules"
+
+  # it "creates a notification rule" do
+  #   rule_result = rule_data.merge('id' => '00001')
+
+  #   req = stub_request(:post, "http://#{server}/notification_rules").
+  #           with(:body => {'notification_rules'=>[rule_data]}.to_json,
+  #                :headers => {'Content-Type'=>'application/vnd.api+json'}).
+  #           to_return(:body => rule_result.to_json)
+
+  #   result = Flapjack::Diner.create_notification_rule!(rule_data)
+  #   req.should have_been_requested
+  #   result.should == rule_result
+  # end
+
     end
 
     context 'read' do
@@ -195,6 +248,26 @@ describe Flapjack::Diner do
     end
 
     context 'update' do
+
+      it "submits a PATCH request for a notification rule"
+
+      it "submits a PATCH request for several notification rules"
+
+  # it "updates a notification rule" do
+  #   rule_id = '00001'
+
+  #   rule_data_with_id = rule_data.merge('id' => rule_id)
+
+  #   req = stub_request(:put, "http://#{server}/notification_rules/#{rule_id}").
+  #           with(:body => {'notification_rules' => [rule_data_with_id]}.to_json,
+  #                :headers => {'Content-Type'=>'application/vnd.api+json'}).
+  #           to_return(:body => rule_data_with_id.to_json)
+
+  #   result = Flapjack::Diner.update_notification_rule!(rule_id, rule_data_with_id)
+  #   req.should have_been_requested
+  #   result.should == rule_data_with_id
+  # end
+
     end
 
     context 'delete' do
@@ -224,6 +297,10 @@ describe Flapjack::Diner do
   context 'entities' do
 
     context 'create' do
+
+      it "submits a POST request for an entity"
+
+      it "submits a POST request for several entities"
 
       context 'scheduled maintenance periods' do
 
@@ -416,6 +493,10 @@ describe Flapjack::Diner do
     end
 
     context 'update' do
+
+      it "submits a PATCH request for an entity"
+
+      it "submits a PATCH request for several entities"
 
     end
 
@@ -825,213 +906,100 @@ describe Flapjack::Diner do
     end
   end
 
-  # it "returns a json list of entities from a non-standard port" do
-  #   Flapjack::Diner.base_uri('flapjack.com:54321')
+  context "logging" do
 
-  #   req = stub_request(:get, "http://#{server}:54321/entities").to_return(
-  #     :body => response)
+    let(:logger) { mock('logger') }
 
-  #   result = Flapjack::Diner.entities
-  #   req.should have_been_requested
-  #   result.should_not be_nil
-  #   result.should == response_body
-  # end
+    before do
+      Flapjack::Diner.logger = logger
+    end
 
-  # it "creates a notification rule" do
-  #   rule_result = rule_data.merge('id' => '00001')
+    it "logs a GET request without a path" do
+      req = stub_request(:get, "http://#{server}/entities").to_return(
+        :body => response)
 
-  #   req = stub_request(:post, "http://#{server}/notification_rules").
-  #           with(:body => {'notification_rules'=>[rule_data]}.to_json,
-  #                :headers => {'Content-Type'=>'application/vnd.api+json'}).
-  #           to_return(:body => rule_result.to_json)
+      logger.should_receive(:info).with("GET http://#{server}/entities")
+      logger.should_receive(:info).with("  Response Code: 200")
+      logger.should_receive(:info).with("  Response Body: #{response}")
 
-  #   result = Flapjack::Diner.create_notification_rule!(rule_data)
-  #   req.should have_been_requested
-  #   result.should == rule_result
-  # end
+      result = Flapjack::Diner.entities
+      req.should have_been_requested
+      result.should_not be_nil
+      result.should == response_body
+    end
 
-  # it "updates a notification rule" do
-  #   rule_id = '00001'
+    it "logs a POST request" do
+      req = stub_request(:post, "http://#{server}/test_notifications/entities/27").
+              to_return(:status => 200)
+      logger.should_receive(:info).with("POST http://#{server}/test_notifications/entities/27\n" +
+        "  Params: {:test_notifications=>[{:summary=>\"dealing with it\"}]}")
+      logger.should_receive(:info).with("  Response Code: 200")
 
-  #   rule_data_with_id = rule_data.merge('id' => rule_id)
+      result = Flapjack::Diner.create_test_notifications_entities(27, :summary => 'dealing with it')
+      req.should have_been_requested
+      result.should be_true
+    end
 
-  #   req = stub_request(:put, "http://#{server}/notification_rules/#{rule_id}").
-  #           with(:body => {'notification_rules' => [rule_data_with_id]}.to_json,
-  #                :headers => {'Content-Type'=>'application/vnd.api+json'}).
-  #           to_return(:body => rule_data_with_id.to_json)
+    it "logs a DELETE request" do
+      req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com:SSH").
+        with(:query => {:start_time => time.iso8601}).
+        to_return(:status => 204)
 
-  #   result = Flapjack::Diner.update_notification_rule!(rule_id, rule_data_with_id)
-  #   req.should have_been_requested
-  #   result.should == rule_data_with_id
-  # end
+      logger.should_receive(:info).with("DELETE http://#{server}/scheduled_maintenances/checks/example.com:SSH?start_time=#{CGI.escape(time.iso8601)}")
+      logger.should_receive(:info).with("  Response Code: 204")
 
-  # it "updates a contact's notification medium" do
-  #   contact_id = '21'
-  #   media_type = 'sms'
-  #   media_data = {"address" => "dmitri@example.com",
-  #                 "interval" => 900}
+      result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => time)
+      req.should have_been_requested
+      result.should be_true
+    end
 
-  #   req = stub_request(:put, "http://#{server}/contacts/#{contact_id}/media/#{media_type}").with(
-  #     :body => media_data).to_return(:body => media_data.to_json)
+  end
 
-  #   result = Flapjack::Diner.update_contact_medium!(contact_id, media_type, media_data)
-  #   req.should have_been_requested
-  #   result.should == media_data
-  # end
+  context "problems" do
 
-  # context "logging" do
+    it "raises an exception on network failure" do
+      req = stub_request(:get, "http://#{server}/entities").to_timeout
 
-  #   let(:logger) { mock('logger') }
+      expect {
+        Flapjack::Diner.entities
+      }.to raise_error
+      req.should have_been_requested
+    end
 
-  #   before do
-  #     Flapjack::Diner.logger = logger
-  #   end
+    it "raises an exception on invalid JSON data" do
+      req = stub_request(:get, "http://#{server}/entities").to_return(
+        :body => "{")
 
-  #   it "logs a GET request without a path" do
-  #     req = stub_request(:get, "http://#{server}/entities").to_return(
-  #       :body => response)
+      expect {
+        Flapjack::Diner.entities
+      }.to raise_error
+      req.should have_been_requested
+    end
 
-  #     logger.should_receive(:info).with("GET http://#{server}/entities")
-  #     logger.should_receive(:info).with("  Response Code: 200")
-  #     logger.should_receive(:info).with("  Response Body: #{response}")
+    it "raises an exception if a required argument is not provided" do
+      req = stub_request(:get, /http:\/\/#{server}\/*/)
 
-  #     result = Flapjack::Diner.entities
-  #     req.should have_been_requested
-  #     result.should_not be_nil
-  #     result.should == response_body
-  #   end
+      expect {
+        Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => nil)
+      }.to raise_error
+      req.should_not have_been_requested
+    end
 
-  #   it "logs a GET request with a path" do
-  #     req = stub_request(:get, "http://#{server}/checks/#{entity}").to_return(
-  #       :body => response)
+    it "raises an exception if a time argument is provided with the wrong data type" do
+      start_str  = '2011-08-01T00:00:00+10:00'
+      finish_str = 'yesterday'
 
-  #     logger.should_receive(:info).with("GET http://#{server}/checks/#{entity}")
-  #     logger.should_receive(:info).with("  Response Code: 200")
-  #     logger.should_receive(:info).with("  Response Body: #{response}")
+      start  = Time.iso8601(start_str)
 
-  #     result = Flapjack::Diner.checks(entity)
-  #     req.should have_been_requested
-  #     result.should_not be_nil
-  #     result.should == response_body
-  #   end
+      req = stub_request(:get, /http:\/\/#{server}\/*/)
 
-  #   it "logs a POST request" do
-  #     req = stub_request(:post, "http://#{server}/acknowledgements").
-  #             with(:body => {:check => {entity => check}, :summary => 'dealing with it'},
-  #                  :headers => {'Content-Type'=>'application/json'}).
-  #             to_return(:status => 204)
-  #     logger.should_receive(:info).with("POST http://#{server}/acknowledgements\n" +
-  #       "  Params: {:summary=>\"dealing with it\", :check=>{\"ex-abcd-data-17.example.com\"=>\"ping\"}}")
-  #     logger.should_receive(:info).with("  Response Code: 204")
+      expect {
+        Flapjack::Diner.downtime_report_checks('example.com:SSH',
+          :start_time => start_time, :end_time => end_time)
+      }.to raise_error
+      req.should_not have_been_requested
+    end
 
-  #     result = Flapjack::Diner.acknowledge!(entity, check, :summary => 'dealing with it')
-  #     req.should have_been_requested
-  #     result.should be_true
-  #   end
-
-  #   it "logs a JSON put request" do
-  #     contact_id = '21'
-  #     timezone_data = {:timezone => "Australia/Perth"}
-
-  #     req = stub_request(:put, "http://#{server}/contacts/#{contact_id}/timezone").with(
-  #       :body => timezone_data).to_return(:body => timezone_data.to_json, :status => [200, 'OK'])
-
-  #     logger.should_receive(:info).
-  #       with("PUT http://#{server}/contacts/#{contact_id}/timezone\n  Params: #{timezone_data.inspect}")
-  #     logger.should_receive(:info).with("  Response Code: 200 OK")
-  #     logger.should_receive(:info).with("  Response Body: #{timezone_data.to_json}")
-
-  #     result = Flapjack::Diner.update_contact_timezone!(contact_id, timezone_data[:timezone])
-  #     req.should have_been_requested
-  #     result.should == {'timezone' => "Australia/Perth"}
-  #   end
-
-  #   it "logs a DELETE request" do
-  #     contact_id = '21'
-  #     req = stub_request(:delete, "http://#{server}/contacts/#{contact_id}/timezone").to_return(
-  #       :status => 204)
-
-  #     logger.should_receive(:info).with("DELETE http://#{server}/contacts/#{contact_id}/timezone")
-  #     logger.should_receive(:info).with("  Response Code: 204")
-
-  #     result = Flapjack::Diner.delete_contact_timezone!(contact_id)
-  #     req.should have_been_requested
-  #     result.should be_true
-  #   end
-
-  # end
-
-  # context "problems" do
-
-  #   it "raises an exception on network failure" do
-  #     req = stub_request(:get, "http://#{server}/entities").to_timeout
-
-  #     expect {
-  #       Flapjack::Diner.entities
-  #     }.to raise_error
-  #     req.should have_been_requested
-  #   end
-
-  #   it "raises an exception on invalid JSON data" do
-  #     req = stub_request(:get, "http://#{server}/entities").to_return(
-  #       :body => "{")
-
-  #     expect {
-  #       Flapjack::Diner.entities
-  #     }.to raise_error
-  #     req.should have_been_requested
-  #   end
-
-  #   it "raises an exception if a required argument is not provided" do
-  #     req = stub_request(:get, /http:\/\/#{server}\/*/)
-
-  #     expect {
-  #       Flapjack::Diner.check_status(entity, nil)
-  #     }.to raise_error
-  #     req.should_not have_been_requested
-  #   end
-
-  #   it "raises an exception if bulk queries don't have entity or check arguments" do
-  #     req = stub_request(:get, /http:\/\/#{server}\/*/)
-
-  #     expect {
-  #       Flapjack::Diner.bulk_downtime({})
-  #     }.to raise_error
-  #     req.should_not have_been_requested
-  #   end
-
-  #   it "raises an exception if bulk queries have invalid entity arguments" do
-  #     req = stub_request(:get, /http:\/\/#{server}\/*/)
-
-  #     expect {
-  #       Flapjack::Diner.bulk_scheduled_maintenances(:entity => 23)
-  #     }.to raise_error
-  #     req.should_not have_been_requested
-  #   end
-
-  #   it "raises an exception if bulk queries have invalid check arguments" do
-  #     req = stub_request(:get, /http:\/\/#{server}\/*/)
-
-  #     expect {
-  #       Flapjack::Diner.bulk_outages(:check => {'abc.com' => ['ping', 5]})
-  #     }.to raise_error
-  #     req.should_not have_been_requested
-  #   end
-
-  #   it "raises an exception if a time argument is provided with the wrong data type" do
-  #     start_str  = '2011-08-01T00:00:00+10:00'
-  #     finish_str = 'yesterday'
-
-  #     start  = Time.iso8601(start_str)
-
-  #     req = stub_request(:get, /http:\/\/#{server}\/*/)
-
-  #     expect {
-  #       Flapjack::Diner.downtime(entity, :start_time => start, :end_time => finish_str)
-  #     }.to raise_error
-  #     req.should_not have_been_requested
-  #   end
-
-  # end
+  end
 
 end

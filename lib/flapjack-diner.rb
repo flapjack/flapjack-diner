@@ -150,7 +150,7 @@ module Flapjack
           if args.last.is_a?(Hash)
             params = args.pop
             validate_params(params) do
-              validate :query => [:start_time], :as => [:time, :required]
+              validate :query => :start_time, :as => [:time, :required]
             end
           else
             params = {}
@@ -163,7 +163,7 @@ module Flapjack
           if args.last.is_a?(Hash)
             params = args.pop
             validate_params(params) do
-              validate :query => [:end_time], :as => :time
+              validate :query => :end_time, :as => :time
             end
           else
             params = {}
