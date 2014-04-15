@@ -28,7 +28,7 @@ module Flapjack
           validate_params(d) do
             validate :query => [:first_name, :last_name, :email], :as => [:required, :string]
             validate :query => :timezone,   :as => :string
-            validate :query => :tags,       :as => :array
+            validate :query => :tags,       :as => :array_of_strings
           end
         end
         perform_post('/contacts', nil, :contacts => data)
@@ -44,7 +44,7 @@ module Flapjack
         validate_params(params) do
             validate :query => [:first_name, :last_name,
                                 :email, :timezone], :as => :string
-            validate :query => :tags,       :as => :array
+            validate :query => :tags,       :as => :array_of_strings
         end
         ops = params.inject([]) do |memo, (k,v)|
           case k
@@ -138,7 +138,10 @@ module Flapjack
         raise "'create_contact_notification_rules' requires at least one contact id parameter" if ids.nil? || ids.empty?
         data.each do |d|
           validate_params(d) do
-            # TODO check what goes here
+            validate :query => [:entities, :regex_entities, :tags, :regex_tags,
+              :unknown_media, :warning_media, :critical_media], :as => :array_of_strings
+            validate :query => [:unknown_blackhole, :warning_blackhole, :critical_blackhole],
+              :as => :boolean
           end
         end
         perform_post("/contacts/#{escaped_ids(ids)}/notification_rules", nil, :notification_rules => data)
@@ -152,7 +155,10 @@ module Flapjack
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_notification_rules' requires at least one notification rule id parameter" if ids.nil? || ids.empty?
         validate_params(params) do
-          # TODO check what goes here
+          validate :query => [:entities, :regex_entities, :tags, :regex_tags,
+            :unknown_media, :warning_media, :critical_media], :as => :array_of_strings
+          validate :query => [:unknown_blackhole, :warning_blackhole, :critical_blackhole],
+            :as => :boolean
         end
         ops = params.inject([]) do |memo, (k,v)|
           case k
@@ -181,7 +187,9 @@ module Flapjack
         ids, params, data = unwrap_ids_and_params(*args)
         data.each do |d|
           validate_params(d) do
-            # TODO check what goes here
+            validate :query => :id,   :as => [:required, :string]
+            validate :query => :name, :as => :string
+            validate :query => :tags, :as => :array_of_strings
           end
         end
         perform_post('/entities', nil, :entities => data)
@@ -195,11 +203,12 @@ module Flapjack
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_entities' requires at least one entity id parameter" if ids.nil? || ids.empty?
         validate_params(params) do
-          # TODO check what goes here
+          validate :query => :name, :as => :string
+          validate :query => :tags, :as => :array_of_strings
         end
         ops = params.inject([]) do |memo, (k,v)|
           case k
-          when :name
+          when :name, :tags
             memo << {:op    => 'replace',
                      :path  => "/entities/0/#{k.to_s}",
                      :value => v}
@@ -218,7 +227,8 @@ module Flapjack
           data.each do |d|
             validate_params(d) do
               validate :query => :start_time, :as => [:required, :time]
-              validate :query => :duration, :as => [:required, :integer]
+              validate :query => :duration,   :as => [:required, :integer]
+              validate :query => :summary,    :as => :string
             end
           end
           perform_post("/scheduled_maintenances/#{data_type}", ids,
@@ -230,7 +240,8 @@ module Flapjack
           raise "'create_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
           data.each do |d|
             validate_params(d) do
-              # TODO check what goes here
+              validate :query => :duration,   :as => [:required, :integer]
+              validate :query => :summary,    :as => :string
             end
           end
           perform_post("/unscheduled_maintenances/#{data_type}", ids,
@@ -242,7 +253,7 @@ module Flapjack
           raise "'create_test_notifications_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
           data.each do |d|
             validate_params(d) do
-              # TODO check what goes here
+              validate :query => :summary,    :as => :string
             end
           end
           perform_post("/test_notifications/#{data_type}", ids,
@@ -253,7 +264,7 @@ module Flapjack
           ids, params, data = unwrap_ids_and_params(*args)
           raise "'delete_scheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
-            # TODO check what goes here
+            validate :query => :start_time, :as => [:required, :time]
           end
           perform_delete("/scheduled_maintenances/#{data_type}", ids, params)
         end
@@ -262,7 +273,7 @@ module Flapjack
           ids, params, data = unwrap_ids_and_params(*args)
           raise "'delete_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
-            # TODO check what goes here
+            validate :query => :end_time, :as => :time
           end
           perform_delete("/unscheduled_maintenances/#{data_type}", ids, params)
         end

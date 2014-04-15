@@ -35,6 +35,24 @@ module Flapjack
       end
     end
 
+    def boolean(*elements)
+      elements.each do |element|
+        if target = @query[element]
+          next if [TrueClass, FalseClass].include(target.class)
+          @errors << "'#{target}' should be 'true' or 'false'."
+        end
+      end
+    end
+
+    def array_of_strings(*elements)
+      elements.each do |element|
+        if target = @query[element]
+          next if target.is_a?(Array) && target.all? {|t| t.is_a?(String)}
+          @errors << "'#{target}' should be an Array of Strings."
+        end
+      end
+    end
+
     def required(*elements)
       elements.each do |element|
         @errors << "'#{element}' is required." if @query[element].nil?

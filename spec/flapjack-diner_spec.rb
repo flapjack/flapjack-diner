@@ -451,8 +451,8 @@ describe Flapjack::Diner do
 
      it "submits a POST request for an entity" do
         data = [{
-          'name' => 'example.org',
-          'id'   => '57_example'
+          :name => 'example.org',
+          :id   => '57_example'
         }]
 
         req = stub_request(:post, "http://#{server}/entities").
@@ -468,11 +468,11 @@ describe Flapjack::Diner do
 
       it "submits a POST request for several entities" do
         data = [{
-          'name' => 'example.org',
-          'id'   => '57_example'
+          :name => 'example.org',
+          :id   => '57_example'
         }, {
-          'name' => 'example2.org',
-          'id'   => '58'
+          :name => 'example2.org',
+          :id   => '58'
         }]
 
         req = stub_request(:post, "http://#{server}/entities").
