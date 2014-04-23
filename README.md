@@ -57,6 +57,13 @@ If any operation fails, `Flapjack::Diner.last_error` will contain an error messa
 * [update_media](#update_media)
 * [delete_media](#delete_media)
 
+### Pagerduty credentials
+
+* [create_contact_pagerduty_credentials](#create_contact_pagerduty_credentials)
+* [pagerduty_credentials](#pagerduty_credentials)
+* [update_pagerduty_credentials](#update_pagerduty_credentials)
+* [delete_pagerduty_credentials](#delete_pagerduty_credentials)
+
 ### Notification rules
 
 * [create_contact_notification_rules](#create_contact_notification_rules)
@@ -157,10 +164,11 @@ Acceptable update field keys are
 as well as the linkage operations
 
 `:add_entity`, `:remove_entity`
-`:add_medium`, `:remove_medium`
 `:add_notification_rule`, `:remove_notification_rule`
 
 which take the id of the relevant resource as the value.
+
+(NB: `:add_medium` and `:remove_medium` are not supported in Flapjack v1.0 but should be in future versions.)
 
 Returns true if updating succeeded or false if updating failed.
 
@@ -196,7 +204,7 @@ MEDIUM
   :type => STRING,
   :address => STRING,
   :interval => INTEGER,
-  :rollup_threshold => INTEGER,
+  :rollup_threshold => INTEGER
 }
 ```
 
@@ -233,7 +241,7 @@ Acceptable update field keys are
 Returns true if updating succeeded or false if updating failed.
 
 <a name="delete_media">&nbsp;</a>
-#### delete_contacts
+#### delete_media
 
 Delete one or more notification media.
 
@@ -241,8 +249,76 @@ Delete one or more notification media.
 # delete one medium
 Flapjack::Diner.delete_media(ID)
 
-# delete multiple contacts
+# delete multiple media
 Flapjack::Diner.delete_media(ID1, ID2, ...)
+```
+
+Returns true if deletion succeeded or false if deletion failed.
+
+---
+
+<a name="create_contact_pagerduty_credentials">&nbsp;</a>
+#### create_contact_media
+
+Create pagerduty credentials for a contact.
+
+```ruby
+Flapjack::Diner.create_contact_pagerduty_credentials(CONTACT_ID, PAGERDUTY_CREDENTIALS)
+```
+
+```
+PAGERDUTY_CREDENTIALS
+{
+  :service_key => STRING,
+  :subdomain => STRING,
+  :username => STRING,
+  :password => STRING
+}
+```
+
+Returns true if creation succeeded or false if creation failed.
+
+<a name="pagerduty_credentials">&nbsp;</a>
+#### pagerduty_credentials
+
+Return pagerduty credentials for a contact.
+
+```ruby
+pagerduty_credentials = Flapjack::Diner.pagerduty_credentials(CONTACT_ID)
+some_pagerduty_credentials = Flapjack::Diner.pagerduty_credentials(CONTACT_ID1, CONTACT_ID2, ...)
+all_pagerduty_credentials = Flapjack::Diner.pagerduty_credentials
+```
+
+<a name="update_pagerduty_credentials">&nbsp;</a>
+#### update_pagerduty_credentials
+
+Update pagerduty credentials for one or more contacts.
+
+```ruby
+# update pagerduty_credentials for one contact
+Flapjack::Diner.update_pagerduty_credentials(CONTACT_ID, :key => value, ...)
+
+# update pagerduty_credentials for multiple contacts
+Flapjack::Diner.update_pagerduty_credentials(CONTACT_ID1, CONTACT_ID2, ..., :key => value, ...)
+```
+
+Acceptable update field keys are
+
+`:service_key`, `:subdomain`, `:username`, `:password`
+
+Returns true if updating succeeded or false if updating failed.
+
+<a name="delete_pagerduty_credentials">&nbsp;</a>
+#### delete_pagerduty_credentials
+
+Delete pagerduty credentials for one or more contacts
+
+```ruby
+# delete pagerduty_credentials for one contact
+Flapjack::Diner.delete_pagerduty_credentials(CONTACT_ID)
+
+# delete pagerduty_credentials for multiple contacts
+Flapjack::Diner.delete_pagerduty_credentials(CONTACT_ID1, CONTACT_ID2, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
