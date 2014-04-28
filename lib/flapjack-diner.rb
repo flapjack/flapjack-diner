@@ -35,7 +35,7 @@ module Flapjack
       end
 
       def contacts(*ids)
-        perform_get('/contacts', ids)
+        extract_get('contacts', perform_get('/contacts', ids))
       end
 
       def update_contacts(*args)
@@ -104,7 +104,7 @@ module Flapjack
       end
 
       def media(*ids)
-        perform_get('/media', ids)
+        extract_get('media', perform_get('/media', ids))
       end
 
       def update_media(*args)
@@ -145,7 +145,7 @@ module Flapjack
       end
 
       def pagerduty_credentials(*ids)
-        perform_get('/pagerduty_credentials', ids)
+        extract_get('pagerduty_credentials', perform_get('/pagerduty_credentials', ids))
       end
 
       def update_pagerduty_credentials(*args)
@@ -189,7 +189,7 @@ module Flapjack
       end
 
       def notification_rules(*ids)
-        perform_get('/notification_rules', ids)
+        extract_get('notification_rules', perform_get('/notification_rules', ids))
       end
 
       def update_notification_rules(*args)
@@ -237,7 +237,7 @@ module Flapjack
       end
 
       def entities(*ids)
-        perform_get('/entities', ids)
+        extract_get('entities', perform_get('/entities', ids))
       end
 
       def update_entities(*args)
@@ -301,6 +301,25 @@ module Flapjack
             :test_notifications => data)
         end
 
+        define_method("update_unscheduled_maintenances_#{data_type}") do |*args|
+          ids, params, data = unwrap_ids_and_params(*args)
+          raise "'update_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
+          validate_params(params) do
+            validate :query => :end_time, :as => :time
+          end
+          ops = params.inject([]) do |memo, (k,v)|
+            case k
+            when :end_time
+              memo << {:op    => 'replace',
+                       :path  => "/unscheduled_maintenances/0/#{k.to_s}",
+                       :value => v}
+            end
+            memo
+          end
+          raise "'update_unscheduled_maintenances_#{data_type}' did not find any valid update fields" if ops.empty?
+          perform_patch("/unscheduled_maintenances/#{data_type}", ids, ops)
+        end
+
         define_method("delete_scheduled_maintenances_#{data_type}") do |*args|
           ids, params, data = unwrap_ids_and_params(*args)
           raise "'delete_scheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
@@ -310,34 +329,23 @@ module Flapjack
           perform_delete("/scheduled_maintenances/#{data_type}", ids, params)
         end
 
-        define_method("delete_unscheduled_maintenances_#{data_type}") do |*args|
-          ids, params, data = unwrap_ids_and_params(*args)
-          raise "'delete_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
-          validate_params(params) do
-            validate :query => :end_time, :as => :time
-          end
-          perform_delete("/unscheduled_maintenances/#{data_type}", ids, params)
-        end
       end
 
 
       # 6: Reports
-      def status_report_entities(*ids)
-        perform_get('/status_report/entities', ids)
-      end
 
-      def status_report_checks(*ids)
-        perform_get('/status_report/checks', ids)
-      end
+      ['entities', 'checks'].each do |data_type|
+        define_method("status_report_#{data_type}") do |*ids|
+          extract_get('status_reports', perform_get("/status_report/#{data_type}", ids))
+        end
 
-      ['scheduled_maintenance', 'unscheduled_maintenance', 'downtime', 'outage'].each do |report_type|
-        ['entities', 'checks'].each do |data_type|
+        ['scheduled_maintenance', 'unscheduled_maintenance', 'downtime', 'outage'].each do |report_type|
           define_method("#{report_type}_report_#{data_type}") do |*args|
             ids, params, data = unwrap_ids_and_params(*args)
             validate_params(params) do
               validate :query => [:start_time, :end_time], :as => :time
             end
-            perform_get("/#{report_type}_report/#{data_type}", ids, params)
+            extract_get("#{report_type}_reports", perform_get("/#{report_type}_report/#{data_type}", ids, params))
           end
         end
       end
@@ -347,6 +355,10 @@ module Flapjack
       end
 
       private
+
+      def extract_get(name, result)
+        (result.nil? || result.is_a?(TrueClass)) ? result : result[name]
+      end
 
       def perform_get(path, ids = [], data = [])
         req_uri = build_uri(path, ids, data)
