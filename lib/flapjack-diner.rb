@@ -54,8 +54,7 @@ module Flapjack
                      :value => v}
           when :remove_entity
             memo << {:op    => 'remove',
-                     :path  => '/contacts/0/links/entities/-',
-                     :value => v}
+                     :path  => "/contacts/0/links/entities/#{v}"}
           # # Not supported yet due to id brokenness
           # when :add_medium
           #   memo << {:op    => 'add',
@@ -63,16 +62,14 @@ module Flapjack
           #            :value => v}
           # when :remove_medium
           #   memo << {:op    => 'remove',
-          #            :path  => '/contacts/0/links/media/-',
-          #            :value => v}
+          #            :path  => "/contacts/0/links/media/#{v}"}
           when :add_notification_rule
             memo << {:op    => 'add',
                      :path  => '/contacts/0/links/notification_rules/-',
                      :value => v}
           when :remove_notification_rule
             memo << {:op    => 'remove',
-                     :path  => '/contacts/0/links/notification_rules/-',
-                     :value => v}
+                     :path  => "/contacts/0/links/notification_rules/#{v}"}
           when :first_name, :last_name, :email, :timezone, :tags
             memo << {:op    => 'replace',
                      :path  => "/contacts/0/#{k.to_s}",
@@ -253,6 +250,13 @@ module Flapjack
             memo << {:op    => 'replace',
                      :path  => "/entities/0/#{k.to_s}",
                      :value => v}
+          when :add_contact
+            memo << {:op    => 'add',
+                     :path  => '/entities/0/links/contacts/-',
+                     :value => v}
+          when :remove_contact
+            memo << {:op    => 'remove',
+                     :path  => "/entities/0/links/contacts/#{v}"}
           end
           memo
         end
