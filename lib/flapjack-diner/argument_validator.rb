@@ -38,7 +38,7 @@ module Flapjack
     def boolean(*elements)
       elements.each do |element|
         if target = @query[element]
-          next if [TrueClass, FalseClass].include(target.class)
+          next if [TrueClass, FalseClass].include?(target.class)
           @errors << "'#{target}' should be 'true' or 'false'."
         end
       end
