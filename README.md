@@ -33,1015 +33,702 @@ Flapjack::Diner.logger = Logger.new('logs/flapjack_diner.log')
 
 ## Functions
 
-* [entities](#entities)
-* [checks](#checks)
-* status ([single check](#status_check) / [all checks](#status) / [bulk](#status_bulk))
-* scheduled maintentance periods ([single check](#scheduled_maintenance_check) / [all checks](#scheduled_maintenance) / [bulk](#scheduled_maintenance_bulk))
-* unscheduled maintentance periods ([single check](#unscheduled_maintenance_check) / [all checks](#unscheduled_maintenance) / [bulk](#unscheduled_maintenance_bulk))
-* outages ([single check](#outages_check) / [all checks](#outages) / [bulk](#outages_bulk))
-* downtimes ([single check](#downtimes_check) / [all checks](#downtimes) / [bulk](#downtimes_bulk))
-* create scheduled maintenance period ([single check](#create_scheduled_maintenance) / [bulk](#create_scheduled_maintenance_bulk))
-* delete scheduled maintenance period ([single check](#delete_scheduled_maintenance) / [bulk](#delete_scheduled_maintenance_bulk))
-* acknowledge ([single check](#acknowledge) / [bulk](#acknowledge_bulk))
-* delete unscheduled maintenance period ([single check](#delete_unscheduled_maintenance) / [bulk](#delete_unscheduled_maintenance_bulk))
-* test notifications ([single check](#test_notifications) / [bulk](#test_notifications_bulk))
-* [get entity tags](#get_entity_tags)
-* [add entity tags](#add_entity_tags)
-* [delete entity tags](#delete_entity_tags)
-* [get contact tags](#get_contact_tags)
-* [add contact tags](#add_contact_tags)
-* [delete contact tags](#delete_contact_tags)
-* [get tags for contact's linked entities](#get_contact_entitytags)
-* [add tags to contact's linked entities](#add_contact_entitytags)
-* [delete tags from contact's linked entities](#delete_contact_entitytags)
+Parameters for all of **flapjack-diner**'s functions are organised into three categories:
+
+* Ids -- One or more String or Integer values
+* Query parameters -- Top-level hash values
+* Payload data -- Arrays of Hashes
+
+While these can be passed in in any order, the convention is that they will be ordered as listed above.
+
+If any operation fails, `Flapjack::Diner.last_error` will contain an error message regarding the failure.
+
+### Contacts
+
+* [create_contacts](#create_contacts)
 * [contacts](#contacts)
-* [contact](#contact)
-* [notification rules](#notification_rules)
-* [notification rule](#notification_rule)
-* [create notification rule](#create_notification_rule)
-* [update notification rule](#update_notification_rule)
-* [delete notification rule](#delete_notification_rule)
-* [notification media](#notification_media)
-* [notification medium](#notification_medium)
-* [update notification medium](#update_notification_medium)
-* [delete notification medium](#delete_notification_medium)
-* [contact timezone](#contact_timezone)
-* [update contact timezone](#update_contact_timezone)
-* [delete contact timezone](#delete_contact_timezone)
+* [update_contacts](#update_contacts)
+* [delete_contacts](#delete_contacts)
+
+### Media
+
+* [create_contact_media](#create_contact_media)
+* [media](#media)
+* [update_media](#update_media)
+* [delete_media](#delete_media)
+
+### Pagerduty credentials
+
+* [create_contact_pagerduty_credentials](#create_contact_pagerduty_credentials)
+* [pagerduty_credentials](#pagerduty_credentials)
+* [update_pagerduty_credentials](#update_pagerduty_credentials)
+* [delete_pagerduty_credentials](#delete_pagerduty_credentials)
+
+### Notification rules
+
+* [create_contact_notification_rules](#create_contact_notification_rules)
+* [notification_rules](#notification_rules)
+* [update_notification_rules](#update_notification_rules)
+* [delete_notification_rules](#delete_notification_rules)
+
+### Entities
+
+* [create_entities](#create_entities)
+* [entities](#entities)
+* [update_entities](#update_entities)
+
+* [create_scheduled_maintenances_entities](#create_scheduled_maintenances_entities)
+* [delete_scheduled_maintenances_entities](#delete_scheduled_maintenances_entities)
+
+* [create_unscheduled_maintenances_entities](#create_unscheduled_maintenances_entities)
+* [update_unscheduled_maintenances_entities](#update_unscheduled_maintenances_entities)
+
+* [create_test_notifications_entities](#create_test_notifications_entities)
+
+### Checks
+
+* [create_scheduled_maintenances_checks](#create_scheduled_maintenances_checks)
+* [delete_scheduled_maintenances_checks](#delete_scheduled_maintenances_checks)
+
+* [create_unscheduled_maintenances_checks](#create_unscheduled_maintenances_checks)
+* [update_unscheduled_maintenances_checks](#update_unscheduled_maintenances_checks)
+
+* [create_test_notifications_checks](#create_test_notifications_checks)
+
+### Reports
+
+* [status_report_entities](#status_report_entities)
+* [scheduled_maintenance_report_entities](#scheduled_maintenance_report_entities)
+* [unscheduled_maintenance_report_entities](#unscheduled_maintenance_report_entities)
+* [downtime_report_entities](#downtime_report_entities)
+* [outage_report_entities](#outage_report_entities)
+
+* [status_report_checks](#status_report_checks)
+* [scheduled_maintenance_report_checks](#scheduled_maintenance_report_checks)
+* [unscheduled_maintenance_report_checks](#unscheduled_maintenance_report_checks)
+* [downtime_report_checks](#downtime_report_checks)
+* [outage_report_checks](#outage_report_checks)
 
 ---
+
+<a name="create_contacts">&nbsp;</a>
+#### create_contacts
+
+Create one or more contacts.
+
+```ruby
+Flapjack::Diner.create_contacts([CONTACT, ...])
+```
+
+```
+CONTACT
+{
+  :id => STRING,
+  :first_name => STRING,
+  :last_name => STRING,
+  :email => STRING,
+  :tags => [STRING, ...]
+}
+```
+
+Returns true if creation succeeded or false if creation failed.
+
+<a name="contacts">&nbsp;</a>
+#### contacts
+
+Return data for one, some or all contacts.
+
+```ruby
+contact = Flapjack::Diner.contacts(ID)
+some_contacts = Flapjack::Diner.contacts(ID1, ID2, ...)
+all_contacts = Flapjack::Diner.contacts
+```
+
+<a name="update_contacts">&nbsp;</a>
+#### update_contacts
+
+Update data for one or more contacts.
+
+```ruby
+# update values for one contact
+Flapjack::Diner.update_contacts(ID, :key => value, ...)
+
+# update values for multiple contacts
+Flapjack::Diner.update_contacts(ID1, ID2, ..., :key => value, ...)
+```
+
+Acceptable update field keys are
+
+`:first_name`, `:last_name`, `:email`, and `:tags`
+
+as well as the linkage operations
+
+`:add_entity`, `:remove_entity`
+`:add_notification_rule`, `:remove_notification_rule`
+
+which take the id of the relevant resource as the value.
+
+(NB: `:add_medium` and `:remove_medium` are not supported in Flapjack v1.0 but should be in future versions.)
+
+Returns true if updating succeeded or false if updating failed.
+
+<a name="delete_contacts">&nbsp;</a>
+#### delete_contacts
+
+Delete one or more contacts.
+
+```ruby
+# delete one contact
+Flapjack::Diner.delete_contacts(ID)
+
+# delete multiple contacts
+Flapjack::Diner.delete_contacts(ID1, ID2, ...)
+```
+
+Returns true if deletion succeeded or false if deletion failed.
+
+---
+
+<a name="create_contact_media">&nbsp;</a>
+#### create_contact_media
+
+Create one or more notification media.
+
+```ruby
+Flapjack::Diner.create_contact_media(CONTACT_ID, [MEDIUM, ...])
+```
+
+```
+MEDIUM
+{
+  :type => STRING,
+  :address => STRING,
+  :interval => INTEGER,
+  :rollup_threshold => INTEGER
+}
+```
+
+Returns true if creation succeeded or false if creation failed.
+
+<a name="media">&nbsp;</a>
+#### media
+
+Return data for one, some or all notification media. Notification media ids are formed by compounding their linked contact's ID and their type in a string (e.g. '23_sms')
+
+```ruby
+medium = Flapjack::Diner.media(ID)
+some_media = Flapjack::Diner.media(ID1, ID2, ...)
+all_media = Flapjack::Diner.media
+```
+
+<a name="update_media">&nbsp;</a>
+#### update_media
+
+Update data for one or more notification media.
+
+```ruby
+# update values for one medium
+Flapjack::Diner.update_media(ID, :key => value, ...)
+
+# update values for multiple media
+Flapjack::Diner.update_media(ID1, ID2, ..., :key => value, ...)
+```
+
+Acceptable update field keys are
+
+`:address`, `:interval`, `:rollup_threshold`
+
+Returns true if updating succeeded or false if updating failed.
+
+<a name="delete_media">&nbsp;</a>
+#### delete_media
+
+Delete one or more notification media.
+
+```ruby
+# delete one medium
+Flapjack::Diner.delete_media(ID)
+
+# delete multiple media
+Flapjack::Diner.delete_media(ID1, ID2, ...)
+```
+
+Returns true if deletion succeeded or false if deletion failed.
+
+---
+
+<a name="create_contact_pagerduty_credentials">&nbsp;</a>
+#### create_contact_media
+
+Create pagerduty credentials for a contact.
+
+```ruby
+Flapjack::Diner.create_contact_pagerduty_credentials(CONTACT_ID, PAGERDUTY_CREDENTIALS)
+```
+
+```
+PAGERDUTY_CREDENTIALS
+{
+  :service_key => STRING,
+  :subdomain => STRING,
+  :username => STRING,
+  :password => STRING
+}
+```
+
+Returns true if creation succeeded or false if creation failed.
+
+<a name="pagerduty_credentials">&nbsp;</a>
+#### pagerduty_credentials
+
+Return pagerduty credentials for a contact.
+
+```ruby
+pagerduty_credentials = Flapjack::Diner.pagerduty_credentials(CONTACT_ID)
+some_pagerduty_credentials = Flapjack::Diner.pagerduty_credentials(CONTACT_ID1, CONTACT_ID2, ...)
+all_pagerduty_credentials = Flapjack::Diner.pagerduty_credentials
+```
+
+<a name="update_pagerduty_credentials">&nbsp;</a>
+#### update_pagerduty_credentials
+
+Update pagerduty credentials for one or more contacts.
+
+```ruby
+# update pagerduty_credentials for one contact
+Flapjack::Diner.update_pagerduty_credentials(CONTACT_ID, :key => value, ...)
+
+# update pagerduty_credentials for multiple contacts
+Flapjack::Diner.update_pagerduty_credentials(CONTACT_ID1, CONTACT_ID2, ..., :key => value, ...)
+```
+
+Acceptable update field keys are
+
+`:service_key`, `:subdomain`, `:username`, `:password`
+
+Returns true if updating succeeded or false if updating failed.
+
+<a name="delete_pagerduty_credentials">&nbsp;</a>
+#### delete_pagerduty_credentials
+
+Delete pagerduty credentials for one or more contacts
+
+```ruby
+# delete pagerduty_credentials for one contact
+Flapjack::Diner.delete_pagerduty_credentials(CONTACT_ID)
+
+# delete pagerduty_credentials for multiple contacts
+Flapjack::Diner.delete_pagerduty_credentials(CONTACT_ID1, CONTACT_ID2, ...)
+```
+
+Returns true if deletion succeeded or false if deletion failed.
+
+---
+
+<a name="create_contact_notification_rules">&nbsp;</a>
+#### create_contact_notification_rules
+
+Create one or more notification rules.
+
+```ruby
+Flapjack::Diner.create_contact_notification_rules(CONTACT_ID, [NOTIFICATION_RULE, ...])
+```
+
+```
+NOTIFICATION_RULE
+{
+  :id => STRING,
+  :entities => [STRING, ...],
+  :regex_entities => [STRING, ...],
+  :tags => [STRING, ...],
+  :regex_tags => [STRING, ...],
+  :time_restrictions => TODO,
+  :unknown_media => [STRING, ...],
+  :warning_media => [STRING, ...],
+  :critical_media => [STRING, ...],
+  :unknown_blackhole => BOOLEAN,
+  :warning_blackhole => BOOLEAN,
+  :critical_blackhole => BOOLEAN
+}
+```
+
+Returns true if creation succeeded or false if creation failed.
+
+<a name="notification_rules">&nbsp;</a>
+#### notification_rules
+
+Return data for one, some or all notification rules.
+
+```ruby
+notification_rule = Flapjack::Diner.notification_rules(ID)
+some_notification_rules = Flapjack::Diner.notification_rules(ID1, ID2, ...)
+all_notification_rules = Flapjack::Diner.notification_rules
+```
+
+<a name="update_notification_rules">&nbsp;</a>
+#### update_notification_rules
+
+Update data for one or more notification rules.
+
+```ruby
+# update values for one notification rule
+Flapjack::Diner.update_notification_rules(ID, :key => value, ...)
+
+# update values for multiple notification rules
+Flapjack::Diner.update_notification_rules(ID1, ID2, ..., :key => value, ...)
+```
+
+Acceptable update field keys are
+
+`:entities`, `:regex_entities`, `:tags`, `:regex_tags`, `:time_restrictions`, `:unknown_media`,  `:warning_media`, `:critical_media`, `:unknown_blackhole`, `:warning_blackhole`, and `:critical_blackhole`
+
+Returns true if updating succeeded or false if updating failed.
+
+<a name="delete_notification_rules">&nbsp;</a>
+#### delete_contacts
+
+Delete one or more notification rules.
+
+```ruby
+# delete one medium
+Flapjack::Diner.delete_notification_rules(ID)
+
+# delete multiple contacts
+Flapjack::Diner.delete_notification_rules(ID1, ID2, ...)
+```
+
+Returns true if deletion succeeded or false if deletion failed.
+
+---
+
+<a name="create_entities">&nbsp;</a>
+### create_entities
+
+Create one or more entities.
+
+```ruby
+Flapjack::Diner.create_entities([ENTITY, ...])
+```
+
+```
+ENTITY
+{
+  :id => STRING,
+  :name => STRING,
+  :tags => [STRING, ...]
+}
+```
+
+Returns true if creation succeeded or false if creation failed.
 
 <a name="entities">&nbsp;</a>
-Return an array of monitored entities, and their statuses for all associated checks:
+### entities
+
+Return data for one, some or all entities.
 
 ```ruby
-Flapjack::Diner.entities
+entity = Flapjack::Diner.entities(ID)
+some_entities = Flapjack::Diner.entities(ID1, ID2, ...)
+all_entities = Flapjack::Diner.entities
 ```
 
-The data is returned as an array where each element is a hash representing an entity.
+<a name="update_entities">&nbsp;</a>
+### update_entities
 
-```
-// ID     is an integer, to hold e.g. database id from an external system
-// NAME   is a string
-// STATUS is a hash with the format returned from Flapjack::Diner.status(entity, check)
-[{'id'     => ID,
-  'name'   => NAME,
-  'checks' => [STATUS, STATUS, ...]},
- {},
- ...]
-```
-
----
-
-<a name="checks">&nbsp;</a>
-Return an array of checks for an entity:
+Update data for one or more entities.
 
 ```ruby
-Flapjack::Diner.checks('example.com')
+# update values for one entity
+Flapjack::Diner.update_entities(ID, :key => value, ...)
+
+# update values for multiple entities
+Flapjack::Diner.update_entities(ID1, ID2, ..., :key => value, ...)
 ```
 
-The data is returned as an array of strings, where each element is a check name for the provided entity.
+Acceptable update field keys are
 
-```
-// CHECK is a string, e.g. 'ssh', 'ping'
-[CHECK, CHECK, ...]
-```
+`:name` and `:tags`
 
----
-<a name="status_check">&nbsp;</a>
-Return the status for a check on an entity
+as well as the linkage operations
 
-```ruby
-Flapjack::Diner.status('example.com', :check => 'ping')
-```
+`:add_contact` and `:remove_contact`
 
-The data is returned as a hash:
+which take the id of the relevant contact as the value.
 
-```
-// CHECK is a string, e.g. 'ssh', 'ping'
-// STATE is a string, one of 'critical', 'warning', 'ok', 'unknown'
-// the TIMESTAMPs are integers representing UTC times for the named events
-{'name' => CHECK,
- 'state' => STATE,
- 'in_unscheduled_maintenance' => BOOLEAN,
- 'in_scheduled_maintenance' => BOOLEAN,
- 'last_update' => TIMESTAMP,
- 'last_problem_notification' => TIMESTAMP,
- 'last_recovery_notification' => TIMESTAMP,
- 'last_acknowledgement_notification' => TIMESTAMP}
- ```
+Returns true if updating succeeded or false if updating failed.
 
----
-<a name="status">&nbsp;</a>
-Return the statuses for all checks on an entity
+
+<a name="create_scheduled_maintenances_entities">&nbsp;</a>
+### create_scheduled_maintenances_entities
+
+Create one or more scheduled maintenance periods (`duration` seconds in length) on all checks for the provided entities.
 
 ```ruby
-Flapjack::Diner.status('example.com')
+Flapjack::Diner.create_scheduled_maintenances_entities(ENTITY_ID(S), [SCHEDULED_MAINTENANCE, ...])
 ```
 
-The data is returned as an array of checks, where each element is a hash with the format returned from Flapjack::Diner.status(entity, check)
-
 ```
-// STATUS is a hash with the format returned from Flapjack::Diner.status(entity, check)
-[STATUS, STATUS, ...]
-```
-
----
-<a name="status_bulk">&nbsp;</a>
-Return the statuses for all checks on some entities and specified checks on others.
-
-```ruby
-# :entity - optional, may be a String or an Array of Strings (entity names)
-# :check  - optional, Hash, keys are Strings (entity names), values are Strings or Arrays of Strings (check names)
-# At least one of the :entity or :check arguments must be provided
-Flapjack::Diner.bulk_status(:entity => 'example.com',
-                            :check => {'example2.com' => ['PING', 'SSH'],
-                                       'example3.com' => 'PING'})
-```
-
-The data is returned as an array, where each element is a hash with the format
-
-```
-// ENTITY is a string, one of the entity names provided in the entity or check arguments.
-// CHECK is a string, e.g. 'ssh', 'ping'
-// STATUS is a hash with the format returned from Flapjack::Diner.status(entity, check)
-{'entity' => ENTITY
- 'check'  => CHECK,
- 'status' => STATUS}
-```
-
----
-<a name="scheduled_maintenance_check">&nbsp;</a>
-Return an array of scheduled maintenance periods for a check on an entity:
-
-```ruby
-# start time (Time object, optional)
-# end time (Time object, optional)
-Flapjack::Diner.scheduled_maintenances('example.com', :check => 'ping',
-                                       :start_time => Time.local(2012, 08, 01),
-                                       :end_time => Time.local(2012, 09, 01))
-```
-
-The data is returned as an array of scheduled maintenance periods, with each element of the array being a hash containing data about that maintenance period.
-
-```
-// the TIMESTAMPs are integers representing UTC times for the named events
-// DURATION is an integer representing the length of the period in seconds
-// SUMMARY is a string providing a description of the period, may be empty
-[{'start_time' => TIMESTAMP,
-  'duration' => DURATION,
-  'summary' => SUMMARY,
-  'end_time' => TIMESTAMP},
-  {...},
-  ...]
-```
-
----
-<a name="scheduled_maintenance">&nbsp;</a>
-Return lists of scheduled maintenance periods for all checks on an entity:
-
-```ruby
-# start time (Time object, optional)
-# end time (Time object, optional)
-Flapjack::Diner.scheduled_maintenances('example.com',
-                                       :start_time => Time.local(2012, 08, 01),
-                                       :end_time => Time.local(2012, 09, 01))
-```
-
-The data is returned as an array of hashes, where each hash represents the scheduled maintenance periods for a check under the entity :
-
-```
-// CHECK is a string, e.g. 'ssh', 'ping'
-// SCHED_MAINT is a hash with the same format as an individual element of
-//   the array returned from Flapjack::Diner.scheduled_maintenances(entity, check)
-[{'check' => CHECK,
-  'scheduled_maintenance' => [SCHED_MAINT, ...]
- },
- {'check' => CHECK,
-  'scheduled_maintenance' => [SCHED_MAINT, ...]
- }]
-```
-
----
-<a name="scheduled_maintenance_bulk">&nbsp;</a>
-Return lists of scheduled maintenance periods for all checks on some entities and specified checks on others.
-
-```ruby
-# :entity - optional, may be a String or an Array of Strings (entity names)
-# :check  - optional, Hash, keys are Strings (entity names), values are Strings
-#             or Arrays of Strings (check names)
-# At least one of the :entity or :check arguments must be provided
-Flapjack::Diner.bulk_scheduled_maintenances(:entity => 'example.com',
-                                            :check => {'example2.com' => ['PING', 'SSH'],
-                                                       'example3.com' => 'PING'})
-```
-
-The data is returned as an array, where each element is a hash with the format
-
-```
-// ENTITY is a string, one of the entity names provided in the entity or check arguments
-// CHECK is a string, e.g. 'ssh', 'ping'
-// SCHED_MAINT is a hash with the same format as an individual element of the array returned from Flapjack::Diner.scheduled_maintenances(entity, check)
-{'entity' => ENTITY
- 'check'  => CHECK,
- 'scheduled_maintenances' => [SCHED_MAINT, ...]}
-```
-
-Please note the plural for the 'scheduled_maintenances' hash key, which is different to
-the other methods.
-
----
-<a name="unscheduled_maintenance_check">&nbsp;</a>
-Return an array of unscheduled maintenance periods for a check on an entity:
-
-```ruby
-# start time (Time object, optional)
-# end time (Time object, optional)
-Flapjack::Diner.unscheduled_maintenances('example.com', :check => 'ping',
-                                         :start_time => Time.local(2012, 08, 01),
-                                         :end_time => Time.local(2012, 09, 01))
-```
-
-The data is returned as an array of unscheduled maintenance periods, with each element of the array being a hash containing data about that maintenance period.
-
-```
-// the TIMESTAMPs are integers representing UTC times for the named events
-// DURATION is an integer representing the length of the period in seconds
-// SUMMARY is a string providing a description of the period, may be empty
-[{'start_time' => TIMESTAMP,
-  'duration' => DURATION,
-  'summary' => SUMMARY,
-  'end_time' => TIMESTAMP},
-  {...},
-  ...]
-```
-
----
-<a name="unscheduled_maintenance">&nbsp;</a>
-Return lists of unscheduled maintenance periods for all checks on an entity:
-
-```ruby
-# start time (Time object, optional)
-# end time (Time object, optional)
-Flapjack::Diner.unscheduled_maintenances('example.com',
-                                         :start_time => Time.local(2012, 08, 01),
-                                         :end_time => Time.local(2012, 09, 01))
-```
-
-The data is returned as an array of hashes, where each hash represents the unscheduled maintenance periods for a check under the entity:
-
-```
-// CHECK is a string, e.g. 'ssh', 'ping'
-// UNSCHED_MAINT is a hash with the same format as an individual element of
-//   the array returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
-[{'check' => CHECK,
-  'unscheduled_maintenance' => [UNSCHED_MAINT, ...]
- },
- {'check' => CHECK,
-  'unscheduled_maintenance' => [UNSCHED_MAINT, ...]
- }]
-```
-
----
-<a name="unscheduled_maintenance_bulk">&nbsp;</a>
-Return lists of unscheduled maintenance periods for all checks on some entities and specified checks on others.
-
-```ruby
-# :entity - optional, may be a String or an Array of Strings (entity names)
-# :check  - optional, Hash, keys are Strings (entity names), values are Strings
-#             or Arrays of Strings (check names)
-# At least one of the :entity or :check arguments must be provided
-Flapjack::Diner.bulk_unscheduled_maintenances(:entity => 'example.com',
-                                              :check => {'example2.com' => ['PING', 'SSH'],
-                                                         'example3.com' => 'PING'})
-```
-
-The data is returned as an array, where each element is a hash with the format
-
-```
-// ENTITY is a string, one of the entity names provided in the entity or check arguments
-// CHECK is a string, e.g. 'ssh', 'ping'
-// UNSCHED_MAINT is a hash with the same format as an individual element of the
-//   array returned from Flapjack::Diner.unscheduled_maintenances(entity, check)
-{'entity' => ENTITY
- 'check'  => CHECK,
- 'unscheduled_maintenances' => [UNSCHED_MAINT, ...]
-}
-```
-
-Please note the plural for the 'unscheduled_maintenances' hash key, which is different to
-the other methods.
-
----
-<a name="outages_check">&nbsp;</a>
-Return an array of outages for a check on an entity (all times for which the check was failing):
-
-```ruby
-# start time (Time object, optional)
-# end time (Time object, optional)
-Flapjack::Diner.outages('example.com', :check => 'ping',
-                        :start_time => Time.local(2012, 08, 01),
-                        :end_time => Time.local(2012, 09, 01))
-```
-
-The data is returned as an array of outage periods, with each element of the array being a hash containing data about that outage period.
-
-```
-// STATE is a string, one of 'critical', 'warning', 'ok', 'unknown'
-// the TIMESTAMPs are integers representing UTC times for the named events
-// SUMMARY is a string providing a description of the period, may be empty
-[{'state' => STATE,
-  'start_time' => TIMESTAMP,
-  'end_time' => TIMESTAMP,
-  'summary' => SUMMARY},
-  {...},
-  ...]
-```
-
----
-<a name="outages">&nbsp;</a>
-Return lists of outages for all checks on an entity (all times for which said checks were failing):
-
-```ruby
-# start time (Time object, optional)
-# end time (Time object, optional)
-Flapjack::Diner.outages('example.com', :start_time => Time.local(2012, 08, 01),
-                                       :end_time => Time.local(2012, 09, 01))
-```
-
-The data is returned as an array of hashes, where each hash represents the outages for a check under the entity:
-
-```
-// CHECK is a string, e.g. 'ssh', 'ping'
-// OUTAGE is a hash with the same format as an individual element of the array returned from Flapjack::Diner.outages(entity, check)
-[{'check' => CHECK,
-  'outages' => [OUTAGE, ...]
- },
- {'check' => CHECK,
-  'outages' => [OUTAGE, ...]
- }]
-```
-
----
-<a name="outages_bulk">&nbsp;</a>
-Return lists of outages for all checks on some entities and specified checks on others.
-
-```ruby
-# :entity - optional, may be a String or an Array of Strings (entity names)
-# :check  - optional, Hash, keys are Strings (entity names), values are Strings
-#             or Arrays of Strings (check names)
-# At least one of the :entity or :check arguments must be provided
-Flapjack::Diner.bulk_outages(:entity => 'example.com',
-                             :check => {'example2.com' => ['PING', 'SSH'],
-                                        'example3.com' => 'PING'})
-```
-
-The data is returned as an array, where each element is a hash with the format
-
-```
-// ENTITY is a string, one of the entity names provided in the entity or check arguments
-// CHECK is a string, e.g. 'ssh', 'ping'
-// OUTAGE is a hash with the same format as an individual element of the array
-//   returned from Flapjack::Diner.outages(entity, check)
-{'entity' => ENTITY
- 'check'  => CHECK,
- 'outages' => [OUTAGE, ...]
-}
-```
-
----
-<a name="downtimes_check">&nbsp;</a>
-Return an array of downtimes for a check on an entity (outages outside of scheduled maintenance periods):
-
-```ruby
-# start time (Time object, optional)
-# end time (Time object, optional)
-Flapjack::Diner.downtime('example.com', :check => 'ping',
-                         :start_time => Time.local(2012, 08, 01),
-                         :end_time => Time.local(2012, 09, 01))
-```
-
-Returns a hash with some statistics about the downtimes, including an array of the downtimes themselves. This may not be the same as would be returned from the 'outages' call for the same time period, as if scheduled maintenance periods overlap any of those times then they will be reduced, split or discarded to fit.
-
-```
-// TOTAL SECONDS gives the sum of the time spent in that state for each check state.
-// PERCENTAGES represents the proportion of the total time that the check was
-//   in each state. Will be null if either start or end time were not provided
-//   in the request.
-// OUTAGE is a hash with the same format as an individual element of the array
-//   returned from Flapjack::Diner.outages(entity, check).
-{'total_seconds' => {STATE => INTEGER, ...},
- 'percentages' => {STATE => INTEGER, ...},
- 'downtime' => [OUTAGE, ...]
-}
-```
-
----
-<a name="downtimes">&nbsp;</a>
-Return an array of downtimes for all checks on an entity (outages outside of scheduled maintenance periods):
-
-```ruby
-# start time (Time object, optional)
-# end time (Time object, optional)
-Flapjack::Diner.downtime('example.com', :start_time => Time.local(2012, 08, 01),
-                         :end_time => Time.local(2012, 09, 01))
-```
-
-The data is returned as an array of hashes, where each hash represents a downtime report for a check under the entity:
-
-```
-// CHECK is a string, e.g. 'ssh', 'ping'
-// DOWNTIME is a hash with the same format those returned from
-//   Flapjack::Diner.downtime(entity, check)
-[{'check' => CHECK,
-  'downtime' => [DOWNTIME, ...]
- },
- {'check' => CHECK,
-  'downtime' => [DOWNTIME, ...]
- }]
-```
-
----
-<a name="downtimes_bulk">&nbsp;</a>
-
-Return lists of downtimes for all checks on some entities and specified checks on others.
-
-```ruby
-# :entity - optional, may be a String or an Array of Strings (entity names)
-# :check  - optional, Hash, keys are Strings (entity names), values are Strings
-#             or Arrays of Strings (check names)
-# At least one of the :entity or :check arguments must be provided
-Flapjack::Diner.bulk_downtime(:entity => ['example.com', 'example4.com'],
-                              :check => {'example2.com' => ['PING', 'SSH'],
-                                         'example3.com' => 'PING'})
-```
-
-The data is returned as an array, where each element is a hash with the format
-
-```
-// ENTITY is a string, one of the entity names provided in the entity or check arguments
-// CHECK is a string, e.g. 'ssh', 'ping'
-// DOWNTIME is a hash with the same format as an individual element of the array
-//   returned from Flapjack::Diner.downtime(entity, check)
-{'entity' => ENTITY
- 'check'  => CHECK,
- 'downtime' => [DOWNTIME, ...]
-}
-```
-
----
-<a name="create_scheduled_maintenance">&nbsp;</a>
-Create a scheduled maintenance period for a check on an entity:
-
-```ruby
-# start_time (Time object, required)
-# duration (Integer, required) is measured in seconds
-# summary (String, optional)
-Flapjack::Diner.create_scheduled_maintenance!('example.com', 'ping',
-  :start_time => Time.local(2012, 12, 01), :duration => (60 * 60),
-  :summary => 'changing stuff')
-```
-
-Returns a boolean value representing the success or otherwise of the creation of the scheduled maintenance period by the server.
-
----
-<a name="create_scheduled_maintenance_bulk">&nbsp;</a>
-Create scheduled maintenance periods for all checks on some entities and specified checks on others.
-
-```ruby
-# start_time (Time object, required)
-# duration (Integer, required) is measured in seconds
-# summary (String, optional)
-Flapjack::Diner.bulk_create_scheduled_maintenance!(:entity => ['example.com', 'example2.com'],
-  :check => {'example3.com' => 'ping'}, :start_time => Time.local(2012, 12, 01),
-  :duration => (60 * 60), :summary => 'changing stuff')
-```
-
-Returns a boolean value representing the success or otherwise of the creation of the scheduled maintenance periods by the server.
-
----
-<a name="delete_scheduled_maintenance">&nbsp;</a>
-Delete a scheduled maintenance period for a check on an entity:
-
-```ruby
-# start_time (Time object, required)
-Flapjack::Diner.delete_scheduled_maintenance!('example.com', 'ping',
-  :start_time => Time.local(2012, 12, 01))
-```
-
-Returns a boolean value representing the success or otherwise of the deletion of the scheduled maintenance periods by the server.
-
----
-<a name="delete_scheduled_maintenance_bulk">&nbsp;</a>
-Delete a scheduled maintenance period for all checks on some entities and specified checks on others.
-
-```ruby
-# start_time (Time object, required)
-Flapjack::Diner.bulk_delete_scheduled_maintenance!(:check => {'example.com' => ['ping', 'ssh']},
-  :start_time => Time.local(2012, 12, 01))
-```
-
-Returns a boolean value representing the success or otherwise of the deletion of the scheduled maintenance periods by the server.
-
----
-<a name="acknowledge">&nbsp;</a>
-Acknowledge the current state for a check on an entity:
-
-```ruby
-# summary (String, optional)
-Flapjack::Diner.acknowledge!('example.com', 'ping', :summary => 'ack')
-```
-
-Returns a boolean value representing the success or otherwise of the creation of the acknowledgement by the server.
-
----
-<a name="acknowledge_bulk">&nbsp;</a>
-Acknowledge the current state for all checks on some entities and specified checks on others.
-
-```ruby
-# summary (String, optional)
-Flapjack::Diner.bulk_acknowledge!(:entity => 'example.com',
-  :check => {'example2.com' => 'ping'}, :summary => 'ack')
-```
-
-Returns a boolean value representing the success or otherwise of the creation of the acknowledgements by the server.
-
----
-<a name="delete_unscheduled_maintenance">&nbsp;</a>
-Delete an unscheduled maintenance period for a check on an entity:
-
-```ruby
-# end_time (Time object, optional)
-Flapjack::Diner.delete_unscheduled_maintenance!('example.com', 'ping',
-  :end_time => Time.local(2012, 12, 01))
-```
-
-Returns a boolean value representing the success or otherwise of the deletion of the scheduled maintenance periods by the server.
-
----
-<a name="delete_unscheduled_maintenance_bulk">&nbsp;</a>
-Delete unscheduled maintenance periods for all checks on some entities and specified checks on others.
-
-```ruby
-# end_time (Time object, optional)
-Flapjack::Diner.bulk_delete_unscheduled_maintenance!(:check => {'example.com' => ['ping', 'ssh']},
-  :end_time => Time.local(2012, 12, 01))
-```
-
-Returns a boolean value representing the success or otherwise of the deletion of the scheduled maintenance periods by the server.
-
----
-<a name="test_notifications">&nbsp;</a>
-Generate test notifications for a check on an entity:
-
-```ruby
-# summary (String, optional)
-Flapjack::Diner.test_notifications!('example.com', 'HOST',
-  :summary => 'Testing notifications to all contacts interested in the HOST check on example.com')
-```
-
-Returns a boolean value representing the success or otherwise of the creation of the notifications by the server.
-
----
-<a name="test_notifications_bulk">&nbsp;</a>
-Generate test notifications for all checks on some entities and specified checks on others.
-
-```ruby
-# summary (String, optional)
-Flapjack::Diner.bulk_test_notifications!(:entity => 'example.com',
-  :check => {'example2.com' => 'ping'}, :summary => 'Testing notifications')
-```
-
-Returns a boolean value representing the success or otherwise of the creation of the notifications by the server.
-
----
-<a name="get_entity_tags">&nbsp;</a>
-Get all tags for an entity.
-
-```ruby
-# entity name (String, required)
-Flapjack::Diner.entity_tags('example.com')
-```
-
-The data is returned as an array of strings; each string is a named tag set on the entity. The array may be empty.
-
----
-<a name="add_entity_tags">&nbsp;</a>
-Add one or more tags to an entity.
-
-```ruby
-# entity name (String, required)
-# *tags (at least one String)
-Flapjack::Diner.add_entity_tags!('example.com', 'tag1', 'tag2')
-```
-
-The data is returned as an array of strings; each string is a named tag set on the entity. The array will, at a minimum, contain the tag(s) added by the request.
-
----
-<a name="delete_entity tags">&nbsp;</a>
-Delete one or more tags from an entity.
-
-```ruby
-# entity name (String, required)
-# *tags (at least one String)
-Flapjack::Diner.delete_entity_tags!('example.com', 'tag1')
-```
-
-Returns a boolean representing the success (or otherwise) of the tag deletion.
-
----
-<a name="get_contact_tags">&nbsp;</a>
-Get all tags for a contact.
-
-```ruby
-# contact ID (String, required)
-Flapjack::Diner.contact_tags('21')
-```
-
-The data is returned as an array of strings; each string is a named tag set on the contact. The array may be empty.
-
----
-<a name="add_contact_tags">&nbsp;</a>
-Add one or more tags to a contact.
-
-```ruby
-# contact ID (String, required)
-# *tags (at least one String)
-Flapjack::Diner.add_contact_tags!('21', 'tag1', 'tag2')
-```
-
-The data is returned as an array of strings; each string is a named tag set on the contact. The array will, at a minimum, contain the tag(s) added by the request.
-
----
-<a name="delete_contact_tags">&nbsp;</a>
-Delete one or more tags from a contact.
-
-```ruby
-# contact ID (String, required)
-# *tags (at least one String)
-Flapjack::Diner.delete_contact_tags!('21', 'tag1')
-```
-
-Returns a boolean representing the success (or otherwise) of the tag deletion.
-
----
-<a name="get_contact_entitytags">&nbsp;</a>
-Get all tags for entities linked to a contact.
-
-```ruby
-# contact ID (String, required)
-Flapjack::Diner.contact_entitytags('21')
-```
-
-The data is returned as a Hash, with String keys representing entity names, and Arrays of String values representing the tags for each named entity.
-
-```
+SCHEDULED_MAINTENANCE
 {
-  ENTITY => [TAG, ...],
-  ENTITY => [TAG, ...],
-  ...
+  :start_time => DATETIME,
+  :duration => INTEGER,
+  :summary => STRING
 }
 ```
 
----
-<a name="add_contact_entitytags">&nbsp;</a>
-Add one or more tags to entities linked to a contact.
+Returns true if creation succeeded or false if creation failed.
+
+<a name="delete_scheduled_maintenances_entities">&nbsp;</a>
+### delete_scheduled_maintenances_entities
+
+Delete scheduled maintenance periods starting at a specific time for checks across one or more entities.
 
 ```ruby
-# contact ID (String, required)
-# entity_tags (Hash, required - similar format as returned by 'contact_entitytags')
-Flapjack::Diner.add_contact_entitytags!('21', {'entity1' => ['web'], 'entity2' => ['app']})
+Flapjack::Diner.delete_scheduled_maintenances_entities(ENTITY_ID(S), :start_time => DATETIME)
 ```
 
-The data is returned as a Hash, reflecting the current tags for the contact's linked entities. This is in the same format as the ```contact_entitytags``` call returns.
+Returns true if deletion succeeded or false if deletion failed. Raises an exception if the `:start_time` parameter is not supplied.
 
----
-<a name="delete_contact_entitytags">&nbsp;</a>
-Delete one or more tags from entities linked to a contact.
+<a name="create_unscheduled_maintenances_entities">&nbsp;</a>
+### create_unscheduled_maintenances_entities
+
+Acknowledges any failing checks on the passed entities and sets up unscheduled maintenance (`duration` seconds long) on them.
 
 ```ruby
-# contact ID (String, required)
-# entity_tags (Hash, required - similar format as returned by 'contact_entitytags')
-Flapjack::Diner.add_contact_entitytags!('21', {'entity1' => ['web'], 'entity2' => ['app']})
+Flapjack::Diner.create_unscheduled_maintenances_entities(ENTITY_ID(S), [SCHEDULED_MAINTENANCE, ...])
 ```
 
-Returns a boolean representing the success (or otherwise) of the tag deletion.
-
----
-<a name="contacts">&nbsp;</a>
-Gets all contact records.
-
-```ruby
-Flapjack::Diner.contacts
 ```
-
-The data is returned as an array of hashes, where each hash represents a contact. The tags array will be empty if the associated contact has no tags.
-
-```ruby
-[
-  {
-    'id' => STRING,
-    'first_name' => STRING,
-    'last_name' => STRING,
-    'email' => STRING,
-    'tags' => [STRING, ...]
-  },
-  ...
-]
-```
-
----
-<a name="contact">&nbsp;</a>
-Get a single contact record.
-
-```ruby
-# contact_id (String, required)
-Flapjack::Diner.contact('contact23')
-```
-
-The contact record is returned as a hash (a singular instance of what is returned in the full contact list). The tags array will be empty if the contact has no tags
-
-```ruby
+UNSCHEDULED_MAINTENANCE
 {
-  'id' => STRING,
-  'first_name' => STRING,
-  'last_name' => STRING,
-  'email' => STRING,
-  'tags' => [STRING, ...]
+  :duration => INTEGER,
+  :summary => STRING
 }
 ```
 
----
-<a name="notification_rules">&nbsp;</a>
-Gets the notification rules belonging to a contact.
+Returns true if creation succeeded or false if creation failed.
+
+<a name="update_unscheduled_maintenances_entities">&nbsp;</a>
+### update_unscheduled_maintenances_entities
+
+Finalises currently existing unscheduled maintenance periods for all acknowledged checks in the provided entities. The periods end at the time provided in the `:end_time` parameter.
 
 ```ruby
-# contact_id (String, required)
-Flapjack::Diner.notification_rules('contact23')
+Flapjack::Diner.update_unscheduled_maintenances_entities(ENTITY_ID(S), :end_time => DATETIME)
 ```
 
-Returns an array of hashes, where a single hash represents a notification rule record. NB 'time_restrictions' have not yet been implemented, but we're noting the use of the field name here as it will be meaningful in the future.
+Returns true if the finalisation succeeded or false if deletion failed.
+
+<a name="create_test_notifications_entities">&nbsp;</a>
+### create_test_notifications_entities
+
+Instructs Flapjack to issue test notifications on all checks for the passed entities. These notifications will be sent to contacts configured to receive notifications for those checks.
 
 ```ruby
-# contact_id (String, as provided in the request)
-# rule_id (String, allocated on creation, immutable)
-[
-  {
-    'id' => RULE_ID,
-    'contact_id' => CONTACT_ID,
-    'entity_tags' => [STRING, ...]
-    'entities' => [STRING, ...],
-    'time_restrictions' => [],
-    'warning_media' => [STRING, ...],
-    'critical_media' => [STRING, ...],
-    'warning_blackhole' => BOOLEAN,
-    'critical_blackhole' => BOOLEAN
-  },
-  ...
-]
+Flapjack::Diner.create_test_notifications_entities(ENTITY_ID(S), [TEST_NOTIFICATION, ...])
 ```
 
----
-<a name="notification_rule">&nbsp;</a>
-Gets a single notification rule belonging to a contact.
-
-```ruby
-# rule_id (String, required)
-Flapjack::Diner.notification_rule('08f607c7-618d-460a-b3fe-868464eb6045')
 ```
-
-Returns a hash representing a notification rule record (a singular instance of what is returned in a list of a contact's notification rules). NB 'time_restrictions' have not yet been implemented, but we're noting the use of the field name here as it will be meaningful in the future.
-
-```ruby
-# RULE_ID (String, as provided in the request)
-# CONTACT_ID (String)
+TEST_NOTIFICATION
 {
-  'id' => RULE_ID,
-  'contact_id' => CONTACT_ID,
-  'entity_tags' => [STRING, ...]
-  'entities' => [STRING, ...],
-  'time_restrictions' => [],
-  'warning_media' => [STRING, ...],
-  'critical_media' => [STRING, ...],
-  'warning_blackhole' => BOOLEAN,
-  'critical_blackhole' => BOOLEAN
+  :summary => STRING
 }
 ```
+
+Returns true if creation succeeded or false if creation failed.
 
 ---
-<a name="create_notification_rule">&nbsp;</a>
-Creates a notification rule for a contact.
+
+<a name="create_scheduled_maintenances_checks">&nbsp;</a>
+### create_scheduled_maintenances_checks
+
+Create one or more scheduled maintenance periods (`duration` seconds in length) on one or more checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-# rule_data (Hash, will be converted via to_json)
-#   contact_id (String, required)
-#   entity_tags (Array of Strings, may be empty; either this or 'entities' must have some content)
-#   entities (Array of Strings, may be empty; either this or 'entity_tags' must have some content)
-#   time_restrictions (TBD)
-#   warning_media (Array of Strings, may be empty; each represents a media type)
-#   critical_media (Array of Strings, may be empty; each represents a media type)
-#   warning_blackhole (Boolean, required)
-#   critical_blackhole (Boolean, required)
-Flapjack::Diner.create_notification_rule!({
-  'contact_id' => 'contact23',
-  'entity_tags' => ['database'],
-  'entities' => ['app-1.example.com']
-  'time_restrictions' => [],
-  'warning_media' => ['email'],
-  'critical_media' => ['email', 'sms'],
-  'warning_blackhole' => false,
-  'critical_blackhole' => false
-}
-})
+Flapjack::Diner.create_scheduled_maintenances_checks(CHECK_ID(S), [SCHEDULED_MAINTENANCE, ...])
 ```
 
-Returns a hash represeting the created notification rule. This is the same data you would receive from ```Flapjack::Diner.notification_rule(rule_id)```.
-
-```ruby
-# RULE_ID (String, as provided in the request)
-# CONTACT_ID (String)
+```
+SCHEDULED_MAINTENANCE
 {
-  'id' => RULE_ID,
-  'contact_id' => CONTACT_ID,
-  'entity_tags' => [STRING, ...]
-  'entities' => [STRING, ...],
-  'time_restrictions' => [],
-  'warning_media' => [STRING, ...],
-  'critical_media' => [STRING, ...],
-  'warning_blackhole' => BOOLEAN,
-  'critical_blackhole' => BOOLEAN
+  :start_time => DATETIME,
+  :duration => INTEGER,
+  :summary => STRING
 }
 ```
 
----
-<a name="update_notification_rule">&nbsp;</a>
-Updates a notification rule for a contact.
+Returns true if creation succeeded or false if creation failed.
+
+<a name="delete_scheduled_maintenances_checks">&nbsp;</a>
+### delete_scheduled_maintenances_checks
+
+Delete scheduled maintenance periods starting at a specific time for one or more checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-# rule_id (String, required)
-# rule_data (Hash, will be converted via to_json)
-#   contact_id (String, required)
-#   entity_tags (Array of Strings, may be empty; either this or 'entities' must have some content)
-#   entities (Array of Strings, may be empty; either this or 'entity_tags' must have some content)
-#   time_restrictions (TBD)
-#   warning_media (Array of Strings, may be empty; each represents a media type)
-#   critical_media (Array of Strings, may be empty; each represents a media type)
-#   warning_blackhole (Boolean, required)
-#   critical_blackhole (Boolean, required)
-Flapjack::Diner.update_notification_rule!('08f607c7-618d-460a-b3fe-868464eb6045', {
-  'contact_id' => 'contact23',
-  'entity_tags' => ['database'],
-  'entities' => ['app-1.example.com']
-  'time_restrictions' => [],
-  'warning_media' => ['email'],
-  'critical_media' => ['email', 'sms'],
-  'warning_blackhole' => false,
-  'critical_blackhole' => false
-})
+Flapjack::Diner.delete_scheduled_maintenances_checks(CHECK_ID(S), :start_time => DATETIME)
 ```
 
-Returns a hash represeting the updated notification rule. This is the same data you would receive from ```Flapjack::Diner.notification_rule(rule_id)```.
+Returns true if deletion succeeded or false if deletion failed. Raises an exception if the `:start_time` parameter is not supplied.
+
+<a name="create_unscheduled_maintenances_checks">&nbsp;</a>
+### create_unscheduled_maintenances_checks
+
+Acknowledges any failing checks from those passed and sets up unscheduled maintenance (`duration` seconds long) on them. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-# RULE_ID (String, as provided in the request)
-# CONTACT_ID (String)
+Flapjack::Diner.create_unscheduled_maintenances_checks(CHECK_ID(S), [SCHEDULED_MAINTENANCE, ...])
+```
+
+```
+UNSCHEDULED_MAINTENANCE
 {
-  'id' => RULE_ID,
-  'contact_id' => CONTACT_ID,
-  'entity_tags' => [STRING, ...]
-  'entities' => [STRING, ...],
-  'time_restrictions' => [],
-  'warning_media' => [STRING, ...],
-  'critical_media' => [STRING, ...],
-  'warning_blackhole' => BOOLEAN,
-  'critical_blackhole' => BOOLEAN
+  :duration => INTEGER,
+  :summary => STRING
 }
 ```
 
----
-<a name="delete_notification_rule">&nbsp;</a>
-Deletes a notification rule from a contact.
+Returns true if creation succeeded or false if creation failed.
+
+<a name="update_unscheduled_maintenances_checks">&nbsp;</a>
+### update_unscheduled_maintenances_checks
+
+Finalises currently existing unscheduled maintenance periods for acknowledged checks. The periods end at the time provided in the `:end_time` parameter. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-# rule_id (String, required)
-Flapjack::Diner.delete_notification_rule!('08f607c7-618d-460a-b3fe-868464eb6045')
+Flapjack::Diner.update_unscheduled_maintenances_checks(CHECK_ID(S), :end_time => DATETIME)
 ```
 
-Returns a boolean value representing the success or otherwise of the deletion of the notification rule.
+Returns true if the finalisation succeeded or false if deletion failed.
 
----
-<a name="notification_media">&nbsp;</a>
-Return a list of a contact's notification media values.
+<a name="create_test_notifications_checks">&nbsp;</a>
+### create_test_notifications_checks
+
+Instructs Flapjack to issue test notifications on the passed checks. These notifications will be sent to contacts configured to receive notifications for those checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-# contact_id (String, required)
-Flapjack::Diner.contact_media('contact23')
+Flapjack::Diner.create_test_notifications_checks(CHECK_ID(S), [TEST_NOTIFICATION, ...])
 ```
 
-Returns a hash of hashes, where the first layer of keys are the media types (e.g. 'email', 'sms') and the
-hashes for each of those media type keys contain address and notification interval values.
-
-```ruby
-# interval (Integer, in seconds - notifications will not be sent more often than this through this medium)
+```
+TEST_NOTIFICATION
 {
-  MEDIA_TYPE => { 'address' => STRING,
-                  'interval' => INTEGER },
-  ...
+  :summary => STRING
 }
 ```
 
----
-<a name="notification_medium">&nbsp;</a>
-Get the values for a contact's notification medium.
-
-```ruby
-# contact_id (String, required)
-# media_type (String, required)
-Flapjack::Diner.contact_medium('contact23', 'sms')
-```
-
-Returns a hash corresponding to a single hash of medium values from those returned by ```Flapjack::Diner.contact_media()```.
-
-```ruby
-# interval (Integer, in seconds - notifications will not be sent more often than this through this medium)
-{ 'address' => STRING,
-  'interval' => INTEGER },
-```
+Returns true if creation succeeded or false if creation failed.
 
 ---
-<a name="update_notification_medium">&nbsp;</a>
-Update the values for a contact's notification medium.
+
+<a name="status_report_entities">&nbsp;</a>
+### status_report_entities
+
+Return a report on status data for checks in one, some or all entities.
 
 ```ruby
-# contact_id (String, required)
-# media_type (String, required)
-Flapjack::Diner.update_contact_medium!('contact23', 'email', {
-  'address' => 'example@example.com',
-  'interval' => 300
-})
+report = Flapjack::Diner.status_report_entities(ENTITY_ID)
+report_some = Flapjack::Diner.status_report_entities(ENTITY_ID1, ENTITY_ID2, ...)
+report_all = Flapjack::Diner.status_report_entities
 ```
 
-Returns the hash that was submitted.
+<a name="scheduled_maintenance_report_entities">&nbsp;</a>
+### scheduled_maintenance_report_entities
+
+Return a report on scheduled maintenance periods for checks in one, some or all entities.
 
 ```ruby
-# interval (Integer, in seconds - notifications will not be sent more often than this through this medium)
-{ 'address' => STRING,
-  'interval' => INTEGER },
+report = Flapjack::Diner.scheduled_maintenance_report_entities(ENTITY_ID)
+report_some = Flapjack::Diner.scheduled_maintenance_report_entities(ENTITY_ID1, ENTITY_ID2, ...)
+report_all = Flapjack::Diner.scheduled_maintenance_report_entities
 ```
 
----
-<a name="delete_notification_medium">&nbsp;</a>
-Delete a contact's notification medium.
+<a name="unscheduled_maintenance_report_entities">&nbsp;</a>
+### unscheduled_maintenance_report_entities
+
+Return a report on unscheduled maintenance periods for checks in one, some or all entities.
 
 ```ruby
-# contact_id (String, required)
-# media_type (String, required)
-Flapjack::Diner.delete_contact_medium!('contact23', 'sms')
+report = Flapjack::Diner.unscheduled_maintenance_report_entities(ENTITY_ID)
+report_some = Flapjack::Diner.unscheduled_maintenance_report_entities(ENTITY_ID1, ENTITY_ID2, ...)
+report_all = Flapjack::Diner.unscheduled_maintenance_report_entities
 ```
 
-Returns a boolean value representing the success or otherwise of the deletion of the notification medium values.
+<a name="downtime_report_entities">&nbsp;</a>
+### downtime_report_entities
 
----
-<a name="contact_timezone">&nbsp;</a>
-Get a contact's timezone.
+Return a report on downtime data for checks in one, some or all entities.
 
 ```ruby
-# contact_id (String, required)
-Flapjack::Diner.contact_timezone('contact23')
+report = Flapjack::Diner.downtime_report_entities(ENTITY_ID)
+report_some = Flapjack::Diner.downtime_report_entities(ENTITY_ID1, ENTITY_ID2, ...)
+report_all = Flapjack::Diner.downtime_report_entities
 ```
 
-Returns a timezone string, as defined in the [timezone database](http://www.twinsun.com/tz/tz-link.htm).
+<a name="outage_report_entities">&nbsp;</a>
+### outage_report_entities
+
+Return a report on outage data for checks in one, some or all entities.
 
 ```ruby
-'Australia/Perth'
+report = Flapjack::Diner.outage_report_entities(ENTITY_ID)
+report_some = Flapjack::Diner.outage_report_entities(ENTITY_ID1, ENTITY_ID2, ...)
+report_all = Flapjack::Diner.outage_report_entities
 ```
 
----
-<a name="update_contact_timezone">&nbsp;</a>
-Update a contact's timezone.
+<a name="status_report_checks">&nbsp;</a>
+### status_report_checks
+
+Return a report on status data for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-# contact_id (String, required)
-# timezone (String, required)
-Flapjack::Diner.update_contact_timezone!('contact23', 'Australia/Sydney')
+report = Flapjack::Diner.status_report_checks(CHECK_ID)
+report_some = Flapjack::Diner.status_report_checks(CHECK_ID1, CHECK_ID2, ...)
+report_all = Flapjack::Diner.status_report_checks
 ```
 
-Returns the timezone string provided as a parameter.
+<a name="scheduled_maintenance_report_checks">&nbsp;</a>
+### scheduled_maintenance_report_checks
+
+Return a report on scheduled maintenance periods for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-'Australia/Sydney'
+report = Flapjack::Diner.scheduled_maintenance_report_checks(CHECK_ID)
+report_some = Flapjack::Diner.scheduled_maintenance_report_checks(CHECK_ID1, CHECK_ID2, ...)
+report_all = Flapjack::Diner.scheduled_maintenance_report_checks
 ```
 
----
-<a name="delete_contact_timezone">&nbsp;</a>
-Delete a contact's timezone. (If a contact's timezone is unknown they will be assumed to share the Flapjack server's timezone.)
+<a name="unscheduled_maintenance_report_checks">&nbsp;</a>
+### unscheduled_maintenance_report_checks
+
+Return a report on unscheduled maintenance periods for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-# contact_id (String, required)
-Flapjack::Diner.delete_contact_timezone!('contact_23')
+report = Flapjack::Diner.unscheduled_maintenance_report_checks(CHECK_ID)
+report_some = Flapjack::Diner.unscheduled_maintenance_report_checks(CHECK_ID1, CHECK_ID2, ...)
+report_all = Flapjack::Diner.unscheduled_maintenance_report_checks
 ```
 
-Returns a boolean value representing the success or otherwise of the deletion of the contact's timezone.
+<a name="downtime_report_checks">&nbsp;</a>
+### downtime_report_checks
+
+Return a report on downtim data for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
+
+```ruby
+report = Flapjack::Diner.downtime_report_checks(CHECK_ID)
+report_some = Flapjack::Diner.downtime_report_checks(CHECK_ID1, CHECK_ID2, ...)
+report_all = Flapjack::Diner.downtime_report_checks
+```
+
+<a name="outage_report_checks">&nbsp;</a>
+### outage_report_checks
+
+Return a report on outage data for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
+
+```ruby
+report = Flapjack::Diner.outage_report_checks(CHECK_ID)
+report_some = Flapjack::Diner.outage_report_checks(CHECK_ID1, CHECK_ID2, ...)
+report_all = Flapjack::Diner.outage_report_checks
+```
 
 ---
 
