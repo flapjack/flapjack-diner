@@ -2,8 +2,8 @@
 
 [![Travis CI Status][id_travis_img]][id_travis_link]
 
-[id_travis_link]: https://secure.travis-ci.org/#!/flpjck/flapjack-diner
-[id_travis_img]: https://secure.travis-ci.org/flpjck/flapjack-diner.png
+[id_travis_link]: https://travis-ci.org/flapjack/flapjack-diner
+[id_travis_img]: https://travis-ci.org/flapjack/flapjack-diner.png
 
 Access the API of a [Flapjack](http://flapjack-project.com/) system monitoring server.
 
@@ -11,7 +11,7 @@ Access the API of a [Flapjack](http://flapjack-project.com/) system monitoring s
 
 Add this line to your application's Gemfile:
 
-    gem 'flapjack-diner', :git => 'git://github.com/flpjck/flapjack-diner.git'
+    gem 'flapjack-diner', :github => 'flapjack/flapjack-diner'
 
 And then execute:
 
