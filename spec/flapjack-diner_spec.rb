@@ -1000,6 +1000,18 @@ describe Flapjack::Diner do
 
     context 'update' do
 
+      it "submits a PATCH request for a check" do
+        req = stub_request(:patch, "http://#{server}/checks/www.example.com%3APING").
+          with(:body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}].to_json,
+               :headers => {'Content-Type'=>'application/json-patch+json'}).
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.update_checks('www.example.com:PING', :enabled => false)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
       it "submits a PATCH request for unscheduled maintenances on a check" do
         req = stub_request(:patch, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH").
           with(:body => [{:op => 'replace', :path => '/unscheduled_maintenances/0/end_time', :value => time.iso8601}].to_json,
