@@ -1207,7 +1207,7 @@ describe Flapjack::Diner do
 
   context "logging" do
 
-    let(:logger) { mock('logger') }
+    let(:logger) { double('logger') }
 
     before do
       Flapjack::Diner.logger = logger
