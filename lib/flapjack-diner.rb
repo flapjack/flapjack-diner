@@ -264,6 +264,25 @@ module Flapjack
         perform_patch("/entities/#{escaped_ids(ids)}", nil, ops)
       end
 
+      def update_checks(*args)
+        ids, params, data = unwrap_ids_and_params(*args)
+        raise "'update_checks' requires at least one check id parameter" if ids.nil? || ids.empty?
+        validate_params(params) do
+          validate :query => :enabled, :as => :boolean
+        end
+        ops = params.inject([]) do |memo, (k,v)|
+          case k
+          when :enabled
+            memo << {:op    => 'replace',
+                     :path  => "/checks/0/#{k.to_s}",
+                     :value => v}
+          end
+          memo
+        end
+        raise "'update_checks' did not find any valid update fields" if ops.empty?
+        perform_patch("/checks/#{escaped_ids(ids)}", nil, ops)
+      end
+
       ['entities', 'checks'].each do |data_type|
 
         define_method("create_scheduled_maintenances_#{data_type}") do |*args|
