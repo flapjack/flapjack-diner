@@ -87,6 +87,8 @@ If any operation fails, `Flapjack::Diner.last_error` will contain an error messa
 
 ### Checks
 
+* [checks](#checks)
+
 * [create_scheduled_maintenances_checks](#create_scheduled_maintenances_checks)
 * [delete_scheduled_maintenances_checks](#delete_scheduled_maintenances_checks)
 
@@ -536,6 +538,19 @@ TEST_NOTIFICATION
 ```
 
 Returns true if creation succeeded or false if creation failed.
+
+---
+
+<a name="checks">&nbsp;</a>
+### checks
+
+Return basic identity data for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
+
+```ruby
+check = Flapjack::Diner.check(ID)
+some_checks = Flapjack::Diner.checks(ID1, ID2, ...)
+all_checks = Flapjack::Diner.checks
+```
 
 ---
 

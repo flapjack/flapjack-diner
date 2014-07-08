@@ -237,6 +237,10 @@ module Flapjack
         extract_get('entities', perform_get('/entities', ids))
       end
 
+      def checks(*ids)
+        extract_get('checks', perform_get('/checks', ids))
+      end
+
       def update_entities(*args)
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_entities' requires at least one entity id parameter" if ids.nil? || ids.empty?

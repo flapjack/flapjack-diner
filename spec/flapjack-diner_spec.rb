@@ -998,6 +998,35 @@ describe Flapjack::Diner do
 
     end
 
+    context 'read' do
+      it "submits a GET request for all checks" do
+        req = stub_request(:get, "http://#{server}/checks").
+          to_return(:body => response_with_data('checks'))
+
+        result = Flapjack::Diner.checks
+        req.should have_been_requested
+        result.should_not be_nil
+      end
+
+      it "submits a GET request for one check" do
+        req = stub_request(:get, "http://#{server}/checks/example.com:SSH").
+          to_return(:body => response_with_data('checks'))
+
+        result = Flapjack::Diner.checks('example.com:SSH')
+        req.should have_been_requested
+        result.should_not be_nil
+      end
+
+      it "submits a GET request for several checks" do
+        req = stub_request(:get, "http://#{server}/checks/example.com:SSH,example2.com:PING").
+          to_return(:body => response_with_data('checks'))
+
+        result = Flapjack::Diner.checks('example.com:SSH', 'example2.com:PING')
+        req.should have_been_requested
+        result.should_not be_nil
+      end
+    end
+
     context 'update' do
 
       it "submits a PATCH request for a check" do
