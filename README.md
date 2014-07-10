@@ -5,7 +5,7 @@
 [id_travis_link]: https://travis-ci.org/flapjack/flapjack-diner
 [id_travis_img]: https://travis-ci.org/flapjack/flapjack-diner.png
 
-Access the API of a [Flapjack](http://flapjack-project.com/) system monitoring server.
+Access the API of a [Flapjack](http://flapjack.io/) system monitoring server.
 
 ## Installation
 
