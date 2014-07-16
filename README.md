@@ -5,7 +5,9 @@
 [id_travis_link]: https://travis-ci.org/flapjack/flapjack-diner
 [id_travis_img]: https://travis-ci.org/flapjack/flapjack-diner.png
 
-Access the API of a [Flapjack](http://flapjack.io/) system monitoring server.
+Access the JSON API of a [Flapjack](http://flapjack.io/) system monitoring server. 
+
+Note that flapjack-diner releases after 1.0.0rc1 require the [JSONAPI](http://flapjack.io/docs/jsonapi) gateway of Flapjack to connect to. All previous releases (0.x) require the older [API](https://github.com/flapjack/flapjack/wiki/API) Flapjack gateway. 
 
 ## Installation
 
@@ -16,6 +18,8 @@ Add this line to your application's Gemfile:
 And then execute:
 
     $ bundle
+
+Note, you can also install from [RubyGems.org](https://rubygems.org/gems/flapjack-diner) as usual.
 
 ## Usage
 
