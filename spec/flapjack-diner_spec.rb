@@ -14,6 +14,7 @@ describe Flapjack::Diner do
   before(:each) do
     Flapjack::Diner.base_uri(server)
     Flapjack::Diner.logger = nil
+    Flapjack::Diner.return_keys_as_strings = true
   end
 
   after(:each) do
@@ -66,12 +67,48 @@ describe Flapjack::Diner do
 
     context 'read' do
       it "submits a GET request for all contacts" do
+        data = [{:id => "21"}]
+
         req = stub_request(:get, "http://#{server}/contacts").to_return(
-          :status => 200, :body => response_with_data('contacts'))
+          :status => 200, :body => response_with_data('contacts', data))
 
         result = Flapjack::Diner.contacts
         req.should have_been_requested
         result.should_not be_nil
+        result.should be_an_instance_of(Array)
+        result.length.should be(1)
+        result[0].should be_an_instance_of(Hash)
+        result[0].should have_key('id')
+      end
+
+      it "can return keys as symbols" do
+        Flapjack::Diner.return_keys_as_strings = false
+        data = [{
+          :id         => "21",
+          :first_name => "Ada",
+          :last_name  => "Lovelace",
+          :email      => "ada@example.com",
+          :timezone   => "Europe/London",
+          :tags       => [ "legend", "first computer programmer" ],
+          :links      => {
+            :entities           => ["7", "12", "83"],
+            :media              => ["21_email", "21_sms"],
+            :notification_rules => ["30fd36ae-3922-4957-ae3e-c8f6dd27e543"]
+          }
+        }]
+
+        req = stub_request(:get, "http://#{server}/contacts").to_return(
+          :status => 200, :body => response_with_data('contacts', data))
+
+        result = Flapjack::Diner.contacts
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_an_instance_of(Array)
+        result.length.should be(1)
+        result[0].should be_an_instance_of(Hash)
+        result[0].should have_key(:id)
+        result[0].should have_key(:links)
+        result[0][:links].should have_key(:entities)
       end
 
       it "submits a GET request for one contact" do
