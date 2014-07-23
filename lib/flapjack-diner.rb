@@ -16,7 +16,7 @@ module Flapjack
 
     class << self
 
-      attr_accessor :logger
+      attr_accessor :logger, :return_keys_as_strings
 
       # NB: clients will need to handle any exceptions caused by,
       # e.g., network failures or non-parseable JSON data.
@@ -383,8 +383,14 @@ module Flapjack
 
       private
 
-      def extract_get(name, result)
-        (result.nil? || result.is_a?(TrueClass)) ? result : result[name]
+      def extract_get(name, response)
+        result = (response.nil? || response.is_a?(TrueClass)) ? response : response[name]
+
+        if return_keys_as_strings.is_a?(TrueClass)
+          return result
+        else
+          return symbolize(result)
+        end
       end
 
       def perform_get(path, ids = [], data = [])
@@ -549,6 +555,13 @@ module Flapjack
       def last_error=(error)
         @last_error = error
       end
+
+      def symbolize(obj)
+        return obj.inject({}){|memo,(k,v)| memo[k.to_sym] =  symbolize(v); memo} if obj.is_a? Hash
+        return obj.inject([]){|memo,v    | memo           << symbolize(v); memo} if obj.is_a? Array
+        return obj
+      end
+
     end
   end
 end
