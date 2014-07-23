@@ -386,7 +386,7 @@ module Flapjack
       def extract_get(name, response)
         result = (response.nil? || response.is_a?(TrueClass)) ? response : response[name]
 
-        if return_keys_as_strings && return_keys_as_strings == true
+        if return_keys_as_strings.is_a?(TrueClass)
           return result
         else
           return symbolize(result)
