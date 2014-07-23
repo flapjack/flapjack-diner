@@ -5,9 +5,9 @@
 [id_travis_link]: https://travis-ci.org/flapjack/flapjack-diner
 [id_travis_img]: https://travis-ci.org/flapjack/flapjack-diner.png
 
-Access the JSON API of a [Flapjack](http://flapjack.io/) system monitoring server. 
+Access the JSON API of a [Flapjack](http://flapjack.io/) system monitoring server.
 
-Note that flapjack-diner [releases](https://github.com/flapjack/flapjack-diner/releases) after [1.0.0.rc1](https://github.com/flapjack/flapjack-diner/releases/tag/v1.0.0.rc1) require the [JSONAPI](http://flapjack.io/docs/jsonapi) gateway of Flapjack to connect to. All previous releases (0.x) require the older [API](https://github.com/flapjack/flapjack/wiki/API) Flapjack gateway. 
+Note that flapjack-diner [releases](https://github.com/flapjack/flapjack-diner/releases) after [1.0.0.rc1](https://github.com/flapjack/flapjack-diner/releases/tag/v1.0.0.rc1) require the [JSONAPI](http://flapjack.io/docs/jsonapi) gateway of Flapjack to connect to. All previous releases (0.x) require the older [API](https://github.com/flapjack/flapjack/wiki/API) Flapjack gateway.
 
 
 ## Installation
@@ -34,6 +34,12 @@ Optionally, set a logger to log requests & responses:
 
 ```ruby
 Flapjack::Diner.logger = Logger.new('logs/flapjack_diner.log')
+```
+
+If you want the old behaviour wrt returning hashes with keys as strings (they're now symbols by default) then:
+
+```ruby
+Flapjack::Diner.return_keys_as_strings = true
 ```
 
 ## Functions
