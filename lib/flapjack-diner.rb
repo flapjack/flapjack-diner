@@ -383,18 +383,13 @@ module Flapjack
 
       private
 
-      def extract_get(name, result)
-        sausage = (result.nil? || result.is_a?(TrueClass)) ? result : result[name]
+      def extract_get(name, response)
+        result = (response.nil? || response.is_a?(TrueClass)) ? response : response[name]
 
-        puts "return_keys_as_strings: #{return_keys_as_strings.inspect}"
         if return_keys_as_strings && return_keys_as_strings == true
-          puts "not symbolizing"
-          return sausage
+          return result
         else
-          puts "symbolizing"
-          puts "sausage: #{sausage.inspect}"
-          puts "symbolize(sausage): #{symbolize(sausage).inspect}"
-          return symbolize(sausage)
+          return symbolize(result)
         end
       end
 
