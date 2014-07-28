@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["ali.graham@bulletproof.net"]
   gem.summary       = %q{Access the API of a Flapjack system monitoring server}
   gem.description   = %q{Wraps raw API calls to a Flapjack server API with friendlier ruby methods.}
-  gem.homepage      = 'https://github.com/flpjck/flapjack-diner'
+  gem.homepage      = 'https://github.com/flapjack/flapjack-diner'
 
   gem.files         = `git ls-files`.split($\) - ['Gemfile.lock']
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

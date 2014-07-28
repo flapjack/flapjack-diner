@@ -7,7 +7,7 @@
 
 Access the JSON API of a [Flapjack](http://flapjack.io/) system monitoring server.
 
-Note that flapjack-diner [releases](https://github.com/flapjack/flapjack-diner/releases) after [1.0.0.rc1](https://github.com/flapjack/flapjack-diner/releases/tag/v1.0.0.rc1) require the [JSONAPI](http://flapjack.io/docs/jsonapi) gateway of Flapjack to connect to. All previous releases (0.x) require the older [API](https://github.com/flapjack/flapjack/wiki/API) Flapjack gateway.
+Note that flapjack-diner [releases](https://github.com/flapjack/flapjack-diner/releases) after [1.0.0.rc1](https://github.com/flapjack/flapjack-diner/releases/tag/v1.0.0.rc1) require the [JSONAPI](http://flapjack.io/docs/jsonapi) gateway of Flapjack to connect to. All previous releases (0.x) require the older [API](http://flapjack.io/docs/0.9/API) Flapjack gateway.
 
 
 ## Installation
