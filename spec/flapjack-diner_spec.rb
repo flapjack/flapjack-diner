@@ -882,7 +882,7 @@ describe Flapjack::Diner do
 
         it "submits a POST request on a check" do
           data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'}]
-          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com:SSH").
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com%3ASSH").
             with(:body => {:scheduled_maintenances => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -895,7 +895,7 @@ describe Flapjack::Diner do
 
         it "submits a POST request on several checks" do
           data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'}]
-          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com%3ASSH,example2.com%3APING").
             with(:body => {:scheduled_maintenances => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -909,7 +909,7 @@ describe Flapjack::Diner do
         it "submits a POST request for multiple periods on a check" do
           data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'},
                   {:start_time => (time + 7200).iso8601, :duration => 3600, :summary => 'more work'}]
-          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com:SSH").
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com%3ASSH").
             with(:body => {:scheduled_maintenances => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -923,7 +923,7 @@ describe Flapjack::Diner do
         it "submits a POST request for multiple periods on several checks" do
           data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'},
                   {:start_time => (time + 7200).iso8601, :duration => 3600, :summary => 'more work'}]
-          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+          req = stub_request(:post, "http://#{server}/scheduled_maintenances/checks/example.com%3ASSH,example2.com%3APING").
             with(:body => {:scheduled_maintenances => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -940,7 +940,7 @@ describe Flapjack::Diner do
 
         it "submits a POST request on a check" do
           data = [{:duration => 3600, :summary => 'working'}]
-          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH").
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com%3ASSH").
             with(:body => {:unscheduled_maintenances => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -953,7 +953,7 @@ describe Flapjack::Diner do
 
         it "submits a POST request on several checks" do
           data = [{:duration => 3600, :summary => 'working'}]
-          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com%3ASSH,example2.com%3APING").
             with(:body => {:unscheduled_maintenances => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -967,7 +967,7 @@ describe Flapjack::Diner do
         it "submits a POST request for multiple periods on several checks" do
           data = [{:duration => 3600, :summary => 'working'},
                   {:duration => 3600, :summary => 'more work'}]
-          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+          req = stub_request(:post, "http://#{server}/unscheduled_maintenances/checks/example.com%3ASSH,example2.com%3APING").
             with(:body => {:unscheduled_maintenances => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -983,7 +983,7 @@ describe Flapjack::Diner do
       context 'test notifications' do
 
         it "submits a POST request for a check" do
-          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH").
+          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com%3ASSH").
             with(:body => {:test_notifications => [{:summary => 'testing'}]}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -995,7 +995,7 @@ describe Flapjack::Diner do
         end
 
         it "submits a POST request for several checks" do
-          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH,example2.com:PING").
+          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com%3ASSH,example2.com%3APING").
             with(:test_notifications => [{:summary => 'testing'}]).
             to_return(:status => 204)
 
@@ -1007,7 +1007,7 @@ describe Flapjack::Diner do
 
         it "submits a POST request for multiple notifications on a check" do
           data = [{:summary => 'testing'}, {:summary => 'more testing'}]
-          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH").
+          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com%3ASSH").
             with(:body => {:test_notifications => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -1020,7 +1020,7 @@ describe Flapjack::Diner do
 
         it "submits a POST request for multiple notifications on several checks" do
           data = [{:summary => 'testing'}, {:summary => 'more testing'}]
-          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com:SSH,example2.com:PING").
+          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com%3ASSH,example2.com%3APING").
             with(:body => {:test_notifications => data}.to_json,
                  :headers => {'Content-Type'=>'application/vnd.api+json'}).
             to_return(:status => 204)
@@ -1046,7 +1046,7 @@ describe Flapjack::Diner do
       end
 
       it "submits a GET request for one check" do
-        req = stub_request(:get, "http://#{server}/checks/example.com:SSH").
+        req = stub_request(:get, "http://#{server}/checks/example.com%3ASSH").
           to_return(:body => response_with_data('checks'))
 
         result = Flapjack::Diner.checks('example.com:SSH')
@@ -1055,7 +1055,7 @@ describe Flapjack::Diner do
       end
 
       it "submits a GET request for several checks" do
-        req = stub_request(:get, "http://#{server}/checks/example.com:SSH,example2.com:PING").
+        req = stub_request(:get, "http://#{server}/checks/example.com%3ASSH,example2.com%3APING").
           to_return(:body => response_with_data('checks'))
 
         result = Flapjack::Diner.checks('example.com:SSH', 'example2.com:PING')
@@ -1079,7 +1079,7 @@ describe Flapjack::Diner do
       end
 
       it "submits a PATCH request for unscheduled maintenances on a check" do
-        req = stub_request(:patch, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH").
+        req = stub_request(:patch, "http://#{server}/unscheduled_maintenances/checks/example.com%3ASSH").
           with(:body => [{:op => 'replace', :path => '/unscheduled_maintenances/0/end_time', :value => time.iso8601}].to_json,
                :headers => {'Content-Type'=>'application/json-patch+json'}).
           to_return(:status => 204)
@@ -1091,7 +1091,7 @@ describe Flapjack::Diner do
       end
 
       it "submits a PATCH request for unscheduled maintenances on several checks" do
-        req = stub_request(:patch, "http://#{server}/unscheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+        req = stub_request(:patch, "http://#{server}/unscheduled_maintenances/checks/example.com%3ASSH,example2.com%3APING").
           with(:body => [{:op => 'replace', :path => '/unscheduled_maintenances/0/end_time', :value => time.iso8601}].to_json,
                :headers => {'Content-Type'=>'application/json-patch+json'}).
           to_return(:status => 204)
@@ -1107,7 +1107,7 @@ describe Flapjack::Diner do
     context 'delete' do
 
       it "submits a DELETE request for scheduled maintenances on a check" do
-        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com:SSH").
+        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com%3ASSH").
           with(:query => {:start_time => time.iso8601}).
           to_return(:status => 204)
 
@@ -1117,8 +1117,19 @@ describe Flapjack::Diner do
         result.should be_true
       end
 
+      it "submits a DELETE request for scheduled maintenances on a check with spaces in the name, percent-encoded" do
+        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com%3ADisk%20C%3A%20Utilisation").
+          with(:query => {:start_time => time.iso8601}).
+          to_return(:status => 204)
+
+        result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:Disk C: Utilisation', :start_time => time.iso8601)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
       it "submits a DELETE request for scheduled maintenances on several checks" do
-        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com:SSH,example2.com:PING").
+        req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com%3ASSH,example2.com%3APING").
           with(:query => {:start_time => time.iso8601}).
           to_return(:status => 204)
 
@@ -1173,7 +1184,7 @@ describe Flapjack::Diner do
         end
 
         it "submits a GET request for a #{report_type} report on one check" do
-          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com:SSH").
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com%3ASSH").
             to_return(:body => response_with_data("#{report_type}_reports"))
 
           result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
@@ -1183,7 +1194,7 @@ describe Flapjack::Diner do
         end
 
         it "submits a GET request for a #{report_type} report on several checks" do
-          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com:SSH,example2.com:PING").
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com%3ASSH,example2.com%3APING").
             to_return(:body => response_with_data("#{report_type}_reports"))
 
           result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
@@ -1244,7 +1255,7 @@ describe Flapjack::Diner do
         end
 
         it "submits a time-limited GET request for a #{report_type} report on one check" do
-          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com:SSH").
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com%3ASSH").
             with(:query => {:start_time => start_time.iso8601, :end_time => end_time.iso8601}).
             to_return(:body => response_with_data("#{report_type}_reports"))
 
@@ -1255,7 +1266,7 @@ describe Flapjack::Diner do
         end
 
         it "submits a time-limited GET request for a #{report_type} report on several checks" do
-          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com:SSH,example2.com:PING").
+          req = stub_request(:get, "http://#{server}/#{report_type}_report/checks/example.com%3ASSH,example2.com%3APING").
             with(:query => {:start_time => start_time.iso8601, :end_time => end_time.iso8601}).
             to_return(:body => response_with_data("#{report_type}_reports"))
 
@@ -1306,11 +1317,11 @@ describe Flapjack::Diner do
     end
 
     it "logs a DELETE request" do
-      req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com:SSH").
+      req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com%3ASSH").
         with(:query => {:start_time => time.iso8601}).
         to_return(:status => 204)
 
-      logger.should_receive(:info).with("DELETE http://#{server}/scheduled_maintenances/checks/#{CGI.escape('example.com:SSH')}?start_time=#{CGI.escape(time.iso8601)}")
+      logger.should_receive(:info).with("DELETE http://#{server}/scheduled_maintenances/checks/example.com:SSH?start_time=#{URI.encode_www_form_component(time.iso8601)}")
       logger.should_receive(:info).with("  Response Code: 204")
 
       result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => time)
