@@ -1,7 +1,6 @@
 require 'httparty'
 require 'json'
 require 'uri'
-require 'cgi'
 
 require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
@@ -478,7 +477,7 @@ module Flapjack
       end
 
       def escaped_ids(ids = [])
-        ids.collect{|id| CGI.escape(id.to_s)}.join(',')
+        ids.collect{|id| URI.escape(id.to_s)}.join(',')
       end
 
       def escape(s)
