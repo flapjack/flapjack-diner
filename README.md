@@ -98,7 +98,9 @@ If any operation fails, `Flapjack::Diner.last_error` will contain an error messa
 
 ### Checks
 
+* [create_checks](#create_checks)
 * [checks](#checks)
+* [update_checks](#update_checks)
 
 * [create_scheduled_maintenances_checks](#create_scheduled_maintenances_checks)
 * [delete_scheduled_maintenances_checks](#delete_scheduled_maintenances_checks)
@@ -460,7 +462,7 @@ Flapjack::Diner.update_entities(ID1, ID2, ..., :key => value, ...)
 
 Acceptable update field keys are
 
-`:name` and `:tags`
+`:tags`
 
 as well as the linkage operations
 
@@ -552,16 +554,55 @@ Returns true if creation succeeded or false if creation failed.
 
 ---
 
+<a name="create_checks">&nbsp;</a>
+### create_checks
+
+Create one or more checks.
+
+```ruby
+Flapjack::Diner.create_checks([CHECK, ...])
+```
+
+```
+CHECK
+{
+  :entity_id => STRING,
+  :name      => STRING,
+  :tags      => [STRING, ...]
+}
+```
+
+Returns true if creation succeeded or false if creation failed.
+
 <a name="checks">&nbsp;</a>
 ### checks
 
 Return basic identity data for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-check = Flapjack::Diner.check(ID)
+check = Flapjack::Diner.checks(ID)
 some_checks = Flapjack::Diner.checks(ID1, ID2, ...)
 all_checks = Flapjack::Diner.checks
 ```
+
+<a name="update_checks">&nbsp;</a>
+### update_checks
+
+Update data for one or more checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
+
+```ruby
+# update values for one checks
+Flapjack::Diner.update_checks(ID, :key => value, ...)
+
+# update values for multiple checks
+Flapjack::Diner.update_checks(ID1, ID2, ..., :key => value, ...)
+```
+
+Acceptable update field keys are
+
+`:enabled` and `:tags`
+
+Returns true if updating succeeded or false if updating failed.
 
 ---
 
