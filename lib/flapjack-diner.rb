@@ -232,6 +232,18 @@ module Flapjack
         perform_post('/entities', nil, :entities => data)
       end
 
+      def create_checks(*args)
+        ids, params, data = unwrap_ids_and_params(*args)
+        data.each do |d|
+          validate_params(d) do
+            validate :query => :entity_id, :as => [:required, :string]
+            validate :query => :name,      :as => [:required, :string]
+            validate :query => :tags,      :as => :array_of_strings
+          end
+        end
+        perform_post('/checks', nil, :checks => data)
+      end
+
       def entities(*ids)
         extract_get('entities', perform_get('/entities', ids))
       end
@@ -272,10 +284,11 @@ module Flapjack
         raise "'update_checks' requires at least one check id parameter" if ids.nil? || ids.empty?
         validate_params(params) do
           validate :query => :enabled, :as => :boolean
+          validate :query => :tags,    :as => :array_of_strings
         end
         ops = params.inject([]) do |memo, (k,v)|
           case k
-          when :enabled
+          when :enabled, :tags
             memo << {:op    => 'replace',
                      :path  => "/checks/0/#{k.to_s}",
                      :value => v}
