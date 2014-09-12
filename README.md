@@ -558,7 +558,7 @@ Returns true if creation succeeded or false if creation failed.
 Return basic identity data for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
-check = Flapjack::Diner.check(ID)
+check = Flapjack::Diner.checks(ID)
 some_checks = Flapjack::Diner.checks(ID1, ID2, ...)
 all_checks = Flapjack::Diner.checks
 ```
