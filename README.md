@@ -174,14 +174,15 @@ Flapjack::Diner.update_contacts(ID1, ID2, ..., :key => value, ...)
 
 Acceptable update field keys are
 
-`:first_name`, `:last_name`, `:email`, and `:tags`
+`:first_name`, `:last_name`, `:email`
 
 as well as the linkage operations
 
 `:add_entity`, `:remove_entity`
 `:add_notification_rule`, `:remove_notification_rule`
+`:add_tag`, `:remove_tag`
 
-which take the id of the relevant resource as the value.
+which take the id (for entity and notification rule) or name (for tag) of the relevant resource as the value.
 
 (NB: `:add_medium` and `:remove_medium` are not supported in Flapjack v1.0 but should be in future versions.)
 
@@ -460,15 +461,14 @@ Flapjack::Diner.update_entities(ID, :key => value, ...)
 Flapjack::Diner.update_entities(ID1, ID2, ..., :key => value, ...)
 ```
 
-Acceptable update field keys are
+There are no valid update field keys yet.
 
-`:tags`
-
-as well as the linkage operations
+The linkage operations
 
 `:add_contact` and `:remove_contact`
+`:add_tag` and `:remove_tag`
 
-which take the id of the relevant contact as the value.
+take the id (for contact) or the name (for tag) of the relevant resource as the value.
 
 Returns true if updating succeeded or false if updating failed.
 
@@ -600,7 +600,13 @@ Flapjack::Diner.update_checks(ID1, ID2, ..., :key => value, ...)
 
 Acceptable update field keys are
 
-`:enabled` and `:tags`
+`:enabled`
+
+as well as the linkage operations
+
+`:add_tag` and `:remove_tag`
+
+which take the name of the tag as the value.
 
 Returns true if updating succeeded or false if updating failed.
 
