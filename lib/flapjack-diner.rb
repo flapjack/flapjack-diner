@@ -240,8 +240,9 @@ module Flapjack
         extract_get('checks', perform_get('/checks', ids))
       end
 
-      def find_entities(name)
-        entities = self.entities.select {|a| a[:name].start_with?(name) }
+      def entities_matching(name_re)
+        raise "Must be a regexp: #{name_re.inspect}" unless name_re.is_a?(Regexp)
+        self.entities.select {|e| name_re === e[:name] }
       end
 
       def update_entities(*args)

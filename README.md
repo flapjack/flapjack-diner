@@ -86,7 +86,7 @@ If any operation fails, `Flapjack::Diner.last_error` will contain an error messa
 
 * [create_entities](#create_entities)
 * [entities](#entities)
-* [find_entities](#find_entities)
+* [entities_matching](#entities_matching)
 * [update_entities](#update_entities)
 
 * [create_scheduled_maintenances_entities](#create_scheduled_maintenances_entities)
@@ -446,13 +446,13 @@ some_entities = Flapjack::Diner.entities(ID1, ID2, ...)
 all_entities = Flapjack::Diner.entities
 ```
 
-<a name="find_entities">&nbsp;</a>
-### find_entities
+<a name="entities_matching">&nbsp;</a>
+### entities_matching
 
-Returns an array of entities beginning with a particular string
+Returns an array of entities matching a given regular expression
 
 ```ruby
-entities = Flapjack::Diner.find_entities(NAME)
+entities = Flapjack::Diner.entities_matching(/^db-app-01/)
 ```
 
 <a name="update_entities">&nbsp;</a>
