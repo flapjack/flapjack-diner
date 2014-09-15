@@ -240,6 +240,11 @@ module Flapjack
         extract_get('checks', perform_get('/checks', ids))
       end
 
+      def entities_matching(name_re)
+        raise "Must be a regexp: #{name_re.inspect}" unless name_re.is_a?(Regexp)
+        self.entities.select {|e| name_re === e[:name] }
+      end
+
       def update_entities(*args)
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_entities' requires at least one entity id parameter" if ids.nil? || ids.empty?
