@@ -240,6 +240,10 @@ module Flapjack
         extract_get('checks', perform_get('/checks', ids))
       end
 
+      def find_entities(name)
+        entities = self.entities.select {|a| a[:name].start_with?(name) }
+      end
+
       def update_entities(*args)
         ids, params, data = unwrap_ids_and_params(*args)
         raise "'update_entities' requires at least one entity id parameter" if ids.nil? || ids.empty?

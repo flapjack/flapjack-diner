@@ -86,6 +86,7 @@ If any operation fails, `Flapjack::Diner.last_error` will contain an error messa
 
 * [create_entities](#create_entities)
 * [entities](#entities)
+* [find_entities](#find_entities)
 * [update_entities](#update_entities)
 
 * [create_scheduled_maintenances_entities](#create_scheduled_maintenances_entities)
@@ -443,6 +444,15 @@ Return data for one, some or all entities.
 entity = Flapjack::Diner.entities(ID)
 some_entities = Flapjack::Diner.entities(ID1, ID2, ...)
 all_entities = Flapjack::Diner.entities
+```
+
+<a name="find_entities">&nbsp;</a>
+### find_entities
+
+Returns an array of entities beginning with a particular string
+
+```ruby
+entities = Flapjack::Diner.find_entities(NAME)
 ```
 
 <a name="update_entities">&nbsp;</a>
