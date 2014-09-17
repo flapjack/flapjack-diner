@@ -7,13 +7,13 @@ module Flapjack
       private
 
       def extract_get(name, response)
-        result = (response.nil? || response.is_a?(TrueClass)) ? response : response[name]
-
-        if return_keys_as_strings.is_a?(TrueClass)
-          return result
+        result = if response.nil? || response.is_a?(TrueClass) || !response.is_a?(Hash)
+          response
         else
-          return symbolize(result)
+          response[name]
         end
+
+        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
       def perform_get(path, ids = [], data = [])
@@ -157,10 +157,10 @@ module Flapjack
         host = $2
         port = $3
 
-        if port.nil? || port.to_i < 1 || port.to_i > 65535
-          port = 'https'.eql?(protocol) ? 443 : 80
+        port = if port.nil? || port.to_i < 1 || port.to_i > 65535
+          'https'.eql?(protocol) ? 443 : 80
         else
-          port = port.to_i
+          port.to_i
         end
 
         [protocol, host, port]
@@ -180,9 +180,9 @@ module Flapjack
       end
 
       def symbolize(obj)
-        return obj.inject({}){|memo,(k,v)| memo[k.to_sym] =  symbolize(v); memo} if obj.is_a? Hash
-        return obj.inject([]){|memo,v    | memo           << symbolize(v); memo} if obj.is_a? Array
-        return obj
+        return obj.inject({}){|memo,(k,v)| memo[k.to_sym] =  symbolize(v); memo} if obj.is_a?(Hash)
+        return obj.inject([]){|memo,v    | memo           << symbolize(v); memo} if obj.is_a?(Array)
+        obj
       end
 
     end
