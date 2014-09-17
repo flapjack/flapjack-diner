@@ -37,9 +37,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('contacts', data))
 
         result = Flapjack::Diner.create_contacts(data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a POST request for several contacts" do
@@ -58,9 +58,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('contacts', data))
 
         result = Flapjack::Diner.create_contacts(data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -73,12 +73,12 @@ describe Flapjack::Diner do
           :status => 200, :body => response_with_data('contacts', data))
 
         result = Flapjack::Diner.contacts
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_an_instance_of(Array)
-        result.length.should be(1)
-        result[0].should be_an_instance_of(Hash)
-        result[0].should have_key('id')
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_an_instance_of(Array)
+        expect(result.length).to be(1)
+        expect(result[0]).to be_an_instance_of(Hash)
+        expect(result[0]).to have_key('id')
       end
 
       it "can return keys as symbols" do
@@ -101,14 +101,14 @@ describe Flapjack::Diner do
           :status => 200, :body => response_with_data('contacts', data))
 
         result = Flapjack::Diner.contacts
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_an_instance_of(Array)
-        result.length.should be(1)
-        result[0].should be_an_instance_of(Hash)
-        result[0].should have_key(:id)
-        result[0].should have_key(:links)
-        result[0][:links].should have_key(:entities)
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_an_instance_of(Array)
+        expect(result.length).to be(1)
+        expect(result[0]).to be_an_instance_of(Hash)
+        expect(result[0]).to have_key(:id)
+        expect(result[0]).to have_key(:links)
+        expect(result[0][:links]).to have_key(:entities)
       end
 
       it "submits a GET request for one contact" do
@@ -116,8 +116,8 @@ describe Flapjack::Diner do
           :body => response_with_data('contacts'))
 
         result = Flapjack::Diner.contacts('72')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for several contacts" do
@@ -125,8 +125,8 @@ describe Flapjack::Diner do
           :body => response_with_data('contacts'))
 
         result = Flapjack::Diner.contacts('72', '150')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
     end
 
@@ -139,9 +139,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_contacts(23, :timezone => 'UTC')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request for several contacts" do
@@ -151,9 +151,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_contacts(23, 87, :timezone => 'UTC')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request to change a link for one contact" do
@@ -163,9 +163,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_contacts(23, :add_entity => '57')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request to change links for several contacts" do
@@ -175,9 +175,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_contacts(23, 87, :add_entity => '57')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -188,9 +188,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_contacts('72')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a DELETE request for several contacts" do
@@ -198,9 +198,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_contacts('72', '150')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
     end
   end
@@ -222,9 +222,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('media', data))
 
         result = Flapjack::Diner.create_contact_media(1, data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a POST request for several media" do
@@ -246,9 +246,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('media', data))
 
         result = Flapjack::Diner.create_contact_media(1, data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -259,8 +259,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('media'))
 
         result = Flapjack::Diner.media
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for one medium" do
@@ -268,8 +268,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('media'))
 
         result = Flapjack::Diner.media('72_sms')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for several media" do
@@ -277,8 +277,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('media'))
 
         result = Flapjack::Diner.media('72_sms', '150_email')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
     end
 
@@ -292,9 +292,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_media('23_email', :interval => 50, :rollup_threshold => 3)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request for several media" do
@@ -305,9 +305,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_media('23_email', '87_sms', :interval => 50, :rollup_threshold => 3)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -318,9 +318,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_media('72_sms')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a DELETE request for several media" do
@@ -328,9 +328,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_media('72_sms', '150_email')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
     end
   end
@@ -351,9 +351,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('pagerduty_credentials', data))
 
         result = Flapjack::Diner.create_contact_pagerduty_credentials(1, data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -364,8 +364,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('pagerduty_credentials'))
 
         result = Flapjack::Diner.pagerduty_credentials
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for one set of pagerduty credentials" do
@@ -373,8 +373,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('pagerduty_credentials'))
 
         result = Flapjack::Diner.pagerduty_credentials('72')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for several sets of pagerduty credentials" do
@@ -382,8 +382,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('pagerduty_credentials'))
 
         result = Flapjack::Diner.pagerduty_credentials('72', '150')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
     end
 
@@ -396,9 +396,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_pagerduty_credentials('23', :password => 'lmno')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request for several sets of pagerduty credentials" do
@@ -409,9 +409,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_pagerduty_credentials('23', '87', :username => 'hijk', :password => 'lmno')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -422,9 +422,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_pagerduty_credentials('72')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a DELETE request for several media" do
@@ -432,9 +432,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_pagerduty_credentials('72', '150')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
     end
   end
@@ -461,9 +461,9 @@ describe Flapjack::Diner do
 
 
         result = Flapjack::Diner.create_contact_notification_rules(1, data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a POST request for several notification rules" do
@@ -491,9 +491,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('notification_rules', data))
 
         result = Flapjack::Diner.create_contact_notification_rules(1, data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -504,8 +504,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('notification_rules'))
 
         result = Flapjack::Diner.notification_rules
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for one notification rule" do
@@ -513,8 +513,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('notification_rules'))
 
         result = Flapjack::Diner.notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for several media" do
@@ -522,8 +522,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('notification_rules'))
 
         result = Flapjack::Diner.notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543', 'bfd8be61-3d80-4b95-94df-6e77183ce4e3')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
     end
 
@@ -536,9 +536,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543', :warning_blackhole => false)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request for several notification rules" do
@@ -549,9 +549,9 @@ describe Flapjack::Diner do
 
         result = Flapjack::Diner.update_notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543',
           'bfd8be61-3d80-4b95-94df-6e77183ce4e3', :warning_blackhole => false)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -562,9 +562,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a DELETE request for several notification rules" do
@@ -572,9 +572,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_notification_rules('30fd36ae-3922-4957-ae3e-c8f6dd27e543', 'bfd8be61-3d80-4b95-94df-6e77183ce4e3')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
     end
   end
@@ -595,9 +595,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('entities', data))
 
         result = Flapjack::Diner.create_entities(data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a POST request for several entities" do
@@ -615,9 +615,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('entities', data))
 
         result = Flapjack::Diner.create_entities(data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       context 'scheduled maintenance periods' do
@@ -630,9 +630,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_scheduled_maintenances_entities(72, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request on several entities" do
@@ -643,9 +643,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_scheduled_maintenances_entities(72, 150, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple periods on an entity" do
@@ -657,9 +657,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_scheduled_maintenances_entities(72, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple periods on several entities" do
@@ -671,9 +671,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_scheduled_maintenances_entities(72, 150, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
       end
@@ -688,9 +688,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_unscheduled_maintenances_entities(72, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request on several entities" do
@@ -701,9 +701,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_unscheduled_maintenances_entities(72, 150, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple periods on several entities" do
@@ -715,9 +715,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_unscheduled_maintenances_entities(72, 150, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
       end
@@ -731,9 +731,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_test_notifications_entities(72, [:summary => 'testing'])
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for several entities" do
@@ -743,9 +743,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_test_notifications_entities(72, 150, [:summary => 'testing'])
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple notifications on an entity" do
@@ -756,9 +756,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_test_notifications_entities(72, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple notifications on several entities" do
@@ -769,9 +769,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_test_notifications_entities(72, 150, data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
       end
@@ -784,8 +784,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('entities'))
 
         result = Flapjack::Diner.entities
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for one entity" do
@@ -793,8 +793,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('entities'))
 
         result = Flapjack::Diner.entities('72')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for several entities" do
@@ -802,8 +802,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('entities'))
 
         result = Flapjack::Diner.entities('72', '150')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
     end
 
@@ -816,9 +816,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_entities('57', :name => 'example3.com')
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request for unscheduled maintenances on an entity" do
@@ -828,9 +828,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_unscheduled_maintenances_entities('72', :end_time => time)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request for unscheduled maintenances on several entities" do
@@ -840,9 +840,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_unscheduled_maintenances_entities('72', '150', :end_time => time)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -855,9 +855,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_scheduled_maintenances_entities('72', :start_time => time.iso8601)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a DELETE request for scheduled maintenances on several entities" do
@@ -866,9 +866,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_scheduled_maintenances_entities('72', '150', :start_time => time.iso8601)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -888,9 +888,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_scheduled_maintenances_checks('example.com:SSH', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request on several checks" do
@@ -901,9 +901,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_scheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple periods on a check" do
@@ -915,9 +915,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_scheduled_maintenances_checks('example.com:SSH', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple periods on several checks" do
@@ -929,9 +929,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_scheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
       end
@@ -946,9 +946,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_unscheduled_maintenances_checks('example.com:SSH', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request on several checks" do
@@ -959,9 +959,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_unscheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple periods on several checks" do
@@ -973,9 +973,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_unscheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
       end
@@ -989,9 +989,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', [{:summary => 'testing'}])
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for several checks" do
@@ -1000,9 +1000,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', 'example2.com:PING', [{:summary => 'testing'}])
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple notifications on a check" do
@@ -1013,9 +1013,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple notifications on several checks" do
@@ -1026,9 +1026,9 @@ describe Flapjack::Diner do
             to_return(:status => 204)
 
           result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', 'example2.com:PING', data)
-          req.should have_been_requested
-          result.should_not be_nil
-          result.should be_true
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
+          expect(result).to be_truthy
         end
 
       end
@@ -1041,8 +1041,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('checks'))
 
         result = Flapjack::Diner.checks
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for one check" do
@@ -1050,8 +1050,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('checks'))
 
         result = Flapjack::Diner.checks('example.com:SSH')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
 
       it "submits a GET request for several checks" do
@@ -1059,8 +1059,8 @@ describe Flapjack::Diner do
           to_return(:body => response_with_data('checks'))
 
         result = Flapjack::Diner.checks('example.com:SSH', 'example2.com:PING')
-        req.should have_been_requested
-        result.should_not be_nil
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
       end
     end
 
@@ -1073,9 +1073,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_checks('www.example.com:PING', :enabled => false)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request for unscheduled maintenances on a check" do
@@ -1085,9 +1085,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_unscheduled_maintenances_checks('example.com:SSH', :end_time => time)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a PATCH request for unscheduled maintenances on several checks" do
@@ -1097,9 +1097,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.update_unscheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', :end_time => time)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -1112,9 +1112,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => time.iso8601)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a DELETE request for scheduled maintenances on a check with spaces in the name, percent-encoded" do
@@ -1123,9 +1123,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:Disk C: Utilisation', :start_time => time.iso8601)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a DELETE request for scheduled maintenances on several checks" do
@@ -1134,9 +1134,9 @@ describe Flapjack::Diner do
           to_return(:status => 204)
 
         result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', 'example2.com:PING', :start_time => time.iso8601)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
     end
@@ -1152,8 +1152,8 @@ describe Flapjack::Diner do
             to_return(:body => response_with_data("#{report_type}_reports"))
 
           result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym)
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a GET request for a #{report_type} report on one entity" do
@@ -1161,8 +1161,8 @@ describe Flapjack::Diner do
             to_return(:body => response_with_data("#{report_type}_reports"))
 
           result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym, '72')
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a GET request for a #{report_type} report on several entities" do
@@ -1170,8 +1170,8 @@ describe Flapjack::Diner do
             to_return(:body => response_with_data("#{report_type}_reports"))
 
           result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym, '72', '150')
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a GET request for a #{report_type} report on all checks" do
@@ -1179,8 +1179,8 @@ describe Flapjack::Diner do
             to_return(:body => response_with_data("#{report_type}_reports"))
 
           result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym)
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a GET request for a #{report_type} report on one check" do
@@ -1189,8 +1189,8 @@ describe Flapjack::Diner do
 
           result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
             'example.com:SSH')
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a GET request for a #{report_type} report on several checks" do
@@ -1199,8 +1199,8 @@ describe Flapjack::Diner do
 
           result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
             'example.com:SSH', 'example2.com:PING')
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
       end
@@ -1217,8 +1217,8 @@ describe Flapjack::Diner do
 
           result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym,
             :start_time => start_time, :end_time => end_time)
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a time-limited GET request for a #{report_type} report on one entity" do
@@ -1228,8 +1228,8 @@ describe Flapjack::Diner do
 
           result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym,
             '72', :start_time => start_time, :end_time => end_time)
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a time-limited GET request for a #{report_type} report on several entities" do
@@ -1239,8 +1239,8 @@ describe Flapjack::Diner do
 
           result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym,
             '72', '150', :start_time => start_time, :end_time => end_time)
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a time-limited GET request for a #{report_type} report on all checks" do
@@ -1250,8 +1250,8 @@ describe Flapjack::Diner do
 
           result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
             :start_time => start_time, :end_time => end_time)
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a time-limited GET request for a #{report_type} report on one check" do
@@ -1261,8 +1261,8 @@ describe Flapjack::Diner do
 
           result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
             'example.com:SSH', :start_time => start_time, :end_time => end_time)
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
         it "submits a time-limited GET request for a #{report_type} report on several checks" do
@@ -1273,8 +1273,8 @@ describe Flapjack::Diner do
           result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
             'example.com:SSH', 'example2.com:PING',
             :start_time => start_time, :end_time => end_time)
-          req.should have_been_requested
-          result.should_not be_nil
+          expect(req).to have_been_requested
+          expect(result).not_to be_nil
         end
 
       end
@@ -1295,25 +1295,25 @@ describe Flapjack::Diner do
       req = stub_request(:get, "http://#{server}/entities").
         to_return(:body => response)
 
-      logger.should_receive(:info).with("GET http://#{server}/entities")
-      logger.should_receive(:info).with("  Response Code: 200")
-      logger.should_receive(:info).with("  Response Body: #{response}")
+      expect(logger).to receive(:info).with("GET http://#{server}/entities")
+      expect(logger).to receive(:info).with("  Response Code: 200")
+      expect(logger).to receive(:info).with("  Response Body: #{response}")
 
       result = Flapjack::Diner.entities
-      req.should have_been_requested
-      result.should_not be_nil
+      expect(req).to have_been_requested
+      expect(result).not_to be_nil
     end
 
     it "logs a POST request" do
       req = stub_request(:post, "http://#{server}/test_notifications/entities/27").
               to_return(:status => 200)
-      logger.should_receive(:info).with("POST http://#{server}/test_notifications/entities/27\n" +
+      expect(logger).to receive(:info).with("POST http://#{server}/test_notifications/entities/27\n" +
         "  Params: {:test_notifications=>[{:summary=>\"dealing with it\"}]}")
-      logger.should_receive(:info).with("  Response Code: 200")
+      expect(logger).to receive(:info).with("  Response Code: 200")
 
       result = Flapjack::Diner.create_test_notifications_entities(27, [{:summary => 'dealing with it'}])
-      req.should have_been_requested
-      result.should be_true
+      expect(req).to have_been_requested
+      expect(result).to be_truthy
     end
 
     it "logs a DELETE request" do
@@ -1321,12 +1321,12 @@ describe Flapjack::Diner do
         with(:query => {:start_time => time.iso8601}).
         to_return(:status => 204)
 
-      logger.should_receive(:info).with("DELETE http://#{server}/scheduled_maintenances/checks/example.com:SSH?start_time=#{URI.encode_www_form_component(time.iso8601)}")
-      logger.should_receive(:info).with("  Response Code: 204")
+      expect(logger).to receive(:info).with("DELETE http://#{server}/scheduled_maintenances/checks/example.com:SSH?start_time=#{URI.encode_www_form_component(time.iso8601)}")
+      expect(logger).to receive(:info).with("  Response Code: 204")
 
       result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => time)
-      req.should have_been_requested
-      result.should be_true
+      expect(req).to have_been_requested
+      expect(result).to be_truthy
     end
 
   end
@@ -1339,7 +1339,7 @@ describe Flapjack::Diner do
       expect {
         Flapjack::Diner.entities
       }.to raise_error
-      req.should have_been_requested
+      expect(req).to have_been_requested
     end
 
     it "raises an exception on invalid JSON data" do
@@ -1349,7 +1349,7 @@ describe Flapjack::Diner do
       expect {
         Flapjack::Diner.entities
       }.to raise_error
-      req.should have_been_requested
+      expect(req).to have_been_requested
     end
 
     it "raises an exception if a required argument is not provided" do
@@ -1358,7 +1358,7 @@ describe Flapjack::Diner do
       expect {
         Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => nil)
       }.to raise_error
-      req.should_not have_been_requested
+      expect(req).not_to have_been_requested
     end
 
     it "raises an exception if a time argument is provided with the wrong data type" do
@@ -1373,7 +1373,7 @@ describe Flapjack::Diner do
         Flapjack::Diner.downtime_report_checks('example.com:SSH',
           :start_time => start_time, :end_time => end_time)
       }.to raise_error
-      req.should_not have_been_requested
+      expect(req).not_to have_been_requested
     end
 
   end
