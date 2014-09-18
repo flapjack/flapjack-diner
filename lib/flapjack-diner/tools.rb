@@ -4,6 +4,10 @@ module Flapjack
   module Diner
     module Tools
 
+      def last_error
+        @last_error
+      end
+
       private
 
       def extract_get(name, response)
