@@ -41,7 +41,7 @@ module Flapjack
           end
           ops = params.inject([]) do |memo, (k,v)|
             case k
-            when :name, :tags
+            when :name
               memo << {:op    => 'replace',
                        :path  => "/entities/0/#{k.to_s}",
                        :value => v}
@@ -52,6 +52,13 @@ module Flapjack
             when :remove_contact
               memo << {:op    => 'remove',
                        :path  => "/entities/0/links/contacts/#{v}"}
+            when :add_tag
+              memo << {:op    => 'add',
+                       :path  => '/entities/0/links/tags/-',
+                       :value => v}
+            when :remove_tag
+              memo << {:op    => 'remove',
+                       :path  => "/entities/0/links/tags/#{v}"}
             end
             memo
           end

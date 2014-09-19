@@ -9,6 +9,59 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     Flapjack::Diner.return_keys_as_strings = false
   end
 
+  context 'create' do
+
+    it "submits a POST request for a check" do
+      check_data = [{
+        :name       => 'PING',
+        :entity_id  => '357'
+      }]
+
+      flapjack.given("no entity exists").
+        upon_receiving("a POST request with one check").
+        with(:method => :post, :path => '/checks', :body => {:checks => check_data}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => ['www.example.com:PING'] )
+
+      result = Flapjack::Diner.create_checks(check_data)
+      expect(result).to be_truthy
+    end
+
+    it "submits a POST request for several checks" do
+      check_data = [{
+        :name       => 'SSH',
+        :entity_id  => '357'
+      }, {
+        :name       => 'PING',
+        :entity_id  => '357'
+      }]
+
+      # req = stub_request(:post, "http://#{server}/checks").
+      #   with(:body => {:checks => data}.to_json,
+      #        :headers => {'Content-Type'=>'application/vnd.api+json'}).
+      #   to_return(:status => 201, :body => response_with_data('checks', data))
+
+      # result = Flapjack::Diner.create_checks(data)
+      # req.should have_been_requested
+      # result.should_not be_nil
+      # result.should be_true
+
+      flapjack.given("no entity exists").
+        upon_receiving("a POST request with two checks").
+        with(:method => :post, :path => '/checks', :body => {:checks => check_data}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => ['www.example.com:SSH', 'www.example.com:PING'] )
+
+      result = Flapjack::Diner.create_checks(check_data)
+      expect(result).to be_truthy
+    end
+
+  end
+
   context 'read' do
 
     let(:check_data) { {:id => 'www.example.com:SSH',

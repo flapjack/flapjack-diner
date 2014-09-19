@@ -86,7 +86,6 @@ If any operation fails, `Flapjack::Diner.last_error` will contain an error messa
 
 * [create_entities](#create_entities)
 * [entities](#entities)
-* [entities_matching](#entities_matching)
 * [update_entities](#update_entities)
 
 * [create_scheduled_maintenances_entities](#create_scheduled_maintenances_entities)
@@ -99,7 +98,9 @@ If any operation fails, `Flapjack::Diner.last_error` will contain an error messa
 
 ### Checks
 
+* [create_checks](#create_checks)
 * [checks](#checks)
+* [update_checks](#update_checks)
 
 * [create_scheduled_maintenances_checks](#create_scheduled_maintenances_checks)
 * [delete_scheduled_maintenances_checks](#delete_scheduled_maintenances_checks)
@@ -173,14 +174,15 @@ Flapjack::Diner.update_contacts(ID1, ID2, ..., :key => value, ...)
 
 Acceptable update field keys are
 
-`:first_name`, `:last_name`, `:email`, and `:tags`
+`:first_name`, `:last_name`, `:email`
 
 as well as the linkage operations
 
 `:add_entity`, `:remove_entity`
 `:add_notification_rule`, `:remove_notification_rule`
+`:add_tag`, `:remove_tag`
 
-which take the id of the relevant resource as the value.
+which take the id (for entity and notification rule) or name (for tag) of the relevant resource as the value.
 
 (NB: `:add_medium` and `:remove_medium` are not supported in Flapjack v1.0 but should be in future versions.)
 
@@ -446,15 +448,6 @@ some_entities = Flapjack::Diner.entities(ID1, ID2, ...)
 all_entities = Flapjack::Diner.entities
 ```
 
-<a name="entities_matching">&nbsp;</a>
-### entities_matching
-
-Returns an array of entities matching a given regular expression
-
-```ruby
-entities = Flapjack::Diner.entities_matching(/^db-app-01/)
-```
-
 <a name="update_entities">&nbsp;</a>
 ### update_entities
 
@@ -468,15 +461,14 @@ Flapjack::Diner.update_entities(ID, :key => value, ...)
 Flapjack::Diner.update_entities(ID1, ID2, ..., :key => value, ...)
 ```
 
-Acceptable update field keys are
+There are no valid update field keys yet.
 
-`:name` and `:tags`
-
-as well as the linkage operations
+The linkage operations
 
 `:add_contact` and `:remove_contact`
+`:add_tag` and `:remove_tag`
 
-which take the id of the relevant contact as the value.
+take the id (for contact) or the name (for tag) of the relevant resource as the value.
 
 Returns true if updating succeeded or false if updating failed.
 
@@ -562,6 +554,26 @@ Returns true if creation succeeded or false if creation failed.
 
 ---
 
+<a name="create_checks">&nbsp;</a>
+### create_checks
+
+Create one or more checks.
+
+```ruby
+Flapjack::Diner.create_checks([CHECK, ...])
+```
+
+```
+CHECK
+{
+  :entity_id => STRING,
+  :name      => STRING,
+  :tags      => [STRING, ...]
+}
+```
+
+Returns true if creation succeeded or false if creation failed.
+
 <a name="checks">&nbsp;</a>
 ### checks
 
@@ -572,6 +584,31 @@ check = Flapjack::Diner.checks(ID)
 some_checks = Flapjack::Diner.checks(ID1, ID2, ...)
 all_checks = Flapjack::Diner.checks
 ```
+
+<a name="update_checks">&nbsp;</a>
+### update_checks
+
+Update data for one or more checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
+
+```ruby
+# update values for one checks
+Flapjack::Diner.update_checks(ID, :key => value, ...)
+
+# update values for multiple checks
+Flapjack::Diner.update_checks(ID1, ID2, ..., :key => value, ...)
+```
+
+Acceptable update field keys are
+
+`:enabled`
+
+as well as the linkage operations
+
+`:add_tag` and `:remove_tag`
+
+which take the name of the tag as the value.
+
+Returns true if updating succeeded or false if updating failed.
 
 ---
 

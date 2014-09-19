@@ -7,6 +7,112 @@
   },
   "interactions": [
     {
+      "description": "a POST request with one check",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "post",
+        "path": "/checks",
+        "body": {
+          "checks": [
+            {
+              "name": "PING",
+              "entity_id": "357"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": [
+          "www.example.com:PING"
+        ]
+      }
+    },
+    {
+      "description": "a POST request with two checks",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "post",
+        "path": "/checks",
+        "body": {
+          "checks": [
+            {
+              "name": "SSH",
+              "entity_id": "357"
+            },
+            {
+              "name": "PING",
+              "entity_id": "357"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": [
+          "www.example.com:SSH",
+          "www.example.com:PING"
+        ]
+      }
+    },
+    {
+      "description": "a PATCH request for a single check",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "patch",
+        "path": "/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/checks/0/enabled",
+            "value": false
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for a single check",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "patch",
+        "path": "/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/checks/0/enabled",
+            "value": false
+          }
+        ]
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find entity 'www.example.com'"
+          ]
+        }
+      }
+    },
+    {
       "description": "a GET request for all checks",
       "provider_state": "no entity exists",
       "request": {
@@ -96,57 +202,6 @@
         "body": {
           "errors": [
             "could not find entity checks: 'www.example.com:SSH'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a PATCH request for a single check",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "patch",
-        "path": "/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/checks/0/enabled",
-            "value": false
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request for a single check",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "patch",
-        "path": "/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/checks/0/enabled",
-            "value": false
-          }
-        ]
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find entity 'www.example.com'"
           ]
         }
       }
