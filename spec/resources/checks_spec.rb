@@ -14,12 +14,14 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     it "submits a POST request for a check" do
       check_data = [{
         :name       => 'PING',
-        :entity_id  => '357'
+        :entity_id  => '1234'
       }]
 
-      flapjack.given("no entity exists").
+      flapjack.given("an entity 'www.example.com' exists").
         upon_receiving("a POST request with one check").
-        with(:method => :post, :path => '/checks', :body => {:checks => check_data}).
+        with(:method => :post, :path => '/checks',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:checks => check_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
@@ -32,25 +34,17 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     it "submits a POST request for several checks" do
       check_data = [{
         :name       => 'SSH',
-        :entity_id  => '357'
+        :entity_id  => '1234'
       }, {
         :name       => 'PING',
-        :entity_id  => '357'
+        :entity_id  => '1234'
       }]
 
-      # req = stub_request(:post, "http://#{server}/checks").
-      #   with(:body => {:checks => data}.to_json,
-      #        :headers => {'Content-Type'=>'application/vnd.api+json'}).
-      #   to_return(:status => 201, :body => response_with_data('checks', data))
-
-      # result = Flapjack::Diner.create_checks(data)
-      # req.should have_been_requested
-      # result.should_not be_nil
-      # result.should be_true
-
-      flapjack.given("no entity exists").
+      flapjack.given("an entity 'www.example.com' exists").
         upon_receiving("a POST request with two checks").
-        with(:method => :post, :path => '/checks', :body => {:checks => check_data}).
+        with(:method => :post, :path => '/checks',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:checks => check_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
