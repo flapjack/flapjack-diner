@@ -14,7 +14,7 @@ describe Flapjack::Diner do
   before(:each) do
     Flapjack::Diner.base_uri(server)
     Flapjack::Diner.logger = nil
-    Flapjack::Diner.return_keys_as_strings = true
+    Flapjack::Diner.return_keys_as_strings = false
   end
 
   after(:each) do
@@ -45,10 +45,10 @@ describe Flapjack::Diner do
 
     it "logs a POST request" do
       req = stub_request(:post, "http://#{server}/test_notifications/entities/27").
-              to_return(:status => 200)
+              to_return(:status => 204)
       expect(logger).to receive(:info).with("POST http://#{server}/test_notifications/entities/27\n" +
         "  Params: {:test_notifications=>[{:summary=>\"dealing with it\"}]}")
-      expect(logger).to receive(:info).with("  Response Code: 200")
+      expect(logger).to receive(:info).with("  Response Code: 204")
 
       result = Flapjack::Diner.create_test_notifications_entities(27, [{:summary => 'dealing with it'}])
       expect(req).to have_been_requested

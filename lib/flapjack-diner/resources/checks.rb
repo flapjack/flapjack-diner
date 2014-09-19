@@ -11,7 +11,7 @@ module Flapjack
       module Checks
 
         def checks(*ids)
-          extract_get('checks', perform_get('/checks', ids))
+          perform_get('checks', '/checks', ids)
         end
 
         def update_checks(*args)

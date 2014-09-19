@@ -23,7 +23,7 @@ module Flapjack
         end
 
         def pagerduty_credentials(*ids)
-          extract_get('pagerduty_credentials', perform_get('/pagerduty_credentials', ids))
+          perform_get('pagerduty_credentials', '/pagerduty_credentials', ids)
         end
 
         def update_pagerduty_credentials(*args)

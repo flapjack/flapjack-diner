@@ -21,7 +21,6 @@ require 'flapjack-diner/tools'
 
 module Flapjack
   module Diner
-    SUCCESS_STATUS_CODES = [200, 201, 204]
 
     include HTTParty
 

@@ -1,0 +1,176 @@
+{
+  "provider": {
+    "name": "flapjack"
+  },
+  "consumer": {
+    "name": "flapjack-diner"
+  },
+  "interactions": [
+    {
+      "description": "a GET request for all checks",
+      "provider_state": "no check exists",
+      "request": {
+        "method": "get",
+        "path": "/checks"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "checks": [
+
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for all checks",
+      "provider_state": "a check exists",
+      "request": {
+        "method": "get",
+        "path": "/checks"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "checks": [
+            {
+              "id": "www.example.com:SSH",
+              "name": "SSH",
+              "entity_name": "www.example.com",
+              "links": {
+                "entities": [
+                  "da0553fb-dd9c-4105-8112-110e68293994"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for check 'www.example.com:SSH'",
+      "provider_state": "no check exists",
+      "request": {
+        "method": "get",
+        "path": "/checks/www.example.com:SSH"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "checks": [
+
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for check 'www.example.com:PING'",
+      "provider_state": "no check exists",
+      "request": {
+        "method": "get",
+        "path": "/checks/www.example.com:PING"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "errors": "could not find entity check 'www.example.com:PING'"
+        }
+      }
+    },
+    {
+      "description": "a GET request check 'www.example.com:SSH'",
+      "provider_state": "a check exists",
+      "request": {
+        "method": "get",
+        "path": "/checks/www.example.com:SSH"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "checks": [
+            {
+              "id": "www.example.com:SSH",
+              "name": "SSH",
+              "entity_name": "www.example.com",
+              "links": {
+                "entities": [
+                  "da0553fb-dd9c-4105-8112-110e68293994"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a PATCH request for a single check",
+      "provider_state": "a check exists",
+      "request": {
+        "method": "patch",
+        "path": "/checks/www.example.com:PING",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/checks/0/enabled",
+            "value": false
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for a single check",
+      "provider_state": "no check exists",
+      "request": {
+        "method": "patch",
+        "path": "/checks/www.example.com:PING",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/checks/0/enabled",
+            "value": false
+          }
+        ]
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "errors": "could not find entity check 'www.example.com:PING'"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecificationVersion": "1.0.0"
+  }
+}

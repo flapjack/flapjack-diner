@@ -23,7 +23,7 @@ module Flapjack
         end
 
         def contacts(*ids)
-          extract_get('contacts', perform_get('/contacts', ids))
+          perform_get('contacts', '/contacts', ids)
         end
 
         def update_contacts(*args)

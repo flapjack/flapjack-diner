@@ -26,7 +26,7 @@ module Flapjack
         end
 
         def notification_rules(*ids)
-          extract_get('notification_rules', perform_get('/notification_rules', ids))
+          perform_get('notification_rules', '/notification_rules', ids)
         end
 
         def update_notification_rules(*args)

@@ -24,7 +24,7 @@ module Flapjack
         end
 
         def entities(*ids)
-          extract_get('entities', perform_get('/entities', ids))
+          perform_get('entities', '/entities', ids)
         end
 
         def entities_matching(name_re)

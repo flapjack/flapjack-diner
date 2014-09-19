@@ -4,27 +4,27 @@ module Flapjack
   module Diner
     module Tools
 
+      SUCCESS_STATUS_CODES = [200, 201, 204]
+
       def last_error
         @last_error
       end
 
       private
 
-      def extract_get(name, response)
-        result = if response.nil? || response.is_a?(TrueClass) || !response.is_a?(Hash)
-          response
-        else
-          response[name]
-        end
-
-        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
-      end
-
-      def perform_get(path, ids = [], data = [])
+      def perform_get(name, path, ids = [], data = [])
         req_uri = build_uri(path, ids, data)
         logger.info "GET #{req_uri}" if logger
         response = get(req_uri.request_uri)
-        handle_response(response)
+        handled = handle_response(response)
+
+        result = if handled.nil? || handled.is_a?(TrueClass) || !handled.is_a?(Hash)
+          handled
+        else
+          handled[name]
+        end
+
+        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
       def perform_post(path, ids = [], data = [])
@@ -67,13 +67,20 @@ module Flapjack
           logger.info "  Response Code: #{response.code}#{response_message}"
           logger.info "  Response Body: #{response_start}" if response_start
         end
+        return true if 204.eql?(response.code)
         parsed_response = response.respond_to?(:parsed_response) ? response.parsed_response : nil
-        unless SUCCESS_STATUS_CODES.include?(response.code)
-          self.last_error = {'status_code' => response.code}.merge(parsed_response)
-          return nil
+        case response.code
+        when 200, 201
+          parsed_response
+        else
+          self.last_error = if parsed_response.is_a?(Hash)
+            err = {'status_code' => response.code}.merge(parsed_response)
+            return_keys_as_strings.is_a?(TrueClass) ? err : symbolize(err)
+          else
+            parsed_response
+          end
+          nil
         end
-        return true unless (response.code == 200) && parsed_response
-        parsed_response
       end
 
       def validate_params(query = {}, &validation)
