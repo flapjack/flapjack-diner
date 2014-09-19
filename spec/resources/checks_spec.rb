@@ -15,7 +15,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
                         :name => 'SSH',
                         :entity_name => 'www.example.com',
                         :links => {
-                          :entities => ['da0553fb-dd9c-4105-8112-110e68293994']
+                          :entities => ['1234']
                         }
                        }
                      }
@@ -23,12 +23,12 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     context 'GET all checks' do
 
       it "has no data" do
-        flapjack.given("no check exists").
+        flapjack.given("no entity exists").
           upon_receiving("a GET request for all checks").
           with(:method => :get, :path => '/checks').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/json'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
             :body => {:checks => []} )
 
         result = Flapjack::Diner.checks
@@ -36,12 +36,12 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       end
 
       it "has some data" do
-        flapjack.given("a check exists").
+        flapjack.given("a check 'www.example.com:SSH' exists").
           upon_receiving("a GET request for all checks").
           with(:method => :get, :path => '/checks').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/json'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
             :body => {:checks => [check_data]} )
 
         result = Flapjack::Diner.checks
@@ -52,45 +52,32 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
     context 'GET a single check' do
 
-      it "has no data" do
-        flapjack.given("no check exists").
+      it "has some data" do
+        flapjack.given("a check 'www.example.com:SSH' exists").
           upon_receiving("a GET request for check 'www.example.com:SSH'").
           with(:method => :get, :path => '/checks/www.example.com:SSH').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/json'},
-            :body => {:checks => []} )
-
-        result = Flapjack::Diner.checks('www.example.com:SSH')
-        expect(result).to eq([])
-      end
-
-      it "has some data" do
-        flapjack.given("a check exists").
-          upon_receiving("a GET request check 'www.example.com:SSH'").
-          with(:method => :get, :path => '/checks/www.example.com:SSH').
-          will_respond_with(
-            :status => 200,
-            :headers => {'Content-Type' => 'application/json'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
             :body => {:checks => [check_data]} )
 
         result = Flapjack::Diner.checks('www.example.com:SSH')
         expect(result).to eq([check_data])
       end
 
-      it "can't find check" do
-        flapjack.given("no check exists").
-          upon_receiving("a GET request for check 'www.example.com:PING'").
-          with(:method => :get, :path => '/checks/www.example.com:PING').
+      it "can't find entity for a check" do
+        flapjack.given("no entity exists").
+          upon_receiving("a GET request for check 'www.example.com:SSH'").
+          with(:method => :get, :path => '/checks/www.example.com:SSH').
           will_respond_with(
             :status => 404,
-            :headers => {'Content-Type' => 'application/json'},
-            :body => {:errors => "could not find entity check 'www.example.com:PING'"} )
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :body => {:errors => ["could not find entity checks: 'www.example.com:SSH'"]} )
 
-        result = Flapjack::Diner.checks('www.example.com:PING')
+        result = Flapjack::Diner.checks('www.example.com:SSH')
         expect(result).to be_nil
         expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => "could not find entity check 'www.example.com:PING'")
+          :errors => ["could not find entity checks: 'www.example.com:SSH'"])
       end
 
     end
@@ -100,38 +87,37 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
   context 'update' do
 
     it "submits a PATCH request for a check" do
-      flapjack.given("a check exists").
+      flapjack.given("a check 'www.example.com:SSH' exists").
         upon_receiving("a PATCH request for a single check").
         with(:method => :patch,
-             :path => '/checks/www.example.com:PING',
+             :path => '/checks/www.example.com:SSH',
              :body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
         will_respond_with(
           :status => 204,
-          :headers => {'Content-Type' => 'application/json'},
           :body => '')
 
-      result = Flapjack::Diner.update_checks('www.example.com:PING', :enabled => false)
+      result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
 
-    it "doesn't find the check to update" do
-      flapjack.given("no check exists").
+    it "doesn't find the entity of the check to update" do
+      flapjack.given("no entity exists").
         upon_receiving("a PATCH request for a single check").
         with(:method => :patch,
-             :path => '/checks/www.example.com:PING',
+             :path => '/checks/www.example.com:SSH',
              :body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/json'},
-          :body => {:errors => "could not find entity check 'www.example.com:PING'"} )
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find entity 'www.example.com'"]} )
 
-      result = Flapjack::Diner.update_checks('www.example.com:PING', :enabled => false)
+      result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => "could not find entity check 'www.example.com:PING'")
+        :errors => ["could not find entity 'www.example.com'"])
     end
 
   end
