@@ -69,7 +69,14 @@ module Flapjack
           when :remove_notification_rule
             memo << {:op    => 'remove',
                      :path  => "/contacts/0/links/notification_rules/#{v}"}
-          when :first_name, :last_name, :email, :timezone, :tags
+          when :add_tag
+            memo << {:op    => 'add',
+                     :path  => '/contacts/0/links/tags/-',
+                     :value => v}
+          when :remove_tag
+            memo << {:op    => 'remove',
+                     :path  => "/contacts/0/links/tags/#{v}"}
+          when :first_name, :last_name, :email, :timezone
             memo << {:op    => 'replace',
                      :path  => "/contacts/0/#{k.to_s}",
                      :value => v}
@@ -232,6 +239,18 @@ module Flapjack
         perform_post('/entities', nil, :entities => data)
       end
 
+      def create_checks(*args)
+        ids, params, data = unwrap_ids_and_params(*args)
+        data.each do |d|
+          validate_params(d) do
+            validate :query => :entity_id, :as => [:required, :string]
+            validate :query => :name,      :as => [:required, :string]
+            validate :query => :tags,      :as => :array_of_strings
+          end
+        end
+        perform_post('/checks', nil, :checks => data)
+      end
+
       def entities(*ids)
         extract_get('entities', perform_get('/entities', ids))
       end
@@ -254,7 +273,7 @@ module Flapjack
         end
         ops = params.inject([]) do |memo, (k,v)|
           case k
-          when :name, :tags
+          when :name
             memo << {:op    => 'replace',
                      :path  => "/entities/0/#{k.to_s}",
                      :value => v}
@@ -265,6 +284,13 @@ module Flapjack
           when :remove_contact
             memo << {:op    => 'remove',
                      :path  => "/entities/0/links/contacts/#{v}"}
+          when :add_tag
+            memo << {:op    => 'add',
+                     :path  => '/entities/0/links/tags/-',
+                     :value => v}
+          when :remove_tag
+            memo << {:op    => 'remove',
+                     :path  => "/entities/0/links/tags/#{v}"}
           end
           memo
         end
@@ -277,6 +303,7 @@ module Flapjack
         raise "'update_checks' requires at least one check id parameter" if ids.nil? || ids.empty?
         validate_params(params) do
           validate :query => :enabled, :as => :boolean
+          validate :query => :tags,    :as => :array_of_strings
         end
         ops = params.inject([]) do |memo, (k,v)|
           case k
@@ -284,6 +311,13 @@ module Flapjack
             memo << {:op    => 'replace',
                      :path  => "/checks/0/#{k.to_s}",
                      :value => v}
+          when :add_tag
+            memo << {:op    => 'add',
+                     :path  => '/checks/0/links/tags/-',
+                     :value => v}
+          when :remove_tag
+            memo << {:op    => 'remove',
+                     :path  => "/checks/0/links/tags/#{v}"}
           end
           memo
         end

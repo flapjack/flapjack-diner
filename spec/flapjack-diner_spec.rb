@@ -878,6 +878,43 @@ describe Flapjack::Diner do
   context 'checks' do
     context 'create' do
 
+     it "submits a POST request for a check" do
+        data = [{
+          :name       => 'PING',
+          :entity_id  => '357'
+        }]
+
+        req = stub_request(:post, "http://#{server}/checks").
+          with(:body => {:checks => data}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response_with_data('checks', data))
+
+        result = Flapjack::Diner.create_checks(data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
+      it "submits a POST request for several checks" do
+        data = [{
+          :name       => 'SSH',
+          :entity_id  => '357'
+        }, {
+          :name       => 'PING',
+          :entity_id  => '358'
+        }]
+
+        req = stub_request(:post, "http://#{server}/checks").
+          with(:body => {:checks => data}.to_json,
+               :headers => {'Content-Type'=>'application/vnd.api+json'}).
+          to_return(:status => 201, :body => response_with_data('checks', data))
+
+        result = Flapjack::Diner.create_checks(data)
+        req.should have_been_requested
+        result.should_not be_nil
+        result.should be_true
+      end
+
       context 'scheduled maintenance periods' do
 
         it "submits a POST request on a check" do
