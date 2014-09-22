@@ -890,9 +890,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('checks', data))
 
         result = Flapjack::Diner.create_checks(data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       it "submits a POST request for several checks" do
@@ -910,9 +910,9 @@ describe Flapjack::Diner do
           to_return(:status => 201, :body => response_with_data('checks', data))
 
         result = Flapjack::Diner.create_checks(data)
-        req.should have_been_requested
-        result.should_not be_nil
-        result.should be_true
+        expect(req).to have_been_requested
+        expect(result).not_to be_nil
+        expect(result).to be_truthy
       end
 
       context 'scheduled maintenance periods' do
