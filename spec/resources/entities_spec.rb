@@ -1,47 +1,39 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner do
-
-  let(:server) { 'flapjack.com' }
-
-  let(:time) { Time.now }
-
-  def response_with_data(name, data = [])
-    "{\"#{name}\":#{data.to_json}}"
-  end
+describe Flapjack::Diner, :pact => true do
 
   before(:each) do
-    Flapjack::Diner.base_uri(server)
+    Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
-    Flapjack::Diner.return_keys_as_strings = true
-  end
-
-  after(:each) do
-    WebMock.reset!
+    Flapjack::Diner.return_keys_as_strings = false
   end
 
   context 'create' do
 
    it "submits a POST request for an entity" do
-      data = [{
+      entity_data = [{
         :name => 'example.org',
         :id   => '57_example'
       }]
 
-      req = stub_request(:post, "http://#{server}/entities").
-        with(:body => {:entities => data}.to_json,
-             :headers => {'Content-Type'=>'application/vnd.api+json'}).
-        to_return(:status => 201, :body => response_with_data('entities', data))
+      flapjack.given("no entity exists").
+        upon_receiving("a POST request with one entity").
+        with(:method => :post, :path => '/entities',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:entities => entity_data}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => ['57_example'] )
 
-      result = Flapjack::Diner.create_entities(data)
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.create_entities(entity_data)
       expect(result).not_to be_nil
-      expect(result).to be_truthy
+      expect(result).to eq(['57_example'])
     end
 
     it "submits a POST request for several entities" do
-      data = [{
+      entity_data = [{
         :name => 'example.org',
         :id   => '57_example'
       }, {
@@ -49,60 +41,140 @@ describe Flapjack::Diner do
         :id   => '58'
       }]
 
-      req = stub_request(:post, "http://#{server}/entities").
-        with(:body => {:entities => data}.to_json,
-             :headers => {'Content-Type'=>'application/vnd.api+json'}).
-        to_return(:status => 201, :body => response_with_data('entities', data))
+      flapjack.given("no entity exists").
+        upon_receiving("a POST request with two entities").
+        with(:method => :post, :path => '/entities',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:entities => entity_data}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => ['57_example', '58'] )
 
-      result = Flapjack::Diner.create_entities(data)
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.create_entities(entity_data)
       expect(result).not_to be_nil
-      expect(result).to be_truthy
+      expect(result).to eq(['57_example', '58'])
     end
 
   end
 
   context 'read' do
-    it "submits a GET request for all entities" do
-      req = stub_request(:get, "http://#{server}/entities").
-        to_return(:body => response_with_data('entities'))
 
-      result = Flapjack::Diner.entities
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
+    context 'GET all entities' do
+
+      it 'has some data' do
+        entity_data = {
+          :name => 'www.example.com',
+          :id   => '1234'
+        }
+
+       flapjack.given("an entity 'www.example.com' with id '1234' exists").
+          upon_receiving("a GET request for all entities").
+          with(:method => :get, :path => '/entities').
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+              :body => {:entities => [entity_data]} )
+
+        result = Flapjack::Diner.entities
+        expect(result).not_to be_nil
+        expect(result).to eq([entity_data])
+      end
+
+      it 'has no data' do
+        flapjack.given("no entity exists").
+          upon_receiving("a GET request for all entities").
+          with(:method => :get, :path => '/entities').
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+              :body => {:entities => []} )
+
+        result = Flapjack::Diner.entities
+        expect(result).not_to be_nil
+        expect(result).to eq([])
+      end
+
     end
 
-    it "submits a GET request for one entity" do
-      req = stub_request(:get, "http://#{server}/entities/72").
-        to_return(:body => response_with_data('entities'))
+    context 'GET a single entity' do
 
-      result = Flapjack::Diner.entities('72')
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
+      it 'finds the entity' do
+        entity_data = {
+          :name => 'www.example.com',
+          :id   => '1234'
+        }
+
+       flapjack.given("an entity 'www.example.com' with id '1234' exists").
+          upon_receiving("a GET request for a single entity").
+          with(:method => :get, :path => '/entities/1234').
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+              :body => {:entities => [entity_data]} )
+
+        result = Flapjack::Diner.entities('1234')
+        expect(result).not_to be_nil
+        expect(result).to eq([entity_data])
+      end
+
+      it "can't find the entity" do
+        entity_data = {
+          :name => 'www.example.com',
+          :id   => '1234'
+        }
+
+       flapjack.given("no entity exists").
+          upon_receiving("a GET request for a single entity").
+          with(:method => :get, :path => '/entities/1234').
+          will_respond_with(
+            :status => 404,
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :body => {:errors => ["could not find entities: '1234'"]} )
+
+        result = Flapjack::Diner.entities('1234')
+        expect(result).to be_nil
+        expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+          :errors => ["could not find entities: '1234'"])
+      end
+
     end
 
-    it "submits a GET request for several entities" do
-      req = stub_request(:get, "http://#{server}/entities/72,150").
-        to_return(:body => response_with_data('entities'))
-
-      result = Flapjack::Diner.entities('72', '150')
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
-    end
   end
 
   context 'update' do
 
     it "submits a PATCH request for an entity" do
-      req = stub_request(:patch, "http://#{server}/entities/57").
-        with(:body => [{:op => 'replace', :path => '/entities/0/name', :value => 'example3.com'}].to_json,
+      flapjack.given("an entity 'www.example.com' with id '1234' exists").
+        upon_receiving("a PATCH request for a single entity").
+        with(:method => :patch,
+             :path => '/entities/1234',
+             :body => [{:op => 'replace', :path => '/entities/0/name', :value => 'example3.com'}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
-        to_return(:status => 204)
+        will_respond_with(
+          :status => 204,
+          :body => '')
 
-      result = Flapjack::Diner.update_entities('57', :name => 'example3.com')
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.update_entities('1234', :name => 'example3.com')
       expect(result).not_to be_nil
       expect(result).to be_truthy
+    end
+
+    it "can't find the entity to update" do
+      flapjack.given("no entity exists").
+        upon_receiving("a PATCH request for a single entity").
+        with(:method => :patch,
+             :path => '/entities/1234',
+             :body => [{:op => 'replace', :path => '/entities/0/name', :value => 'example3.com'}],
+             :headers => {'Content-Type'=>'application/json-patch+json'}).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find entity '1234'"]} )
+
+      result = Flapjack::Diner.update_entities('1234', :name => 'example3.com')
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find entity '1234'"])
     end
 
   end

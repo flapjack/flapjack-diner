@@ -61,6 +61,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       expect(result).to eq(['abc', 'def'])
     end
 
+    it "submits a POST request but a contact with that id exists"
+
   end
 
   context 'read' do
@@ -85,10 +87,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
         result = Flapjack::Diner.contacts
         expect(result).not_to be_nil
-        expect(result).to be_an_instance_of(Array)
-        expect(result.length).to be(1)
-        expect(result[0]).to be_an_instance_of(Hash)
-        expect(result[0]).to have_key(:id)
+        expect(result).to eq([contact_data])
       end
 
       it "has no data" do
