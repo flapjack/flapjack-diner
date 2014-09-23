@@ -4,15 +4,12 @@ require 'json'
 require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
 
-require 'flapjack-diner/resources/contacts'
-require 'flapjack-diner/resources/media'
-require 'flapjack-diner/resources/pagerduty_credentials'
-require 'flapjack-diner/resources/notification_rules'
-require 'flapjack-diner/resources/entities'
-require 'flapjack-diner/resources/checks'
-require 'flapjack-diner/resources/maintenance_periods'
-require 'flapjack-diner/resources/notifications'
-require 'flapjack-diner/resources/reports'
+['contacts', 'media', 'pagerduty_credentials', 'notification_rules',
+ 'entities', 'checks', 'maintenance_periods', 'notifications',
+ 'reports'].each do |resource|
+
+  require "flapjack-diner/resources/#{resource}"
+end
 
 require 'flapjack-diner/tools'
 
