@@ -141,12 +141,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           will_respond_with(
             :status => 404,
             :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:errors => ["could not find entity checks: 'www.example.com:SSH'"]} )
+            :body => {:errors => ["could not find contacts 'abc'"]} )
 
         result = Flapjack::Diner.contacts('abc')
         expect(result).to be_nil
         expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => ["could not find entity checks: 'www.example.com:SSH'"])
+          :errors => ["could not find contacts 'abc'"])
       end
 
     end
@@ -225,12 +225,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find contact '323'"]} )
+          :body => {:errors => ["could not find contacts '323'"]} )
 
       result = Flapjack::Diner.update_contacts('323', :timezone => 'UTC')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find contact '323'"])
+        :errors => ["could not find contacts '323'"])
     end
 
   end
@@ -273,12 +273,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find contact 'abc'"]} )
+          :body => {:errors => ["could not find contacts 'abc'"]} )
 
       result = Flapjack::Diner.delete_contacts('abc')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find contact 'abc'"])
+        :errors => ["could not find contacts 'abc'"])
     end
   end
 

@@ -7,148 +7,31 @@
   },
   "interactions": [
     {
-      "description": "a PATCH request for a single check",
-      "provider_state": "no entity exists",
+      "description": "a POST request with one check",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
       "request": {
-        "method": "patch",
-        "path": "/checks/www.example.com:SSH",
+        "method": "post",
+        "path": "/checks",
         "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/checks/0/enabled",
-            "value": false
-          }
-        ]
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find entity 'www.example.com'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a PATCH request for a single check",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "patch",
-        "path": "/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/checks/0/enabled",
-            "value": false
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a GET request for check 'www.example.com:SSH'",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "get",
-        "path": "/checks/www.example.com:SSH"
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find entity checks: 'www.example.com:SSH'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for check 'www.example.com:SSH'",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/checks/www.example.com:SSH"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
+          "Content-Type": "application/vnd.api+json"
         },
         "body": {
           "checks": [
             {
-              "id": "www.example.com:SSH",
-              "name": "SSH",
-              "entity_name": "www.example.com",
-              "links": {
-                "entities": [
-                  "1234"
-                ]
-              }
+              "name": "PING",
+              "entity_id": "1234"
             }
           ]
         }
-      }
-    },
-    {
-      "description": "a GET request for all checks",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/checks"
       },
       "response": {
-        "status": 200,
+        "status": 201,
         "headers": {
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
-        "body": {
-          "checks": [
-            {
-              "id": "www.example.com:SSH",
-              "name": "SSH",
-              "entity_name": "www.example.com",
-              "links": {
-                "entities": [
-                  "1234"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for all checks",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "get",
-        "path": "/checks"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "checks": [
-
-          ]
-        }
+        "body": [
+          "www.example.com:PING"
+        ]
       }
     },
     {
@@ -185,39 +68,137 @@
       }
     },
     {
-      "description": "a POST request with one check",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "description": "a PATCH request for a single check",
+      "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
-        "method": "post",
-        "path": "/checks",
+        "method": "patch",
+        "path": "/checks/www.example.com:SSH",
         "headers": {
-          "Content-Type": "application/vnd.api+json"
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/checks/0/enabled",
+            "value": false
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for a single check",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "patch",
+        "path": "/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/checks/0/enabled",
+            "value": false
+          }
+        ]
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find entity 'www.example.com'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for all checks",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "get",
+        "path": "/checks"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "checks": [
+
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for all checks",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/checks"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
         "body": {
           "checks": [
             {
-              "name": "PING",
-              "entity_id": "1234"
+              "id": "www.example.com:SSH",
+              "name": "SSH",
+              "entity_name": "www.example.com",
+              "links": {
+                "entities": [
+                  "1234"
+                ]
+              }
             }
           ]
         }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": [
-          "www.example.com:PING"
-        ]
       }
     },
     {
-      "description": "a GET request for a single contact",
-      "provider_state": "no contact exists",
+      "description": "a GET request for check 'www.example.com:SSH'",
+      "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
         "method": "get",
-        "path": "/contacts/abc"
+        "path": "/checks/www.example.com:SSH"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "checks": [
+            {
+              "id": "www.example.com:SSH",
+              "name": "SSH",
+              "entity_name": "www.example.com",
+              "links": {
+                "entities": [
+                  "1234"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for check 'www.example.com:SSH'",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "get",
+        "path": "/checks/www.example.com:SSH"
       },
       "response": {
         "status": 404,
@@ -229,127 +210,6 @@
             "could not find entity checks: 'www.example.com:SSH'"
           ]
         }
-      }
-    },
-    {
-      "description": "a GET request for a single contact",
-      "provider_state": "a contact with id 'abc' exists",
-      "request": {
-        "method": "get",
-        "path": "/contacts/abc"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "contacts": [
-            {
-              "id": "abc",
-              "first_name": "Jim",
-              "last_name": "Smith",
-              "email": "jims@example.com",
-              "timezone": "UTC",
-              "tags": [
-                "admin",
-                "night_shift"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for all contacts",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "get",
-        "path": "/contacts"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "contacts": [
-
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for all contacts",
-      "provider_state": "a contact with id 'abc' exists",
-      "request": {
-        "method": "get",
-        "path": "/contacts"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "contacts": [
-            {
-              "id": "abc",
-              "first_name": "Jim",
-              "last_name": "Smith",
-              "email": "jims@example.com",
-              "timezone": "UTC",
-              "tags": [
-                "admin",
-                "night_shift"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a PATCH request to change properties for two contacts",
-      "provider_state": "contacts with ids 'abc' and '872' exist",
-      "request": {
-        "method": "patch",
-        "path": "/contacts/abc,872",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/contacts/0/timezone",
-            "value": "UTC"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH requestto change a link for a single contact",
-      "provider_state": "a contact with id '872' exists",
-      "request": {
-        "method": "patch",
-        "path": "/contacts/872",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "add",
-            "path": "/contacts/0/links/entities/-",
-            "value": "1234"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
       }
     },
     {
@@ -376,7 +236,7 @@
         },
         "body": {
           "errors": [
-            "could not find contact '323'"
+            "could not find contacts '323'"
           ]
         }
       }
@@ -426,49 +286,82 @@
       }
     },
     {
-      "description": "a DELETE request for a single contact",
-      "provider_state": "no contact exists",
+      "description": "a PATCH requestto change a link for a single contact",
+      "provider_state": "a contact with id '872' exists",
       "request": {
-        "method": "delete",
-        "path": "/contacts/abc",
-        "body": null
+        "method": "patch",
+        "path": "/contacts/872",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "add",
+            "path": "/contacts/0/links/entities/-",
+            "value": "1234"
+          }
+        ]
       },
       "response": {
-        "status": 404,
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request to change properties for two contacts",
+      "provider_state": "contacts with ids 'abc' and '872' exist",
+      "request": {
+        "method": "patch",
+        "path": "/contacts/abc,872",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/contacts/0/timezone",
+            "value": "UTC"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with one contact",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "post",
+        "path": "/contacts",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "contacts": [
+            {
+              "id": "abc",
+              "first_name": "Jim",
+              "last_name": "Smith",
+              "email": "jims@example.com",
+              "timezone": "UTC",
+              "tags": [
+                "admin",
+                "night_shift"
+              ]
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
         "headers": {
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
-        "body": {
-          "errors": [
-            "could not find contact 'abc'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a DELETE request for two contacts",
-      "provider_state": "contacts with ids 'abc' and '872' exist",
-      "request": {
-        "method": "delete",
-        "path": "/contacts/abc,872",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a single contact",
-      "provider_state": "a contact with id 'abc' exists",
-      "request": {
-        "method": "delete",
-        "path": "/contacts/abc",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
+        "body": [
+          "abc"
+        ]
       }
     },
     {
@@ -514,13 +407,62 @@
       }
     },
     {
-      "description": "a POST request with one contact",
+      "description": "a DELETE request for a single contact",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "delete",
+        "path": "/contacts/abc",
+        "body": null
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for a single contact",
       "provider_state": "no contact exists",
       "request": {
-        "method": "post",
-        "path": "/contacts",
+        "method": "delete",
+        "path": "/contacts/abc",
+        "body": null
+      },
+      "response": {
+        "status": 404,
         "headers": {
-          "Content-Type": "application/vnd.api+json"
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find contacts 'abc'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a DELETE request for two contacts",
+      "provider_state": "contacts with ids 'abc' and '872' exist",
+      "request": {
+        "method": "delete",
+        "path": "/contacts/abc,872",
+        "body": null
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a GET request for all contacts",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "get",
+        "path": "/contacts"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
         "body": {
           "contacts": [
@@ -537,15 +479,73 @@
             }
           ]
         }
+      }
+    },
+    {
+      "description": "a GET request for all contacts",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "get",
+        "path": "/contacts"
       },
       "response": {
-        "status": 201,
+        "status": 200,
         "headers": {
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
-        "body": [
-          "abc"
-        ]
+        "body": {
+          "contacts": [
+
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a single contact",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "get",
+        "path": "/contacts/abc"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "contacts": [
+            {
+              "id": "abc",
+              "first_name": "Jim",
+              "last_name": "Smith",
+              "email": "jims@example.com",
+              "timezone": "UTC",
+              "tags": [
+                "admin",
+                "night_shift"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a single contact",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "get",
+        "path": "/contacts/abc"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find contacts 'abc'"
+          ]
+        }
       }
     }
   ],
