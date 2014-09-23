@@ -1,205 +1,284 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner do
-
-  let(:server) { 'flapjack.com' }
-
-  let(:time) { Time.now }
-
-  def response_with_data(name, data = [])
-    "{\"#{name}\":#{data.to_json}}"
-  end
+describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
   before(:each) do
-    Flapjack::Diner.base_uri(server)
+    Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
-    Flapjack::Diner.return_keys_as_strings = true
-  end
-
-  after(:each) do
-    WebMock.reset!
+    Flapjack::Diner.return_keys_as_strings = false
   end
 
   context 'create' do
 
     it "submits a POST request for a contact" do
-      data = [{:first_name => 'Jim',
-               :last_name  => 'Smith',
-               :email      => 'jims@example.com',
-               :timezone   => 'UTC',
-               :tags       => ['admin', 'night_shift']}]
+      contact_data = [{:id         => 'abc',
+                       :first_name => 'Jim',
+                       :last_name  => 'Smith',
+                       :email      => 'jims@example.com',
+                       :timezone   => 'UTC',
+                       :tags       => ['admin', 'night_shift']}]
 
-      req = stub_request(:post, "http://#{server}/contacts").
-        with(:body => {:contacts => data}.to_json,
-             :headers => {'Content-Type'=>'application/vnd.api+json'}).
-        to_return(:status => 201, :body => response_with_data('contacts', data))
+      flapjack.given("no contact exists").
+        upon_receiving("a POST request with one contact").
+        with(:method => :post, :path => '/contacts',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:contacts => contact_data}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => ['abc'] )
 
-      result = Flapjack::Diner.create_contacts(data)
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.create_contacts(contact_data)
       expect(result).not_to be_nil
-      expect(result).to be_truthy
+      expect(result).to eq(['abc'])
     end
 
     it "submits a POST request for several contacts" do
-      data = [{:first_name => 'Jim',
-               :last_name  => 'Smith',
-               :email      => 'jims@example.com',
-               :timezone   => 'UTC',
-               :tags       => ['admin', 'night_shift']},
-              {:first_name => 'Joan',
-               :last_name  => 'Smith',
-               :email      => 'joans@example.com'}]
+      contact_data = [{:id         => 'abc',
+                       :first_name => 'Jim',
+                       :last_name  => 'Smith',
+                       :email      => 'jims@example.com',
+                       :timezone   => 'UTC',
+                       :tags       => ['admin', 'night_shift']},
+                      {:id         => 'def',
+                       :first_name => 'Joan',
+                       :last_name  => 'Smith',
+                       :email      => 'joans@example.com'}]
 
-      req = stub_request(:post, "http://#{server}/contacts").
-        with(:body => {:contacts => data}.to_json,
-             :headers => {'Content-Type'=>'application/vnd.api+json'}).
-        to_return(:status => 201, :body => response_with_data('contacts', data))
+      flapjack.given("no contact exists").
+        upon_receiving("a POST request with two contacts").
+        with(:method => :post, :path => '/contacts',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:contacts => contact_data}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => ['abc', 'def'] )
 
-      result = Flapjack::Diner.create_contacts(data)
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.create_contacts(contact_data)
       expect(result).not_to be_nil
-      expect(result).to be_truthy
+      expect(result).to eq(['abc', 'def'])
     end
 
   end
 
   context 'read' do
-    it "submits a GET request for all contacts" do
-      data = [{:id => "21"}]
 
-      req = stub_request(:get, "http://#{server}/contacts").to_return(
-        :status => 200, :body => response_with_data('contacts', data))
+    context 'GET all contacts' do
 
-      result = Flapjack::Diner.contacts
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
-      expect(result).to be_an_instance_of(Array)
-      expect(result.length).to be(1)
-      expect(result[0]).to be_an_instance_of(Hash)
-      expect(result[0]).to have_key('id')
+      it "has some data" do
+        contact_data = {:id         => 'abc',
+                        :first_name => 'Jim',
+                        :last_name  => 'Smith',
+                        :email      => 'jims@example.com',
+                        :timezone   => 'UTC',
+                        :tags       => ['admin', 'night_shift']}
+
+        flapjack.given("a contact with id 'abc' exists").
+          upon_receiving("a GET request for all contacts").
+          with(:method => :get, :path => '/contacts').
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+              :body => {:contacts => [contact_data]} )
+
+        result = Flapjack::Diner.contacts
+        expect(result).not_to be_nil
+        expect(result).to be_an_instance_of(Array)
+        expect(result.length).to be(1)
+        expect(result[0]).to be_an_instance_of(Hash)
+        expect(result[0]).to have_key(:id)
+      end
+
+      it "has no data" do
+        flapjack.given("no contact exists").
+          upon_receiving("a GET request for all contacts").
+          with(:method => :get, :path => '/contacts').
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+              :body => {:contacts => []} )
+
+        result = Flapjack::Diner.contacts
+        expect(result).not_to be_nil
+        expect(result).to be_an_instance_of(Array)
+        expect(result).to be_empty
+      end
+
     end
 
-    it "can return keys as symbols" do
-      Flapjack::Diner.return_keys_as_strings = false
-      data = [{
-        :id         => "21",
-        :first_name => "Ada",
-        :last_name  => "Lovelace",
-        :email      => "ada@example.com",
-        :timezone   => "Europe/London",
-        :tags       => [ "legend", "first computer programmer" ],
-        :links      => {
-          :entities           => ["7", "12", "83"],
-          :media              => ["21_email", "21_sms"],
-          :notification_rules => ["30fd36ae-3922-4957-ae3e-c8f6dd27e543"]
-        }
-      }]
+    context 'GET a single contact' do
 
-      req = stub_request(:get, "http://#{server}/contacts").to_return(
-        :status => 200, :body => response_with_data('contacts', data))
+      it "finds the contact" do
+        contact_data = {:id         => 'abc',
+                        :first_name => 'Jim',
+                        :last_name  => 'Smith',
+                        :email      => 'jims@example.com',
+                        :timezone   => 'UTC',
+                        :tags       => ['admin', 'night_shift']}
 
-      result = Flapjack::Diner.contacts
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
-      expect(result).to be_an_instance_of(Array)
-      expect(result.length).to be(1)
-      expect(result[0]).to be_an_instance_of(Hash)
-      expect(result[0]).to have_key(:id)
-      expect(result[0]).to have_key(:links)
-      expect(result[0][:links]).to have_key(:entities)
+        flapjack.given("a contact with id 'abc' exists").
+          upon_receiving("a GET request for a single contact").
+          with(:method => :get, :path => '/contacts/abc').
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+              :body => {:contacts => [contact_data]} )
+
+        result = Flapjack::Diner.contacts('abc')
+        expect(result).not_to be_nil
+        expect(result).to be_an_instance_of(Array)
+        expect(result.length).to be(1)
+        expect(result[0]).to be_an_instance_of(Hash)
+        expect(result[0]).to have_key(:id)
+      end
+
+      it "can't find the contact" do
+        flapjack.given("no contact exists").
+          upon_receiving("a GET request for a single contact").
+          with(:method => :get, :path => '/contacts/abc').
+          will_respond_with(
+            :status => 404,
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :body => {:errors => ["could not find entity checks: 'www.example.com:SSH'"]} )
+
+        result = Flapjack::Diner.contacts('abc')
+        expect(result).to be_nil
+        expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+          :errors => ["could not find entity checks: 'www.example.com:SSH'"])
+      end
+
     end
 
-    it "submits a GET request for one contact" do
-      req = stub_request(:get, "http://#{server}/contacts/72").to_return(
-        :body => response_with_data('contacts'))
-
-      result = Flapjack::Diner.contacts('72')
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
-    end
-
-    it "submits a GET request for several contacts" do
-      req = stub_request(:get, "http://#{server}/contacts/72,150").to_return(
-        :body => response_with_data('contacts'))
-
-      result = Flapjack::Diner.contacts('72', '150')
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
-    end
   end
 
   context 'update' do
 
     it "submits a PATCH request for one contact" do
-      req = stub_request(:patch, "http://#{server}/contacts/23").
-        with(:body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}].to_json,
+      flapjack.given("a contact with id 'abc' exists").
+        upon_receiving("a PATCH request to change properties for a single contact").
+        with(:method => :patch,
+             :path => '/contacts/abc',
+             :body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
-        to_return(:status => 204)
+        will_respond_with(:status => 204,
+                          :body => '')
 
-      result = Flapjack::Diner.update_contacts(23, :timezone => 'UTC')
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.update_contacts('abc', :timezone => 'UTC')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
 
     it "submits a PATCH request for several contacts" do
-      req = stub_request(:patch, "http://#{server}/contacts/23,87").
-        with(:body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}].to_json,
+      flapjack.given("contacts with ids 'abc' and '872' exist").
+        upon_receiving("a PATCH request to change properties for two contacts").
+        with(:method => :patch,
+             :path => '/contacts/abc,872',
+             :body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
-        to_return(:status => 204)
+        will_respond_with(:status => 204,
+                          :body => '')
 
-      result = Flapjack::Diner.update_contacts(23, 87, :timezone => 'UTC')
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.update_contacts('abc', '872', :timezone => 'UTC')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
 
     it "submits a PATCH request to change a link for one contact" do
-      req = stub_request(:patch, "http://#{server}/contacts/23").
-        with(:body => [{:op => 'add', :path => '/contacts/0/links/entities/-', :value => '57'}].to_json,
+      flapjack.given("a contact with id '872' exists").
+        upon_receiving("a PATCH requestto change a link for a single contact").
+        with(:method => :patch,
+             :path => '/contacts/872',
+             :body => [{:op => 'add', :path => '/contacts/0/links/entities/-', :value => '1234'}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
-        to_return(:status => 204)
+        will_respond_with(:status => 204,
+                          :body => '')
 
-      result = Flapjack::Diner.update_contacts(23, :add_entity => '57')
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.update_contacts('872', :add_entity => '1234')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
 
     it "submits a PATCH request to change links for several contacts" do
-      req = stub_request(:patch, "http://#{server}/contacts/23,87").
-        with(:body => [{:op => 'add', :path => '/contacts/0/links/entities/-', :value => '57'}].to_json,
+      flapjack.given("contacts with ids 'abc' and '872' exist").
+        upon_receiving("a PATCH request to change links for two contacts").
+        with(:method => :patch,
+             :path => '/contacts/abc,872',
+             :body => [{:op => 'add', :path => '/contacts/0/links/entities/-', :value => '1234'}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
-        to_return(:status => 204)
+        will_respond_with(:status => 204,
+                          :body => '')
 
-      result = Flapjack::Diner.update_contacts(23, 87, :add_entity => '57')
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.update_contacts('abc', '872', :add_entity => '1234')
       expect(result).not_to be_nil
       expect(result).to be_truthy
+    end
+
+    it "can't find a contact to update" do
+      flapjack.given("no contact exists").
+        upon_receiving("a PATCH request to change properties for a single contact").
+        with(:method => :patch,
+             :path => '/contacts/323',
+             :body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}],
+             :headers => {'Content-Type'=>'application/json-patch+json'}).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find contact '323'"]} )
+
+      result = Flapjack::Diner.update_contacts('323', :timezone => 'UTC')
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find contact '323'"])
     end
 
   end
 
   context 'delete' do
     it "submits a DELETE request for one contact" do
-      req = stub_request(:delete, "http://#{server}/contacts/72").
-        to_return(:status => 204)
+      flapjack.given("a contact with id 'abc' exists").
+        upon_receiving("a DELETE request for a single contact").
+        with(:method => :delete,
+             :path => '/contacts/abc',
+             :body => nil).
+        will_respond_with(:status => 204,
+                          :body => '')
 
-      result = Flapjack::Diner.delete_contacts('72')
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.delete_contacts('abc')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
 
     it "submits a DELETE request for several contacts" do
-      req = stub_request(:delete, "http://#{server}/contacts/72,150").
-        to_return(:status => 204)
+      flapjack.given("contacts with ids 'abc' and '872' exist").
+        upon_receiving("a DELETE request for two contacts").
+        with(:method => :delete,
+             :path => '/contacts/abc,872',
+             :body => nil).
+        will_respond_with(:status => 204,
+                          :body => '')
 
-      result = Flapjack::Diner.delete_contacts('72', '150')
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.delete_contacts('abc', '872')
       expect(result).not_to be_nil
       expect(result).to be_truthy
+    end
+
+    it "can't find the contact to delete" do
+      flapjack.given("no contact exists").
+        upon_receiving("a DELETE request for a single contact").
+        with(:method => :delete,
+             :path => '/contacts/abc',
+             :body => nil).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find contact 'abc'"]} )
+
+      result = Flapjack::Diner.delete_contacts('abc')
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find contact 'abc'"])
     end
   end
 

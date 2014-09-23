@@ -21,6 +21,36 @@ describe Flapjack::Diner do
     WebMock.reset!
   end
 
+  it "can return keys as strings" do
+    Flapjack::Diner.return_keys_as_strings = true
+    data = [{
+      :id         => "21",
+      :first_name => "Ada",
+      :last_name  => "Lovelace",
+      :email      => "ada@example.com",
+      :timezone   => "Europe/London",
+      :tags       => [ "legend", "first computer programmer" ],
+      :links      => {
+        :entities           => ["7", "12", "83"],
+        :media              => ["21_email", "21_sms"],
+        :notification_rules => ["30fd36ae-3922-4957-ae3e-c8f6dd27e543"]
+      }
+    }]
+
+    req = stub_request(:get, "http://#{server}/contacts").to_return(
+      :status => 200, :body => response_with_data('contacts', data))
+
+    result = Flapjack::Diner.contacts
+    expect(req).to have_been_requested
+    expect(result).not_to be_nil
+    expect(result).to be_an_instance_of(Array)
+    expect(result.length).to be(1)
+    expect(result[0]).to be_an_instance_of(Hash)
+    expect(result[0]).to have_key('id')
+    expect(result[0]).to have_key('links')
+    expect(result[0]['links']).to have_key('entities')
+  end
+
   context "logging" do
 
     let(:logger) { double('logger') }

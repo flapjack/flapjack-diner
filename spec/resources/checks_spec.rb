@@ -17,7 +17,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         :entity_id  => '1234'
       }]
 
-      flapjack.given("an entity 'www.example.com' exists").
+      flapjack.given("an entity 'www.example.com' with id '1234' exists").
         upon_receiving("a POST request with one check").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -40,7 +40,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         :entity_id  => '1234'
       }]
 
-      flapjack.given("an entity 'www.example.com' exists").
+      flapjack.given("an entity 'www.example.com' with id '1234' exists").
         upon_receiving("a POST request with two checks").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
