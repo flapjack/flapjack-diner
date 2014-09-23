@@ -784,7 +784,7 @@ report_all = Flapjack::Diner.unscheduled_maintenance_report_checks
 <a name="downtime_report_checks">&nbsp;</a>
 ### downtime_report_checks
 
-Return a report on downtim data for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
+Return a report on downtime data for one, some or all checks. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 ```ruby
 report = Flapjack::Diner.downtime_report_checks(CHECK_ID)
