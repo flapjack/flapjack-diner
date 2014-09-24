@@ -61,7 +61,32 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       expect(result).to eq(['abc', 'def'])
     end
 
-    it "submits a POST request but a contact with that id exists"
+#
+
+    it "submits a POST request but a contact with that id exists" do
+
+      contact_data = [{:id         => 'abc',
+                       :first_name => 'Jim',
+                       :last_name  => 'Smith',
+                       :email      => 'jims@example.com',
+                       :timezone   => 'UTC',
+                       :tags       => ['admin', 'night_shift']}]
+
+      flapjack.given("a contact with id 'abc' exists").
+        upon_receiving("a POST request with one contact").
+        with(:method => :post, :path => '/contacts',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:contacts => contact_data}).
+        will_respond_with(
+          :status => 409,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :body => {:errors => ["Contacts already exist with the following IDs: abc"]} )
+
+      result = Flapjack::Diner.create_contacts(contact_data)
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 409,
+        :errors => ['Contacts already exist with the following IDs: abc'])
+    end
 
   end
 
@@ -127,10 +152,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
         result = Flapjack::Diner.contacts('abc')
         expect(result).not_to be_nil
-        expect(result).to be_an_instance_of(Array)
-        expect(result.length).to be(1)
-        expect(result[0]).to be_an_instance_of(Hash)
-        expect(result[0]).to have_key(:id)
+        expect(result).to eq([contact_data])
       end
 
       it "can't find the contact" do
