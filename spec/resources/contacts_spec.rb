@@ -61,10 +61,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       expect(result).to eq(['abc', 'def'])
     end
 
-#
-
     it "submits a POST request but a contact with that id exists" do
-
       contact_data = [{:id         => 'abc',
                        :first_name => 'Jim',
                        :last_name  => 'Smith',

@@ -1,24 +1,12 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner do
-
-  let(:server) { 'flapjack.com' }
-
-  let(:time) { Time.now }
-
-  def response_with_data(name, data = [])
-    "{\"#{name}\":#{data.to_json}}"
-  end
+describe Flapjack::Diner::Resources::Media, :pact => true do
 
   before(:each) do
-    Flapjack::Diner.base_uri(server)
+    Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
-    Flapjack::Diner.return_keys_as_strings = true
-  end
-
-  after(:each) do
-    WebMock.reset!
+    Flapjack::Diner.return_keys_as_strings = false
   end
 
   context 'create' do
@@ -31,15 +19,19 @@ describe Flapjack::Diner do
         :rollup_threshold => 5
       }]
 
-      req = stub_request(:post, "http://#{server}/contacts/1/media").
-        with(:body => {:media => data}.to_json,
-             :headers => {'Content-Type'=>'application/vnd.api+json'}).
-        to_return(:status => 201, :body => response_with_data('media', data))
+      flapjack.given("a contact with id 'abc' exists").
+        upon_receiving("a POST request with one medium").
+        with(:method => :post, :path => '/contacts/abc/media',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:media => data}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => ['abc_sms'] )
 
-      result = Flapjack::Diner.create_contact_media(1, data)
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.create_contact_media('abc', data)
       expect(result).not_to be_nil
-      expect(result).to be_truthy
+      expect(result).to eq(['abc_sms'])
     end
 
     it "submits a POST request for several media" do
@@ -55,98 +47,168 @@ describe Flapjack::Diner do
         :rollup_threshold => 3
       }]
 
-      req = stub_request(:post, "http://#{server}/contacts/1/media").
-        with(:body => {:media => data}.to_json,
-             :headers => {'Content-Type'=>'application/vnd.api+json'}).
-        to_return(:status => 201, :body => response_with_data('media', data))
+      flapjack.given("a contact with id 'abc' exists").
+        upon_receiving("a POST request with two media").
+        with(:method => :post, :path => '/contacts/abc/media',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:media => data}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => ['abc_sms', 'abc_email'] )
 
-      result = Flapjack::Diner.create_contact_media(1, data)
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.create_contact_media('abc', data)
       expect(result).not_to be_nil
-      expect(result).to be_truthy
+      expect(result).to eq(['abc_sms', 'abc_email'])
     end
+
+    it "can't find the contact to create media for"
 
   end
 
   context 'read' do
-   it "submits a GET request for all media" do
-      req = stub_request(:get, "http://#{server}/media").
-        to_return(:body => response_with_data('media'))
+
+    let(:sms_data) {
+      {
+        :type             => 'sms',
+        :address          => '0123456789',
+        :interval         => 300,
+        :rollup_threshold => 5
+      }
+    }
+
+    let(:email_data) {
+      {
+        :type             => 'email',
+        :address          => 'ablated@example.org',
+        :interval         => 180,
+        :rollup_threshold => 3
+      }
+    }
+
+    let(:links) { {:links => {:contacts => ['abc']}} }
+
+    it "submits a GET request for all media" do
+      media_data = [email_data.merge(links), sms_data.merge(links)]
+
+      flapjack.given("a contact with id 'abc' has email and sms media").
+        upon_receiving("a GET request for all media").
+        with(:method => :get, :path => '/media').
+        will_respond_with(
+          :status => 200,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:media => media_data} )
 
       result = Flapjack::Diner.media
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
+      expect(result).to eq(media_data)
     end
 
     it "submits a GET request for one medium" do
-      req = stub_request(:get, "http://#{server}/media/72_sms").
-        to_return(:body => response_with_data('media'))
+      media_data = [sms_data.merge(links)]
 
-      result = Flapjack::Diner.media('72_sms')
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
+      flapjack.given("a contact with id 'abc' has email and sms media").
+        upon_receiving("a GET request for sms media").
+        with(:method => :get, :path => '/media/abc_sms').
+        will_respond_with(
+          :status => 200,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:media => media_data} )
+
+      result = Flapjack::Diner.media('abc_sms')
+      expect(result).to eq(media_data)
     end
 
     it "submits a GET request for several media" do
-      req = stub_request(:get, "http://#{server}/media/72_sms,150_email").
-        to_return(:body => response_with_data('media'))
+      media_data = [email_data.merge(links), sms_data.merge(links)]
 
-      result = Flapjack::Diner.media('72_sms', '150_email')
-      expect(req).to have_been_requested
-      expect(result).not_to be_nil
+      flapjack.given("a contact with id 'abc' has email and sms media").
+        upon_receiving("a GET request for email and sms media").
+        with(:method => :get, :path => '/media/abc_email,abc_sms').
+        will_respond_with(
+          :status => 200,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:media => media_data} )
+
+      result = Flapjack::Diner.media('abc_email', 'abc_sms')
+      expect(result).to eq(media_data)
     end
+
+    it "can't find the contact with media to read"
+
   end
 
   context 'update' do
 
     it "submits a PATCH request for one medium" do
-      req = stub_request(:patch, "http://#{server}/media/23_email").
-        with(:body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
-                       {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}].to_json,
-             :headers => {'Content-Type'=>'application/json-patch+json'}).
-        to_return(:status => 204)
+      flapjack.given("a contact with id 'abc' has email and sms media").
+        upon_receiving("a PATCH request for email media").
+        with(:method => :patch,
+             :path => '/media/abc_email',
+             :headers => {'Content-Type'=>'application/json-patch+json'},
+             :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
+                       {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}]).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-      result = Flapjack::Diner.update_media('23_email', :interval => 50, :rollup_threshold => 3)
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.update_media('abc_email', :interval => 50, :rollup_threshold => 3)
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
 
     it "submits a PATCH request for several media" do
-      req = stub_request(:patch, "http://#{server}/media/23_email,87_sms").
-        with(:body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
-                       {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}].to_json,
-             :headers => {'Content-Type'=>'application/json-patch+json'}).
-        to_return(:status => 204)
+      flapjack.given("a contact with id 'abc' has email and sms media").
+        upon_receiving("a PATCH request for email and sms media").
+        with(:method => :patch,
+             :path => '/media/abc_email,abc_sms',
+             :headers => {'Content-Type'=>'application/json-patch+json'},
+             :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
+                       {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}]).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-      result = Flapjack::Diner.update_media('23_email', '87_sms', :interval => 50, :rollup_threshold => 3)
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.update_media('abc_email', 'abc_sms', :interval => 50, :rollup_threshold => 3)
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
+
+    it "can't find the contact with media to update"
 
   end
 
   context 'delete' do
     it "submits a DELETE request for one medium" do
-      req = stub_request(:delete, "http://#{server}/media/72_sms").
-        to_return(:status => 204)
 
-      result = Flapjack::Diner.delete_media('72_sms')
-      expect(req).to have_been_requested
+      flapjack.given("a contact with id 'abc' has email and sms media").
+        upon_receiving("a DELETE request for one medium").
+        with(:method => :delete,
+             :path => '/media/abc_email',
+             :body => nil).
+        will_respond_with(:status => 204,
+                          :body => '')
+
+      result = Flapjack::Diner.delete_media('abc_email')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
 
     it "submits a DELETE request for several media" do
-      req = stub_request(:delete, "http://#{server}/media/72_sms,150_email").
-        to_return(:status => 204)
+      flapjack.given("a contact with id 'abc' has email and sms media").
+        upon_receiving("a DELETE request for two media").
+        with(:method => :delete,
+             :path => '/media/abc_email,abc_sms',
+             :body => nil).
+        will_respond_with(:status => 204,
+                          :body => '')
 
-      result = Flapjack::Diner.delete_media('72_sms', '150_email')
-      expect(req).to have_been_requested
+      result = Flapjack::Diner.delete_media('abc_email', 'abc_sms')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
+
+    it "can't find the contact with media to delete"
+
   end
 
 end
