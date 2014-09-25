@@ -1,24 +1,12 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner do
-
-  let(:server) { 'flapjack.com' }
-
-  let(:time) { Time.now }
-
-  def response_with_data(name, data = [])
-    "{\"#{name}\":#{data.to_json}}"
-  end
+describe Flapjack::Diner::Resources::Notifications, :pact => true do
 
   before(:each) do
-    Flapjack::Diner.base_uri(server)
+    Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
-    Flapjack::Diner.return_keys_as_strings = true
-  end
-
-  after(:each) do
-    WebMock.reset!
+    Flapjack::Diner.return_keys_as_strings = false
   end
 
   context 'entities' do
@@ -28,53 +16,91 @@ describe Flapjack::Diner do
       context 'test notifications' do
 
         it "submits a POST request for an entity" do
-          req = stub_request(:post, "http://#{server}/test_notifications/entities/72").
-            with(:body => {:test_notifications => [{:summary => 'testing'}]}.to_json,
-                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
-            to_return(:status => 204)
+          data = [{:summary => 'testing'}]
 
-          result = Flapjack::Diner.create_test_notifications_entities(72, [:summary => 'testing'])
-          expect(req).to have_been_requested
+          flapjack.given("an entity 'www.example.com' with id '1234' exists").
+            upon_receiving("a POST request with one test notification").
+            with(:method => :post, :path => '/test_notifications/entities/1234',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 204,
+              :body => '')
+
+          result = Flapjack::Diner.create_test_notifications_entities('1234', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
 
         it "submits a POST request for several entities" do
-          req = stub_request(:post, "http://#{server}/test_notifications/entities/72,150").
-            with(:body => {:test_notifications => [{:summary => 'testing'}]}.to_json,
-                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
-            to_return(:status => 204)
+          data = [{:summary => 'testing'}]
 
-          result = Flapjack::Diner.create_test_notifications_entities(72, 150, [:summary => 'testing'])
-          expect(req).to have_been_requested
+          flapjack.given("entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist").
+            upon_receiving("a POST request with one test notification").
+            with(:method => :post, :path => '/test_notifications/entities/1234,5678',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 204,
+              :body => '')
+
+          result = Flapjack::Diner.create_test_notifications_entities('1234', '5678', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple notifications on an entity" do
-          data = [{:summary => 'testing'}, {:summary => 'another test'}]
-          req = stub_request(:post, "http://#{server}/test_notifications/entities/72").
-            with(:body => {:test_notifications => data}.to_json,
-                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
-            to_return(:status => 204)
+          data = [{:summary => 'testing'},
+                  {:summary => 'more tests'}]
 
-          result = Flapjack::Diner.create_test_notifications_entities(72, data)
-          expect(req).to have_been_requested
+          flapjack.given("an entity 'www.example.com' with id '1234' exists").
+            upon_receiving("a POST request with two test notifications").
+            with(:method => :post, :path => '/test_notifications/entities/1234',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 204,
+              :body => '')
+
+          result = Flapjack::Diner.create_test_notifications_entities('1234', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple notifications on several entities" do
-          data = [{:summary => 'testing'}, {:summary => 'another test'}]
-          req = stub_request(:post, "http://#{server}/test_notifications/entities/72,150").
-            with(:body => {:test_notifications => data}.to_json,
-                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
-            to_return(:status => 204)
+          data = [{:summary => 'testing'},
+                  {:summary => 'more tests'}]
 
-          result = Flapjack::Diner.create_test_notifications_entities(72, 150, data)
-          expect(req).to have_been_requested
+          flapjack.given("entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist").
+            upon_receiving("a POST request with two test notifications").
+            with(:method => :post, :path => '/test_notifications/entities/1234,5678',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 204,
+              :body => '')
+
+          result = Flapjack::Diner.create_test_notifications_entities('1234', '5678', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
+        end
+
+        it "can't find the entity to create notifications for" do
+          data = [{:summary => 'testing'}]
+
+          flapjack.given("no entity exists").
+            upon_receiving("a POST request with one test notification").
+            with(:method => :post, :path => '/test_notifications/entities/1234',
+                   :headers => {'Content-Type' => 'application/vnd.api+json'},
+                   :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 404,
+              :body => {:errors => ["could not find entity '1234'"]})
+
+          result = Flapjack::Diner.create_test_notifications_entities('1234', data)
+          expect(result).to be_nil
+          expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+            :errors => ["could not find entity '1234'"])
         end
 
       end
@@ -89,52 +115,91 @@ describe Flapjack::Diner do
       context 'test notifications' do
 
         it "submits a POST request for a check" do
-          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com%3ASSH").
-            with(:body => {:test_notifications => [{:summary => 'testing'}]}.to_json,
-                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
-            to_return(:status => 204)
+          data = [{:summary => 'testing'}]
 
-          result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', [{:summary => 'testing'}])
-          expect(req).to have_been_requested
+          flapjack.given("a check 'www.example.com:SSH' exists").
+            upon_receiving("a POST request with one test notification").
+            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 204,
+              :body => '')
+
+          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
 
         it "submits a POST request for several checks" do
-          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com%3ASSH,example2.com%3APING").
-            with(:test_notifications => [{:summary => 'testing'}]).
-            to_return(:status => 204)
+          data = [{:summary => 'testing'}]
 
-          result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', 'example2.com:PING', [{:summary => 'testing'}])
-          expect(req).to have_been_requested
+          flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+            upon_receiving("a POST request with one test notification").
+            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH,www.example.com:PING',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 204,
+              :body => '')
+
+          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', 'www.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple notifications on a check" do
-          data = [{:summary => 'testing'}, {:summary => 'more testing'}]
-          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com%3ASSH").
-            with(:body => {:test_notifications => data}.to_json,
-                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
-            to_return(:status => 204)
+          data = [{:summary => 'testing'},
+                  {:summary => 'more tests'}]
 
-          result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', data)
-          expect(req).to have_been_requested
+          flapjack.given("a check 'www.example.com:SSH' exists").
+            upon_receiving("a POST request with two test notifications").
+            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 204,
+              :body => '')
+
+          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
 
         it "submits a POST request for multiple notifications on several checks" do
-          data = [{:summary => 'testing'}, {:summary => 'more testing'}]
-          req = stub_request(:post, "http://#{server}/test_notifications/checks/example.com%3ASSH,example2.com%3APING").
-            with(:body => {:test_notifications => data}.to_json,
-                 :headers => {'Content-Type'=>'application/vnd.api+json'}).
-            to_return(:status => 204)
+          data = [{:summary => 'testing'},
+                  {:summary => 'more tests'}]
 
-          result = Flapjack::Diner.create_test_notifications_checks('example.com:SSH', 'example2.com:PING', data)
-          expect(req).to have_been_requested
+          flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+            upon_receiving("a POST request with two test notifications").
+            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH,www.example.com:PING',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+            will_respond_with(
+              :status => 204,
+              :body => '')
+
+          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', 'www.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
+        end
+
+        it "can't find the check to create notifications for" do
+          data = [{:summary => 'testing'}]
+
+          flapjack.given("no check exists").
+            upon_receiving("a POST request with one test notification").
+            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:test_notifications => data}).
+          will_respond_with(
+            :status => 404,
+            :body => {:errors => ["could not find entity 'www.example.com'"]})
+
+          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', data)
+          expect(result).to be_nil
+          expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+            :errors => ["could not find entity 'www.example.com'"])
         end
 
       end

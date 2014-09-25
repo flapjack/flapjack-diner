@@ -87,6 +87,24 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
           expect(result).to be_truthy
         end
 
+        it "can't find the entity to create scheduled maintenance for" do
+          data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'}]
+
+          flapjack.given("no entity exists").
+            upon_receiving("a POST request with one scheduled maintenance period").
+            with(:method => :post, :path => '/scheduled_maintenances/entities/1234',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:scheduled_maintenances => data}).
+            will_respond_with(
+              :status => 404,
+              :body => {:errors => ["could not find entity '1234'"]})
+
+          result = Flapjack::Diner.create_scheduled_maintenances_entities('1234', data)
+          expect(result).to be_nil
+          expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+            :errors => ["could not find entity '1234'"])
+        end
+
       end
 
       context 'unscheduled maintenance periods' do
@@ -159,6 +177,25 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
           result = Flapjack::Diner.create_unscheduled_maintenances_entities('1234', '5678', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
+        end
+
+        it "can't find the entity to create unscheduled maintenance for" do
+          data = [{:duration => 3600, :summary => 'working'}]
+
+          flapjack.given("no entity exists").
+            upon_receiving("a POST request with one unscheduled maintenance period").
+            with(:method => :post, :path => '/unscheduled_maintenances/entities/1234',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:unscheduled_maintenances => data}).
+            will_respond_with(
+              :status => 404,
+              :body => {:errors => ["could not find entity '1234'"]})
+
+          result = Flapjack::Diner.create_unscheduled_maintenances_entities('1234', data)
+          expect(result).to be_nil
+          expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+            :errors => ["could not find entity '1234'"])
+
         end
 
       end
@@ -346,6 +383,24 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
           expect(result).to be_truthy
         end
 
+        it "can't find the check to create scheduled maintenance for" do
+          data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'}]
+
+          flapjack.given("no check exists").
+            upon_receiving("a POST request with one scheduled maintenance period").
+            with(:method => :post, :path => '/scheduled_maintenances/checks/www.example.com:SSH',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:scheduled_maintenances => data}).
+          will_respond_with(
+            :status => 404,
+            :body => {:errors => ["could not find entity 'www.example.com'"]})
+
+          result = Flapjack::Diner.create_scheduled_maintenances_checks('www.example.com:SSH', data)
+          expect(result).to be_nil
+          expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+            :errors => ["could not find entity 'www.example.com'"])
+        end
+
       end
 
       context 'unscheduled maintenance periods' do
@@ -418,6 +473,24 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
           result = Flapjack::Diner.create_unscheduled_maintenances_checks('www.example.com:SSH', 'www.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
+        end
+
+        it "can't find the check to create unscheduled maintenance for" do
+          data = [{:duration => 3600, :summary => 'working'}]
+
+          flapjack.given("no check exists").
+            upon_receiving("a POST request with one unscheduled maintenance period").
+            with(:method => :post, :path => '/unscheduled_maintenances/checks/www.example.com:SSH',
+                 :headers => {'Content-Type' => 'application/vnd.api+json'},
+                 :body => {:unscheduled_maintenances => data}).
+          will_respond_with(
+            :status => 404,
+            :body => {:errors => ["could not find entity 'www.example.com'"]})
+
+          result = Flapjack::Diner.create_unscheduled_maintenances_checks('www.example.com:SSH', data)
+          expect(result).to be_nil
+          expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+            :errors => ["could not find entity 'www.example.com'"])
         end
 
       end
