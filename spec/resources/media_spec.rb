@@ -62,7 +62,29 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
       expect(result).to eq(['abc_sms', 'abc_email'])
     end
 
-    it "can't find the contact to create media for"
+    it "can't find the contact to create a medium for" do
+      data = [{
+        :type             => 'sms',
+        :address          => '0123456789',
+        :interval         => 300,
+        :rollup_threshold => 5
+      }]
+
+      flapjack.given("no contact exists").
+        upon_receiving("a POST request with one medium").
+        with(:method => :post, :path => '/contacts/abc/media',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:media => data}).
+        will_respond_with(
+          :status => 422,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["Contact id: 'abc' could not be loaded"]} )
+
+      result = Flapjack::Diner.create_contact_media('abc', data)
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 422,
+        :errors => ["Contact id: 'abc' could not be loaded"])
+    end
 
   end
 
@@ -133,7 +155,20 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
       expect(result).to eq(media_data)
     end
 
-    it "can't find the contact with media to read"
+    it "can't find the contact with media to read" do
+      flapjack.given("no contact exists").
+        upon_receiving("a GET request for sms media").
+        with(:method => :get, :path => '/media/abc_sms').
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find contact 'abc'"]} )
+
+      result = Flapjack::Diner.media('abc_sms')
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find contact 'abc'"])
+    end
 
   end
 
@@ -173,7 +208,22 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
       expect(result).to be_truthy
     end
 
-    it "can't find the contact with media to update"
+    it "can't find the contact with media to update" do
+      flapjack.given("no contact exists").
+        upon_receiving("a PATCH request for email media").
+        with(:method => :patch,
+             :path => '/media/abc_email',
+             :headers => {'Content-Type'=>'application/json-patch+json'},
+             :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50}]).
+        will_respond_with(:status => 404,
+                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+                          :body => {:errors => ["could not find contact 'abc'"]} )
+
+      result = Flapjack::Diner.update_media('abc_email', :interval => 50)
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find contact 'abc'"])
+    end
 
   end
 
@@ -207,7 +257,21 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
       expect(result).to be_truthy
     end
 
-    it "can't find the contact with media to delete"
+    it "can't find the contact with media to delete" do
+      flapjack.given("no contact exists").
+        upon_receiving("a DELETE request for one medium").
+        with(:method => :delete,
+             :path => '/media/abc_email',
+             :body => nil).
+        will_respond_with(:status => 404,
+                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+                          :body => {:errors => ["could not find contact 'abc'"]} )
+
+      result = Flapjack::Diner.delete_media('abc_email')
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find contact 'abc'"])
+    end
 
   end
 
