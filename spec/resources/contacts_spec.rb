@@ -6,7 +6,6 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
-    Flapjack::Diner.return_keys_as_strings = false
   end
 
   context 'create' do

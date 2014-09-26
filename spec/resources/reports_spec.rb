@@ -6,7 +6,6 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
-    Flapjack::Diner.return_keys_as_strings = false
   end
 
   let(:linked_check) { {
@@ -29,7 +28,6 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
       {"#{report_type}s".to_sym => [], :links => links}
     end
   end
-
 
   context 'read' do
 
