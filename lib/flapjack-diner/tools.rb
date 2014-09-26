@@ -13,6 +13,7 @@ module Flapjack
       private
 
       def perform_get(name, path, ids = [], data = [])
+        @last_error = nil
         req_uri = build_uri(path, ids, data)
         logger.info "GET #{req_uri}" if logger
         response = get(req_uri.request_uri)
@@ -28,6 +29,7 @@ module Flapjack
       end
 
       def perform_post(path, ids = [], data = [])
+        @last_error = nil
         req_uri = build_uri(path, ids)
         if logger
           log_post = "POST #{req_uri}"
@@ -40,6 +42,7 @@ module Flapjack
       end
 
       def perform_patch(path, ids = [], data = [])
+        @last_error = nil
         req_uri = build_uri(path, ids)
         if logger
           log_patch = "PATCH #{req_uri}"
@@ -53,6 +56,7 @@ module Flapjack
       end
 
       def perform_delete(path, ids = [], data = [])
+        @last_error = nil
         req_uri = build_uri(path, ids, data)
         logger.info "DELETE #{req_uri}" if logger
         response = delete(req_uri.request_uri)
