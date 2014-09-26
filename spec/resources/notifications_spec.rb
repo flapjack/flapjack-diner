@@ -134,16 +134,16 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
         it "submits a POST request for several checks" do
           data = [{:summary => 'testing'}]
 
-          flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+          flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
             upon_receiving("a POST request with one test notification").
-            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH,www.example.com:PING',
+            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH,www2.example.com:PING',
                  :headers => {'Content-Type' => 'application/vnd.api+json'},
                  :body => {:test_notifications => data}).
             will_respond_with(
               :status => 204,
               :body => '')
 
-          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', 'www.example.com:PING', data)
+          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', 'www2.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
@@ -170,16 +170,16 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
           data = [{:summary => 'testing'},
                   {:summary => 'more tests'}]
 
-          flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+          flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
             upon_receiving("a POST request with two test notifications").
-            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH,www.example.com:PING',
+            with(:method => :post, :path => '/test_notifications/checks/www.example.com:SSH,www2.example.com:PING',
                  :headers => {'Content-Type' => 'application/vnd.api+json'},
                  :body => {:test_notifications => data}).
             will_respond_with(
               :status => 204,
               :body => '')
 
-          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', 'www.example.com:PING', data)
+          result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', 'www2.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end

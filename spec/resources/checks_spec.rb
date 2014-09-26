@@ -13,7 +13,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
     it "submits a POST request for a check" do
       check_data = [{
-        :name       => 'PING',
+        :name       => 'SSH',
         :entity_id  => '1234'
       }]
 
@@ -25,7 +25,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => ['www.example.com:PING'] )
+          :body => ['www.example.com:SSH'] )
 
       result = Flapjack::Diner.create_checks(check_data)
       expect(result).to be_truthy
@@ -37,10 +37,10 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         :entity_id  => '1234'
       }, {
         :name       => 'PING',
-        :entity_id  => '1234'
+        :entity_id  => '5678'
       }]
 
-      flapjack.given("an entity 'www.example.com' with id '1234' exists").
+      flapjack.given("entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist").
         upon_receiving("a POST request with two checks").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -48,7 +48,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => ['www.example.com:SSH', 'www.example.com:PING'] )
+          :body => ['www.example.com:SSH', 'www2.example.com:PING'] )
 
       result = Flapjack::Diner.create_checks(check_data)
       expect(result).to be_truthy

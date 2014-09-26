@@ -333,16 +333,16 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
         it "submits a POST request on several checks" do
           data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'}]
 
-          flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+          flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
             upon_receiving("a POST request with one scheduled maintenance period").
-            with(:method => :post, :path => '/scheduled_maintenances/checks/www.example.com:SSH,www.example.com:PING',
+            with(:method => :post, :path => '/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING',
                  :headers => {'Content-Type' => 'application/vnd.api+json'},
                  :body => {:scheduled_maintenances => data}).
             will_respond_with(
               :status => 204,
               :body => '')
 
-          result = Flapjack::Diner.create_scheduled_maintenances_checks('www.example.com:SSH', 'www.example.com:PING', data)
+          result = Flapjack::Diner.create_scheduled_maintenances_checks('www.example.com:SSH', 'www2.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
@@ -369,16 +369,16 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
           data = [{:start_time => time.iso8601, :duration => 3600, :summary => 'working'},
                   {:start_time => (time + 7200).iso8601, :duration => 3600, :summary => 'more work'}]
 
-          flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+          flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
             upon_receiving("a POST request with two scheduled maintenance periods").
-            with(:method => :post, :path => '/scheduled_maintenances/checks/www.example.com:SSH,www.example.com:PING',
+            with(:method => :post, :path => '/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING',
                  :headers => {'Content-Type' => 'application/vnd.api+json'},
                  :body => {:scheduled_maintenances => data}).
             will_respond_with(
               :status => 204,
               :body => '')
 
-          result = Flapjack::Diner.create_scheduled_maintenances_checks('www.example.com:SSH', 'www.example.com:PING', data)
+          result = Flapjack::Diner.create_scheduled_maintenances_checks('www.example.com:SSH', 'www2.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
@@ -425,16 +425,16 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
         it "submits a POST request on several checks" do
           data = [{:duration => 3600, :summary => 'working'}]
 
-          flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+          flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
             upon_receiving("a POST request with one unscheduled maintenance period").
-            with(:method => :post, :path => '/unscheduled_maintenances/checks/www.example.com:SSH,www.example.com:PING',
+            with(:method => :post, :path => '/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING',
                  :headers => {'Content-Type' => 'application/vnd.api+json'},
                  :body => {:unscheduled_maintenances => data}).
             will_respond_with(
               :status => 204,
               :body => '')
 
-          result = Flapjack::Diner.create_unscheduled_maintenances_checks('www.example.com:SSH', 'www.example.com:PING', data)
+          result = Flapjack::Diner.create_unscheduled_maintenances_checks('www.example.com:SSH', 'www2.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
@@ -461,16 +461,16 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
           data = [{:duration => 3600, :summary => 'working'},
                   {:duration => 3600, :summary => 'more work'}]
 
-          flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+          flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
             upon_receiving("a POST request with two unscheduled maintenance periods").
-            with(:method => :post, :path => '/unscheduled_maintenances/checks/www.example.com:SSH,www.example.com:PING',
+            with(:method => :post, :path => '/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING',
                  :headers => {'Content-Type' => 'application/vnd.api+json'},
                  :body => {:unscheduled_maintenances => data}).
             will_respond_with(
               :status => 204,
               :body => '')
 
-          result = Flapjack::Diner.create_unscheduled_maintenances_checks('www.example.com:SSH', 'www.example.com:PING', data)
+          result = Flapjack::Diner.create_unscheduled_maintenances_checks('www.example.com:SSH', 'www2.example.com:PING', data)
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
@@ -516,17 +516,17 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       end
 
       it "submits a PATCH request for unscheduled maintenances on several checks" do
-        flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+        flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
           upon_receiving("a PATCH request for an unscheduled maintenance period").
           with(:method => :patch,
-               :path => '/unscheduled_maintenances/checks/www.example.com:SSH,www.example.com:PING',
+               :path => '/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING',
                :body => [{:op => 'replace', :path => '/unscheduled_maintenances/0/end_time', :value => time.iso8601}],
                :headers => {'Content-Type'=>'application/json-patch+json'}).
           will_respond_with(
             :status => 204,
             :body => '')
 
-        result = Flapjack::Diner.update_unscheduled_maintenances_checks('www.example.com:SSH', 'www.example.com:PING', :end_time => time)
+        result = Flapjack::Diner.update_unscheduled_maintenances_checks('www.example.com:SSH', 'www2.example.com:PING', :end_time => time)
         expect(result).not_to be_nil
         expect(result).to be_truthy
       end
@@ -568,16 +568,16 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       end
 
       it "submits a DELETE request for scheduled maintenances on several checks" do
-        flapjack.given("checks 'www.example.com:SSH' and 'www.example.com:PING' exist").
+        flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
           upon_receiving("a DELETE request for a scheduled maintenance period").
           with(:method => :delete,
-               :path => '/scheduled_maintenances/checks/www.example.com:SSH,www.example.com:PING',
+               :path => '/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING',
                :query => "start_time=#{URI.encode_www_form_component(time.iso8601)}").
           will_respond_with(
             :status => 204,
             :body => '')
 
-        result = Flapjack::Diner.delete_scheduled_maintenances_checks('www.example.com:SSH', 'www.example.com:PING', :start_time => time.iso8601)
+        result = Flapjack::Diner.delete_scheduled_maintenances_checks('www.example.com:SSH', 'www2.example.com:PING', :start_time => time.iso8601)
         expect(result).not_to be_nil
         expect(result).to be_truthy
       end
