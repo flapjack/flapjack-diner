@@ -39,7 +39,6 @@ describe Flapjack::Diner do
         :timezone   => "Europe/London",
         :tags       => [ "legend", "first computer programmer" ],
         :links      => {
-          :entities           => ["7", "12", "83"],
           :media              => ["21_email", "21_sms"],
           :notification_rules => ["30fd36ae-3922-4957-ae3e-c8f6dd27e543"]
         }
@@ -56,7 +55,7 @@ describe Flapjack::Diner do
       expect(result[0]).to be_an_instance_of(Hash)
       expect(result[0]).to have_key('id')
       expect(result[0]).to have_key('links')
-      expect(result[0]['links']).to have_key('entities')
+      expect(result[0]['links']).to have_key('media')
     end
 
   end
@@ -70,27 +69,27 @@ describe Flapjack::Diner do
     end
 
     it "logs a GET request without a path" do
-      response = response_with_data('entities')
-      req = stub_request(:get, "http://#{server}/entities").
+      response = response_with_data('contacts')
+      req = stub_request(:get, "http://#{server}/contacts").
         to_return(:body => response)
 
-      expect(logger).to receive(:info).with("GET http://#{server}/entities")
+      expect(logger).to receive(:info).with("GET http://#{server}/contacts")
       expect(logger).to receive(:info).with("  Response Code: 200")
       expect(logger).to receive(:info).with("  Response Body: #{response}")
 
-      result = Flapjack::Diner.entities
+      result = Flapjack::Diner.contacts
       expect(req).to have_been_requested
       expect(result).not_to be_nil
     end
 
     it "logs a POST request" do
-      req = stub_request(:post, "http://#{server}/test_notifications/entities/27").
+      req = stub_request(:post, "http://#{server}/test_notifications/checks/27").
               to_return(:status => 204)
-      expect(logger).to receive(:info).with("POST http://#{server}/test_notifications/entities/27\n" +
+      expect(logger).to receive(:info).with("POST http://#{server}/test_notifications/checks/27\n" +
         "  Params: {:test_notifications=>[{:summary=>\"dealing with it\"}]}")
       expect(logger).to receive(:info).with("  Response Code: 204")
 
-      result = Flapjack::Diner.create_test_notifications_entities(27, [{:summary => 'dealing with it'}])
+      result = Flapjack::Diner.create_test_notifications_checks(27, [{:summary => 'dealing with it'}])
       expect(req).to have_been_requested
       expect(result).to be_truthy
     end
@@ -113,20 +112,20 @@ describe Flapjack::Diner do
   context "problems" do
 
     it "raises an exception on network failure" do
-      req = stub_request(:get, "http://#{server}/entities").to_timeout
+      req = stub_request(:get, "http://#{server}/contacts").to_timeout
 
       expect {
-        Flapjack::Diner.entities
+        Flapjack::Diner.contacts
       }.to raise_error
       expect(req).to have_been_requested
     end
 
     it "raises an exception on invalid JSON data" do
-      req = stub_request(:get, "http://#{server}/entities").to_return(
+      req = stub_request(:get, "http://#{server}/contacts").to_return(
         :body => "{")
 
       expect {
-        Flapjack::Diner.entities
+        Flapjack::Diner.contacts
       }.to raise_error
       expect(req).to have_been_requested
     end

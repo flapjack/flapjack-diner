@@ -16,7 +16,7 @@ module Flapjack
           raise "'create_contact_notification_rules' requires at least one contact id parameter" if ids.nil? || ids.empty?
           data.each do |d|
             validate_params(d) do
-              validate :query => [:entities, :regex_entities, :tags, :regex_tags,
+              validate :query => [:tags, :regex_tags,
                 :unknown_media, :warning_media, :critical_media], :as => :array_of_strings
               validate :query => [:unknown_blackhole, :warning_blackhole, :critical_blackhole],
                 :as => :boolean
@@ -33,14 +33,14 @@ module Flapjack
           ids, params, data = unwrap_ids_and_params(*args)
           raise "'update_notification_rules' requires at least one notification rule id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
-            validate :query => [:entities, :regex_entities, :tags, :regex_tags,
+            validate :query => [:tags, :regex_tags,
               :unknown_media, :warning_media, :critical_media], :as => :array_of_strings
             validate :query => [:unknown_blackhole, :warning_blackhole, :critical_blackhole],
               :as => :boolean
           end
           ops = params.inject([]) do |memo, (k,v)|
             case k
-            when :entities, :regex_entities, :tags, :regex_tags,
+            when :tags, :regex_tags,
               :time_restrictions, :unknown_media, :warning_media, :critical_media,
               :unknown_blackhole, :warning_blackhole, :critical_blackhole
 

@@ -13,7 +13,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     it "submits a POST request for a check" do
       check_data = [{
         :name       => 'SSH',
-        :entity_id  => '1234'
+        :id         => 'www.example.com:SSH'
       }]
 
       flapjack.given("an entity 'www.example.com' with id '1234' exists").
@@ -27,16 +27,16 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           :body => ['www.example.com:SSH'] )
 
       result = Flapjack::Diner.create_checks(check_data)
-      expect(result).to be_truthy
+      expect(result).to eq(['www.example.com:SSH'])
     end
 
     it "submits a POST request for several checks" do
       check_data = [{
         :name       => 'SSH',
-        :entity_id  => '1234'
+        :id         => 'www.example.com:SSH'
       }, {
         :name       => 'PING',
-        :entity_id  => '5678'
+        :id         => 'www2.example.com:PING'
       }]
 
       flapjack.given("entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist").
@@ -50,7 +50,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           :body => ['www.example.com:SSH', 'www2.example.com:PING'] )
 
       result = Flapjack::Diner.create_checks(check_data)
-      expect(result).to be_truthy
+      expect(result).to eq(['www.example.com:SSH', 'www2.example.com:PING'])
     end
 
   end

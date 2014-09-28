@@ -14,9 +14,9 @@ module Flapjack
           ids, params, data = unwrap_ids_and_params(*args)
           data.each do |d|
             validate_params(d) do
-              validate :query => :entity_id, :as => [:required, :string]
-              validate :query => :name,      :as => [:required, :string]
-              validate :query => :tags,      :as => :array_of_strings
+              validate :query => :id,     :as => [:required, :string]
+              validate :query => :name,   :as => [:required, :string]
+              validate :query => :tags,   :as => :array_of_strings
             end
           end
           perform_post('/checks', nil, :checks => data)
@@ -39,6 +39,13 @@ module Flapjack
               memo << {:op    => 'replace',
                        :path  => "/checks/0/#{k.to_s}",
                        :value => v}
+            when :add_contact
+              memo << {:op    => 'add',
+                       :path  => '/checks/0/links/contacts/-',
+                       :value => v}
+            when :remove_contact
+              memo << {:op    => 'remove',
+                       :path  => "/checks/0/links/contacts/#{v}"}
             when :add_tag
               memo << {:op    => 'add',
                        :path  => '/checks/0/links/tags/-',

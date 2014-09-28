@@ -36,21 +36,20 @@ module Flapjack
           end
           ops = params.inject([]) do |memo, (k,v)|
             case k
-            when :add_entity
+            when :add_check
               memo << {:op    => 'add',
-                       :path  => '/contacts/0/links/entities/-',
+                       :path  => '/contacts/0/links/checks/-',
                        :value => v}
-            when :remove_entity
+            when :remove_check
               memo << {:op    => 'remove',
-                       :path  => "/contacts/0/links/entities/#{v}"}
-            # # Not supported yet due to id brokenness
-            # when :add_medium
-            #   memo << {:op    => 'add',
-            #            :path  => '/contacts/0/links/media/-',
-            #            :value => v}
-            # when :remove_medium
-            #   memo << {:op    => 'remove',
-            #            :path  => "/contacts/0/links/media/#{v}"}
+                       :path  => "/contacts/0/links/checks/#{v}"}
+            when :add_medium
+              memo << {:op    => 'add',
+                       :path  => '/contacts/0/links/media/-',
+                       :value => v}
+            when :remove_medium
+              memo << {:op    => 'remove',
+                       :path  => "/contacts/0/links/media/#{v}"}
             when :add_notification_rule
               memo << {:op    => 'add',
                        :path  => '/contacts/0/links/notification_rules/-',

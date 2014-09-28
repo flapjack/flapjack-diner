@@ -10,7 +10,7 @@ module Flapjack
     module Resources
       module MaintenancePeriods
 
-        ['entities', 'checks'].each do |data_type|
+        ['checks'].each do |data_type|
 
           define_method("create_scheduled_maintenances_#{data_type}") do |*args|
             ids, params, data = unwrap_ids_and_params(*args)

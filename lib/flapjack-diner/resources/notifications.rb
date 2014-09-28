@@ -10,7 +10,7 @@ module Flapjack
     module Resources
       module Notifications
 
-        ['entities', 'checks'].each do |data_type|
+        ['checks'].each do |data_type|
 
           define_method("create_test_notifications_#{data_type}") do |*args|
             ids, params, data = unwrap_ids_and_params(*args)

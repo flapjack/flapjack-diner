@@ -204,15 +204,15 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
     it "submits a PATCH request to change a link for one contact" do
       flapjack.given("a contact with id '872' exists").
-        upon_receiving("a PATCH requestto change a link for a single contact").
+        upon_receiving("a PATCH request to change a link for a single contact").
         with(:method => :patch,
              :path => '/contacts/872',
-             :body => [{:op => 'add', :path => '/contacts/0/links/entities/-', :value => '1234'}],
+             :body => [{:op => 'add', :path => '/contacts/0/links/checks/-', :value => 'www.example.com:SSH'}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
         will_respond_with(:status => 204,
                           :body => '')
 
-      result = Flapjack::Diner.update_contacts('872', :add_entity => '1234')
+      result = Flapjack::Diner.update_contacts('872', :add_check => 'www.example.com:SSH')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
@@ -222,12 +222,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         upon_receiving("a PATCH request to change links for two contacts").
         with(:method => :patch,
              :path => '/contacts/abc,872',
-             :body => [{:op => 'add', :path => '/contacts/0/links/entities/-', :value => '1234'}],
+             :body => [{:op => 'add', :path => '/contacts/0/links/checks/-', :value => 'www.example.com:SSH'}],
              :headers => {'Content-Type'=>'application/json-patch+json'}).
         will_respond_with(:status => 204,
                           :body => '')
 
-      result = Flapjack::Diner.update_contacts('abc', '872', :add_entity => '1234')
+      result = Flapjack::Diner.update_contacts('abc', '872', :add_check => 'www.example.com:SSH')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end

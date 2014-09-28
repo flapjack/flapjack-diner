@@ -12,7 +12,7 @@ module Flapjack
 
         # 6: Reports
 
-        ['entities', 'checks'].each do |data_type|
+        ['checks'].each do |data_type|
           define_method("status_report_#{data_type}") do |*ids|
             perform_get('status_reports', "/status_report/#{data_type}", ids)
           end
