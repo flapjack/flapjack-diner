@@ -127,7 +127,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
           :body => {:media => media_data} )
 
       result = Flapjack::Diner.media
-      expect(result).to eq(media_data)
+      expect(result).to contain_exactly(*media_data)
     end
 
     it "submits a GET request for one medium" do
