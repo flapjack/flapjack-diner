@@ -93,12 +93,12 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
                  :body => {:test_notifications => data}).
           will_respond_with(
             :status => 404,
-            :body => {:errors => ["could not find entity 'www.example.com'"]})
+            :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]})
 
           result = Flapjack::Diner.create_test_notifications_checks('www.example.com:SSH', data)
           expect(result).to be_nil
           expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-            :errors => ["could not find entity 'www.example.com'"])
+            :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
         end
 
       end

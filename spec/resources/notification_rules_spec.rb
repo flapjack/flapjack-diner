@@ -16,13 +16,11 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
 
     it "submits a POST request for a notification rule" do
       data = [{
-        :entity_tags        => ["database","physical"],
-        :entities           => ["foo-app-01.example.com"],
-        :time_restrictions  => nil,
-        :warning_media      => ["email"],
-        :critical_media     => ["sms", "email"],
-        :warning_blackhole  => false,
-        :critical_blackhole => false
+        :time_restrictions  => [],
+        # :warning_media      => ["email"],
+        # :critical_media     => ["sms", "email"],
+        # :warning_blackhole  => false,
+        # :critical_blackhole => false
       }]
 
       flapjack.given("a contact with id 'abc' exists").
@@ -46,21 +44,17 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
 
     it "submits a POST request for several notification rules" do
       data = [{
-        :entity_tags        => ["database","physical"],
-        :entities           => ["foo-app-01.example.com"],
-        :time_restrictions  => nil,
-        :warning_media      => ["email"],
-        :critical_media     => ["sms", "email"],
-        :warning_blackhole  => false,
-        :critical_blackhole => false
+        :time_restrictions  => [],
+        # :warning_media      => ["email"],
+        # :critical_media     => ["sms", "email"],
+        # :warning_blackhole  => false,
+        # :critical_blackhole => false
       }, {
-        :entity_tags        => nil,
-        :entities           => ["foo-app-02.example.com"],
-        :time_restrictions  => nil,
-        :warning_media      => ["email"],
-        :critical_media     => ["sms", "email"],
-        :warning_blackhole  => true,
-        :critical_blackhole => false
+        :time_restrictions  => [],
+        # :warning_media      => ["email"],
+        # :critical_media     => ["sms", "email"],
+        # :warning_blackhole  => true,
+        # :critical_blackhole => false
       }]
 
       flapjack.given("a contact with id 'abc' exists").
@@ -88,13 +82,11 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
 
     it "can't find the contact to add a notification rule to" do
       data = [{
-        :entity_tags        => ["database","physical"],
-        :entities           => ["foo-app-01.example.com"],
-        :time_restrictions  => nil,
-        :warning_media      => ["email"],
-        :critical_media     => ["sms", "email"],
-        :warning_blackhole  => false,
-        :critical_blackhole => false
+        :time_restrictions  => [],
+        # :warning_media      => ["email"],
+        # :critical_media     => ["sms", "email"],
+        # :warning_blackhole  => false,
+        # :critical_blackhole => false
       }]
 
       flapjack.given("no contact exists").
@@ -103,15 +95,15 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
              :headers => {'Content-Type' => 'application/vnd.api+json'},
              :body => {:notification_rules => data}).
         will_respond_with(
-          :status => 404,
+          :status => 403,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find contact 'abc'"]}
+          :body => {:errors => ["Contact with id 'abc' could not be loaded"]}
         )
 
       result = Flapjack::Diner.create_contact_notification_rules('abc', data)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find contact 'abc'"])
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 403,
+        :errors => ["Contact with id 'abc' could not be loaded"])
     end
 
   end
@@ -120,15 +112,11 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
    it "submits a GET request for all notification rules" do
       data = {
         :id                 => '05983623-fcef-42da-af44-ed6990b500fa',
-        :tags               => [],
-        :regex_tags         => [],
-        :entities           => [],
-        :regex_entities     => [],
         :time_restrictions  => [],
-        :warning_media      => ["email"],
-        :critical_media     => ["sms", "email"],
-        :warning_blackhole  => false,
-        :critical_blackhole => false
+        # :warning_media      => ["email"],
+        # :critical_media     => ["sms", "email"],
+        # :warning_blackhole  => false,
+        # :critical_blackhole => false
       }
 
       flapjack.given("a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' exists").
@@ -147,15 +135,11 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
     it "submits a GET request for one notification rule" do
       data = {
         :id                 => '05983623-fcef-42da-af44-ed6990b500fa',
-        :tags               => [],
-        :regex_tags         => [],
-        :entities           => [],
-        :regex_entities     => [],
         :time_restrictions  => [],
-        :warning_media      => ["email"],
-        :critical_media     => ["sms", "email"],
-        :warning_blackhole  => false,
-        :critical_blackhole => false
+        # :warning_media      => ["email"],
+        # :critical_media     => ["sms", "email"],
+        # :warning_blackhole  => false,
+        # :critical_blackhole => false
       }
 
       flapjack.given("a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' exists").
@@ -174,28 +158,20 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
     it "submits a GET request for several notification rules" do
       data = {
         :id                 => '05983623-fcef-42da-af44-ed6990b500fa',
-        :tags               => [],
-        :regex_tags         => [],
-        :entities           => [],
-        :regex_entities     => [],
         :time_restrictions  => [],
-        :warning_media      => ["email"],
-        :critical_media     => ["sms", "email"],
-        :warning_blackhole  => false,
-        :critical_blackhole => false
+        # :warning_media      => ["email"],
+        # :critical_media     => ["sms", "email"],
+        # :warning_blackhole  => false,
+        # :critical_blackhole => false
       }
 
       data_2 = {
         :id                 => '20f182fc-6e32-4794-9007-97366d162c51',
-        :tags               => ['physical'],
-        :regex_tags         => [],
-        :entities           => ['example.com'],
-        :regex_entities     => [],
         :time_restrictions  => [],
-        :warning_media      => ["email"],
-        :critical_media     => ["sms", "email"],
-        :warning_blackhole  => true,
-        :critical_blackhole => true
+        # :warning_media      => ["email"],
+        # :critical_media     => ["sms", "email"],
+        # :warning_blackhole  => true,
+        # :critical_blackhole => true
       }
 
       flapjack.given("a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' and notification rule '20f182fc-6e32-4794-9007-97366d162c51' exists").
@@ -219,13 +195,13 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find notification rules '05983623-fcef-42da-af44-ed6990b500fa'"]}
+          :body => {:errors => ["could not find NotificationRule records, ids: '05983623-fcef-42da-af44-ed6990b500fa'"]}
         )
 
       result = Flapjack::Diner.notification_rules('05983623-fcef-42da-af44-ed6990b500fa')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find notification rules '05983623-fcef-42da-af44-ed6990b500fa'"])
+        :errors => ["could not find NotificationRule records, ids: '05983623-fcef-42da-af44-ed6990b500fa'"])
     end
 
   end
@@ -276,14 +252,14 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"]}
+          :body => {:errors => ["could not find NotificationRule records, ids: '05983623-fcef-42da-af44-ed6990b500fa'"]}
         )
 
       result = Flapjack::Diner.update_notification_rules('05983623-fcef-42da-af44-ed6990b500fa',
         :warning_blackhole => false)
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"])
+        :errors => ["could not find NotificationRule records, ids: '05983623-fcef-42da-af44-ed6990b500fa'"])
     end
 
   end
@@ -327,13 +303,13 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"]}
+          :body => {:errors => ["could not find NotificationRule records, ids: '05983623-fcef-42da-af44-ed6990b500fa'"]}
         )
 
       result = Flapjack::Diner.delete_notification_rules('05983623-fcef-42da-af44-ed6990b500fa')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"])
+        :errors => ["could not find NotificationRule records, ids: '05983623-fcef-42da-af44-ed6990b500fa'"])
 
     end
   end

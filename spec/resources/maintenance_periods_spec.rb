@@ -96,12 +96,12 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
                  :body => {:scheduled_maintenances => data}).
           will_respond_with(
             :status => 404,
-            :body => {:errors => ["could not find entity 'www.example.com'"]})
+            :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]})
 
           result = Flapjack::Diner.create_scheduled_maintenances_checks('www.example.com:SSH', data)
           expect(result).to be_nil
           expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-            :errors => ["could not find entity 'www.example.com'"])
+            :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
         end
 
       end
@@ -188,12 +188,12 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
                  :body => {:unscheduled_maintenances => data}).
           will_respond_with(
             :status => 404,
-            :body => {:errors => ["could not find entity 'www.example.com'"]})
+            :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]})
 
           result = Flapjack::Diner.create_unscheduled_maintenances_checks('www.example.com:SSH', data)
           expect(result).to be_nil
           expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-            :errors => ["could not find entity 'www.example.com'"])
+            :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
         end
 
       end
@@ -243,12 +243,12 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
                :headers => {'Content-Type'=>'application/json-patch+json'}).
           will_respond_with(
             :status => 404,
-            :body => {:errors => ["could not find entity 'www.example.com'"]})
+            :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]})
 
         result = Flapjack::Diner.update_unscheduled_maintenances_checks('www.example.com:SSH', :end_time => time)
         expect(result).to be_nil
         expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => ["could not find entity 'www.example.com'"])
+          :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
       end
 
     end
@@ -293,12 +293,12 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
                :query => "start_time=#{URI.encode_www_form_component(time.iso8601)}").
           will_respond_with(
             :status => 404,
-            :body => {:errors => ["could not find entity 'www.example.com'"]})
+            :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]})
 
         result = Flapjack::Diner.delete_scheduled_maintenances_checks('www.example.com:SSH', :start_time => time.iso8601)
         expect(result).to be_nil
         expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => ["could not find entity 'www.example.com'"])
+          :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
       end
 
     end

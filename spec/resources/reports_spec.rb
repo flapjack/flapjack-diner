@@ -9,12 +9,10 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
   end
 
   let(:linked_check) { {
-    :entity => ['1234'],
     :check  => ['www.example.com:SSH']
   } }
 
   let(:linked_check_2) { {
-    :entity => ['5678'],
     :check  => ['www2.example.com:PING']
   } }
 

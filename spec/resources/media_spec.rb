@@ -12,6 +12,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
     it "submits a POST request for a medium" do
       data = [{
+        :id               => 'abc_sms',
         :type             => 'sms',
         :address          => '0123456789',
         :interval         => 300,
@@ -35,11 +36,13 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
     it "submits a POST request for several media" do
       data = [{
+        :id               => 'abc_sms',
         :type             => 'sms',
         :address          => '0123456789',
         :interval         => 300,
         :rollup_threshold => 5
       }, {
+        :id               => 'abc_email',
         :type             => 'email',
         :address          => 'ablated@example.org',
         :interval         => 180,
@@ -63,6 +66,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
     it "can't find the contact to create a medium for" do
       data = [{
+        :id               => 'abc_sms',
         :type             => 'sms',
         :address          => '0123456789',
         :interval         => 300,
@@ -75,14 +79,14 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :headers => {'Content-Type' => 'application/vnd.api+json'},
              :body => {:media => data}).
         will_respond_with(
-          :status => 422,
+          :status => 403,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["Contact id: 'abc' could not be loaded"]} )
+          :body => {:errors => ["Contact with id 'abc' could not be loaded"]} )
 
       result = Flapjack::Diner.create_contact_media('abc', data)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 422,
-        :errors => ["Contact id: 'abc' could not be loaded"])
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 403,
+        :errors => ["Contact with id 'abc' could not be loaded"])
     end
 
   end
@@ -91,6 +95,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
     let(:sms_data) {
       {
+        :id               => 'abc_sms',
         :type             => 'sms',
         :address          => '0123456789',
         :interval         => 300,
@@ -100,6 +105,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
     let(:email_data) {
       {
+        :id               => 'abc_email',
         :type             => 'email',
         :address          => 'ablated@example.org',
         :interval         => 180,
@@ -110,7 +116,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     let(:links) { {:links => {:contacts => ['abc']}} }
 
     it "submits a GET request for all media" do
-      media_data = [email_data.merge(links), sms_data.merge(links)]
+      media_data = [sms_data.merge(links), email_data.merge(links)]
 
       flapjack.given("a contact with id 'abc' has email and sms media").
         upon_receiving("a GET request for all media").
@@ -155,18 +161,18 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "can't find the contact with media to read" do
-      flapjack.given("no contact exists").
+      flapjack.given("no media exist").
         upon_receiving("a GET request for sms media").
         with(:method => :get, :path => '/media/abc_sms').
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find contact 'abc'"]} )
+          :body => {:errors => ["could not find Medium records, ids: 'abc_sms'"]} )
 
       result = Flapjack::Diner.media('abc_sms')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find contact 'abc'"])
+        :errors => ["could not find Medium records, ids: 'abc_sms'"])
     end
 
   end
@@ -208,7 +214,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "can't find the contact with media to update" do
-      flapjack.given("no contact exists").
+      flapjack.given("no media exist").
         upon_receiving("a PATCH request for email media").
         with(:method => :patch,
              :path => '/media/abc_email',
@@ -216,12 +222,12 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50}]).
         will_respond_with(:status => 404,
                           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-                          :body => {:errors => ["could not find contact 'abc'"]} )
+                          :body => {:errors => ["could not find Medium records, ids: 'abc_email'"]} )
 
       result = Flapjack::Diner.update_media('abc_email', :interval => 50)
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find contact 'abc'"])
+        :errors => ["could not find Medium records, ids: 'abc_email'"])
     end
 
   end
@@ -257,19 +263,19 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "can't find the contact with media to delete" do
-      flapjack.given("no contact exists").
+      flapjack.given("no media exist").
         upon_receiving("a DELETE request for one medium").
         with(:method => :delete,
              :path => '/media/abc_email',
              :body => nil).
         will_respond_with(:status => 404,
                           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-                          :body => {:errors => ["could not find contact 'abc'"]} )
+                          :body => {:errors => ["could not find Medium records, ids: 'abc_email'"]} )
 
       result = Flapjack::Diner.delete_media('abc_email')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find contact 'abc'"])
+        :errors => ["could not find Medium records, ids: 'abc_email'"])
     end
 
   end

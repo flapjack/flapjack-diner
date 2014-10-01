@@ -16,7 +16,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                        :last_name  => 'Smith',
                        :email      => 'jims@example.com',
                        :timezone   => 'UTC',
-                       :tags       => ['admin', 'night_shift']}]
+                       # :tags       => ['admin', 'night_shift']
+                      }]
 
       flapjack.given("no contact exists").
         upon_receiving("a POST request with one contact").
@@ -39,7 +40,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                        :last_name  => 'Smith',
                        :email      => 'jims@example.com',
                        :timezone   => 'UTC',
-                       :tags       => ['admin', 'night_shift']},
+                       # :tags       => ['admin', 'night_shift']
+                      },
                       {:id         => 'def',
                        :first_name => 'Joan',
                        :last_name  => 'Smith',
@@ -66,7 +68,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                        :last_name  => 'Smith',
                        :email      => 'jims@example.com',
                        :timezone   => 'UTC',
-                       :tags       => ['admin', 'night_shift']}]
+                       # :tags       => ['admin', 'night_shift']
+                      }]
 
       flapjack.given("a contact with id 'abc' exists").
         upon_receiving("a POST request with one contact").
@@ -74,14 +77,14 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
              :headers => {'Content-Type' => 'application/vnd.api+json'},
              :body => {:contacts => contact_data}).
         will_respond_with(
-          :status => 409,
+          :status => 403,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:errors => ["Contacts already exist with the following IDs: abc"]} )
+            :body => {:errors => ["Contacts already exist with the following ids: abc"]} )
 
       result = Flapjack::Diner.create_contacts(contact_data)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 409,
-        :errors => ['Contacts already exist with the following IDs: abc'])
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 403,
+        :errors => ['Contacts already exist with the following ids: abc'])
     end
 
   end
@@ -96,7 +99,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                         :last_name  => 'Smith',
                         :email      => 'jims@example.com',
                         :timezone   => 'UTC',
-                        :tags       => ['admin', 'night_shift']}
+                        # :tags       => ['admin', 'night_shift']
+                       }
 
         flapjack.given("a contact with id 'abc' exists").
           upon_receiving("a GET request for all contacts").
@@ -136,7 +140,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                         :last_name  => 'Smith',
                         :email      => 'jims@example.com',
                         :timezone   => 'UTC',
-                        :tags       => ['admin', 'night_shift']}
+                        # :tags       => ['admin', 'night_shift']
+                       }
 
         flapjack.given("a contact with id 'abc' exists").
           upon_receiving("a GET request for a single contact").
@@ -158,12 +163,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           will_respond_with(
             :status => 404,
             :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:errors => ["could not find contacts 'abc'"]} )
+            :body => {:errors => ["could not find Contact records, ids: 'abc'"]} )
 
         result = Flapjack::Diner.contacts('abc')
         expect(result).to be_nil
         expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => ["could not find contacts 'abc'"])
+          :errors => ["could not find Contact records, ids: 'abc'"])
       end
 
     end
@@ -242,12 +247,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find contacts '323'"]} )
+          :body => {:errors => ["could not find Contact records, ids: '323'"]} )
 
       result = Flapjack::Diner.update_contacts('323', :timezone => 'UTC')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find contacts '323'"])
+        :errors => ["could not find Contact records, ids: '323'"])
     end
 
   end
@@ -290,12 +295,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find contacts 'abc'"]} )
+          :body => {:errors => ["could not find Contact records, ids: 'abc'"]} )
 
       result = Flapjack::Diner.delete_contacts('abc')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find contacts 'abc'"])
+        :errors => ["could not find Contact records, ids: 'abc'"])
     end
   end
 
