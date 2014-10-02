@@ -15,8 +15,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                        :first_name => 'Jim',
                        :last_name  => 'Smith',
                        :email      => 'jims@example.com',
-                       :timezone   => 'UTC',
-                       :tags       => ['admin', 'night_shift']}]
+                       :timezone   => 'UTC' }]
 
       flapjack.given("no contact exists").
         upon_receiving("a POST request with one contact").
@@ -38,8 +37,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                        :first_name => 'Jim',
                        :last_name  => 'Smith',
                        :email      => 'jims@example.com',
-                       :timezone   => 'UTC',
-                       :tags       => ['admin', 'night_shift']},
+                       :timezone   => 'UTC'},
                       {:id         => 'def',
                        :first_name => 'Joan',
                        :last_name  => 'Smith',
@@ -65,8 +63,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                        :first_name => 'Jim',
                        :last_name  => 'Smith',
                        :email      => 'jims@example.com',
-                       :timezone   => 'UTC',
-                       :tags       => ['admin', 'night_shift']}]
+                       :timezone   => 'UTC'}]
 
       flapjack.given("a contact with id 'abc' exists").
         upon_receiving("a POST request with one contact").
@@ -95,8 +92,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                         :first_name => 'Jim',
                         :last_name  => 'Smith',
                         :email      => 'jims@example.com',
-                        :timezone   => 'UTC',
-                        :tags       => ['admin', 'night_shift']}
+                        :timezone   => 'UTC'}
 
         flapjack.given("a contact with id 'abc' exists").
           upon_receiving("a GET request for all contacts").
@@ -135,8 +131,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                         :first_name => 'Jim',
                         :last_name  => 'Smith',
                         :email      => 'jims@example.com',
-                        :timezone   => 'UTC',
-                        :tags       => ['admin', 'night_shift']}
+                        :timezone   => 'UTC'}
 
         flapjack.given("a contact with id 'abc' exists").
           upon_receiving("a GET request for a single contact").
