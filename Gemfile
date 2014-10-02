@@ -7,4 +7,5 @@ group :test do
   gem 'rspec', '>= 3.0'
   gem 'webmock'
   gem 'simplecov', :require => false
+  gem 'pact'
 end

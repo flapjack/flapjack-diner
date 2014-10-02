@@ -14,9 +14,22 @@ end
 
 require 'webmock/rspec'
 
-WebMock.disable_net_connect!
+WebMock.disable_net_connect!(:allow_localhost => true)
+
+require 'pact'
+require 'pact/consumer/rspec'
 
 $:.unshift(File.dirname(__FILE__) + '/../lib')
+
+Pact.service_consumer 'flapjack-diner' do
+
+  has_pact_with "flapjack" do
+    mock_service :flapjack do
+      port 19081
+    end
+  end
+
+end
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
