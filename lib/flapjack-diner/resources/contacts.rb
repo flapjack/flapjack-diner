@@ -58,13 +58,6 @@ module Flapjack
             when :remove_notification_rule
               memo << {:op    => 'remove',
                        :path  => "/contacts/0/links/notification_rules/#{v}"}
-            when :add_tag
-              memo << {:op    => 'add',
-                       :path  => '/contacts/0/links/tags/-',
-                       :value => v}
-            when :remove_tag
-              memo << {:op    => 'remove',
-                       :path  => "/contacts/0/links/tags/#{v}"}
             when :first_name, :last_name, :email, :timezone
               memo << {:op    => 'replace',
                        :path  => "/contacts/0/#{k.to_s}",
