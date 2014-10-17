@@ -16,7 +16,7 @@ module Flapjack
           raise "'create_contact_pagerduty_credentials' requires at least one contact id parameter" if ids.nil? || ids.empty?
           data.each do |d|
             validate_params(d) do
-              validate :query => [:service_key, :subdomain, :username, :password], :as => [:required, :string]
+              validate :query => [:service_key], :as => [:required, :string]
             end
           end
           perform_post("/contacts/#{escaped_ids(ids)}/pagerduty_credentials", nil, :pagerduty_credentials => data)
