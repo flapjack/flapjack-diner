@@ -13,7 +13,7 @@ module Flapjack
         ['entities', 'checks'].each do |data_type|
 
           define_method("create_test_notifications_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
+            ids, data = unwrap_create_ids_and_data(*args)
             raise "'create_test_notifications_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
             data.each do |d|
               validate_params(d) do

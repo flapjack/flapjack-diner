@@ -123,7 +123,32 @@ module Flapjack
         URI.encode_www_form_component(s)
       end
 
-      def unwrap_ids_and_params(*args)
+      def unwrap_create_ids_and_data(*args)
+        ids    = []
+        data   = []
+
+        if args.any? {|a| a.is_a?(Hash) } && args.any? {|a| a.is_a?(Array) }
+          raise "Create data may be passed as a Hash or an Array of Hashes, not both"
+        end
+
+        args.each do |arg|
+          case arg
+          when Array
+            raise "Array arguments may only contain data Hashes" unless arg.all? {|a| a.is_a?(Hash)}
+            data += arg
+          when Hash
+            data = arg
+          when String, Integer
+            ids << arg.to_s
+          else
+            raise "Arguments must be a String/Integer (ids), or Hash/Arrays of Hashes (data)"
+          end
+        end
+
+        [ids, data]
+      end
+
+      def unwrap_ids_params_and_data(*args)
         ids    = []
         params = {}
         data   = []

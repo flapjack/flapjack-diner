@@ -12,7 +12,7 @@ module Flapjack
 
         # 2: Media
         def create_contact_media(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, data = unwrap_create_ids_and_data(*args)
           raise "'create_contact_media' requires at least one contact id parameter" if ids.nil? || ids.empty?
           data.each do |d|
             validate_params(d) do
@@ -28,7 +28,7 @@ module Flapjack
         end
 
         def update_media(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, params, data = unwrap_ids_params_and_data(*args)
           raise "'update_media' requires at least one media id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
             validate :query => :address,                       :as => :string

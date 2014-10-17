@@ -19,7 +19,7 @@ module Flapjack
 
           ['scheduled_maintenance', 'unscheduled_maintenance', 'downtime', 'outage'].each do |report_type|
             define_method("#{report_type}_report_#{data_type}") do |*args|
-              ids, params, data = unwrap_ids_and_params(*args)
+              ids, params, data = unwrap_ids_params_and_data(*args)
               validate_params(params) do
                 validate :query => [:start_time, :end_time], :as => :time
               end
