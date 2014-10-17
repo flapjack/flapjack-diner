@@ -14,7 +14,7 @@ module Flapjack
           ids, params, data = unwrap_ids_and_params(*args)
           data.each do |d|
             validate_params(d) do
-              validate :query => [:first_name, :last_name, :email], :as => [:required, :string]
+              validate :query => :name,       :as => [:required, :string]
               validate :query => :timezone,   :as => :string
               validate :query => :tags,       :as => :array_of_strings
             end

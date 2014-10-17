@@ -12,11 +12,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
     it "submits a POST request for a contact" do
       contact_data = [{:id         => 'abc',
-                       :first_name => 'Jim',
-                       :last_name  => 'Smith',
-                       :email      => 'jims@example.com',
+                       :name       => 'Jim Smith',
                        :timezone   => 'UTC',
-                       # :tags       => ['admin', 'night_shift']
                       }]
 
       flapjack.given("no contact exists").
@@ -36,16 +33,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
     it "submits a POST request for several contacts" do
       contact_data = [{:id         => 'abc',
-                       :first_name => 'Jim',
-                       :last_name  => 'Smith',
-                       :email      => 'jims@example.com',
+                       :name       => 'Jim Smith',
                        :timezone   => 'UTC',
                        # :tags       => ['admin', 'night_shift']
                       },
                       {:id         => 'def',
-                       :first_name => 'Joan',
-                       :last_name  => 'Smith',
-                       :email      => 'joans@example.com'}]
+                       :name       => 'Joan Smith'}]
 
       flapjack.given("no contact exists").
         upon_receiving("a POST request with two contacts").
@@ -64,9 +57,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
     it "submits a POST request but a contact with that id exists" do
       contact_data = [{:id         => 'abc',
-                       :first_name => 'Jim',
-                       :last_name  => 'Smith',
-                       :email      => 'jims@example.com',
+                       :name       => 'Jim Smith',
                        :timezone   => 'UTC',
                        # :tags       => ['admin', 'night_shift']
                       }]
@@ -95,9 +86,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
       it "has some data" do
         contact_data = {:id         => 'abc',
-                        :first_name => 'Jim',
-                        :last_name  => 'Smith',
-                        :email      => 'jims@example.com',
+                        :name       => 'Jim Smith',
                         :timezone   => 'UTC',
                         # :tags       => ['admin', 'night_shift']
                        }
@@ -136,9 +125,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
       it "finds the contact" do
         contact_data = {:id         => 'abc',
-                        :first_name => 'Jim',
-                        :last_name  => 'Smith',
-                        :email      => 'jims@example.com',
+                        :name       => 'Jim Smith',
                         :timezone   => 'UTC',
                         # :tags       => ['admin', 'night_shift']
                        }

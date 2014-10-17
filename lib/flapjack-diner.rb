@@ -4,8 +4,8 @@ require 'json'
 require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
 
-['contacts', 'media', 'pagerduty_credentials', 'notification_rules',
- 'checks', 'maintenance_periods', 'notifications', 'reports'].each do |resource|
+['contacts', 'media', 'pagerduty_credentials', 'checks', 'maintenance_periods',
+ 'notifications', 'reports', 'rules'].each do |resource|
 
   require "flapjack-diner/resources/#{resource}"
 end
@@ -28,11 +28,11 @@ module Flapjack
       include Flapjack::Diner::Resources::Contacts
       include Flapjack::Diner::Resources::Media
       include Flapjack::Diner::Resources::PagerdutyCredentials
-      include Flapjack::Diner::Resources::NotificationRules
       include Flapjack::Diner::Resources::Checks
       include Flapjack::Diner::Resources::MaintenancePeriods
       include Flapjack::Diner::Resources::Notifications
       include Flapjack::Diner::Resources::Reports
+      include Flapjack::Diner::Resources::Rules
 
       include Flapjack::Diner::Tools
     end
