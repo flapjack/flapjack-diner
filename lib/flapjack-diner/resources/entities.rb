@@ -9,15 +9,12 @@ module Flapjack
   module Diner
     module Resources
       module Entities
-
         def create_entities(*args)
-          ids, data = unwrap_create_ids_and_data(*args)
-          data.each do |d|
-            validate_params(d) do
-              validate :query => :id,   :as => [:required, :string]
-              validate :query => :name, :as => :string
-              validate :query => :tags, :as => :array_of_strings
-            end
+          data = unwrap_create_data(*args)
+          validate_params(data) do
+            validate :query => :id,   :as => [:required, :string]
+            validate :query => :name, :as => :string
+            validate :query => :tags, :as => :array_of_strings
           end
           perform_post('/entities', nil, :entities => data)
         end
@@ -27,46 +24,45 @@ module Flapjack
         end
 
         def entities_matching(name_re)
-          raise "Must be a regexp: #{name_re.inspect}" unless name_re.is_a?(Regexp)
-          self.entities.select {|e| name_re === e[:name] }
+          raise "Must be a regexp: #{name_re.inspect}" unless
+            name_re.is_a?(Regexp)
+          entities.reject {|e| name_re.match(e[:name]).nil? }
         end
 
         def update_entities(*args)
-          ids, params, data = unwrap_ids_params_and_data(*args)
-          raise "'update_entities' requires at least one entity id parameter" if ids.nil? || ids.empty?
+          ids, params = unwrap_ids(*args), unwrap_params(*args)
+          raise "'update_entities' requires at least one entity id " \
+                ' parameter' if ids.nil? || ids.empty?
           validate_params(params) do
             validate :query => :name, :as => :string
             validate :query => :tags, :as => :array_of_strings
           end
-          ops = params.inject([]) do |memo, (k,v)|
-            case k
-            when :name
-              memo << {:op    => 'replace',
-                       :path  => "/entities/0/#{k.to_s}",
-                       :value => v}
-            when :add_contact
-              memo << {:op    => 'add',
-                       :path  => '/entities/0/links/contacts/-',
-                       :value => v}
-            when :remove_contact
-              memo << {:op    => 'remove',
-                       :path  => "/entities/0/links/contacts/#{v}"}
-            when :add_tag
-              memo << {:op    => 'add',
-                       :path  => '/entities/0/links/tags/-',
-                       :value => v}
-            when :remove_tag
-              memo << {:op    => 'remove',
-                       :path  => "/entities/0/links/tags/#{v}"}
-            end
-            memo
-          end
-          raise "'update_entities' did not find any valid update fields" if ops.empty?
-          perform_patch("/entities/#{escaped_ids(ids)}", nil, ops)
+          perform_patch("/entities/#{escaped_ids(ids)}", nil,
+                        update_entities_ops(params))
         end
 
-      end
+        private
 
+        def update_entities_ops(params)
+          ops = params.each_with_object([]) do |(k, v), memo|
+            case k
+            when :name
+              memo << patch_replace('entities', k, v)
+            when :add_contact
+              memo << patch_add('entities', 'contacts', v)
+            when :remove_contact
+              memo << patch_remove('entities', 'contacts', v)
+            when :add_tag
+              memo << patch_add('entities', 'tags', v)
+            when :remove_tag
+              memo << patch_remove('entities', 'tags', v)
+           end
+          end
+          raise "'update_entities' did not find any valid update " \
+                'fields' if ops.empty?
+          ops
+        end
+      end
     end
   end
 end
