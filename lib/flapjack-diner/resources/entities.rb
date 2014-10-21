@@ -10,9 +10,8 @@ module Flapjack
     module Resources
       module Entities
 
-        # 4: Entities & 5: Checks
         def create_entities(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, data = unwrap_create_ids_and_data(*args)
           data.each do |d|
             validate_params(d) do
               validate :query => :id,   :as => [:required, :string]
@@ -33,7 +32,7 @@ module Flapjack
         end
 
         def update_entities(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, params, data = unwrap_ids_params_and_data(*args)
           raise "'update_entities' requires at least one entity id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
             validate :query => :name, :as => :string

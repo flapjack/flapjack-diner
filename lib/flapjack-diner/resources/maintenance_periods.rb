@@ -13,7 +13,7 @@ module Flapjack
         ['entities', 'checks'].each do |data_type|
 
           define_method("create_scheduled_maintenances_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
+            ids, data = unwrap_create_ids_and_data(*args)
             raise "'create_scheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
             data.each do |d|
               validate_params(d) do
@@ -27,7 +27,7 @@ module Flapjack
           end
 
           define_method("create_unscheduled_maintenances_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
+            ids, data = unwrap_create_ids_and_data(*args)
             raise "'create_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
             data.each do |d|
               validate_params(d) do
@@ -40,7 +40,7 @@ module Flapjack
           end
 
           define_method("update_unscheduled_maintenances_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
+            ids, params, data = unwrap_ids_params_and_data(*args)
             raise "'update_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
             validate_params(params) do
               validate :query => :end_time, :as => :time
@@ -59,7 +59,7 @@ module Flapjack
           end
 
           define_method("delete_scheduled_maintenances_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
+            ids, params, data = unwrap_ids_params_and_data(*args)
             raise "'delete_scheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
             validate_params(params) do
               validate :query => :start_time, :as => [:required, :time]

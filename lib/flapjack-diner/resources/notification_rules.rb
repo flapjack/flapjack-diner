@@ -12,7 +12,7 @@ module Flapjack
 
         # 3: Notification Rules
         def create_contact_notification_rules(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, data = unwrap_create_ids_and_data(*args)
           raise "'create_contact_notification_rules' requires at least one contact id parameter" if ids.nil? || ids.empty?
           data.each do |d|
             validate_params(d) do
@@ -30,7 +30,7 @@ module Flapjack
         end
 
         def update_notification_rules(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, params, data = unwrap_ids_params_and_data(*args)
           raise "'update_notification_rules' requires at least one notification rule id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
             validate :query => [:entities, :regex_entities, :tags, :regex_tags,

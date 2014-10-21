@@ -12,11 +12,11 @@ module Flapjack
 
         # 2a: Pagerduty credentials
         def create_contact_pagerduty_credentials(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, data = unwrap_create_ids_and_data(*args)
           raise "'create_contact_pagerduty_credentials' requires at least one contact id parameter" if ids.nil? || ids.empty?
           data.each do |d|
             validate_params(d) do
-              validate :query => [:service_key, :subdomain, :username, :password], :as => [:required, :string]
+              validate :query => [:service_key], :as => [:required, :string]
             end
           end
           perform_post("/contacts/#{escaped_ids(ids)}/pagerduty_credentials", nil, :pagerduty_credentials => data)
@@ -27,7 +27,7 @@ module Flapjack
         end
 
         def update_pagerduty_credentials(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, params, data = unwrap_ids_params_and_data(*args)
           raise "'update_pagerduty_credentials' requires at least one pagerduty_credentials id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
             validate :query => [:service_key, :subdomain, :username, :password], :as => :string

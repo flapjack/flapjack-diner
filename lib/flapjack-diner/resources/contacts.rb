@@ -11,7 +11,7 @@ module Flapjack
       module Contacts
 
         def create_contacts(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, data = unwrap_create_ids_and_data(*args)
           data.each do |d|
             validate_params(d) do
               validate :query => [:first_name, :last_name, :email], :as => [:required, :string]
@@ -27,7 +27,7 @@ module Flapjack
         end
 
         def update_contacts(*args)
-          ids, params, data = unwrap_ids_and_params(*args)
+          ids, params, data = unwrap_ids_params_and_data(*args)
           raise "'update_contacts' requires at least one contact id parameter" if ids.nil? || ids.empty?
           validate_params(params) do
               validate :query => [:first_name, :last_name,
@@ -43,14 +43,6 @@ module Flapjack
             when :remove_entity
               memo << {:op    => 'remove',
                        :path  => "/contacts/0/links/entities/#{v}"}
-            # # Not supported yet due to id brokenness
-            # when :add_medium
-            #   memo << {:op    => 'add',
-            #            :path  => '/contacts/0/links/media/-',
-            #            :value => v}
-            # when :remove_medium
-            #   memo << {:op    => 'remove',
-            #            :path  => "/contacts/0/links/media/#{v}"}
             when :add_notification_rule
               memo << {:op    => 'add',
                        :path  => '/contacts/0/links/notification_rules/-',
