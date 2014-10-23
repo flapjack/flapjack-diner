@@ -4,9 +4,8 @@ require 'json'
 require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
 
-['contacts', 'media', 'pagerduty_credentials', 'notification_rules',
- 'entities', 'checks', 'maintenance_periods', 'notifications',
- 'reports'].each do |resource|
+%w(contacts media pagerduty_credentials notification_rules entities checks
+   maintenance_periods notifications reports).each do |resource|
 
   require "flapjack-diner/resources/#{resource}"
 end
@@ -17,8 +16,8 @@ require 'flapjack-diner/tools'
 # e.g., network failures or non-parseable JSON data.
 
 module Flapjack
+  # Top level module for Flapjack::Diner API consumer.
   module Diner
-
     include HTTParty
 
     format :json

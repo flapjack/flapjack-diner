@@ -9,15 +9,13 @@ module Flapjack
   module Diner
     module Resources
       module Contacts
-
         def create_contacts(*args)
-          ids, data = unwrap_create_ids_and_data(*args)
-          data.each do |d|
-            validate_params(d) do
-              validate :query => [:first_name, :last_name, :email], :as => [:required, :string]
-              validate :query => :timezone,   :as => :string
-              validate :query => :tags,       :as => :array_of_strings
-            end
+          data = unwrap_create_data(*args)
+          validate_params(data) do
+            validate :query => [:first_name, :last_name, :email],
+                     :as => [:required, :string]
+            validate :query => :timezone,   :as => :string
+            validate :query => :tags,       :as => :array_of_strings
           end
           perform_post('/contacts', nil, :contacts => data)
         end
@@ -27,47 +25,46 @@ module Flapjack
         end
 
         def update_contacts(*args)
-          ids, params, data = unwrap_ids_params_and_data(*args)
-          raise "'update_contacts' requires at least one contact id parameter" if ids.nil? || ids.empty?
+          ids, params = unwrap_ids(*args), unwrap_params(*args)
+          raise "'update_contacts' requires at least one contact id " \
+                'parameter' if ids.nil? || ids.empty?
           validate_params(params) do
-              validate :query => [:first_name, :last_name,
-                                  :email, :timezone], :as => :string
-              validate :query => :tags,       :as => :array_of_strings
+            validate :query => [:first_name, :last_name,
+                                :email, :timezone], :as => :string
+            validate :query => :tags,       :as => :array_of_strings
           end
-          ops = params.inject([]) do |memo, (k,v)|
-            case k
-            when :add_entity
-              memo << {:op    => 'add',
-                       :path  => '/contacts/0/links/entities/-',
-                       :value => v}
-            when :remove_entity
-              memo << {:op    => 'remove',
-                       :path  => "/contacts/0/links/entities/#{v}"}
-            when :add_notification_rule
-              memo << {:op    => 'add',
-                       :path  => '/contacts/0/links/notification_rules/-',
-                       :value => v}
-            when :remove_notification_rule
-              memo << {:op    => 'remove',
-                       :path  => "/contacts/0/links/notification_rules/#{v}"}
-            when :first_name, :last_name, :email, :timezone
-              memo << {:op    => 'replace',
-                       :path  => "/contacts/0/#{k.to_s}",
-                       :value => v}
-            end
-            memo
-          end
-          raise "'update_contacts' did not find any valid update fields" if ops.empty?
-          perform_patch("/contacts/#{escaped_ids(ids)}", nil, ops)
+          perform_patch("/contacts/#{escaped_ids(ids)}", nil,
+                        update_contacts_ops(params))
         end
 
         def delete_contacts(*ids)
-          raise "'delete_contacts' requires at least one contact id parameter" if ids.nil? || ids.empty?
+          raise "'delete_contacts' requires at least one contact id " \
+                'parameter' if ids.nil? || ids.empty?
           perform_delete('/contacts', ids)
         end
 
-      end
+        private
 
+        def update_contacts_ops(params)
+          ops = params.each_with_object([]) do |(k, v), memo|
+            case k
+            when :add_entity
+              memo << patch_add('contacts', 'entities', v)
+            when :remove_entity
+              memo << patch_remove('contacts', 'entities', v)
+            when :add_notification_rule
+              memo << patch_add('contacts', 'notification_rules', v)
+            when :remove_notification_rule
+              memo << patch_remove('contacts', 'notification_rules', v)
+            when :first_name, :last_name, :email, :timezone
+              memo << patch_replace('contacts', k, v)
+            end
+          end
+          raise "'update_contacts' did not find any valid update " \
+                'fields' if ops.empty?
+          ops
+        end
+      end
     end
   end
 end

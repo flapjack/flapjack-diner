@@ -9,15 +9,12 @@ module Flapjack
   module Diner
     module Resources
       module Checks
-
         def create_checks(*args)
-          ids, data = unwrap_create_ids_and_data(*args)
-          data.each do |d|
-            validate_params(d) do
-              validate :query => :entity_id, :as => [:required, :string]
-              validate :query => :name,      :as => [:required, :string]
-              validate :query => :tags,      :as => :array_of_strings
-            end
+          data = unwrap_create_data(*args)
+          validate_params(data) do
+            validate :query => :entity_id, :as => [:required, :string]
+            validate :query => :name,      :as => [:required, :string]
+            validate :query => :tags,      :as => :array_of_strings
           end
           perform_post('/checks', nil, :checks => data)
         end
@@ -27,34 +24,35 @@ module Flapjack
         end
 
         def update_checks(*args)
-          ids, params, data = unwrap_ids_params_and_data(*args)
-          raise "'update_checks' requires at least one check id parameter" if ids.nil? || ids.empty?
+          ids, params = unwrap_ids(*args), unwrap_params(*args)
+          raise "'update_checks' requires at least one check id " \
+                'parameter' if ids.nil? || ids.empty?
           validate_params(params) do
             validate :query => :enabled, :as => :boolean
             validate :query => :tags,    :as => :array_of_strings
           end
-          ops = params.inject([]) do |memo, (k,v)|
-            case k
-            when :enabled
-              memo << {:op    => 'replace',
-                       :path  => "/checks/0/#{k.to_s}",
-                       :value => v}
-            when :add_tag
-              memo << {:op    => 'add',
-                       :path  => '/checks/0/links/tags/-',
-                       :value => v}
-            when :remove_tag
-              memo << {:op    => 'remove',
-                       :path  => "/checks/0/links/tags/#{v}"}
-            end
-            memo
-          end
-          raise "'update_checks' did not find any valid update fields" if ops.empty?
-          perform_patch("/checks/#{escaped_ids(ids)}", nil, ops)
+          perform_patch("/checks/#{escaped_ids(ids)}", nil,
+                        update_checks_ops(params))
         end
 
-      end
+        private
 
+        def update_checks_ops(params)
+          ops = params.each_with_object([]) do |(k, v), memo|
+            case k
+            when :enabled
+              memo << patch_replace('checks', k, v)
+            when :add_tag
+              memo << patch_add('checks', 'tags', v)
+            when :remove_tag
+              memo << patch_remove('checks', 'tags', v)
+            end
+          end
+          raise "'update_checks' did not find any valid update " \
+                'fields' if ops.empty?
+          ops
+        end
+      end
     end
   end
 end

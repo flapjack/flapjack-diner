@@ -1,0 +1,17 @@
+inherit_from: .rubocop_todo.yml
+
+# doesn't handle multi-file state
+Documentation:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedStyle: hash_rockets
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+Style/SpaceInsideBlockBraces:
+  SpaceBeforeBlockParameters: false
+
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
