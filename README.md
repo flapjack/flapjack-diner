@@ -36,6 +36,16 @@ Optionally, set a logger to log requests & responses:
 Flapjack::Diner.logger = Logger.new('logs/flapjack_diner.log')
 ```
 
+If you want to alter timeout periods for HTTP connection open and reading responses:
+
+```ruby
+# Set HTTP connect timeout to 30 seconds
+Flapjack::Diner.open_timeout(30)
+
+# Set HTTP read timeout to 5 minutes
+Flapjack::Diner.read_timeout(300)
+```
+
 If you want the old behaviour wrt returning hashes with keys as strings (they're now symbols by default) then:
 
 ```ruby
