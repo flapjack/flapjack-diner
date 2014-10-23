@@ -1,5 +1,9 @@
 inherit_from: .rubocop_todo.yml
 
+AllCops:
+  Exclude:
+    - 'lib/flapjack-diner.rb'
+
 # doesn't handle multi-file state
 Documentation:
   Enabled: false

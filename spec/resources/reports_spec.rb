@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'flapjack_diner'
+require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Reports, :pact => true do
 
