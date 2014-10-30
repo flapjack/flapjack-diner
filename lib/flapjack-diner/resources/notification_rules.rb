@@ -49,10 +49,11 @@ module Flapjack
                           :unknown_media, :warning_media, :critical_media]
         BOOLEAN_PARAMS = [:unknown_blackhole, :warning_blackhole,
                           :critical_blackhole]
+        OTHER_PARAMS   = [:time_restrictions]
 
         def update_notification_rules_ops(params)
           ops = params.each_with_object([]) do |(k, v), memo|
-            next unless (STRING_PARAMS + BOOLEAN_PARAMS).include?(k)
+            next unless (STRING_PARAMS + BOOLEAN_PARAMS + OTHER_PARAMS).include?(k)
             memo << patch_replace('notification_rules', k, v)
           end
           raise "'update_notification_rules' did not find any valid update " \
