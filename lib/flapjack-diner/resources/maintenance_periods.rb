@@ -10,67 +10,74 @@ module Flapjack
     module Resources
       module MaintenancePeriods
 
-        ['checks'].each do |data_type|
-
-          define_method("create_scheduled_maintenances_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
-            raise "'create_scheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
-            data.each do |d|
-              validate_params(d) do
-                validate :query => :start_time, :as => [:required, :time]
-                validate :query => :duration,   :as => [:required, :integer]
-                validate :query => :summary,    :as => :string
-              end
-            end
-            perform_post("/scheduled_maintenances/#{data_type}", ids,
-              :scheduled_maintenances => data)
+        def create_scheduled_maintenances_checks(*args)
+          ids, data = unwrap_ids(*args), unwrap_create_data(*args)
+          if ids.nil? || ids.empty?
+            raise "'create_scheduled_maintenances_checks' requires " \
+                  "at least one check id parameter"
           end
-
-          define_method("create_unscheduled_maintenances_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
-            raise "'create_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
-            data.each do |d|
-              validate_params(d) do
-                validate :query => :duration,   :as => [:required, :integer]
-                validate :query => :summary,    :as => :string
-              end
-            end
-            perform_post("/unscheduled_maintenances/#{data_type}", ids,
-              :unscheduled_maintenances => data)
+          validate_params(data) do
+            validate :query => :id, :as => :string
+            validate :query => :start_time, :as => [:required, :time]
+            validate :query => :duration,   :as => [:required, :integer]
+            validate :query => :summary,    :as => :string
           end
-
-          define_method("update_unscheduled_maintenances_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
-            raise "'update_unscheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
-            validate_params(params) do
-              validate :query => :end_time, :as => :time
-            end
-            ops = params.inject([]) do |memo, (k,v)|
-              case k
-              when :end_time
-                memo << {:op    => 'replace',
-                         :path  => "/unscheduled_maintenances/0/#{k.to_s}",
-                         :value => v}
-              end
-              memo
-            end
-            raise "'update_unscheduled_maintenances_#{data_type}' did not find any valid update fields" if ops.empty?
-            perform_patch("/unscheduled_maintenances/#{data_type}", ids, ops)
-          end
-
-          define_method("delete_scheduled_maintenances_#{data_type}") do |*args|
-            ids, params, data = unwrap_ids_and_params(*args)
-            raise "'delete_scheduled_maintenances_#{data_type}' requires at least one #{data_type} id parameter" if ids.nil? || ids.empty?
-            validate_params(params) do
-              validate :query => :start_time, :as => [:required, :time]
-            end
-            perform_delete("/scheduled_maintenances/#{data_type}", ids, params)
-          end
-
+          perform_post("/scheduled_maintenances/checks", ids,
+                       :scheduled_maintenances => data)
         end
 
-      end
+        def create_unscheduled_maintenances_checks(*args)
+          ids, data = unwrap_ids(*args), unwrap_create_data(*args)
+          if ids.nil? || ids.empty?
+            raise "'create_unscheduled_maintenances_checks' requires " \
+                  "at least one check id parameter"
+          end
+          validate_params(data) do
+            validate :query => :id, :as => :string
+            validate :query => :duration,   :as => [:required, :integer]
+            validate :query => :summary,    :as => :string
+          end
+          perform_post("/unscheduled_maintenances/checks", ids,
+                       :unscheduled_maintenances => data)
+        end
 
+        def update_unscheduled_maintenances_checks(*args)
+          ids, params = unwrap_ids(*args), unwrap_params(*args)
+          if ids.nil? || ids.empty?
+            raise "'update_unscheduled_maintenances_checks' requires " \
+                  "at least one unscheduled maintenance id parameter"
+          end
+          validate_params(params) do
+            validate :query => :end_time, :as => :time
+          end
+          ops = update_unscheduled_maintenances_checks_ops(params)
+          perform_patch("/unscheduled_maintenances/checks", ids, ops)
+        end
+
+        def delete_scheduled_maintenances_checks(*args)
+          ids, params = unwrap_ids(*args), unwrap_params(*args)
+          if ids.nil? || ids.empty?
+            raise "'delete_scheduled_maintenances_checks' requires " \
+                  "at least one scheduled maintenance id parameter"
+          end
+          validate_params(params) do
+            validate :query => :start_time, :as => [:required, :time]
+          end
+          perform_delete("/scheduled_maintenances/checks", ids, params)
+        end
+
+        private
+
+        def update_unscheduled_maintenances_checks_ops(params)
+          ops = params.each_with_object([]) do |(k, v), memo|
+            next unless :end_time.eql?(k)
+            memo << patch_replace('unscheduled_maintenances', k, v)
+          end
+          raise "'update_unscheduled_maintenances_checks' did not " \
+                'find any valid update fields' if ops.empty?
+          ops
+        end
+      end
     end
   end
 end

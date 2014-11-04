@@ -20,7 +20,11 @@ describe Flapjack::Diner do
     WebMock.reset!
   end
 
-  context "keys as strings" do
+  context 'argument parsing' do
+
+  end
+
+  context 'keys as strings' do
 
     before do
       Flapjack::Diner.return_keys_as_strings = true
@@ -30,17 +34,17 @@ describe Flapjack::Diner do
       Flapjack::Diner.return_keys_as_strings = false
     end
 
-    it "can return keys as strings" do
+    it 'can return keys as strings' do
       data = [{
-        :id         => "21",
-        :first_name => "Ada",
-        :last_name  => "Lovelace",
-        :email      => "ada@example.com",
-        :timezone   => "Europe/London",
-        :tags       => [ "legend", "first computer programmer" ],
+        :id         => '21',
+        :first_name => 'Ada',
+        :last_name  => 'Lovelace',
+        :email      => 'ada@example.com',
+        :timezone   => 'Europe/London',
+        :tags       => [ 'legend', 'first computer programmer' ],
         :links      => {
-          :media              => ["21_email", "21_sms"],
-          :notification_rules => ["30fd36ae-3922-4957-ae3e-c8f6dd27e543"]
+          :media              => ['21_email', '21_sms'],
+          :notification_rules => ['30fd36ae-3922-4957-ae3e-c8f6dd27e543']
         }
       }]
 
@@ -60,7 +64,7 @@ describe Flapjack::Diner do
 
   end
 
-  context "logging" do
+  context 'logging' do
 
     let(:logger) { double('logger') }
 
@@ -86,7 +90,7 @@ describe Flapjack::Diner do
       req = stub_request(:post, "http://#{server}/test_notifications/checks/27").
               to_return(:status => 204)
       expect(logger).to receive(:info).with("POST http://#{server}/test_notifications/checks/27\n" +
-        "  Params: {:test_notifications=>[{:summary=>\"dealing with it\"}]}")
+        "  Body: {:test_notifications=>[{:summary=>\"dealing with it\"}]}")
       expect(logger).to receive(:info).with("  Response Code: 204")
 
       result = Flapjack::Diner.create_test_notifications_checks(27, [{:summary => 'dealing with it'}])

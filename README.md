@@ -36,6 +36,16 @@ Optionally, set a logger to log requests & responses:
 Flapjack::Diner.logger = Logger.new('logs/flapjack_diner.log')
 ```
 
+If you want to alter timeout periods for HTTP connection open and reading responses:
+
+```ruby
+# Set HTTP connect timeout to 30 seconds
+Flapjack::Diner.open_timeout(30)
+
+# Set HTTP read timeout to 5 minutes
+Flapjack::Diner.read_timeout(300)
+```
+
 If you want the old behaviour wrt returning hashes with keys as strings (they're now symbols by default) then:
 
 ```ruby
@@ -52,7 +62,7 @@ Parameters for all of **flapjack-diner**'s functions are organised into three ca
 
 While these can be passed in in any order, the convention is that they will be ordered as listed above.
 
-If any operation fails, `Flapjack::Diner.last_error` will contain an error message regarding the failure.
+If any operation fails (returning nil), `Flapjack::Diner.last_error` will contain an error message regarding the failure.
 
 ### Contacts
 
@@ -126,7 +136,7 @@ CONTACT
 }
 ```
 
-Returns true if creation succeeded or false if creation failed.
+Returns an array of contact ids if creation succeeded, or false if creation failed.
 
 <a name="contacts">&nbsp;</a>
 #### contacts
@@ -161,11 +171,10 @@ as well as the linkage operations
 `:add_check`, `:remove_check`
 `:add_medium`, `:remove_medium`
 `:add_notification_rule`, `:remove_notification_rule`
-`:add_tag`, `:remove_tag`
 
 which take the id of the relevant resource as the value.
 
-Returns true if updating succeeded or false if updating failed.
+Returns true if updating succeeded, false if updating failed.
 
 <a name="delete_contacts">&nbsp;</a>
 #### delete_contacts
@@ -203,12 +212,12 @@ MEDIUM
 }
 ```
 
-Returns true if creation succeeded or false if creation failed.
+Returns an array of media ids if creation succeeded, or false if creation failed. (Ids cannot be passed in for media records in Flapjack v1.x.)
 
 <a name="media">&nbsp;</a>
 #### media
 
-Return data for one, some or all notification media. Notification media ids are formed by compounding their linked contact's ID and their type in a string (e.g. '23_sms')
+Return data for one, some or all notification media. Notification media ids are formed by compounding their linked contact's ID and their type in a string (e.g. '23_sms').
 
 ```ruby
 medium = Flapjack::Diner.media(ID)
@@ -253,7 +262,7 @@ Returns true if deletion succeeded or false if deletion failed.
 ---
 
 <a name="create_contact_pagerduty_credentials">&nbsp;</a>
-#### create_contact_media
+#### create_contact_pagerduty_credentials
 
 Create pagerduty credentials for a contact.
 
@@ -271,7 +280,7 @@ PAGERDUTY_CREDENTIALS
 }
 ```
 
-Returns true if creation succeeded or false if creation failed.
+Returns an array of contact ids if creation succeeded, or false if creation failed. (As contacts may only have one set of pagerduty credentials, Flapjack v1.x does not store a separate data model, thus theses objects have no separate ids.)
 
 <a name="pagerduty_credentials">&nbsp;</a>
 #### pagerduty_credentials
@@ -345,7 +354,7 @@ NOTIFICATION_RULE
 }
 ```
 
-Returns true if creation succeeded or false if creation failed.
+Returns an array of notification rule ids if creation succeeded, or false if creation failed.
 
 <a name="notification_rules">&nbsp;</a>
 #### notification_rules
@@ -378,7 +387,7 @@ Acceptable update field keys are
 Returns true if updating succeeded or false if updating failed.
 
 <a name="delete_notification_rules">&nbsp;</a>
-#### delete_notification rules
+#### delete_notification_rules
 
 Delete one or more notification rules.
 
@@ -412,7 +421,7 @@ CHECK
 }
 ```
 
-Returns true if creation succeeded or false if creation failed.
+Returns an array of check ids if creation succeeded, or false if creation failed. (Check ids are composed by joining together the check's entity's name, the character ':' and the check's name.)
 
 <a name="checks">&nbsp;</a>
 ### checks
