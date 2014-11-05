@@ -15,8 +15,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         :id               => 'abc_sms',
         :type             => 'sms',
         :address          => '0123456789',
-        :initial_failure_interval => 300,
-        :repeat_failure_interval => 300,
+        :interval         => 300,
         :rollup_threshold => 5
       }]
 
@@ -40,15 +39,13 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         :id               => 'abc_sms',
         :type             => 'sms',
         :address          => '0123456789',
-        :initial_failure_interval => 300,
-        :repeat_failure_interval => 300,
+        :interval         => 300,
         :rollup_threshold => 5
       }, {
         :id               => 'abc_email',
         :type             => 'email',
         :address          => 'ablated@example.org',
-        :initial_failure_interval => 180,
-        :repeat_failure_interval => 180,
+        :interval         => 180,
         :rollup_threshold => 3
       }]
 
@@ -72,8 +69,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         :id               => 'abc_sms',
         :type             => 'sms',
         :address          => '0123456789',
-        :initial_failure_interval => 300,
-        :repeat_failure_interval => 300,
+        :interval         => 300,
         :rollup_threshold => 5
       }]
 
@@ -102,8 +98,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         :id               => 'abc_sms',
         :type             => 'sms',
         :address          => '0123456789',
-        :initial_failure_interval => 300,
-        :repeat_failure_interval => 300,
+        :interval         => 300,
         :rollup_threshold => 5
       }
     }
@@ -113,8 +108,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         :id               => 'abc_email',
         :type             => 'email',
         :address          => 'ablated@example.org',
-        :initial_failure_interval => 180,
-        :repeat_failure_interval => 180,
+        :interval         => 180,
         :rollup_threshold => 3
       }
     }
@@ -196,14 +190,14 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         with(:method => :patch,
              :path => '/media/abc_email',
              :headers => {'Content-Type'=>'application/json-patch+json'},
-             :body => [{:op => 'replace', :path => '/media/0/initial_failure_interval', :value => 50},
+             :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
                        {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}]).
         will_respond_with(
           :status => 204,
           :body => '' )
 
       result = Flapjack::Diner.update_media('abc_email',
-        :initial_failure_interval => 50, :rollup_threshold => 3)
+        :interval => 50, :rollup_threshold => 3)
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
@@ -214,14 +208,14 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         with(:method => :patch,
              :path => '/media/abc_email,abc_sms',
              :headers => {'Content-Type'=>'application/json-patch+json'},
-             :body => [{:op => 'replace', :path => '/media/0/initial_failure_interval', :value => 50},
+             :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
                        {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}]).
         will_respond_with(
           :status => 204,
           :body => '' )
 
       result = Flapjack::Diner.update_media('abc_email', 'abc_sms',
-        :initial_failure_interval => 50, :rollup_threshold => 3)
+        :interval => 50, :rollup_threshold => 3)
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
@@ -232,12 +226,12 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         with(:method => :patch,
              :path => '/media/abc_email',
              :headers => {'Content-Type'=>'application/json-patch+json'},
-             :body => [{:op => 'replace', :path => '/media/0/initial_failure_interval', :value => 50}]).
+             :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50}]).
         will_respond_with(:status => 404,
                           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
                           :body => {:errors => ["could not find Medium records, ids: 'abc_email'"]} )
 
-      result = Flapjack::Diner.update_media('abc_email', :initial_failure_interval => 50)
+      result = Flapjack::Diner.update_media('abc_email', :interval => 50)
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
         :errors => ["could not find Medium records, ids: 'abc_email'"])

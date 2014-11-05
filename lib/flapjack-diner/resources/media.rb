@@ -16,9 +16,7 @@ module Flapjack
           validate_params(data) do
             validate :query => :id, :as => :string
             validate :query => [:type, :address], :as => [:required, :string]
-            validate :query => [:initial_failure_interval,
-                                :repeat_failure_interval,
-                                :rollup_threshold],
+            validate :query => [:interval, :rollup_threshold],
                      :as => [:required, :integer]
 
           end
@@ -36,9 +34,7 @@ module Flapjack
                 'parameter' if ids.nil? || ids.empty?
           validate_params(params) do
             validate :query => :address, :as => :string
-            validate :query => [:initial_failure_interval,
-                                :repeat_failure_interval,
-                                :rollup_threshold],
+            validate :query => [:interval, :rollup_threshold],
                      :as => :integer
           end
           perform_patch("/media/#{escaped_ids(ids)}", nil,
@@ -55,8 +51,7 @@ module Flapjack
 
         def update_media_ops(params)
           ops = params.each_with_object([]) do |(k, v), memo|
-            next unless [:address, :initial_failure_interval,
-              :repeat_failure_interval, :rollup_threshold].include?(k)
+            next unless [:address, :interval, :rollup_threshold].include?(k)
             memo << patch_replace('media', k, v)
           end
           raise "'update_media' did not find any valid update " \
