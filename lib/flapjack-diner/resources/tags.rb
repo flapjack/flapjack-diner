@@ -15,19 +15,19 @@ module Flapjack
             validate :query => :id,   :as => :string
             validate :query => :name, :as => [:required, :string]
           end
-          perform_post('/tags', nil, :checks => data)
+          perform_post('tags', '/tags', nil, :tags => data)
         end
 
-        def tags(*names)
-          perform_get('tags', '/tags', names)
+        def tags(*ids)
+          perform_get('tags', '/tags', ids)
         end
 
         # NB tags cannot be renamed
 
-        def delete_tags(*names)
-          raise "'delete_tags' requires at least one tag name " \
-                'parameter' if names.nil? || names.empty?
-          perform_delete('/tags', names)
+        def delete_tags(*ids)
+          raise "'delete_tags' requires at least one tag ID " \
+                'parameter' if ids.nil? || ids.empty?
+          perform_delete('/tags', ids)
         end
       end
     end

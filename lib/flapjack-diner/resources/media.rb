@@ -9,10 +9,8 @@ module Flapjack
   module Diner
     module Resources
       module Media
-        def create_contact_media(*args)
-          ids, data = unwrap_ids(*args), unwrap_create_data(*args)
-          raise "'create_contact_media' requires at least one contact id " \
-                'parameter' if ids.nil? || ids.empty?
+        def create_media(*args)
+          data = unwrap_create_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :string
             validate :query => [:type, :address], :as => [:required, :string]
@@ -20,8 +18,7 @@ module Flapjack
                      :as => [:required, :integer]
 
           end
-          perform_post("/contacts/#{escaped_ids(ids)}/media", nil,
-                       :media => data)
+          perform_post('media', "/media", nil, :media => data)
         end
 
         def media(*ids)

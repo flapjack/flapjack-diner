@@ -3,13 +3,11 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner do
 
+  include_context 'fixture data'
+
   let(:server) { 'flapjack.com' }
 
   let(:time) { Time.now }
-
-  def response_with_data(name, data = [])
-    "{\"#{name}\":#{data.to_json}}"
-  end
 
   before(:each) do
     Flapjack::Diner.base_uri(server)
@@ -35,21 +33,8 @@ describe Flapjack::Diner do
     end
 
     it 'can return keys as strings' do
-      data = [{
-        :id         => '21',
-        :first_name => 'Ada',
-        :last_name  => 'Lovelace',
-        :email      => 'ada@example.com',
-        :timezone   => 'Europe/London',
-        :tags       => [ 'legend', 'first computer programmer' ],
-        :links      => {
-          :media              => ['21_email', '21_sms'],
-          :notification_rules => ['30fd36ae-3922-4957-ae3e-c8f6dd27e543']
-        }
-      }]
-
       req = stub_request(:get, "http://#{server}/contacts").to_return(
-        :status => 200, :body => response_with_data('contacts', data))
+        :status => 200, :body => {:contacts => [contact_data]}.to_json)
 
       result = Flapjack::Diner.contacts
       expect(req).to have_been_requested
@@ -58,8 +43,6 @@ describe Flapjack::Diner do
       expect(result.length).to be(1)
       expect(result[0]).to be_an_instance_of(Hash)
       expect(result[0]).to have_key('id')
-      expect(result[0]).to have_key('links')
-      expect(result[0]['links']).to have_key('media')
     end
 
   end
@@ -73,7 +56,7 @@ describe Flapjack::Diner do
     end
 
     it "logs a GET request without a path" do
-      response = response_with_data('contacts')
+      response = {:contacts => [contact_data]}.to_json
       req = stub_request(:get, "http://#{server}/contacts").
         to_return(:body => response)
 
@@ -87,28 +70,29 @@ describe Flapjack::Diner do
     end
 
     it "logs a POST request" do
-      req = stub_request(:post, "http://#{server}/test_notifications/checks/27").
-              to_return(:status => 204)
-      expect(logger).to receive(:info).with("POST http://#{server}/test_notifications/checks/27\n" +
-        "  Body: {:test_notifications=>[{:summary=>\"dealing with it\"}]}")
-      expect(logger).to receive(:info).with("  Response Code: 204")
+      response = {:test_notifications => notification_data}.to_json
+      req = stub_request(:post, "http://#{server}/test_notifications/#{check_data[:id]}").
+              to_return(:status => 201, :body => response)
+      expect(logger).to receive(:info).with("POST http://#{server}/test_notifications/#{check_data[:id]}\n" +
+        "  Body: {:test_notifications=>#{notification_data.inspect}}")
+      expect(logger).to receive(:info).with("  Response Code: 201")
+      expect(logger).to receive(:info).with("  Response Body: #{response}")
 
-      result = Flapjack::Diner.create_test_notifications_checks(27, [{:summary => 'dealing with it'}])
+      result = Flapjack::Diner.create_test_notifications(check_data[:id], notification_data)
       expect(req).to have_been_requested
-      expect(result).to be_truthy
+      expect(result).to eq(notification_data)
     end
 
     it "logs a DELETE request" do
-      req = stub_request(:delete, "http://#{server}/scheduled_maintenances/checks/example.com%3ASSH").
-        with(:query => {:start_time => time.iso8601}).
+      req = stub_request(:delete, "http://#{server}/scheduled_maintenances/#{scheduled_maintenance_data[:id]}").
         to_return(:status => 204)
 
-      expect(logger).to receive(:info).with("DELETE http://#{server}/scheduled_maintenances/checks/example.com:SSH?start_time=#{URI.encode_www_form_component(time.iso8601)}")
+      expect(logger).to receive(:info).with("DELETE http://#{server}/scheduled_maintenances/#{scheduled_maintenance_data[:id]}")
       expect(logger).to receive(:info).with("  Response Code: 204")
 
-      result = Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => time)
+      result = Flapjack::Diner.delete_scheduled_maintenances(scheduled_maintenance_data[:id])
       expect(req).to have_been_requested
-      expect(result).to be_truthy
+      expect(result).to be_a(TrueClass)
     end
 
   end
@@ -138,7 +122,7 @@ describe Flapjack::Diner do
       req = stub_request(:get, /http:\/\/#{server}\/*/)
 
       expect {
-        Flapjack::Diner.delete_scheduled_maintenances_checks('example.com:SSH', :start_time => nil)
+        Flapjack::Diner.delete_scheduled_maintenances(scheduled_maintenance_data[:id])
       }.to raise_error
       expect(req).not_to have_been_requested
     end
@@ -152,7 +136,7 @@ describe Flapjack::Diner do
       req = stub_request(:get, /http:\/\/#{server}\/*/)
 
       expect {
-        Flapjack::Diner.downtime_report_checks('example.com:SSH',
+        Flapjack::Diner.downtime_reports(check_data[:id],
           :start_time => start_time, :end_time => end_time)
       }.to raise_error
       expect(req).not_to have_been_requested

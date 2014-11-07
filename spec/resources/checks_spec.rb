@@ -3,6 +3,8 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Checks, :pact => true do
 
+  include_context 'fixture data'
+
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -11,11 +13,6 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
   context 'create' do
 
     it "submits a POST request for a check" do
-      check_data = [{
-        :name       => 'www.example.com:SSH',
-        :id         => 'www.example.com:SSH'
-      }]
-
       flapjack.given("no check exists").
         upon_receiving("a POST request with one check").
         with(:method => :post, :path => '/checks',
@@ -24,43 +21,35 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => ['www.example.com:SSH'] )
+          :body => {'checks' => check_data} )
 
       result = Flapjack::Diner.create_checks(check_data)
-      expect(result).to eq(['www.example.com:SSH'])
+      expect(result).to eq(check_data)
     end
 
     it "submits a POST request for several checks" do
-      check_data = [{
-        :name       => 'www.example.com:SSH',
-        :id         => 'www.example.com:SSH'
-      }, {
-        :name       => 'www2.example.com:PING',
-        :id         => 'www2.example.com:PING'
-      }]
+      checks_data = [check_data, check_2_data]
 
       flapjack.given("no check exists").
         upon_receiving("a POST request with two checks").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:checks => check_data}).
+             :body => {:checks => checks_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => ['www.example.com:SSH', 'www2.example.com:PING'] )
+          :body => {'checks' => checks_data})
 
-      result = Flapjack::Diner.create_checks(check_data)
-      expect(result).to eq(['www.example.com:SSH', 'www2.example.com:PING'])
+      result = Flapjack::Diner.create_checks(checks_data)
+      expect(result).to eq(checks_data)
     end
 
+    # TODO fails to create with invalid data
+
+    # TODO fails to create with invalid data
   end
 
   context 'read' do
-
-    let(:check_data) { {:id => 'www.example.com:SSH',
-                        :name       => 'www.example.com:SSH',
-                       }
-                     }
 
     context 'GET all checks' do
 
@@ -78,7 +67,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       end
 
       it "has some data" do
-        flapjack.given("a check 'www.example.com:SSH' exists").
+        flapjack.given("a check with id '#{check_data[:id]}' exists").
           upon_receiving("a GET request for all checks").
           with(:method => :get, :path => '/checks').
           will_respond_with(
@@ -95,73 +84,73 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     context 'GET a single check' do
 
       it "has some data" do
-        flapjack.given("a check 'www.example.com:SSH' exists").
+        flapjack.given("a check with id '#{check_data[:id]}' exists").
           upon_receiving("a GET request for check 'www.example.com:SSH'").
-          with(:method => :get, :path => '/checks/www.example.com:SSH').
+          with(:method => :get, :path => "/checks/#{check_data[:id]}").
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
             :body => {:checks => [check_data]} )
 
-        result = Flapjack::Diner.checks('www.example.com:SSH')
+        result = Flapjack::Diner.checks(check_data[:id])
         expect(result).to eq([check_data])
       end
 
       it "can't find check" do
         flapjack.given("no check exists").
           upon_receiving("a GET request for check 'www.example.com:SSH'").
-          with(:method => :get, :path => '/checks/www.example.com:SSH').
+          with(:method => :get, :path => "/checks/#{check_data[:id]}").
           will_respond_with(
             :status => 404,
             :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]} )
+            :body => {:errors => ["could not find Check records, ids: '#{check_data[:id]}'"]} )
 
-        result = Flapjack::Diner.checks('www.example.com:SSH')
+        result = Flapjack::Diner.checks(check_data[:id])
         expect(result).to be_nil
         expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
+          :errors => ["could not find Check records, ids: '#{check_data[:id]}'"])
       end
 
     end
 
   end
 
-  context 'update' do
+  # context 'update' do
 
-    it "submits a PATCH request for a check" do
-      flapjack.given("a check 'www.example.com:SSH' exists").
-        upon_receiving("a PATCH request for a single check").
-        with(:method => :patch,
-             :path => '/checks/www.example.com:SSH',
-             :body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}],
-             :headers => {'Content-Type'=>'application/json-patch+json'}).
-        will_respond_with(
-          :status => 204,
-          :body => '')
+  #   it "submits a PATCH request for a check" do
+  #     flapjack.given("a check 'www.example.com:SSH' exists").
+  #       upon_receiving("a PATCH request for a single check").
+  #       with(:method => :patch,
+  #            :path => '/checks/www.example.com:SSH',
+  #            :body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}],
+  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
+  #       will_respond_with(
+  #         :status => 204,
+  #         :body => '')
 
-      result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)
-      expect(result).not_to be_nil
-      expect(result).to be_truthy
-    end
+  #     result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)
+  #     expect(result).not_to be_nil
+  #     expect(result).to be_truthy
+  #   end
 
-    it "doesn't find the check to update" do
-      flapjack.given("no check exists").
-        upon_receiving("a PATCH request for a single check").
-        with(:method => :patch,
-             :path => '/checks/www.example.com:SSH',
-             :body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}],
-             :headers => {'Content-Type'=>'application/json-patch+json'}).
-        will_respond_with(
-          :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]} )
+  #   it "doesn't find the check to update" do
+  #     flapjack.given("no check exists").
+  #       upon_receiving("a PATCH request for a single check").
+  #       with(:method => :patch,
+  #            :path => '/checks/www.example.com:SSH',
+  #            :body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}],
+  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
+  #       will_respond_with(
+  #         :status => 404,
+  #         :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+  #         :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]} )
 
-      result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)
-      expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
-    end
+  #     result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)
+  #     expect(result).to be_nil
+  #     expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+  #       :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
+  #   end
 
-  end
+  # end
 
 end

@@ -19,7 +19,7 @@ module Flapjack
                      :as => :integer
 
           end
-          perform_post('/checks', nil, :checks => data)
+          perform_post('checks', '/checks', nil, :checks => data)
         end
 
         def checks(*ids)

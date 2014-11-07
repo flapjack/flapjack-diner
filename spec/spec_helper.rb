@@ -21,6 +21,10 @@ require 'pact/consumer/rspec'
 
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 
+# Requires supporting files with custom matchers and macros, etc,
+# in ./support/ and its subdirectories.
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
+
 Pact.service_consumer 'flapjack-diner' do
 
   has_pact_with "flapjack" do

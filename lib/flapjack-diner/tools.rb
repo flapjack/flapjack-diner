@@ -30,7 +30,7 @@ module Flapjack
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_post(path, ids = [], data = nil)
+      def perform_post(name, path, ids = [], data = nil)
         @last_error = nil
         req_uri = build_uri(path, ids)
         log_request('POST', req_uri, data)
@@ -40,7 +40,12 @@ module Flapjack
                  {:body => prepare_nested_query(data).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
-        handle_response(post(req_uri.request_uri, opts))
+        handled = handle_response(post(req_uri.request_uri, opts))
+
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name] :
+                 handled
+
+        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
       def perform_patch(path, ids = [], data = nil)
@@ -171,11 +176,12 @@ module Flapjack
         data_h = args.select {|a| a.is_a?(Hash) }
         data_a = unwrap_data(*args)
 
-        raise 'Create data may be passed as a Hash or an Array of Hashes, ' \
+        raise 'Create data may be passed as Hashes or an Array of Hashes, ' \
               'not both' unless data_h.empty? || data_a.empty?
 
         data = data_h
         data = data_a if data.empty?
+        data = data.first if (data.size == 1)
         data = nil if data.empty?
         data
       end
