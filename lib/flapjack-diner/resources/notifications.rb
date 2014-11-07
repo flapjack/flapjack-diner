@@ -10,7 +10,7 @@ module Flapjack
     module Resources
       module Notifications
         def create_test_notifications(*args)
-          ids, data = unwrap_ids(*args), unwrap_create_data(*args)
+          ids, data = unwrap_ids(*args), unwrap_data(*args)
           raise "'create_test_notifications' requires at least " \
             "one check id parameter" if ids.nil? || ids.empty?
           validate_params(data) do

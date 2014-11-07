@@ -188,7 +188,6 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_rules(rule_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 
@@ -202,7 +201,6 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_rules(rule_data[:id], rule_2_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 

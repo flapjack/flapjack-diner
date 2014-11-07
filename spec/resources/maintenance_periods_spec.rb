@@ -159,7 +159,6 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
           :body => '')
 
       result = Flapjack::Diner.delete_scheduled_maintenances(scheduled_maintenance_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 
@@ -173,7 +172,6 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
           :body => '')
 
       result = Flapjack::Diner.delete_scheduled_maintenances(scheduled_maintenance_data[:id], scheduled_maintenance_2_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 

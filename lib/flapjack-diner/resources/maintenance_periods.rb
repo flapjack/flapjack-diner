@@ -11,7 +11,7 @@ module Flapjack
       module MaintenancePeriods
 
         def create_scheduled_maintenances(*args)
-          data = unwrap_create_data(*args)
+          data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :string
             validate :query => :start_time, :as => [:required, :time]
@@ -24,7 +24,7 @@ module Flapjack
         end
 
         def create_unscheduled_maintenances(*args)
-          data = unwrap_create_data(*args)
+          data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :string
             validate :query => :duration,   :as => [:required, :integer]

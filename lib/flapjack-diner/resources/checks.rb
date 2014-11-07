@@ -10,7 +10,7 @@ module Flapjack
     module Resources
       module Checks
         def create_checks(*args)
-          data = unwrap_create_data(*args)
+          data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :string
             validate :query => :name,    :as => [:required, :string]
@@ -27,38 +27,19 @@ module Flapjack
         end
 
         def update_checks(*args)
-          ids, params = unwrap_ids(*args), unwrap_params(*args)
+          ids, data = unwrap_ids(*args), unwrap_data(*args)
           raise "'update_checks' requires at least one check id " \
                 'parameter' if ids.nil? || ids.empty?
-          validate_params(params) do
+          validate_params(data) do
             validate :query => :name,                  :as => :string
             validate :query => :enabled,               :as => :boolean
             validate :query => [:initial_failure_delay, :repeat_failure_delay],
                      :as => :integer
           end
-          perform_patch("/checks/#{escaped_ids(ids)}", nil,
-                        update_checks_ops(params))
+          perform_put('checks', "/checks", ids, :checks => data)
         end
 
         # TODO should allow DELETE when API does
-
-        private
-
-        def update_checks_ops(params)
-          ops = params.each_with_object([]) do |(k, v), memo|
-            case k
-            when :name, :enabled, :initial_failure_delay, :repeat_failure_delay
-              memo << patch_replace('checks', k, v)
-            when :add_tag
-              memo << patch_add('checks', 'tags', v)
-            when :remove_tag
-              memo << patch_remove('checks', 'tags', v)
-            end
-          end
-          raise "'update_checks' did not find any valid update " \
-                'fields' if ops.empty?
-          ops
-        end
       end
     end
   end

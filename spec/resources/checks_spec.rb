@@ -45,8 +45,6 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     end
 
     # TODO fails to create with invalid data
-
-    # TODO fails to create with invalid data
   end
 
   context 'read' do
@@ -115,42 +113,41 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
   end
 
-  # context 'update' do
+  context 'update' do
 
-  #   it "submits a PATCH request for a check" do
-  #     flapjack.given("a check 'www.example.com:SSH' exists").
-  #       upon_receiving("a PATCH request for a single check").
-  #       with(:method => :patch,
-  #            :path => '/checks/www.example.com:SSH',
-  #            :body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(
-  #         :status => 204,
-  #         :body => '')
+    it 'submits a PUT request for a check' do
+      flapjack.given("a check with id '#{check_data[:id]}' exists").
+        upon_receiving("a PUT request for a single check").
+        with(:method => :put,
+             :path => "/checks/#{check_data[:id]}",
+             :body => {:checks => {:id => check_data[:id], :enabled => false}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-  #     result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
+      result = Flapjack::Diner.update_checks(check_data[:id], :enabled => false)
+      expect(result).to be_a(TrueClass)
+    end
 
-  #   it "doesn't find the check to update" do
-  #     flapjack.given("no check exists").
-  #       upon_receiving("a PATCH request for a single check").
-  #       with(:method => :patch,
-  #            :path => '/checks/www.example.com:SSH',
-  #            :body => [{:op => 'replace', :path => '/checks/0/enabled', :value => false}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(
-  #         :status => 404,
-  #         :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-  #         :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]} )
+    it "can't find the check to update" do
+      flapjack.given("no check exists").
+        upon_receiving("a PUT request for a single check").
+        with(:method => :put,
+             :path => "/checks/#{check_data[:id]}",
+             :body => {:checks => {:id => check_data[:id], :enabled => false}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find Check records, ids: '#{check_data[:id]}'"]} )
 
-  #     result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)
-  #     expect(result).to be_nil
-  #     expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-  #       :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
-  #   end
+      result = Flapjack::Diner.update_checks(check_data[:id], :enabled => false)
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find Check records, ids: '#{check_data[:id]}'"])
+    end
 
-  # end
+  end
 
 end

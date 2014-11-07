@@ -130,7 +130,6 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_tags(tag_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 
@@ -144,7 +143,6 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_tags(tag_data[:id], tag_2_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 

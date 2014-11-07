@@ -154,7 +154,6 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_pagerduty_credentials(pagerduty_credentials_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 
@@ -169,7 +168,6 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
 
       result = Flapjack::Diner.delete_pagerduty_credentials(pagerduty_credentials_data[:id],
         pagerduty_credentials_2_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 

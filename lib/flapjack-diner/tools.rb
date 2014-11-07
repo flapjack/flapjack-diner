@@ -48,17 +48,39 @@ module Flapjack
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_patch(path, ids = [], data = nil)
+      def perform_put(name, path, ids = [], data = nil)
         @last_error = nil
+
+        # TODO don't change incoming data
+        case data[name.to_sym]
+        when Hash
+          ids_len  = ids.size
+          raise "Number of data blocks (1) did not match number of ids " \
+                "of ids (#{ids_len})" unless ids_len == 1
+          data[name.to_sym][:id] = ids.first
+        when Array
+          data_len = data.size
+          ids_len  = ids.size
+          raise "Number of data blocks (#{data_len}) did not match number " \
+                "of ids (#{ids_len})" unless data_len == ids_len
+          data[name.to_sym].each {|d| d[:id] = ids.shift }
+        end
+
         req_uri = build_uri(path, ids)
-        log_request('PATCH', req_uri, data)
+        log_request('PUT', req_uri, data)
+
         opts = if data.nil?
                  {}
                else
-                 {:body    => prepare_nested_query(data).to_json,
-                  :headers => {'Content-Type' => 'application/json-patch+json'}}
+                 {:body => prepare_nested_query(data).to_json,
+                  :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
-        handle_response(patch(req_uri.request_uri, opts))
+        handled = handle_response(put(req_uri.request_uri, opts))
+
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name] :
+                 handled
+
+        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
       def perform_delete(path, ids = [], data = nil)
@@ -168,16 +190,12 @@ module Flapjack
       end
 
       def unwrap_data(*args)
-        args.select {|a| a.is_a?(Array) && a.all? {|av| av.is_a?(Hash) } }
-            .reduce([], &:'+')
-      end
-
-      def unwrap_create_data(*args)
         data_h = args.select {|a| a.is_a?(Hash) }
-        data_a = unwrap_data(*args)
+        data_a = args.select {|a| a.is_a?(Array) && a.all? {|av| av.is_a?(Hash) } }
+          .reduce([], &:'+')
 
-        raise 'Create data may be passed as Hashes or an Array of Hashes, ' \
-              'not both' unless data_h.empty? || data_a.empty?
+        raise 'Data may be passed as Hashes or an Array of Hashes, not' \
+              'both' unless data_h.empty? || data_a.empty?
 
         data = data_h
         data = data_a if data.empty?

@@ -173,7 +173,6 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_media(sms_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 
@@ -187,7 +186,6 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_media(sms_data[:id], email_data[:id])
-      expect(result).not_to be_nil
       expect(result).to be_a(TrueClass)
     end
 

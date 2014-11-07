@@ -135,87 +135,40 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
   end
 
-  # context 'update' do
+  context 'update' do
+    it 'submits a PUT request for a contact' do
+      flapjack.given("a contact with id '#{contact_data[:id]}' exists").
+        upon_receiving("a PUT request for a single contact").
+        with(:method => :put,
+             :path => "/contacts/#{contact_data[:id]}",
+             :body => {:contacts => {:id => contact_data[:id], :name => 'Hello There'}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-  #   it "submits a PATCH request for one contact" do
-  #     flapjack.given("a contact with id 'abc' exists").
-  #       upon_receiving("a PATCH request to change properties for a single contact").
-  #       with(:method => :patch,
-  #            :path => '/contacts/abc',
-  #            :body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(:status => 204,
-  #                         :body => '')
+      result = Flapjack::Diner.update_contacts(contact_data[:id], :name => 'Hello There')
+      expect(result).to be_a(TrueClass)
+    end
 
-  #     result = Flapjack::Diner.update_contacts('abc', :timezone => 'UTC')
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
+    it "can't find the contact to update" do
+      flapjack.given("no contact exists").
+        upon_receiving("a PUT request for a single contact").
+        with(:method => :put,
+             :path => "/contacts/#{contact_data[:id]}",
+             :body => {:contacts => {:id => contact_data[:id], :name => 'Hello There'}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find Check records, ids: '#{contact_data[:id]}'"]} )
 
-  #   it "submits a PATCH request for several contacts" do
-  #     flapjack.given("contacts with ids 'abc' and '872' exist").
-  #       upon_receiving("a PATCH request to change properties for two contacts").
-  #       with(:method => :patch,
-  #            :path => '/contacts/abc,872',
-  #            :body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(:status => 204,
-  #                         :body => '')
-
-  #     result = Flapjack::Diner.update_contacts('abc', '872', :timezone => 'UTC')
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
-
-  #   it "submits a PATCH request to change a link for one contact" do
-  #     flapjack.given("a contact with id '872' exists").
-  #       upon_receiving("a PATCH request to change a link for a single contact").
-  #       with(:method => :patch,
-  #            :path => '/contacts/872',
-  #            :body => [{:op => 'add', :path => '/contacts/0/links/tags/-', :value => 'admin'}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(:status => 204,
-  #                         :body => '')
-
-  #     result = Flapjack::Diner.update_contacts('872', :add_tag => 'admin')
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
-
-  #   it "submits a PATCH request to change links for several contacts" do
-  #     flapjack.given("contacts with ids 'abc' and '872' exist").
-  #       upon_receiving("a PATCH request to change links for two contacts").
-  #       with(:method => :patch,
-  #            :path => '/contacts/abc,872',
-  #            :body => [{:op => 'add', :path => '/contacts/0/links/tags/-', :value => 'admin'}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(:status => 204,
-  #                         :body => '')
-
-  #     result = Flapjack::Diner.update_contacts('abc', '872', :add_tag => 'admin')
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
-
-  #   it "can't find a contact to update" do
-  #     flapjack.given("no contact exists").
-  #       upon_receiving("a PATCH request to change properties for a single contact").
-  #       with(:method => :patch,
-  #            :path => '/contacts/323',
-  #            :body => [{:op => 'replace', :path => '/contacts/0/timezone', :value => 'UTC'}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(
-  #         :status => 404,
-  #         :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-  #         :body => {:errors => ["could not find Contact records, ids: '323'"]} )
-
-  #     result = Flapjack::Diner.update_contacts('323', :timezone => 'UTC')
-  #     expect(result).to be_nil
-  #     expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-  #       :errors => ["could not find Contact records, ids: '323'"])
-  #   end
-
-  # end
+      result = Flapjack::Diner.update_contacts(contact_data[:id], :name => 'Hello There')
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find Check records, ids: '#{contact_data[:id]}'"])
+    end
+  end
 
   context 'delete' do
     it "submits a DELETE request for one contact" do
@@ -228,8 +181,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_contacts(contact_data[:id])
-      expect(result).not_to be_nil
-      expect(result).to be_truthy
+      expect(result).to be_a(TrueClass)
     end
 
     it "submits a DELETE request for several contacts" do
@@ -242,8 +194,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
                           :body => '')
 
       result = Flapjack::Diner.delete_contacts(contact_data[:id], contact_2_data[:id])
-      expect(result).not_to be_nil
-      expect(result).to be_truthy
+      expect(result).to be_a(TrueClass)
     end
 
     it "can't find the contact to delete" do

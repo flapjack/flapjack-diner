@@ -10,7 +10,7 @@ module Flapjack
     module Resources
       module Media
         def create_media(*args)
-          data = unwrap_create_data(*args)
+          data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :string
             validate :query => [:type, :address], :as => [:required, :string]
@@ -26,16 +26,15 @@ module Flapjack
         end
 
         def update_media(*args)
-          ids, params = unwrap_ids(*args), unwrap_params(*args)
-          raise "'update_media' requires at least one medium id " \
+          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          raise "'update_media' requires at least one check id " \
                 'parameter' if ids.nil? || ids.empty?
-          validate_params(params) do
+          validate_params(data) do
             validate :query => :address, :as => :string
             validate :query => [:interval, :rollup_threshold],
                      :as => :integer
           end
-          perform_patch("/media/#{escaped_ids(ids)}", nil,
-                        update_media_ops(params))
+          perform_put('media', "/media", ids, :media => data)
         end
 
         def delete_media(*ids)
@@ -44,17 +43,6 @@ module Flapjack
           perform_delete('/media', ids)
         end
 
-        private
-
-        def update_media_ops(params)
-          ops = params.each_with_object([]) do |(k, v), memo|
-            next unless [:address, :interval, :rollup_threshold].include?(k)
-            memo << patch_replace('media', k, v)
-          end
-          raise "'update_media' did not find any valid update " \
-                'fields' if ops.empty?
-          ops
-        end
       end
     end
   end
