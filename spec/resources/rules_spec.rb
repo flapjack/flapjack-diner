@@ -3,12 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Rules, :pact => true do
 
-  include_context 'fixture data'
-
-  # let(:rule_id_regexp) {
-  #   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
-  # }
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -17,7 +11,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
   context 'create' do
 
     it "submits a POST request for a rule" do
-      flapjack.given("no rules exist").
+      flapjack.given("no rule exists").
         upon_receiving("a POST request with one rule").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -36,7 +30,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     it "submits a POST request for several rules" do
       rules_data = [rule_data, rule_2_data]
 
-      flapjack.given("no rules exist").
+      flapjack.given("no rule exists").
         upon_receiving("a POST request with two rules").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -58,7 +52,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
   context 'read' do
    it "submits a GET request for all rules" do
-      flapjack.given("a rule with id '#{rule_data[:id]}' exists").
+      flapjack.given("a rule exists").
         upon_receiving("a GET request for all rules").
         with(:method => :get, :path => '/rules').
         will_respond_with(
@@ -72,7 +66,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     end
 
     it "submits a GET request for one rule" do
-      flapjack.given("a rule with id '#{rule_data[:id]}' exists").
+      flapjack.given("a rule exists").
         upon_receiving("a GET request for a single rule").
         with(:method => :get, :path => "/rules/#{rule_data[:id]}").
         will_respond_with(
@@ -88,7 +82,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     it "submits a GET request for several rules" do
       rules_data = [rule_data, rule_2_data]
 
-      flapjack.given("rules with ids '#{rule_data[:id]}' and '#{rule_2_data[:id]}' exist").
+      flapjack.given("two rules exist").
         upon_receiving("a GET request for two rules").
         with(:method => :get, :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}").
         will_respond_with(
@@ -122,7 +116,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
   context 'update' do
 
     it 'submits a PUT request for a rule' do
-      flapjack.given("a rule with id '#{rule_data[:id]}' exists").
+      flapjack.given("a rule exists").
         upon_receiving("a PUT request for a single rule").
         with(:method => :put,
              :path => "/rules/#{rule_data[:id]}",
@@ -137,7 +131,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     end
 
     it 'submits a PUT request for several rules' do
-      flapjack.given("rules with ids '#{rule_data[:id]}' and '#{rule_2_data[:id]}' exist").
+      flapjack.given("two rules exist").
         upon_receiving("a PUT request for two rules").
         with(:method => :put,
              :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}",
@@ -176,7 +170,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
   context 'delete' do
     it "submits a DELETE request for a rule" do
-      flapjack.given("a rule with id '#{rule_data[:id]}' exists").
+      flapjack.given("a rule exists").
         upon_receiving("a DELETE request for a single rule").
         with(:method => :delete,
              :path => "/rules/#{rule_data[:id]}",
@@ -189,7 +183,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     end
 
     it "submits a DELETE request for several rules" do
-      flapjack.given("rules with ids '#{rule_data[:id]}' and '#{rule_2_data[:id]}' exist").
+      flapjack.given("two rules exist").
         upon_receiving("a DELETE request for two rules").
         with(:method => :delete,
              :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}",

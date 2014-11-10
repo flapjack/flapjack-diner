@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Tags, :pact => true do
 
-  include_context 'fixture data'
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -65,7 +63,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
       end
 
       it "has some data" do
-        flapjack.given("a tag with id '#{tag_data[:id]}' exists").
+        flapjack.given("a tag exists").
           upon_receiving("a GET request for all tags").
           with(:method => :get, :path => '/tags').
           will_respond_with(
@@ -82,7 +80,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
     context 'GET a single tag' do
 
       it "has some data" do
-        flapjack.given("a tag with id '#{tag_data[:id]}' exists").
+        flapjack.given("a tag exists").
           upon_receiving("a GET request for tag 'www.example.com:SSH'").
           with(:method => :get, :path => "/tags/#{tag_data[:id]}").
           will_respond_with(
@@ -116,7 +114,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
   context 'update' do
 
     it 'submits a PUT request for a tag' do
-      flapjack.given("a tag with id '#{tag_data[:id]}' exists").
+      flapjack.given("a tag exists").
         upon_receiving("a PUT request for a single tag").
         with(:method => :put,
              :path => "/tags/#{tag_data[:id]}",
@@ -131,7 +129,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
     end
 
     it 'submits a PUT request for several tags' do
-      flapjack.given("tags with ids '#{tag_data[:id]}' and '#{tag_2_data[:id]}' exist").
+      flapjack.given("two tags exist").
         upon_receiving("a PUT request for two tags").
         with(:method => :put,
              :path => "/tags/#{tag_data[:id]},#{tag_2_data[:id]}",
@@ -172,7 +170,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
 
   context 'delete' do
     it "submits a DELETE request for a tag" do
-      flapjack.given("a tag with id '#{tag_data[:id]}' exists").
+      flapjack.given("a tag exists").
         upon_receiving("a DELETE request for a single tag").
         with(:method => :delete,
              :path => "/tags/#{tag_data[:id]}",
@@ -185,7 +183,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
     end
 
     it "submits a DELETE request for several tags" do
-      flapjack.given("tags with ids '#{tag_data[:id]}' and '#{tag_2_data[:id]}' exist").
+      flapjack.given("two tags exist").
         upon_receiving("a DELETE request for two tags").
         with(:method => :delete,
              :path => "/tags/#{tag_data[:id]},#{tag_2_data[:id]}",

@@ -3,7 +3,7 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner do
 
-  include_context 'fixture data'
+  # include_context 'fixture data'
 
   let(:server) { 'flapjack.com' }
 

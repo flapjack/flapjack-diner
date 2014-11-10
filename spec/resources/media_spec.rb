@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Media, :pact => true do
 
-  include_context 'fixture data'
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -13,7 +11,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
   context 'create' do
 
     it "submits a POST request for a medium" do
-      flapjack.given("no medium records exist").
+      flapjack.given("no medium exists").
         upon_receiving("a POST request with one medium").
         with(:method => :post, :path => '/media',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -31,7 +29,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     it "submits a POST request for several media" do
       media_data = [sms_data, email_data]
 
-      flapjack.given("no medium records exist").
+      flapjack.given("no medium exists").
         upon_receiving("a POST request with two media").
         with(:method => :post, :path => '/media',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -60,7 +58,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
       media_data = [email_data.merge(links), sms_data.merge(links)]
 
-      flapjack.given("media with ids '#{sms_data[:id]}' and '#{email_data[:id]}' exist").
+      flapjack.given("two media exist").
         upon_receiving("a GET request for all media").
         with(:method => :get, :path => '/media').
         will_respond_with(
@@ -75,7 +73,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     it "submits a GET request for one medium" do
       media_data = [sms_data.merge(links)]
 
-      flapjack.given("a medium with id '#{sms_data[:id]}' exists").
+      flapjack.given("a medium exists").
         upon_receiving("a GET request for sms media").
         with(:method => :get, :path => "/media/#{sms_data[:id]}").
         will_respond_with(
@@ -90,7 +88,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     it "submits a GET request for several media" do
       media_data = [email_data.merge(links), sms_data.merge(links)]
 
-      flapjack.given("media with ids '#{sms_data[:id]}' and '#{email_data[:id]}' exist").
+      flapjack.given("two media exist").
         upon_receiving("a GET request for email and sms media").
         with(:method => :get, :path => "/media/#{email_data[:id]},#{sms_data[:id]}").
         will_respond_with(
@@ -107,7 +105,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
   context 'update' do
 
     it 'submits a PUT request for a medium' do
-      flapjack.given("a medium with id '#{email_data[:id]}' exists").
+      flapjack.given("a medium exists").
         upon_receiving("a PUT request for a single medium").
         with(:method => :put,
              :path => "/media/#{email_data[:id]}",
@@ -122,7 +120,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it 'submits a PUT request for several media' do
-      flapjack.given("media with ids '#{email_data[:id]}' and '#{sms_data[:id]}' exist").
+      flapjack.given("two media exist").
         upon_receiving("a PUT request for two media").
         with(:method => :put,
              :path => "/media/#{email_data[:id]},#{sms_data[:id]}",
@@ -162,7 +160,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
   context 'delete' do
     it "submits a DELETE request for one medium" do
 
-    flapjack.given("a medium with id '#{sms_data[:id]}' exists").
+    flapjack.given("a medium exists").
         upon_receiving("a DELETE request for one medium").
         with(:method => :delete,
              :path => "/media/#{sms_data[:id]}",
@@ -175,7 +173,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "submits a DELETE request for several media" do
-      flapjack.given("media with ids '#{sms_data[:id]}' and '#{email_data[:id]}' exist").
+      flapjack.given("two media exist").
         upon_receiving("a DELETE request for two media").
         with(:method => :delete,
              :path => "/media/#{sms_data[:id]},#{email_data[:id]}",
@@ -188,7 +186,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "can't find the contact with media to delete" do
-      flapjack.given("no media exist").
+      flapjack.given("no medium exists").
         upon_receiving("a DELETE request for one medium").
         with(:method => :delete,
              :path => "/media/#{sms_data[:id]}",

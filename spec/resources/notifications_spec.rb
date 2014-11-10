@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Notifications, :pact => true do
 
-  include_context 'fixture data'
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -15,7 +13,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
     context 'test notifications' do
 
       it "submits a POST request for a check" do
-        flapjack.given("a check with id '#{check_data[:id]}' exists").
+        flapjack.given("a check exists").
           upon_receiving("a POST request with one test notification").
           with(:method => :post, :path => "/test_notifications/#{check_data[:id]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -30,7 +28,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
       end
 
       it "submits a POST request for several checks" do
-        flapjack.given("checks with ids '#{check_data[:id]}' and '#{check_2_data[:id]}' exist").
+        flapjack.given("two checks exist").
           upon_receiving("a POST request with one test notification").
           with(:method => :post, :path => "/test_notifications/#{check_data[:id]},#{check_2_data[:id]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -47,7 +45,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
       it "submits a POST request for multiple notifications on a check" do
         notifications_data = [notification_data, notification_2_data]
 
-        flapjack.given("a check with id '#{check_data[:id]}' exists").
+        flapjack.given("a check exists").
           upon_receiving("a POST request with two test notifications").
           with(:method => :post, :path => "/test_notifications/#{check_data[:id]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -64,7 +62,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
       it "submits a POST request for multiple notifications on several checks" do
         notifications_data = [notification_data, notification_2_data]
 
-        flapjack.given("checks with ids '#{check_data[:id]}' and '#{check_2_data[:id]}' exist").
+        flapjack.given("two checks exist").
           upon_receiving("a POST request with two test notifications").
           with(:method => :post, :path => "/test_notifications/#{check_data[:id]},#{check_2_data[:id]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},

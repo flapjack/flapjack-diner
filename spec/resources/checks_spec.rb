@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Checks, :pact => true do
 
-  include_context 'fixture data'
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -65,7 +63,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       end
 
       it "has some data" do
-        flapjack.given("a check with id '#{check_data[:id]}' exists").
+        flapjack.given("a check exists").
           upon_receiving("a GET request for all checks").
           with(:method => :get, :path => '/checks').
           will_respond_with(
@@ -82,7 +80,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     context 'GET several checks' do
 
       it 'has some data' do
-        flapjack.given("checks with ids '#{check_data[:id]}' and '#{check_2_data[:id]}' exist").
+        flapjack.given("two checks exist").
           upon_receiving("a GET request for two checks").
           with(:method => :get, :path => "/checks/#{check_data[:id]},#{check_2_data[:id]}").
           will_respond_with(
@@ -114,7 +112,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     context 'GET a single check' do
 
       it "has some data" do
-        flapjack.given("a check with id '#{check_data[:id]}' exists").
+        flapjack.given("a check exists").
           upon_receiving("a GET request for a check").
           with(:method => :get, :path => "/checks/#{check_data[:id]}").
           will_respond_with(
@@ -148,7 +146,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
   context 'update' do
 
     it 'submits a PUT request for a check' do
-      flapjack.given("a check with id '#{check_data[:id]}' exists").
+      flapjack.given("a check exists").
         upon_receiving("a PUT request for a single check").
         with(:method => :put,
              :path => "/checks/#{check_data[:id]}",
@@ -163,7 +161,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     end
 
     it 'submits a PUT request for several checks' do
-      flapjack.given("checks with ids '#{check_data[:id]}' and '#{check_2_data[:id]}' exist").
+      flapjack.given("two checks exist").
         upon_receiving("a PUT request for two checks").
         with(:method => :put,
              :path => "/checks/#{check_data[:id]},#{check_2_data[:id]}",

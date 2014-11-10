@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
 
-  include_context 'fixture data'
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -33,7 +31,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
 
   context 'read' do
    it "submits a GET request for all pagerduty credentials" do
-      flapjack.given("a set of pagerduty credentials with id #{pagerduty_credentials_data[:id]} exists").
+      flapjack.given("a set of pagerduty credentials exists").
         upon_receiving("a GET request for all pagerduty credentials").
         with(:method => :get, :path => '/pagerduty_credentials').
         will_respond_with(
@@ -46,7 +44,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
     end
 
     it "submits a GET request for one set of pagerduty credentials" do
-      flapjack.given("a set of pagerduty credentials with id #{pagerduty_credentials_data[:id]} exists").
+      flapjack.given("a set of pagerduty credentials exists").
         upon_receiving("a GET request for one set of pagerduty credentials").
         with(:method => :get, :path => "/pagerduty_credentials/#{pagerduty_credentials_data[:id]}").
         will_respond_with(
@@ -60,7 +58,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
 
     it "submits a GET request for several sets of pagerduty credentials" do
       pdcs_data = [pagerduty_credentials_data, pagerduty_credentials_2_data]
-      flapjack.given("two sets of pagerduty credentials with ids #{pagerduty_credentials_data[:id]} and #{pagerduty_credentials_2_data[:id]} exist").
+      flapjack.given("two sets of pagerduty credentials exist").
         upon_receiving("a GET request for two sets of pagerduty credentials").
         with(:method => :get, :path => "/pagerduty_credentials/#{pagerduty_credentials_data[:id]},#{pagerduty_credentials_2_data[:id]}").
         will_respond_with(
@@ -92,7 +90,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
   context 'update' do
 
     it 'submits a PUT request for a set of pagerduty credentials' do
-      flapjack.given("a set of pagerduty credentials with id '#{pagerduty_credentials_data[:id]}' exists").
+      flapjack.given("a set of pagerduty credentials exists").
         upon_receiving("a PUT request for a single set of pagerduty credentials").
         with(:method => :put,
              :path => "/pagerduty_credentials/#{pagerduty_credentials_data[:id]}",
@@ -107,7 +105,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
     end
 
     it 'submits a PUT request for several sets of pagerduty credentials' do
-      flapjack.given("two sets of pagerduty credentials with ids '#{pagerduty_credentials_data[:id]}' and '#{pagerduty_credentials_2_data[:id]}' exist").
+      flapjack.given("two sets of pagerduty credentials exist").
         upon_receiving("a PUT request for two sets of pagerduty credentials").
         with(:method => :put,
              :path => "/pagerduty_credentials/#{pagerduty_credentials_data[:id]},#{pagerduty_credentials_2_data[:id]}",
@@ -147,7 +145,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
   context 'delete' do
     it "submits a DELETE request for one set of pagerduty credentials" do
 
-      flapjack.given("a set of pagerduty credentials with id #{pagerduty_credentials_data[:id]} exists").
+      flapjack.given("a set of pagerduty credentials exists").
         upon_receiving("a DELETE request for one set of pagerduty credentials").
         with(:method => :delete,
              :path => "/pagerduty_credentials/#{pagerduty_credentials_data[:id]}",
@@ -160,7 +158,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
     end
 
     it "submits a DELETE request for several sets of pagerduty credentials" do
-      flapjack.given("two sets of pagerduty credentials with ids #{pagerduty_credentials_data[:id]} and #{pagerduty_credentials_2_data[:id]} exist").
+      flapjack.given("two sets of pagerduty credentials exist").
         upon_receiving("a DELETE request for two sets of pagerduty credentials").
         with(:method => :delete,
              :path => "/pagerduty_credentials/#{pagerduty_credentials_data[:id]},#{pagerduty_credentials_2_data[:id]}",

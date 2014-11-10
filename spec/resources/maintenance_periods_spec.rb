@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
-  include_context 'fixture data'
-
   let(:time) { Time.now }
 
   before(:each) do
@@ -97,7 +95,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
   context 'update' do
 
     it 'submits a PUT request for an unscheduled maintenance period' do
-      flapjack.given("an unscheduled maintenance period with id '#{check_data[:id]}' exists").
+      flapjack.given("an unscheduled maintenance period exists").
         upon_receiving("a PUT request for a single unscheduled maintenance period").
         with(:method => :put,
              :path => "/unscheduled_maintenances/#{unscheduled_maintenance_data[:id]}",
@@ -112,7 +110,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
     end
 
     it 'submits a PUT request for several unscheduled maintenance periods' do
-      flapjack.given("unscheduled maintenance periods with ids '#{unscheduled_maintenance_data[:id]}' and '#{unscheduled_maintenance_2_data[:id]}' exist").
+      flapjack.given("two unscheduled maintenance periods exist").
         upon_receiving("a PUT request for two unscheduled maintenance periods").
         with(:method => :put,
              :path => "/unscheduled_maintenances/#{unscheduled_maintenance_data[:id]},#{unscheduled_maintenance_2_data[:id]}",
@@ -152,7 +150,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
   context 'delete' do
 
     it "submits a DELETE request for a scheduled maintenance period" do
-      flapjack.given("a scheduled maintenance period with id '#{scheduled_maintenance_data[:id]}' exists").
+      flapjack.given("a scheduled maintenance period exists").
         upon_receiving("a DELETE request for a scheduled maintenance period").
         with(:method => :delete,
              :path => "/scheduled_maintenances/#{scheduled_maintenance_data[:id]}").
@@ -165,7 +163,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
     end
 
     it "submits a DELETE request for several scheduled maintenance periods" do
-      flapjack.given("scheduled maintenance periods with ids '#{scheduled_maintenance_data[:id]}' and '#{scheduled_maintenance_2_data[:id]}' exist").
+      flapjack.given("two scheduled maintenance periods exist").
         upon_receiving("a DELETE request for a scheduled maintenance period").
         with(:method => :delete,
              :path => "/scheduled_maintenances/#{scheduled_maintenance_data[:id]},#{scheduled_maintenance_2_data[:id]}").

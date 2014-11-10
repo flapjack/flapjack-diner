@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Reports, :pact => true do
 
-  include_context 'fixture data'
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -40,7 +38,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
       it "submits a GET request for a #{report_type} report on all checks" do
         data = [report_data(report_type, linked_check)]
 
-        flapjack.given("a check with id '#{check_data[:id]}' exists").
+        flapjack.given("a check exists").
           upon_receiving("a GET request for a #{report_type} report on all checks").
           with(:method => :get,
                :path => "/#{report_type}_reports").
@@ -56,7 +54,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
       it "submits a GET request for a #{report_type} report on one check" do
         data = [report_data(report_type, linked_check)]
 
-        flapjack.given("a check with id '#{check_data[:id]}' exists").
+        flapjack.given("a check exists").
           upon_receiving("a GET request for a #{report_type} report on a single check").
           with(:method => :get,
                :path => "/#{report_type}_reports/#{check_data[:id]}").
@@ -73,7 +71,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
         data = [report_data(report_type, linked_check),
                 report_data(report_type, linked_check_2)]
 
-        flapjack.given("checks with ids '#{check_data[:id]}' and '#{check_2_data[:id]}' exist").
+        flapjack.given("two checks exist").
           upon_receiving("a GET request for a #{report_type} report on two checks").
           with(:method => :get,
                :path => "/#{report_type}_reports/#{check_data[:id]},#{check_2_data[:id]}").
@@ -99,7 +97,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
       it "submits a time-limited GET request for a #{report_type} report on all checks" do
         data = [report_data(report_type, linked_check)]
 
-        flapjack.given("a check with id '#{check_data[:id]}' exists").
+        flapjack.given("a check exists").
           upon_receiving("a time limited GET request for a #{report_type} report on all checks").
           with(:method => :get,
                :path => "/#{report_type}_reports",
@@ -117,7 +115,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
       it "submits a time-limited GET request for a #{report_type} report on one check" do
         data = [report_data(report_type, linked_check)]
 
-        flapjack.given("a check with id '#{check_data[:id]}' exists").
+        flapjack.given("a check exists").
           upon_receiving("a time limited GET request for a #{report_type} report on a single check").
           with(:method => :get,
                :path => "/#{report_type}_reports/#{check_data[:id]}",
@@ -136,7 +134,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
         data = [report_data(report_type, linked_check),
                 report_data(report_type, linked_check_2)]
 
-        flapjack.given("checks with ids '#{check_data[:id]}' and '#{check_2_data[:id]}' exist").
+        flapjack.given("two checks exist").
           upon_receiving("a time-limited GET request for a #{report_type} report on two checks").
           with(:method => :get,
                :path => "/#{report_type}_reports/#{check_data[:id]},#{check_2_data[:id]}",

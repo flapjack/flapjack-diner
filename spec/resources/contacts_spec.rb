@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
-  include_context 'fixture data'
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -47,7 +45,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     end
 
     it "submits a POST request but a contact with that id exists" do
-      flapjack.given("a contact with id '#{contact_data[:id]}' exists").
+      flapjack.given("a contact exists").
         upon_receiving("a POST request with one contact").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -70,7 +68,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     context 'GET all contacts' do
 
       it "has some data" do
-        flapjack.given("a contact with id '#{contact_data[:id]}' exists").
+        flapjack.given("a contact exists").
           upon_receiving("a GET request for all contacts").
           with(:method => :get, :path => '/contacts').
           will_respond_with(
@@ -103,7 +101,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     context 'GET a single contact' do
 
       it "finds the contact" do
-        flapjack.given("a contact with id '#{contact_data[:id]}' exists").
+        flapjack.given("a contact exists").
           upon_receiving("a GET request for a single contact").
           with(:method => :get, :path => "/contacts/#{contact_data[:id]}").
           will_respond_with(
@@ -137,7 +135,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
   context 'update' do
     it 'submits a PUT request for a contact' do
-      flapjack.given("a contact with id '#{contact_data[:id]}' exists").
+      flapjack.given("a contact exists").
         upon_receiving("a PUT request for a single contact").
         with(:method => :put,
              :path => "/contacts/#{contact_data[:id]}",
@@ -152,7 +150,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     end
 
     it 'submits a PUT request for several contacts' do
-      flapjack.given("contacts with ids '#{contact_data[:id]}' and '#{contact_2_data[:id]}' exist").
+      flapjack.given("two contacts exist").
         upon_receiving("a PUT request for two contacts").
         with(:method => :put,
              :path => "/contacts/#{contact_data[:id]},#{contact_2_data[:id]}",
@@ -190,7 +188,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
   context 'delete' do
     it "submits a DELETE request for one contact" do
-      flapjack.given("a contact with id '#{contact_data[:id]}' exists").
+      flapjack.given("a contact exists").
         upon_receiving("a DELETE request for a single contact").
         with(:method => :delete,
              :path => "/contacts/#{contact_data[:id]}",
@@ -203,7 +201,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     end
 
     it "submits a DELETE request for several contacts" do
-      flapjack.given("contacts with ids '#{contact_data[:id]}' and '#{contact_2_data[:id]}' exist").
+      flapjack.given("two contacts exist").
         upon_receiving("a DELETE request for two contacts").
         with(:method => :delete,
              :path => "/contacts/#{contact_data[:id]},#{contact_2_data[:id]}",
