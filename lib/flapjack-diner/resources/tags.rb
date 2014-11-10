@@ -15,7 +15,7 @@ module Flapjack
             validate :query => :id,   :as => :string
             validate :query => :name, :as => [:required, :string]
           end
-          perform_post('tags', '/tags', nil, :tags => data)
+          perform_post('tags', '/tags', nil, data)
         end
 
         def tags(*ids)
@@ -23,13 +23,11 @@ module Flapjack
         end
 
         def update_tags(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
-          raise "'update_tags' requires at least one tag id " \
-                'parameter' if ids.nil? || ids.empty?
+          data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :name,                  :as => :string
+            validate :query => :name, :as => :string
           end
-          perform_put('tags', "/tags", ids, :tags => data)
+          perform_put('tags', "/tags", data)
         end
 
         def delete_tags(*ids)

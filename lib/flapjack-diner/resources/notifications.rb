@@ -16,8 +16,7 @@ module Flapjack
           validate_params(data) do
             validate :query => :summary, :as => :string
           end
-          perform_post('test_notifications', '/test_notifications', ids,
-                       :test_notifications => data)
+          perform_post('test_notifications', '/test_notifications', ids, data)
         end
       end
     end

@@ -33,51 +33,48 @@ module Flapjack
       def perform_post(name, path, ids = [], data = nil)
         @last_error = nil
         req_uri = build_uri(path, ids)
-        log_request('POST', req_uri, data)
+        log_request('POST', req_uri, name.to_sym => data)
         opts = if data.nil?
                  {}
                else
-                 {:body => prepare_nested_query(data).to_json,
+                 {:body => prepare_nested_query(name.to_sym => data).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
         handled = handle_response(post(req_uri.request_uri, opts))
 
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name] :
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name.to_s] :
                  handled
 
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_put(name, path, ids = [], data = nil)
+      def perform_put(name, path, data = nil)
         @last_error = nil
 
-        # TODO don't change incoming data
-        case data[name.to_sym]
+        case data
         when Hash
-          ids_len  = ids.size
-          raise "Number of data blocks (1) did not match number of ids " \
-                "of ids (#{ids_len})" unless ids_len == 1
-          data[name.to_sym][:id] = ids.first
+          raise "Update data does not contain :id" unless data[:id]
+          ids = [data[:id]]
         when Array
-          data_len = data.size
-          ids_len  = ids.size
-          raise "Number of data blocks (#{data_len}) did not match number " \
-                "of ids (#{ids_len})" unless data_len == ids_len
-          data[name.to_sym].each {|d| d[:id] = ids.shift }
+          ids = data.each_with_object([]) do |d, o|
+            d_id = d[:id]
+            o << d_id unless d_id.nil? || d_id.empty?
+          end
+          raise "Update data must each contain :id" unless ids.size == data.size
         end
 
         req_uri = build_uri(path, ids)
-        log_request('PUT', req_uri, data)
+        log_request('PUT', req_uri, name.to_sym => data)
 
         opts = if data.nil?
                  {}
                else
-                 {:body => prepare_nested_query(data).to_json,
+                 {:body => prepare_nested_query(name.to_sym => data).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
         handled = handle_response(put(req_uri.request_uri, opts))
 
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name] :
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name.to_s] :
                  handled
 
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
@@ -183,42 +180,11 @@ module Flapjack
         args.select {|a| a.is_a?(String) || a.is_a?(Integer) }
       end
 
-      def unwrap_params(*args)
-        args.each_with_object({}) do |e, a|
-          a.update(symbolize(e)) if e.is_a?(Hash)
-        end
-      end
-
       def unwrap_data(*args)
-        data_h = args.select {|a| a.is_a?(Hash) }
-        data_a = args.select {|a| a.is_a?(Array) && a.all? {|av| av.is_a?(Hash) } }
-          .reduce([], &:'+')
-
-        raise 'Data may be passed as Hashes or an Array of Hashes, not' \
-              'both' unless data_h.empty? || data_a.empty?
-
-        data = data_h
-        data = data_a if data.empty?
-        data = data.first if (data.size == 1)
-        data = nil if data.empty?
-        data
-      end
-
-      def patch_replace(type, k, v)
-        {:op    => 'replace',
-         :path  => "/#{type}/0/#{k}",
-         :value => v}
-      end
-
-      def patch_add(type, linked, v)
-        {:op    => 'add',
-         :path  => "/#{type}/0/links/#{linked}/-",
-         :value => v}
-      end
-
-      def patch_remove(type, linked, v)
-        {:op    => 'remove',
-         :path  => "/#{type}/0/links/#{linked}/#{v}"}
+        data = args.reject {|a| a.is_a?(String) || a.is_a?(Integer) }
+        raise "Data must be passed as a Hash, or multiple Hashes" unless data.all? {|a| a.is_a?(Hash) }
+        return symbolize(data.first) if data.size == 1
+         data.each_with_object([]) {|d, o| o << symbolize(d) }
       end
 
       # used for the JSON data hashes in POST, PUT, DELETE

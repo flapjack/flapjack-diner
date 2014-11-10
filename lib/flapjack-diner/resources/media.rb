@@ -18,7 +18,7 @@ module Flapjack
                      :as => [:required, :integer]
 
           end
-          perform_post('media', "/media", nil, :media => data)
+          perform_post('media', "/media", nil, data)
         end
 
         def media(*ids)
@@ -26,15 +26,13 @@ module Flapjack
         end
 
         def update_media(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
-          raise "'update_media' requires at least one check id " \
-                'parameter' if ids.nil? || ids.empty?
+          data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :address, :as => :string
             validate :query => [:interval, :rollup_threshold],
                      :as => :integer
           end
-          perform_put('media', "/media", ids, :media => data)
+          perform_put('media', "/media", data)
         end
 
         def delete_media(*ids)

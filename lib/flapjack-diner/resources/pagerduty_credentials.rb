@@ -16,7 +16,7 @@ module Flapjack
             validate :query => [:service_key], :as => [:required, :string]
           end
           perform_post('pagerduty_credentials', "/pagerduty_credentials",
-                       nil, :pagerduty_credentials => data)
+                       nil, data)
         end
 
         def pagerduty_credentials(*ids)
@@ -24,15 +24,12 @@ module Flapjack
         end
 
         def update_pagerduty_credentials(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
-          raise "'update_pagerduty_credentials' requires at least one check id " \
-                'parameter' if ids.nil? || ids.empty?
+          data = unwrap_data(*args)
           validate_params(data) do
             validate :query => [:service_key, :subdomain,
                                 :username, :password], :as => :string
           end
-          perform_put('pagerduty_credentials', "/pagerduty_credentials", ids,
-                      :pagerduty_credentials => data)
+          perform_put('pagerduty_credentials', "/pagerduty_credentials", data)
         end
 
         def delete_pagerduty_credentials(*ids)

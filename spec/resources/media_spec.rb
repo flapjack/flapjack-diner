@@ -41,7 +41,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
           :body => {:media => media_data} )
 
-      result = Flapjack::Diner.create_media(media_data)
+      result = Flapjack::Diner.create_media(*media_data)
       expect(result).not_to be_nil
       expect(result).to eq(media_data)
     end
@@ -104,62 +104,60 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
   end
 
-  # context 'update' do
+  context 'update' do
 
-  #   it "submits a PATCH request for one medium" do
-  #     flapjack.given("a contact with id 'abc' has email and sms media").
-  #       upon_receiving("a PATCH request for email media").
-  #       with(:method => :patch,
-  #            :path => '/media/abc_email',
-  #            :headers => {'Content-Type'=>'application/json-patch+json'},
-  #            :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
-  #                      {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}]).
-  #       will_respond_with(
-  #         :status => 204,
-  #         :body => '' )
+    it 'submits a PUT request for a medium' do
+      flapjack.given("a medium with id '#{email_data[:id]}' exists").
+        upon_receiving("a PUT request for a single medium").
+        with(:method => :put,
+             :path => "/media/#{email_data[:id]}",
+             :body => {:media => {:id => email_data[:id], :interval => 50}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-  #     result = Flapjack::Diner.update_media('abc_email',
-  #       :interval => 50, :rollup_threshold => 3)
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
+      result = Flapjack::Diner.update_media(:id => email_data[:id], :interval => 50)
+      expect(result).to be_a(TrueClass)
+    end
 
-  #   it "submits a PATCH request for several media" do
-  #     flapjack.given("a contact with id 'abc' has email and sms media").
-  #       upon_receiving("a PATCH request for email and sms media").
-  #       with(:method => :patch,
-  #            :path => '/media/abc_email,abc_sms',
-  #            :headers => {'Content-Type'=>'application/json-patch+json'},
-  #            :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50},
-  #                      {:op => 'replace', :path => '/media/0/rollup_threshold', :value => 3}]).
-  #       will_respond_with(
-  #         :status => 204,
-  #         :body => '' )
+    it 'submits a PUT request for several media' do
+      flapjack.given("media with ids '#{email_data[:id]}' and '#{sms_data[:id]}' exist").
+        upon_receiving("a PUT request for two media").
+        with(:method => :put,
+             :path => "/media/#{email_data[:id]},#{sms_data[:id]}",
+             :body => {:media => [{:id => email_data[:id], :interval => 50},
+             {:id => sms_data[:id], :rollup_threshold => 5}]},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-  #     result = Flapjack::Diner.update_media('abc_email', 'abc_sms',
-  #       :interval => 50, :rollup_threshold => 3)
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
+      result = Flapjack::Diner.update_media(
+        {:id => email_data[:id], :interval => 50},
+        {:id => sms_data[:id], :rollup_threshold => 5})
+      expect(result).to be_a(TrueClass)
+    end
 
-  #   it "can't find the contact with media to update" do
-  #     flapjack.given("no media exist").
-  #       upon_receiving("a PATCH request for email media").
-  #       with(:method => :patch,
-  #            :path => '/media/abc_email',
-  #            :headers => {'Content-Type'=>'application/json-patch+json'},
-  #            :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50}]).
-  #       will_respond_with(:status => 404,
-  #                         :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-  #                         :body => {:errors => ["could not find Medium records, ids: 'abc_email'"]} )
+    it "can't find the medium to update" do
+      flapjack.given("no medium exists").
+        upon_receiving("a PUT request for a single medium").
+        with(:method => :put,
+             :path => "/media/#{email_data[:id]}",
+             :body => {:media => {:id => email_data[:id], :interval => 50}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find Medium records, ids: '#{email_data[:id]}'"]} )
 
-  #     result = Flapjack::Diner.update_media('abc_email', :interval => 50)
-  #     expect(result).to be_nil
-  #     expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-  #       :errors => ["could not find Medium records, ids: 'abc_email'"])
-  #   end
+      result = Flapjack::Diner.update_media(:id => email_data[:id], :interval => 50)
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find Medium records, ids: '#{email_data[:id]}'"])
+    end
 
-  # end
+  end
 
   context 'delete' do
     it "submits a DELETE request for one medium" do

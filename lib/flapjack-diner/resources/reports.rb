@@ -17,12 +17,12 @@ module Flapjack
         %w(scheduled_maintenance unscheduled_maintenance
            downtime outage).each do |report_type|
           define_method("#{report_type}_reports") do |*args|
-            ids, params = unwrap_ids(*args), unwrap_params(*args)
-            validate_params(params) do
+            ids, data = unwrap_ids(*args), unwrap_data(*args)
+            validate_params(data) do
               validate :query => [:start_time, :end_time], :as => :time
             end
             perform_get("#{report_type}_reports",
-                        "/#{report_type}_reports", ids, params)
+                        "/#{report_type}_reports", ids, data)
           end
         end
       end

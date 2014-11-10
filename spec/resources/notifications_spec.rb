@@ -56,7 +56,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
             :status => 201,
             :body => {:test_notifications => notifications_data})
 
-        result = Flapjack::Diner.create_test_notifications(check_data[:id], notifications_data)
+        result = Flapjack::Diner.create_test_notifications(check_data[:id], *notifications_data)
         expect(result).not_to be_nil
         expect(result).to eq(notifications_data)
       end
@@ -73,7 +73,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
             :status => 201,
             :body => {:test_notifications => notifications_data})
 
-        result = Flapjack::Diner.create_test_notifications(check_data[:id], check_2_data[:id], notifications_data)
+        result = Flapjack::Diner.create_test_notifications(check_data[:id], check_2_data[:id], *notifications_data)
         expect(result).not_to be_nil
         expect(result).to eq(notifications_data)
       end

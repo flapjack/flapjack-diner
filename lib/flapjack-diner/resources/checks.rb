@@ -19,7 +19,7 @@ module Flapjack
                      :as => :integer
 
           end
-          perform_post('checks', '/checks', nil, :checks => data)
+          perform_post('checks', '/checks', nil, data)
         end
 
         def checks(*ids)
@@ -27,16 +27,14 @@ module Flapjack
         end
 
         def update_checks(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
-          raise "'update_checks' requires at least one check id " \
-                'parameter' if ids.nil? || ids.empty?
+          data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :name,                  :as => :string
             validate :query => :enabled,               :as => :boolean
             validate :query => [:initial_failure_delay, :repeat_failure_delay],
                      :as => :integer
           end
-          perform_put('checks', "/checks", ids, :checks => data)
+          perform_put('checks', "/checks", data)
         end
 
         # TODO should allow DELETE when API does

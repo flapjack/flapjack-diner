@@ -47,7 +47,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
           :body => {:rules => rules_data}
         )
 
-      result = Flapjack::Diner.create_rules(rules_data)
+      result = Flapjack::Diner.create_rules(*rules_data)
       expect(result).not_to be_nil
       expect(result).to eq(rules_data)
     end
@@ -119,63 +119,60 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
   end
 
-  # context 'update' do
+  context 'update' do
 
-    # it "submits a PATCH request for one rule" do
-    #   flapjack.given("a contact 'abc' with generic rule '05983623-fcef-42da-af44-ed6990b500fa' exists").
-    #     upon_receiving("a PATCH request to change properties for a single rule").
-    #     with(:method => :patch,
-    #          :path => '/rules/05983623-fcef-42da-af44-ed6990b500fa',
-    #          :body => [{:op => 'replace', :path => '/rules/0/warning_blackhole', :value => false}],
-    #          :headers => {'Content-Type'=>'application/json-patch+json'}).
-    #     will_respond_with(
-    #       :status => 204,
-    #       :body => '')
+    it 'submits a PUT request for a rule' do
+      flapjack.given("a rule with id '#{rule_data[:id]}' exists").
+        upon_receiving("a PUT request for a single rule").
+        with(:method => :put,
+             :path => "/rules/#{rule_data[:id]}",
+             :body => {:rules => {:id => rule_data[:id], :time_restrictions => []}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-    #   result = Flapjack::Diner.update_rules('05983623-fcef-42da-af44-ed6990b500fa',
-    #     :warning_blackhole => false)
-    #   expect(result).not_to be_nil
-    #   expect(result).to be_truthy
-    # end
+      result = Flapjack::Diner.update_rules(:id => rule_data[:id], :time_restrictions => [])
+      expect(result).to be_a(TrueClass)
+    end
 
-    # it "submits a PATCH request for several rules" do
-    #   flapjack.given("a contact 'abc' with generic rule '05983623-fcef-42da-af44-ed6990b500fa' and rule '20f182fc-6e32-4794-9007-97366d162c51' exists").
-    #     upon_receiving("a PATCH request to change properties for two rules").
-    #     with(:method => :patch,
-    #          :path => '/rules/05983623-fcef-42da-af44-ed6990b500fa,20f182fc-6e32-4794-9007-97366d162c51',
-    #          :body => [{:op => 'replace', :path => '/rules/0/warning_blackhole', :value => false}],
-    #          :headers => {'Content-Type'=>'application/json-patch+json'}).
-    #     will_respond_with(
-    #       :status => 204,
-    #       :body => '')
+    it 'submits a PUT request for several rules' do
+      flapjack.given("rules with ids '#{rule_data[:id]}' and '#{rule_2_data[:id]}' exist").
+        upon_receiving("a PUT request for two rules").
+        with(:method => :put,
+             :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}",
+             :body => {:rules => [{:id => rule_data[:id], :time_restrictions => []},
+             {:id => rule_2_data[:id], :enabled => true}]},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-    #   result = Flapjack::Diner.update_rules('05983623-fcef-42da-af44-ed6990b500fa',
-    #     '20f182fc-6e32-4794-9007-97366d162c51', :warning_blackhole => false)
-    #   expect(result).not_to be_nil
-    #   expect(result).to be_truthy
-    # end
+      result = Flapjack::Diner.update_rules(
+        {:id => rule_data[:id], :time_restrictions => []},
+        {:id => rule_2_data[:id], :enabled => true})
+      expect(result).to be_a(TrueClass)
+    end
 
-    # it "can't find the rule to update" do
-    #   flapjack.given("no rule exists").
-    #     upon_receiving("a PATCH request to change properties for a single rule").
-    #     with(:method => :patch,
-    #          :path => '/rules/05983623-fcef-42da-af44-ed6990b500fa',
-    #          :body => [{:op => 'replace', :path => '/rules/0/warning_blackhole', :value => false}],
-    #          :headers => {'Content-Type'=>'application/json-patch+json'}).
-    #     will_respond_with(
-    #       :status => 404,
-    #       :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-    #       :body => {:errors => ["could not find Rule records, ids: '05983623-fcef-42da-af44-ed6990b500fa'"]}
-    #     )
+    it "can't find the rule to update" do
+      flapjack.given("no rule exists").
+        upon_receiving("a PUT request for a single rule").
+        with(:method => :put,
+             :path => "/rules/#{rule_data[:id]}",
+             :body => {:rules => {:id => rule_data[:id], :time_restrictions => []}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find Rule records, ids: '#{rule_data[:id]}'"]} )
 
-    #   result = Flapjack::Diner.update_rules('05983623-fcef-42da-af44-ed6990b500fa',
-    #     :warning_blackhole => false)
-    #   expect(result).to be_nil
-    #   expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-    #     :errors => ["could not find Rule records, ids: '05983623-fcef-42da-af44-ed6990b500fa'"])
-    # end
+      result = Flapjack::Diner.update_rules(:id => rule_data[:id], :time_restrictions => [])
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find Rule records, ids: '#{rule_data[:id]}'"])
+    end
 
-  # end
+  end
 
   context 'delete' do
     it "submits a DELETE request for a rule" do

@@ -16,7 +16,7 @@ module Flapjack
             validate :query => :id, :as => :string
             # TODO proper validation of time_restrictions field
           end
-          perform_post('rules', "/rules", nil, :rules => data)
+          perform_post('rules', "/rules", nil, data)
         end
 
         def rules(*ids)
@@ -24,13 +24,11 @@ module Flapjack
         end
 
         def update_rules(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
-          raise "'update_rules' requires at least one check id " \
-                'parameter' if ids.nil? || ids.empty?
+          data = unwrap_data(*args)
           validate_params(data) do
             # TODO proper validation of time_restrictions field
           end
-          perform_put('rules', "/rules", ids, :rules => data)
+          perform_put('rules', "/rules", data)
         end
 
         def delete_rules(*ids)

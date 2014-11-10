@@ -41,7 +41,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
           :body => {'contacts' => contacts_data})
 
-      result = Flapjack::Diner.create_contacts(contacts_data)
+      result = Flapjack::Diner.create_contacts(*contacts_data)
       expect(result).not_to be_nil
       expect(result).to eq(contacts_data)
     end
@@ -147,7 +147,25 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           :status => 204,
           :body => '' )
 
-      result = Flapjack::Diner.update_contacts(contact_data[:id], :name => 'Hello There')
+      result = Flapjack::Diner.update_contacts(:id => contact_data[:id], :name => 'Hello There')
+      expect(result).to be_a(TrueClass)
+    end
+
+    it 'submits a PUT request for several contacts' do
+      flapjack.given("contacts with ids '#{contact_data[:id]}' and '#{contact_2_data[:id]}' exist").
+        upon_receiving("a PUT request for two contacts").
+        with(:method => :put,
+             :path => "/contacts/#{contact_data[:id]},#{contact_2_data[:id]}",
+             :body => {:contacts => [{:id => contact_data[:id], :name => 'Hello There'},
+                                     {:id => contact_2_data[:id], :name => 'Goodbye Now'}]},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
+
+      result = Flapjack::Diner.update_contacts(
+        {:id => contact_data[:id], :name => 'Hello There'},
+        {:id => contact_2_data[:id], :name => 'Goodbye Now'})
       expect(result).to be_a(TrueClass)
     end
 
@@ -161,12 +179,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find Check records, ids: '#{contact_data[:id]}'"]} )
+          :body => {:errors => ["could not find Contact records, ids: '#{contact_data[:id]}'"]} )
 
-      result = Flapjack::Diner.update_contacts(contact_data[:id], :name => 'Hello There')
+      result = Flapjack::Diner.update_contacts(:id => contact_data[:id], :name => 'Hello There')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find Check records, ids: '#{contact_data[:id]}'"])
+        :errors => ["could not find Contact records, ids: '#{contact_data[:id]}'"])
     end
   end
 

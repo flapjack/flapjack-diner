@@ -47,7 +47,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
             :status => 201,
             :body => {'scheduled_maintenances' => scheduled_maintenances_data})
 
-        result = Flapjack::Diner.create_scheduled_maintenances(scheduled_maintenances_data)
+        result = Flapjack::Diner.create_scheduled_maintenances(*scheduled_maintenances_data)
         expect(result).not_to be_nil
         expect(result).to eq(scheduled_maintenances_data)
       end
@@ -85,7 +85,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
             :status => 201,
             :body => {'unscheduled_maintenances' => unscheduled_maintenances_data})
 
-        result = Flapjack::Diner.create_unscheduled_maintenances(unscheduled_maintenances_data)
+        result = Flapjack::Diner.create_unscheduled_maintenances(*unscheduled_maintenances_data)
         expect(result).not_to be_nil
         expect(result).to eq(unscheduled_maintenances_data)
       end
@@ -94,58 +94,60 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
   end
 
-  # context 'update' do
+  context 'update' do
 
-  #   it "submits a PATCH request for unscheduled maintenances on a check" do
-  #     flapjack.given("a check 'www.example.com:SSH' exists").
-  #       upon_receiving("a PATCH request for an unscheduled maintenance period").
-  #       with(:method => :patch,
-  #            :path => '/unscheduled_maintenances/checks/www.example.com:SSH',
-  #            :body => [{:op => 'replace', :path => '/unscheduled_maintenances/0/end_time', :value => time.iso8601}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(
-  #         :status => 204,
-  #         :body => '')
+    it 'submits a PUT request for an unscheduled maintenance period' do
+      flapjack.given("an unscheduled maintenance period with id '#{check_data[:id]}' exists").
+        upon_receiving("a PUT request for a single unscheduled maintenance period").
+        with(:method => :put,
+             :path => "/unscheduled_maintenances/#{unscheduled_maintenance_data[:id]}",
+             :body => {:unscheduled_maintenances => {:id => unscheduled_maintenance_data[:id], :end_time => time.iso8601}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-  #     result = Flapjack::Diner.update_unscheduled_maintenances_checks('www.example.com:SSH', :end_time => time)
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
+      result = Flapjack::Diner.update_unscheduled_maintenances(:id => unscheduled_maintenance_data[:id], :end_time => time)
+      expect(result).to be_a(TrueClass)
+    end
 
-  #   it "submits a PATCH request for unscheduled maintenances on several checks" do
-  #     flapjack.given("checks 'www.example.com:SSH' and 'www2.example.com:PING' exist").
-  #       upon_receiving("a PATCH request for an unscheduled maintenance period").
-  #       with(:method => :patch,
-  #            :path => '/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING',
-  #            :body => [{:op => 'replace', :path => '/unscheduled_maintenances/0/end_time', :value => time.iso8601}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(
-  #         :status => 204,
-  #         :body => '')
+    it 'submits a PUT request for several unscheduled maintenance periods' do
+      flapjack.given("unscheduled maintenance periods with ids '#{unscheduled_maintenance_data[:id]}' and '#{unscheduled_maintenance_2_data[:id]}' exist").
+        upon_receiving("a PUT request for two unscheduled maintenance periods").
+        with(:method => :put,
+             :path => "/unscheduled_maintenances/#{unscheduled_maintenance_data[:id]},#{unscheduled_maintenance_2_data[:id]}",
+             :body => {:unscheduled_maintenances => [{:id => unscheduled_maintenance_data[:id], :end_time => time.iso8601},
+             {:id => unscheduled_maintenance_2_data[:id], :end_time => (time + 3600).iso8601}]},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-  #     result = Flapjack::Diner.update_unscheduled_maintenances_checks('www.example.com:SSH', 'www2.example.com:PING', :end_time => time)
-  #     expect(result).not_to be_nil
-  #     expect(result).to be_truthy
-  #   end
+      result = Flapjack::Diner.update_unscheduled_maintenances(
+        {:id => unscheduled_maintenance_data[:id], :end_time => time},
+        {:id => unscheduled_maintenance_2_data[:id], :end_time => time + 3600})
+      expect(result).to be_a(TrueClass)
+    end
 
-  #   it "can't find the check to update maintenance for" do
-  #     flapjack.given("no check exists").
-  #       upon_receiving("a PATCH request for an unscheduled maintenance period").
-  #       with(:method => :patch,
-  #            :path => '/unscheduled_maintenances/checks/www.example.com:SSH',
-  #            :body => [{:op => 'replace', :path => '/unscheduled_maintenances/0/end_time', :value => time.iso8601}],
-  #            :headers => {'Content-Type'=>'application/json-patch+json'}).
-  #       will_respond_with(
-  #         :status => 404,
-  #         :body => {:errors => ["could not find Check records, ids: 'www.example.com:SSH'"]})
+    it "can't find the unscheduled maintenance period to update" do
+      flapjack.given("no unscheduled maintenance period exists").
+        upon_receiving("a PUT request for a single unscheduled maintenance period").
+        with(:method => :put,
+             :path => "/unscheduled_maintenances/#{unscheduled_maintenance_data[:id]}",
+             :body => {:unscheduled_maintenances => {:id => unscheduled_maintenance_data[:id], :end_time => time.iso8601}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => ["could not find UnscheduledMaintenance records, ids: '#{unscheduled_maintenance_data[:id]}'"]} )
 
-  #     result = Flapjack::Diner.update_unscheduled_maintenances_checks('www.example.com:SSH', :end_time => time)
-  #     expect(result).to be_nil
-  #     expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-  #       :errors => ["could not find Check records, ids: 'www.example.com:SSH'"])
-  #   end
+      result = Flapjack::Diner.update_unscheduled_maintenances(:id => unscheduled_maintenance_data[:id], :end_time => time)
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
+        :errors => ["could not find UnscheduledMaintenance records, ids: '#{unscheduled_maintenance_data[:id]}'"])
+    end
 
-  # end
+  end
 
   context 'delete' do
 
