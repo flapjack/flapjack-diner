@@ -52,7 +52,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
       end
 
       it "submits a GET request for a #{report_type} report on one check" do
-        data = [report_data(report_type, linked_check)]
+        data = report_data(report_type, linked_check)
 
         flapjack.given("a check exists").
           upon_receiving("a GET request for a #{report_type} report on a single check").
@@ -113,7 +113,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
       end
 
       it "submits a time-limited GET request for a #{report_type} report on one check" do
-        data = [report_data(report_type, linked_check)]
+        data = report_data(report_type, linked_check)
 
         flapjack.given("a check exists").
           upon_receiving("a time limited GET request for a #{report_type} report on a single check").

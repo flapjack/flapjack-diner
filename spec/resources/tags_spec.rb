@@ -86,10 +86,10 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:tags => [tag_data]} )
+            :body => {:tags => tag_data} )
 
         result = Flapjack::Diner.tags(tag_data[:id])
-        expect(result).to eq([tag_data])
+        expect(result).to eq(tag_data)
       end
 
       it "can't find tag" do

@@ -48,7 +48,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
   context 'read' do
 
-    let(:links) { {:links => {:contacts => ['c248da6f-ab16-4ce3-9b32-afd4e5f5270e']}} }
+    let(:links) { {} } # {:links => {:contacts => ['c248da6f-ab16-4ce3-9b32-afd4e5f5270e']}} }
 
     it "submits a GET request for all media" do
       # passes rspec, but fails the flapjack server pact run, so can't set
@@ -71,25 +71,25 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "submits a GET request for one medium" do
-      media_data = [sms_data.merge(links)]
+      # media_data = []
 
       flapjack.given("a medium exists").
-        upon_receiving("a GET request for sms media").
+        upon_receiving("a GET request for one medium").
         with(:method => :get, :path => "/media/#{sms_data[:id]}").
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:media => media_data} )
+          :body => {:media => sms_data.merge(links)} )
 
       result = Flapjack::Diner.media(sms_data[:id])
-      expect(result).to eq(media_data)
+      expect(result).to eq(sms_data.merge(links))
     end
 
     it "submits a GET request for several media" do
       media_data = [email_data.merge(links), sms_data.merge(links)]
 
       flapjack.given("two media exist").
-        upon_receiving("a GET request for email and sms media").
+        upon_receiving("a GET request for two media").
         with(:method => :get, :path => "/media/#{email_data[:id]},#{sms_data[:id]}").
         will_respond_with(
           :status => 200,

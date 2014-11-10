@@ -37,10 +37,10 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:pagerduty_credentials => pagerduty_credentials_data} )
+          :body => {:pagerduty_credentials => [pagerduty_credentials_data]} )
 
       result = Flapjack::Diner.pagerduty_credentials
-      expect(result).to eq(pagerduty_credentials_data)
+      expect(result).to eq([pagerduty_credentials_data])
     end
 
     it "submits a GET request for one set of pagerduty credentials" do

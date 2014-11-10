@@ -118,10 +118,10 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:checks => [check_data]} )
+            :body => {:checks => check_data} )
 
         result = Flapjack::Diner.checks(check_data[:id])
-        expect(result).to eq([check_data])
+        expect(result).to eq(check_data)
       end
 
       it "can't find check" do
@@ -138,9 +138,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
           :errors => ["could not find Check records, ids: '#{check_data[:id]}'"])
       end
-
     end
-
   end
 
   context 'update' do

@@ -72,11 +72,11 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:rules => [rule_data]} )
+            :body => {:rules => rule_data} )
 
       result = Flapjack::Diner.rules(rule_data[:id])
       expect(result).not_to be_nil
-      expect(result).to eq([rule_data])
+      expect(result).to eq(rule_data)
     end
 
     it "submits a GET request for several rules" do
