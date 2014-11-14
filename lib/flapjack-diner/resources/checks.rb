@@ -17,7 +17,6 @@ module Flapjack
             validate :query => :enabled, :as => :boolean
             validate :query => [:initial_failure_delay, :repeat_failure_delay],
                      :as => :integer
-
           end
           perform_post('checks', '/checks', nil, data)
         end
