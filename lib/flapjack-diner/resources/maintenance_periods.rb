@@ -15,7 +15,7 @@ module Flapjack
           validate_params(data) do
             validate :query => :id, :as => :string
             validate :query => :start_time, :as => [:required, :time]
-            validate :query => :duration,   :as => [:required, :integer]
+            validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
           end
           perform_post('scheduled_maintenances',
@@ -26,7 +26,7 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :string
-            validate :query => :duration,   :as => [:required, :integer]
+            validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
           end
           perform_post('unscheduled_maintenances',

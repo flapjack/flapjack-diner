@@ -4,8 +4,8 @@ require 'json'
 require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
 
-%w(contacts media pagerduty_credentials checks
-   maintenance_periods notifications reports rules tags).each do |resource|
+%w(contacts media checks maintenance_periods
+   notifications reports rules tags).each do |resource|
   require "flapjack-diner/resources/#{resource}"
 end
 
@@ -26,7 +26,6 @@ module Flapjack
 
       include Flapjack::Diner::Resources::Contacts
       include Flapjack::Diner::Resources::Media
-      include Flapjack::Diner::Resources::PagerdutyCredentials
       include Flapjack::Diner::Resources::Checks
       include Flapjack::Diner::Resources::MaintenancePeriods
       include Flapjack::Diner::Resources::Notifications

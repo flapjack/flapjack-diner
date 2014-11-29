@@ -13,7 +13,8 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :string
-            validate :query => [:type, :address], :as => [:required, :string]
+            validate :query => [:transport, :address],
+              :as => [:required, :string]
             validate :query => [:interval, :rollup_threshold],
                      :as => [:required, :integer]
 
@@ -28,7 +29,7 @@ module Flapjack
         def update_media(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :address, :as => :string
+            validate :query => [:address, :transport], :as => :string
             validate :query => [:interval, :rollup_threshold],
                      :as => :integer
           end
