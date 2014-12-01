@@ -19,7 +19,7 @@ module Flapjack
             validate :query => :summary,    :as => :string
           end
           perform_post('scheduled_maintenances',
-                       '/scheduled_maintenances', nil, data)
+                       '/scheduled_maintenances', data)
         end
 
         def create_unscheduled_maintenances(*args)
@@ -30,7 +30,7 @@ module Flapjack
             validate :query => :summary,    :as => :string
           end
           perform_post('unscheduled_maintenances',
-                       '/unscheduled_maintenances', nil, data)
+                       '/unscheduled_maintenances', data)
         end
 
         def update_unscheduled_maintenances(*args)

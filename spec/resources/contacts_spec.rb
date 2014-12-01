@@ -53,12 +53,16 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         will_respond_with(
           :status => 403,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:errors => ["Contacts already exist with the following ids: #{contact_data[:id]}"]} )
+            :body => {:errors => [{
+              :status => '403',
+              :detail => "Contacts already exist with the following ids: #{contact_data[:id]}"
+            }]}
+          )
 
       result = Flapjack::Diner.create_contacts(contact_data)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 403,
-        :errors => ["Contacts already exist with the following ids: #{contact_data[:id]}"])
+      expect(Flapjack::Diner.last_error).to eq([{:status => '403',
+        :detail => "Contacts already exist with the following ids: #{contact_data[:id]}"}])
     end
 
   end
@@ -121,12 +125,16 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           will_respond_with(
             :status => 404,
             :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:errors => ["could not find Contact records, ids: '#{contact_data[:id]}'"]} )
+            :body => {:errors => [{
+                :status => '404',
+                :detail => "could not find Contact record, id: '#{contact_data[:id]}'"
+              }]}
+            )
 
         result = Flapjack::Diner.contacts(contact_data[:id])
         expect(result).to be_nil
-        expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => ["could not find Contact records, ids: '#{contact_data[:id]}'"])
+        expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+          :detail => "could not find Contact record, id: '#{contact_data[:id]}'"}])
       end
 
     end
@@ -177,12 +185,16 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find Contact records, ids: '#{contact_data[:id]}'"]} )
+          :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find Contact records, ids: '#{contact_data[:id]}'"
+            }]}
+          )
 
       result = Flapjack::Diner.update_contacts(:id => contact_data[:id], :name => 'Hello There')
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find Contact records, ids: '#{contact_data[:id]}'"])
+      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        :detail => "could not find Contact records, ids: '#{contact_data[:id]}'"}])
     end
   end
 
@@ -222,12 +234,16 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find Contact records, ids: '#{contact_data[:id]}'"]} )
+          :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find Contact records, ids: '#{contact_data[:id]}'"
+            }]}
+          )
 
       result = Flapjack::Diner.delete_contacts(contact_data[:id])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find Contact records, ids: '#{contact_data[:id]}'"])
+      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        :detail => "could not find Contact records, ids: '#{contact_data[:id]}'"}])
     end
   end
 

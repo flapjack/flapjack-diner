@@ -30,9 +30,9 @@ module Flapjack
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_post(name, path, ids = [], data = nil)
+      def perform_post(name, path, data = nil)
         @last_error = nil
-        req_uri = build_uri(path, ids)
+        req_uri = build_uri(path)
         log_request('POST', req_uri, name.to_sym => data)
         opts = if data.nil?
                  {}
@@ -112,13 +112,10 @@ module Flapjack
       end
 
       def handle_error(code, parsed)
-        case parsed
-        when Hash
-          err = {'status_code' => code}.merge(parsed)
-          return_keys_as_strings.is_a?(TrueClass) ? err : symbolize(err)
-        else
-          parsed
-        end
+        return parsed unless parsed.is_a?(Hash)
+        parsed = parsed['errors'] if parsed.has_key?('errors')
+        return parsed if return_keys_as_strings.is_a?(TrueClass)
+        symbolize(parsed)
       end
 
       def validate_params(query = {}, &validation)

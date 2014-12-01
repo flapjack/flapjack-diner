@@ -10,13 +10,11 @@ module Flapjack
     module Resources
       module Notifications
         def create_test_notifications(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
-          raise "'create_test_notifications' requires at least " \
-            "one check id parameter" if ids.nil? || ids.empty?
+          data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :summary, :as => :string
           end
-          perform_post('test_notifications', '/test_notifications', ids, data)
+          perform_post('test_notifications', '/test_notifications', data)
         end
       end
     end

@@ -108,14 +108,14 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
       flapjack.given("a medium exists").
         upon_receiving("a PUT request for a single medium").
         with(:method => :put,
-             :path => "/media/#{email_data[:id]}",
-             :body => {:media => {:id => email_data[:id], :interval => 50}},
+             :path => "/media/#{sms_data[:id]}",
+             :body => {:media => {:id => sms_data[:id], :interval => 50}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 204,
           :body => '' )
 
-      result = Flapjack::Diner.update_media(:id => email_data[:id], :interval => 50)
+      result = Flapjack::Diner.update_media(:id => sms_data[:id], :interval => 50)
       expect(result).to be_a(TrueClass)
     end
 
@@ -147,12 +147,16 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find Medium records, ids: '#{email_data[:id]}'"]} )
+          :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find Medium records, ids: '#{email_data[:id]}'"
+            }]}
+          )
 
       result = Flapjack::Diner.update_media(:id => email_data[:id], :interval => 50)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find Medium records, ids: '#{email_data[:id]}'"])
+      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        :detail => "could not find Medium records, ids: '#{email_data[:id]}'"}])
     end
 
   end
@@ -191,14 +195,19 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         with(:method => :delete,
              :path => "/media/#{sms_data[:id]}",
              :body => nil).
-        will_respond_with(:status => 404,
-                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-                          :body => {:errors => ["could not find Medium records, ids: '#{sms_data[:id]}'"]} )
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find Medium records, ids: '#{sms_data[:id]}'"
+            }]}
+          )
 
       result = Flapjack::Diner.delete_media(sms_data[:id])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find Medium records, ids: '#{sms_data[:id]}'"])
+      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        :detail => "could not find Medium records, ids: '#{sms_data[:id]}'"}])
     end
 
   end

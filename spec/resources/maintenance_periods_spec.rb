@@ -72,20 +72,23 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       end
 
       it "creates several unscheduled maintenance periods" do
-        unscheduled_maintenances_data = [unscheduled_maintenance_data,
-                                         unscheduled_maintenance_2_data]
+        unscheduled_maintenances_data =
         flapjack.given("no unscheduled maintenance period exists").
           upon_receiving("a POST request with two unscheduled maintenance periods").
           with(:method => :post, :path => '/unscheduled_maintenances',
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:unscheduled_maintenances => unscheduled_maintenances_data}).
+               :body => {:unscheduled_maintenances => [unscheduled_maintenance_data,
+                                                       unscheduled_maintenance_2_data]}).
           will_respond_with(
             :status => 201,
-            :body => {'unscheduled_maintenances' => unscheduled_maintenances_data})
+            :body => {'unscheduled_maintenances' => [unscheduled_maintenance_data.merge(:links => {:check => nil}),
+                                                     unscheduled_maintenance_2_data.merge(:links => {:check => nil})]})
 
-        result = Flapjack::Diner.create_unscheduled_maintenances(*unscheduled_maintenances_data)
+        result = Flapjack::Diner.create_unscheduled_maintenances(unscheduled_maintenance_data,
+                                                                 unscheduled_maintenance_2_data)
         expect(result).not_to be_nil
-        expect(result).to eq(unscheduled_maintenances_data)
+        expect(result).to eq([unscheduled_maintenance_data.merge(:links => {:check => nil}),
+                              unscheduled_maintenance_2_data.merge(:links => {:check => nil})])
       end
 
     end
@@ -137,12 +140,16 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find UnscheduledMaintenance records, ids: '#{unscheduled_maintenance_data[:id]}'"]} )
+          :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find UnscheduledMaintenance records, ids: '#{unscheduled_maintenance_data[:id]}'"
+            }]}
+          )
 
       result = Flapjack::Diner.update_unscheduled_maintenances(:id => unscheduled_maintenance_data[:id], :end_time => time)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find UnscheduledMaintenance records, ids: '#{unscheduled_maintenance_data[:id]}'"])
+      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        :detail => "could not find UnscheduledMaintenance records, ids: '#{unscheduled_maintenance_data[:id]}'"}])
     end
 
   end
@@ -164,7 +171,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
     it "submits a DELETE request for several scheduled maintenance periods" do
       flapjack.given("two scheduled maintenance periods exist").
-        upon_receiving("a DELETE request for a scheduled maintenance period").
+        upon_receiving("a DELETE request for two scheduled maintenance periods").
         with(:method => :delete,
              :path => "/scheduled_maintenances/#{scheduled_maintenance_data[:id]},#{scheduled_maintenance_2_data[:id]}").
         will_respond_with(
@@ -177,21 +184,23 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
     it "can't find the scheduled maintenance period to delete" do
       flapjack.given("no scheduled maintenance period exists").
-        upon_receiving("a DELETE request for a single scheduled maintenance period").
+        upon_receiving("a DELETE request for a scheduled maintenance period").
         with(:method => :delete,
              :path => "/scheduled_maintenances/#{scheduled_maintenance_data[:id]}",
              :body => nil).
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find ScheduledMaintenance records, ids: '#{scheduled_maintenance_data[:id]}'"]}
-        )
+          :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find ScheduledMaintenance records, ids: '#{scheduled_maintenance_data[:id]}'"
+            }]}
+          )
 
       result = Flapjack::Diner.delete_scheduled_maintenances(scheduled_maintenance_data[:id])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find ScheduledMaintenance records, ids: '#{scheduled_maintenance_data[:id]}'"])
-
+      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        :detail => "could not find ScheduledMaintenance records, ids: '#{scheduled_maintenance_data[:id]}'"}])
     end
 
   end

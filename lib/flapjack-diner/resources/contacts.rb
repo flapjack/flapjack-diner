@@ -16,7 +16,7 @@ module Flapjack
             validate :query => :name,       :as => [:required, :string]
             validate :query => :timezone,   :as => :string
           end
-          perform_post('contacts', '/contacts', nil, data)
+          perform_post('contacts', '/contacts', data)
         end
 
         def contacts(*ids)

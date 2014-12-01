@@ -15,81 +15,98 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
       it "submits a POST request for a check" do
         flapjack.given("a check exists").
           upon_receiving("a POST request with one test notification").
-          with(:method => :post, :path => "/test_notifications/#{check_data[:id]}",
+          with(:method => :post, :path => "/test_notifications",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:test_notifications => notification_data}).
+               :body => {:test_notifications => notification_data.merge(:links => {:checks => [check_data[:id]]})}).
           will_respond_with(
             :status => 201,
-            :body => {:test_notifications => notification_data})
+            :body => {:test_notifications => notification_data.merge(:links => {:checks => [check_data[:id]]})})
 
-        result = Flapjack::Diner.create_test_notifications(check_data[:id], notification_data)
+        result = Flapjack::Diner.create_test_notifications(notification_data.merge(:links => {:checks => [check_data[:id]]}))
         expect(result).not_to be_nil
-        expect(result).to eq(notification_data)
+        expect(result).to eq(notification_data.merge(:links => {:checks => [check_data[:id]]}))
       end
 
       it "submits a POST request for several checks" do
         flapjack.given("two checks exist").
           upon_receiving("a POST request with one test notification").
-          with(:method => :post, :path => "/test_notifications/#{check_data[:id]},#{check_2_data[:id]}",
+          with(:method => :post, :path => "/test_notifications",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:test_notifications => notification_data}).
+               :body => {:test_notifications => notification_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]})}).
           will_respond_with(
             :status => 201,
-            :body => {:test_notifications => notification_data})
+            :body => {:test_notifications => notification_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]})})
 
-        result = Flapjack::Diner.create_test_notifications(check_data[:id], check_2_data[:id], notification_data)
+        result = Flapjack::Diner.create_test_notifications(notification_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]}))
         expect(result).not_to be_nil
-        expect(result).to eq(notification_data)
+        expect(result).to eq(notification_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]}))
       end
 
       it "submits a POST request for multiple notifications on a check" do
-        notifications_data = [notification_data, notification_2_data]
 
         flapjack.given("a check exists").
           upon_receiving("a POST request with two test notifications").
-          with(:method => :post, :path => "/test_notifications/#{check_data[:id]}",
+          with(:method => :post, :path => "/test_notifications",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:test_notifications => notifications_data}).
+               :body => {:test_notifications => [notification_data.merge(:links => {:checks => [check_data[:id]]}),
+                 notification_2_data.merge(:links => {:checks => [check_data[:id]]})]}).
           will_respond_with(
             :status => 201,
-            :body => {:test_notifications => notifications_data})
+            :body => {:test_notifications => [notification_data.merge(:links => {:checks => [check_data[:id]]}),
+              notification_2_data.merge(:links => {:checks => [check_data[:id]]})]})
 
-        result = Flapjack::Diner.create_test_notifications(check_data[:id], *notifications_data)
+        result = Flapjack::Diner.create_test_notifications(notification_data.merge(:links => {:checks => [check_data[:id]]}),
+          notification_2_data.merge(:links => {:checks => [check_data[:id]]}))
         expect(result).not_to be_nil
-        expect(result).to eq(notifications_data)
+        expect(result).to eq([notification_data.merge(:links => {:checks => [check_data[:id]]}),
+          notification_2_data.merge(:links => {:checks => [check_data[:id]]})])
       end
 
       it "submits a POST request for multiple notifications on several checks" do
-        notifications_data = [notification_data, notification_2_data]
-
         flapjack.given("two checks exist").
           upon_receiving("a POST request with two test notifications").
-          with(:method => :post, :path => "/test_notifications/#{check_data[:id]},#{check_2_data[:id]}",
+          with(:method => :post, :path => "/test_notifications",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:test_notifications => notifications_data}).
+               :body => {:test_notifications => [
+                 notification_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]}),
+                 notification_2_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]})
+               ]}).
           will_respond_with(
             :status => 201,
-            :body => {:test_notifications => notifications_data})
+            :body => {:test_notifications => [
+                notification_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]}),
+                notification_2_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]})
+              ]})
 
-        result = Flapjack::Diner.create_test_notifications(check_data[:id], check_2_data[:id], *notifications_data)
+        result = Flapjack::Diner.create_test_notifications(
+          notification_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]}),
+          notification_2_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]})
+        )
         expect(result).not_to be_nil
-        expect(result).to eq(notifications_data)
+        expect(result).to eq([
+          notification_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]}),
+          notification_2_data.merge(:links => {:checks => [check_data[:id], check_2_data[:id]]})
+        ])
       end
 
       it "can't find the check to create notifications for" do
         flapjack.given("no check exists").
           upon_receiving("a POST request with one test notification").
-          with(:method => :post, :path => "/test_notifications/#{check_data[:id]}",
+          with(:method => :post, :path => "/test_notifications",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:test_notifications => notification_data}).
+               :body => {:test_notifications => notification_data.merge(:links => {:checks => [check_data[:id]]})}).
         will_respond_with(
           :status => 404,
-          :body => {:errors => ["could not find Check records, ids: '#{check_data[:id]}'"]})
+          :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find Check records, ids: '#{check_data[:id]}'"
+            }]}
+          )
 
-        result = Flapjack::Diner.create_test_notifications(check_data[:id], notification_data)
+        result = Flapjack::Diner.create_test_notifications(notification_data.merge(:links => {:checks => [check_data[:id]]}))
         expect(result).to be_nil
-        expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => ["could not find Check records, ids: '#{check_data[:id]}'"])
+        expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+          :detail => "could not find Check records, ids: '#{check_data[:id]}'"}])
       end
 
     end

@@ -19,7 +19,7 @@ module Flapjack
                      :as => [:required, :integer]
 
           end
-          perform_post('media', "/media", nil, data)
+          perform_post('media', "/media", data)
         end
 
         def media(*ids)

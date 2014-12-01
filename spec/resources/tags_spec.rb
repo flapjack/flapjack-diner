@@ -99,74 +99,23 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
           will_respond_with(
             :status => 404,
             :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:errors => ["could not find Tag records, ids: '#{tag_data[:name]}'"]} )
+            :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find Tag record, id: '#{tag_data[:name]}'"
+            }]}
+          )
 
         result = Flapjack::Diner.tags(tag_data[:name])
         expect(result).to be_nil
-        expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-          :errors => ["could not find Tag records, ids: '#{tag_data[:name]}'"])
+        expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+          :detail => "could not find Tag record, id: '#{tag_data[:name]}'"}])
       end
 
     end
 
   end
 
-  context 'update' do
-
-    it 'submits a PUT request for a tag' do
-      flapjack.given("a tag exists").
-        upon_receiving("a PUT request for a single tag").
-        with(:method => :put,
-             :path => "/tags/#{tag_data[:name]}",
-             :body => {:tags => {:id => tag_data[:name], :name => 'alphabet'}},
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
-        will_respond_with(
-          :status => 204,
-          :body => '' )
-
-      result = Flapjack::Diner.update_tags(:id => tag_data[:name], :name => 'alphabet')
-      expect(result).to be_a(TrueClass)
-    end
-
-    it 'submits a PUT request for several tags' do
-      flapjack.given("two tags exist").
-        upon_receiving("a PUT request for two tags").
-        with(:method => :put,
-             :path => "/tags/#{tag_data[:name]},#{tag_2_data[:name]}",
-             :body => {:tags => [{:id => tag_data[:name], :name => 'alphabet'},
-                                 {:id => tag_2_data[:name], :name => 'numeral'}
-                                ]
-                      },
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
-        will_respond_with(
-          :status => 204,
-          :body => '' )
-
-      result = Flapjack::Diner.update_tags(
-        {:id => tag_data[:name], :name => 'alphabet'},
-        {:id => tag_2_data[:name], :name => 'numeral'})
-      expect(result).to be_a(TrueClass)
-    end
-
-    it "can't find the tag to update" do
-      flapjack.given("no tag exists").
-        upon_receiving("a PUT request for a single tag").
-        with(:method => :put,
-             :path => "/tags/#{tag_data[:name]}",
-             :body => {:tags => {:id => tag_data[:name], :name => 'alphabet'}},
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
-        will_respond_with(
-          :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find Tag records, ids: '#{tag_data[:name]}'"]} )
-
-      result = Flapjack::Diner.update_tags(:id => tag_data[:name], :name => 'alphabet')
-      expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find Tag records, ids: '#{tag_data[:name]}'"])
-    end
-
-  end
+  # no tag updates allowed
 
   context 'delete' do
     it "submits a DELETE request for a tag" do
@@ -204,13 +153,16 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:errors => ["could not find Tag records, ids: '#{tag_data[:name]}'"]}
+          :body => {:errors => [{
+            :status => '404',
+            :detail => "could not find Tag records, ids: '#{tag_data[:name]}'"
+          }]}
         )
 
       result = Flapjack::Diner.delete_tags(tag_data[:name])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
-        :errors => ["could not find Tag records, ids: '#{tag_data[:name]}'"])
+      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        :detail => "could not find Tag records, ids: '#{tag_data[:name]}'"}])
 
     end
   end
