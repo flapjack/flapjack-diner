@@ -7,121 +7,12 @@
   },
   "interactions": [
     {
-      "description": "a time limited GET request for a scheduled_maintenance report on one entity",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/scheduled_maintenance_report/entities/1234",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "scheduled_maintenance_reports": [
-            {
-              "scheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a unscheduled_maintenance report on one entity",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/unscheduled_maintenance_report/entities/1234",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a unscheduled_maintenance report on two entities",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/unscheduled_maintenance_report/entities/1234,5678",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            },
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "5678"
-                ],
-                "check": [
-                  "www2.example.com:PING"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "description": "a time limited GET request for a outage report on one entity",
       "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
         "method": "get",
         "path": "/outage_report/entities/1234",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
+        "query": "start_time=2014-12-02T10%3A31%3A27%2B10%3A30&end_time=2014-12-02T22%3A31%3A27%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -148,56 +39,31 @@
       }
     },
     {
-      "description": "a time limited GET request for a outage report on two entities",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/outage_report/entities/1234,5678",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "outage_reports": [
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            },
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "5678"
-                ],
-                "check": [
-                  "www2.example.com:PING"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a status report on a single check",
+      "description": "a GET request for a downtime report on all entities",
       "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
         "method": "get",
-        "path": "/status_report/checks/www.example.com:SSH"
+        "path": "/downtime_report/entities"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "downtime_reports": [
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a status report on all entities",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/status_report/entities"
       },
       "response": {
         "status": 200,
@@ -213,11 +79,31 @@
       }
     },
     {
-      "description": "a GET request for a downtime report on two checks",
+      "description": "a GET request for a downtime report on one entity",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/downtime_report/entities/1234"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "downtime_reports": [
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a downtime report on two entities",
       "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "get",
-        "path": "/downtime_report/checks/www.example.com:SSH,www2.example.com:PING"
+        "path": "/downtime_report/entities/1234,5678"
       },
       "response": {
         "status": 200,
@@ -228,6 +114,58 @@
           "downtime_reports": [
             {
             },
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a outage report on one entity",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/outage_report/entities/1234"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "outage_reports": [
+            {
+              "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a downtime report on all entities",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/downtime_report/entities",
+        "query": "start_time=2014-12-02T10%3A31%3A27%2B10%3A30&end_time=2014-12-02T22%3A31%3A27%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "downtime_reports": [
             {
             }
           ]
@@ -266,106 +204,12 @@
       }
     },
     {
-      "description": "a GET request for a unscheduled_maintenance report on a single check",
-      "provider_state": "a check 'www.example.com:SSH' exists",
+      "description": "a time-limited GET request for a downtime report on two checks",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "get",
-        "path": "/unscheduled_maintenance_report/checks/www.example.com:SSH"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a unscheduled_maintenance report on all checks",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/unscheduled_maintenance_report/checks",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a unscheduled_maintenance report on a single check",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/unscheduled_maintenance_report/checks/www.example.com:SSH",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a downtime report on all entities",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/downtime_report/entities"
+        "path": "/downtime_report/checks/www.example.com:SSH,www2.example.com:PING",
+        "query": "start_time=2014-12-02T10%3A31%3A27%2B10%3A30&end_time=2014-12-02T22%3A31%3A27%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -375,17 +219,20 @@
         "body": {
           "downtime_reports": [
             {
+            },
+            {
             }
           ]
         }
       }
     },
     {
-      "description": "a GET request for a unscheduled_maintenance report on two entities",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "description": "a time limited GET request for a outage report on all checks",
+      "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
         "method": "get",
-        "path": "/unscheduled_maintenance_report/entities/1234,5678"
+        "path": "/outage_report/checks",
+        "query": "start_time=2014-12-02T10%3A31%3A27%2B10%3A30&end_time=2014-12-02T22%3A31%3A27%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -393,9 +240,71 @@
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
         "body": {
-          "unscheduled_maintenance_reports": [
+          "outage_reports": [
             {
-              "unscheduled_maintenances": [
+              "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a scheduled_maintenance report on all entities",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/scheduled_maintenance_report/entities"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "scheduled_maintenance_reports": [
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a outage report on two checks",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/outage_report/checks/www.example.com:SSH,www2.example.com:PING"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "outage_reports": [
+            {
+              "outages": [
 
               ],
               "links": {
@@ -408,7 +317,7 @@
               }
             },
             {
-              "unscheduled_maintenances": [
+              "outages": [
 
               ],
               "links": {
@@ -430,7 +339,7 @@
       "request": {
         "method": "get",
         "path": "/downtime_report/checks/www.example.com:SSH",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -446,75 +355,11 @@
       }
     },
     {
-      "description": "a GET request for a scheduled_maintenance report on one entity",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/scheduled_maintenance_report/entities/1234"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "scheduled_maintenance_reports": [
-            {
-              "scheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a scheduled_maintenance report on a single check",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/scheduled_maintenance_report/checks/www.example.com:SSH",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "scheduled_maintenance_reports": [
-            {
-              "scheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a scheduled_maintenance report on two entities",
+      "description": "a GET request for a unscheduled_maintenance report on two checks",
       "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "get",
-        "path": "/scheduled_maintenance_report/entities/1234,5678",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
+        "path": "/unscheduled_maintenance_report/checks/www.example.com:SSH,www2.example.com:PING"
       },
       "response": {
         "status": 200,
@@ -522,9 +367,9 @@
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
         "body": {
-          "scheduled_maintenance_reports": [
+          "unscheduled_maintenance_reports": [
             {
-              "scheduled_maintenances": [
+              "unscheduled_maintenances": [
 
               ],
               "links": {
@@ -537,7 +382,7 @@
               }
             },
             {
-              "scheduled_maintenances": [
+              "unscheduled_maintenances": [
 
               ],
               "links": {
@@ -548,28 +393,6 @@
                   "www2.example.com:PING"
                 ]
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a downtime report on two entities",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/downtime_report/entities/1234,5678"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "downtime_reports": [
-            {
-            },
-            {
             }
           ]
         }
@@ -607,12 +430,43 @@
       }
     },
     {
+      "description": "a GET request for a unscheduled_maintenance report on one entity",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/entities/1234"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "description": "a time limited GET request for a scheduled_maintenance report on all checks",
       "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
         "method": "get",
         "path": "/scheduled_maintenance_report/checks",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -639,12 +493,128 @@
       }
     },
     {
-      "description": "a time-limited GET request for a outage report on two checks",
+      "description": "a GET request for a status report on two checks",
       "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "get",
-        "path": "/outage_report/checks/www.example.com:SSH,www2.example.com:PING",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
+        "path": "/status_report/checks/www.example.com:SSH,www2.example.com:PING"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "status_reports": [
+            {
+            },
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a unscheduled_maintenance report on a single check",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/checks/www.example.com:SSH",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a unscheduled_maintenance report on all entities",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/entities"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a unscheduled_maintenance report on all entities",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/entities",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a outage report on all entities",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/outage_report/entities"
       },
       "response": {
         "status": 200,
@@ -665,9 +635,276 @@
                   "www.example.com:SSH"
                 ]
               }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a status report on a single check",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/status_report/checks/www.example.com:SSH"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "status_reports": [
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time-limited GET request for a scheduled_maintenance report on two checks",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/scheduled_maintenance_report/checks/www.example.com:SSH,www2.example.com:PING",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "scheduled_maintenance_reports": [
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
             },
             {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "5678"
+                ],
+                "check": [
+                  "www2.example.com:PING"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a status report on two entities",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/status_report/entities/1234,5678"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "status_reports": [
+            {
+            },
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a scheduled_maintenance report on two entities",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/scheduled_maintenance_report/entities/1234,5678"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "scheduled_maintenance_reports": [
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            },
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "5678"
+                ],
+                "check": [
+                  "www2.example.com:PING"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a scheduled_maintenance report on all entities",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/scheduled_maintenance_report/entities",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "scheduled_maintenance_reports": [
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a status report on one entity",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/status_report/entities/1234"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "status_reports": [
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a outage report on all entities",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/outage_report/entities",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "outage_reports": [
+            {
               "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a downtime report on a single check",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/downtime_report/checks/www.example.com:SSH"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "downtime_reports": [
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a unscheduled_maintenance report on two entities",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/entities/1234,5678",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            },
+            {
+              "unscheduled_maintenances": [
 
               ],
               "links": {
@@ -728,205 +965,12 @@
       }
     },
     {
-      "description": "a time limited GET request for a downtime report on all checks",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/downtime_report/checks",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "downtime_reports": [
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a scheduled_maintenance report on two entities",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/scheduled_maintenance_report/entities/1234,5678"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "scheduled_maintenance_reports": [
-            {
-              "scheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            },
-            {
-              "scheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "5678"
-                ],
-                "check": [
-                  "www2.example.com:PING"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a status report on two checks",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/status_report/checks/www.example.com:SSH,www2.example.com:PING"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "status_reports": [
-            {
-            },
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a status report on one entity",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/status_report/entities/1234"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "status_reports": [
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a unscheduled_maintenance report on one entity",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/unscheduled_maintenance_report/entities/1234"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a downtime report on two entities",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/downtime_report/entities/1234,5678",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "downtime_reports": [
-            {
-            },
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a unscheduled_maintenance report on all entities",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/unscheduled_maintenance_report/entities",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "description": "a time limited GET request for a outage report on a single check",
       "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
         "method": "get",
         "path": "/outage_report/checks/www.example.com:SSH",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -947,6 +991,60 @@
                   "www.example.com:SSH"
                 ]
               }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a scheduled_maintenance report on one entity",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/scheduled_maintenance_report/entities/1234",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "scheduled_maintenance_reports": [
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a downtime report on two checks",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/downtime_report/checks/www.example.com:SSH,www2.example.com:PING"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "downtime_reports": [
+            {
+            },
+            {
             }
           ]
         }
@@ -958,475 +1056,6 @@
       "request": {
         "method": "get",
         "path": "/outage_report/checks/www.example.com:SSH"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "outage_reports": [
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a outage report on one entity",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/outage_report/entities/1234"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "outage_reports": [
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a scheduled_maintenance report on all entities",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/scheduled_maintenance_report/entities",
-        "query": "start_time=2014-10-23T09%3A42%3A11%2B10%3A30&end_time=2014-10-23T21%3A42%3A11%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "scheduled_maintenance_reports": [
-            {
-              "scheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a downtime report on a single check",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/downtime_report/checks/www.example.com:SSH"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "downtime_reports": [
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a outage report on all entities",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/outage_report/entities",
-        "query": "start_time=2014-10-23T09%3A42%3A12%2B10%3A30&end_time=2014-10-23T21%3A42%3A12%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "outage_reports": [
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time-limited GET request for a scheduled_maintenance report on two checks",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/scheduled_maintenance_report/checks/www.example.com:SSH,www2.example.com:PING",
-        "query": "start_time=2014-10-23T09%3A42%3A12%2B10%3A30&end_time=2014-10-23T21%3A42%3A12%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "scheduled_maintenance_reports": [
-            {
-              "scheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            },
-            {
-              "scheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "5678"
-                ],
-                "check": [
-                  "www2.example.com:PING"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a downtime report on all entities",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/downtime_report/entities",
-        "query": "start_time=2014-10-23T09%3A42%3A12%2B10%3A30&end_time=2014-10-23T21%3A42%3A12%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "downtime_reports": [
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a unscheduled_maintenance report on all entities",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/unscheduled_maintenance_report/entities"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a downtime report on one entity",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/downtime_report/entities/1234"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "downtime_reports": [
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a outage report on two entities",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/outage_report/entities/1234,5678"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "outage_reports": [
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            },
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "5678"
-                ],
-                "check": [
-                  "www2.example.com:PING"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time-limited GET request for a unscheduled_maintenance report on two checks",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/unscheduled_maintenance_report/checks/www.example.com:SSH,www2.example.com:PING",
-        "query": "start_time=2014-10-23T09%3A42%3A12%2B10%3A30&end_time=2014-10-23T21%3A42%3A12%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "unscheduled_maintenance_reports": [
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            },
-            {
-              "unscheduled_maintenances": [
-
-              ],
-              "links": {
-                "entity": [
-                  "5678"
-                ],
-                "check": [
-                  "www2.example.com:PING"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a outage report on two checks",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "get",
-        "path": "/outage_report/checks/www.example.com:SSH,www2.example.com:PING"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "outage_reports": [
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            },
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "5678"
-                ],
-                "check": [
-                  "www2.example.com:PING"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a outage report on all entities",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/outage_report/entities"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "outage_reports": [
-            {
-              "outages": [
-
-              ],
-              "links": {
-                "entity": [
-                  "1234"
-                ],
-                "check": [
-                  "www.example.com:SSH"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a downtime report on one entity",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/downtime_report/entities/1234",
-        "query": "start_time=2014-10-23T09%3A42%3A12%2B10%3A30&end_time=2014-10-23T21%3A42%3A12%2B10%3A30"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "downtime_reports": [
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a status report on all entities",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/status_report/entities"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "status_reports": [
-            {
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a time limited GET request for a outage report on all checks",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "get",
-        "path": "/outage_report/checks",
-        "query": "start_time=2014-10-23T09%3A42%3A12%2B10%3A30&end_time=2014-10-23T21%3A42%3A12%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -1484,11 +1113,12 @@
       }
     },
     {
-      "description": "a GET request for a status report on two entities",
+      "description": "a time-limited GET request for a outage report on two checks",
       "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "get",
-        "path": "/status_report/entities/1234,5678"
+        "path": "/outage_report/checks/www.example.com:SSH,www2.example.com:PING",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -1496,10 +1126,32 @@
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
         "body": {
-          "status_reports": [
+          "outage_reports": [
             {
+              "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
             },
             {
+              "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "5678"
+                ],
+                "check": [
+                  "www2.example.com:PING"
+                ]
+              }
             }
           ]
         }
@@ -1537,11 +1189,12 @@
       }
     },
     {
-      "description": "a GET request for a scheduled_maintenance report on all entities",
+      "description": "a time limited GET request for a scheduled_maintenance report on a single check",
       "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
         "method": "get",
-        "path": "/scheduled_maintenance_report/entities"
+        "path": "/scheduled_maintenance_report/checks/www.example.com:SSH",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -1560,6 +1213,169 @@
                 ],
                 "check": [
                   "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a unscheduled_maintenance report on all checks",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/checks",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a downtime report on all checks",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/downtime_report/checks",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "downtime_reports": [
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a downtime report on all checks",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/downtime_report/checks"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "downtime_reports": [
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a outage report on two entities",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/outage_report/entities/1234,5678",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "outage_reports": [
+            {
+              "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            },
+            {
+              "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "5678"
+                ],
+                "check": [
+                  "www2.example.com:PING"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a scheduled_maintenance report on two entities",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/scheduled_maintenance_report/entities/1234,5678",
+        "query": "start_time=2014-12-02T10%3A31%3A28%2B10%3A30&end_time=2014-12-02T22%3A31%3A28%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "scheduled_maintenance_reports": [
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            },
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "5678"
+                ],
+                "check": [
+                  "www2.example.com:PING"
                 ]
               }
             }
@@ -1588,11 +1404,173 @@
       }
     },
     {
-      "description": "a GET request for a unscheduled_maintenance report on two checks",
+      "description": "a GET request for a scheduled_maintenance report on one entity",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/scheduled_maintenance_report/entities/1234"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "scheduled_maintenance_reports": [
+            {
+              "scheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a outage report on two entities",
       "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "get",
-        "path": "/unscheduled_maintenance_report/checks/www.example.com:SSH,www2.example.com:PING"
+        "path": "/outage_report/entities/1234,5678"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "outage_reports": [
+            {
+              "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            },
+            {
+              "outages": [
+
+              ],
+              "links": {
+                "entity": [
+                  "5678"
+                ],
+                "check": [
+                  "www2.example.com:PING"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a unscheduled_maintenance report on a single check",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/checks/www.example.com:SSH"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a unscheduled_maintenance report on one entity",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/entities/1234",
+        "query": "start_time=2014-12-02T10%3A31%3A29%2B10%3A30&end_time=2014-12-02T22%3A31%3A29%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a downtime report on two entities",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/downtime_report/entities/1234,5678",
+        "query": "start_time=2014-12-02T10%3A31%3A29%2B10%3A30&end_time=2014-12-02T22%3A31%3A29%2B10%3A30"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "downtime_reports": [
+            {
+            },
+            {
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time-limited GET request for a unscheduled_maintenance report on two checks",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "get",
+        "path": "/unscheduled_maintenance_report/checks/www.example.com:SSH,www2.example.com:PING",
+        "query": "start_time=2014-12-02T10%3A31%3A29%2B10%3A30&end_time=2014-12-02T22%3A31%3A29%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -1632,12 +1610,56 @@
       }
     },
     {
-      "description": "a time-limited GET request for a downtime report on two checks",
+      "description": "a GET request for a unscheduled_maintenance report on two entities",
       "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "get",
-        "path": "/downtime_report/checks/www.example.com:SSH,www2.example.com:PING",
-        "query": "start_time=2014-10-23T09%3A42%3A12%2B10%3A30&end_time=2014-10-23T21%3A42%3A12%2B10%3A30"
+        "path": "/unscheduled_maintenance_report/entities/1234,5678"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "unscheduled_maintenance_reports": [
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "1234"
+                ],
+                "check": [
+                  "www.example.com:SSH"
+                ]
+              }
+            },
+            {
+              "unscheduled_maintenances": [
+
+              ],
+              "links": {
+                "entity": [
+                  "5678"
+                ],
+                "check": [
+                  "www2.example.com:PING"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a time limited GET request for a downtime report on one entity",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "get",
+        "path": "/downtime_report/entities/1234",
+        "query": "start_time=2014-12-02T10%3A31%3A29%2B10%3A30&end_time=2014-12-02T22%3A31%3A29%2B10%3A30"
       },
       "response": {
         "status": 200,
@@ -1646,8 +1668,6 @@
         },
         "body": {
           "downtime_reports": [
-            {
-            },
             {
             }
           ]
@@ -1655,11 +1675,110 @@
       }
     },
     {
-      "description": "a GET request for a downtime report on all checks",
-      "provider_state": "a check 'www.example.com:SSH' exists",
+      "description": "a POST request with one medium",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "post",
+        "path": "/contacts/abc/media",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "media": [
+            {
+              "type": "sms",
+              "address": "0123456789",
+              "interval": 300,
+              "rollup_threshold": 5
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": [
+          "abc_sms"
+        ]
+      }
+    },
+    {
+      "description": "a POST request with two media",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "post",
+        "path": "/contacts/abc/media",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "media": [
+            {
+              "type": "sms",
+              "address": "0123456789",
+              "interval": 300,
+              "rollup_threshold": 5
+            },
+            {
+              "type": "email",
+              "address": "ablated@example.org",
+              "interval": 180,
+              "rollup_threshold": 3
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": [
+          "abc_sms",
+          "abc_email"
+        ]
+      }
+    },
+    {
+      "description": "a POST request with one medium",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "post",
+        "path": "/contacts/abc/media",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "media": [
+            {
+              "type": "sms",
+              "address": "0123456789",
+              "interval": 300,
+              "rollup_threshold": 5
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 422,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "Contact id: 'abc' could not be loaded"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for all media",
+      "provider_state": "a contact with id 'abc' has email and sms media",
       "request": {
         "method": "get",
-        "path": "/downtime_report/checks"
+        "path": "/media"
       },
       "response": {
         "status": 200,
@@ -1667,9 +1786,246 @@
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
         "body": {
-          "downtime_reports": [
+          "media": [
             {
+              "type": "email",
+              "address": "ablated@example.org",
+              "interval": 180,
+              "rollup_threshold": 3,
+              "links": {
+                "contacts": [
+                  "abc"
+                ]
+              }
+            },
+            {
+              "type": "sms",
+              "address": "0123456789",
+              "interval": 300,
+              "rollup_threshold": 5,
+              "links": {
+                "contacts": [
+                  "abc"
+                ]
+              }
             }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for sms media",
+      "provider_state": "a contact with id 'abc' has email and sms media",
+      "request": {
+        "method": "get",
+        "path": "/media/abc_sms"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "media": [
+            {
+              "type": "sms",
+              "address": "0123456789",
+              "interval": 300,
+              "rollup_threshold": 5,
+              "links": {
+                "contacts": [
+                  "abc"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for email and sms media",
+      "provider_state": "a contact with id 'abc' has email and sms media",
+      "request": {
+        "method": "get",
+        "path": "/media/abc_email,abc_sms"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "media": [
+            {
+              "type": "email",
+              "address": "ablated@example.org",
+              "interval": 180,
+              "rollup_threshold": 3,
+              "links": {
+                "contacts": [
+                  "abc"
+                ]
+              }
+            },
+            {
+              "type": "sms",
+              "address": "0123456789",
+              "interval": 300,
+              "rollup_threshold": 5,
+              "links": {
+                "contacts": [
+                  "abc"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for sms media",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "get",
+        "path": "/media/abc_sms"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find contact 'abc'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a PATCH request for email media",
+      "provider_state": "a contact with id 'abc' has email and sms media",
+      "request": {
+        "method": "patch",
+        "path": "/media/abc_email",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/media/0/interval",
+            "value": 50
+          },
+          {
+            "op": "replace",
+            "path": "/media/0/rollup_threshold",
+            "value": 3
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for email and sms media",
+      "provider_state": "a contact with id 'abc' has email and sms media",
+      "request": {
+        "method": "patch",
+        "path": "/media/abc_email,abc_sms",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/media/0/interval",
+            "value": 50
+          },
+          {
+            "op": "replace",
+            "path": "/media/0/rollup_threshold",
+            "value": 3
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for email media",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "patch",
+        "path": "/media/abc_email",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/media/0/interval",
+            "value": 50
+          }
+        ]
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find contact 'abc'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a DELETE request for one medium",
+      "provider_state": "a contact with id 'abc' has email and sms media",
+      "request": {
+        "method": "delete",
+        "path": "/media/abc_email",
+        "body": null
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for two media",
+      "provider_state": "a contact with id 'abc' has email and sms media",
+      "request": {
+        "method": "delete",
+        "path": "/media/abc_email,abc_sms",
+        "body": null
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for one medium",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "delete",
+        "path": "/media/abc_email",
+        "body": null
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find contact 'abc'"
           ]
         }
       }
@@ -1721,51 +2077,6 @@
             }
           }
         ]
-      }
-    },
-    {
-      "description": "a POST request with one notification rule",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "post",
-        "path": "/contacts/abc/notification_rules",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "notification_rules": [
-            {
-              "entity_tags": [
-                "database",
-                "physical"
-              ],
-              "entities": [
-                "foo-app-01.example.com"
-              ],
-              "time_restrictions": null,
-              "warning_media": [
-                "email"
-              ],
-              "critical_media": [
-                "sms",
-                "email"
-              ],
-              "warning_blackhole": false,
-              "critical_blackhole": false
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find contact 'abc'"
-          ]
-        }
       }
     },
     {
@@ -1841,43 +2152,37 @@
       }
     },
     {
-      "description": "a PATCH request to change properties for a single notification rule",
-      "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' exists",
+      "description": "a POST request with one notification rule",
+      "provider_state": "no contact exists",
       "request": {
-        "method": "patch",
-        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa",
+        "method": "post",
+        "path": "/contacts/abc/notification_rules",
         "headers": {
-          "Content-Type": "application/json-patch+json"
+          "Content-Type": "application/vnd.api+json"
         },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/notification_rules/0/warning_blackhole",
-            "value": false
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request to change properties for a single notification rule",
-      "provider_state": "no notification rule exists",
-      "request": {
-        "method": "patch",
-        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/notification_rules/0/warning_blackhole",
-            "value": false
-          }
-        ]
+        "body": {
+          "notification_rules": [
+            {
+              "entity_tags": [
+                "database",
+                "physical"
+              ],
+              "entities": [
+                "foo-app-01.example.com"
+              ],
+              "time_restrictions": null,
+              "warning_media": [
+                "email"
+              ],
+              "critical_media": [
+                "sms",
+                "email"
+              ],
+              "warning_blackhole": false,
+              "critical_blackhole": false
+            }
+          ]
+        }
       },
       "response": {
         "status": 404,
@@ -1886,77 +2191,9 @@
         },
         "body": {
           "errors": [
-            "could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"
+            "could not find contact 'abc'"
           ]
         }
-      }
-    },
-    {
-      "description": "a PATCH request to change properties for two notification rules",
-      "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' and notification rule '20f182fc-6e32-4794-9007-97366d162c51' exists",
-      "request": {
-        "method": "patch",
-        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa,20f182fc-6e32-4794-9007-97366d162c51",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/notification_rules/0/warning_blackhole",
-            "value": false
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a single notification rule",
-      "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' exists",
-      "request": {
-        "method": "delete",
-        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a single notification rule",
-      "provider_state": "no notification rule exists",
-      "request": {
-        "method": "delete",
-        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa",
-        "body": null
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a DELETE request for two notification rules",
-      "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' and notification rule '20f182fc-6e32-4794-9007-97366d162c51' exists",
-      "request": {
-        "method": "delete",
-        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa,20f182fc-6e32-4794-9007-97366d162c51",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
       }
     },
     {
@@ -1965,6 +2202,51 @@
       "request": {
         "method": "get",
         "path": "/notification_rules"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "notification_rules": [
+            {
+              "id": "05983623-fcef-42da-af44-ed6990b500fa",
+              "tags": [
+
+              ],
+              "regex_tags": [
+
+              ],
+              "entities": [
+
+              ],
+              "regex_entities": [
+
+              ],
+              "time_restrictions": [
+
+              ],
+              "warning_media": [
+                "email"
+              ],
+              "critical_media": [
+                "sms",
+                "email"
+              ],
+              "warning_blackhole": false,
+              "critical_blackhole": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a single notification rule",
+      "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' exists",
+      "request": {
+        "method": "get",
+        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa"
       },
       "response": {
         "status": 200,
@@ -2096,125 +2378,19 @@
       }
     },
     {
-      "description": "a GET request for a single notification rule",
+      "description": "a PATCH request to change properties for a single notification rule",
       "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' exists",
       "request": {
-        "method": "get",
-        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "notification_rules": [
-            {
-              "id": "05983623-fcef-42da-af44-ed6990b500fa",
-              "tags": [
-
-              ],
-              "regex_tags": [
-
-              ],
-              "entities": [
-
-              ],
-              "regex_entities": [
-
-              ],
-              "time_restrictions": [
-
-              ],
-              "warning_media": [
-                "email"
-              ],
-              "critical_media": [
-                "sms",
-                "email"
-              ],
-              "warning_blackhole": false,
-              "critical_blackhole": false
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with one entity",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "post",
-        "path": "/entities",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "entities": [
-            {
-              "name": "example.org",
-              "id": "57_example"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": [
-          "57_example"
-        ]
-      }
-    },
-    {
-      "description": "a POST request with two entities",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "post",
-        "path": "/entities",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "entities": [
-            {
-              "name": "example.org",
-              "id": "57_example"
-            },
-            {
-              "name": "example2.org",
-              "id": "58"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": [
-          "57_example",
-          "58"
-        ]
-      }
-    },
-    {
-      "description": "a PATCH request for a single entity",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
-      "request": {
         "method": "patch",
-        "path": "/entities/1234",
+        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa",
         "headers": {
           "Content-Type": "application/json-patch+json"
         },
         "body": [
           {
             "op": "replace",
-            "path": "/entities/0/name",
-            "value": "example3.com"
+            "path": "/notification_rules/0/warning_blackhole",
+            "value": false
           }
         ]
       },
@@ -2224,19 +2400,41 @@
       }
     },
     {
-      "description": "a PATCH request for a single entity",
-      "provider_state": "no entity exists",
+      "description": "a PATCH request to change properties for two notification rules",
+      "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' and notification rule '20f182fc-6e32-4794-9007-97366d162c51' exists",
       "request": {
         "method": "patch",
-        "path": "/entities/1234",
+        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa,20f182fc-6e32-4794-9007-97366d162c51",
         "headers": {
           "Content-Type": "application/json-patch+json"
         },
         "body": [
           {
             "op": "replace",
-            "path": "/entities/0/name",
-            "value": "example3.com"
+            "path": "/notification_rules/0/warning_blackhole",
+            "value": false
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request to change properties for a single notification rule",
+      "provider_state": "no notification rule exists",
+      "request": {
+        "method": "patch",
+        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/notification_rules/0/warning_blackhole",
+            "value": false
           }
         ]
       },
@@ -2247,80 +2445,44 @@
         },
         "body": {
           "errors": [
-            "could not find entity '1234'"
+            "could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"
           ]
         }
       }
     },
     {
-      "description": "a GET request for all entities",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "description": "a DELETE request for a single notification rule",
+      "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' exists",
       "request": {
-        "method": "get",
-        "path": "/entities"
+        "method": "delete",
+        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa",
+        "body": null
       },
       "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "entities": [
-            {
-              "name": "www.example.com",
-              "id": "1234"
-            }
-          ]
-        }
+        "status": 204,
+        "body": ""
       }
     },
     {
-      "description": "a GET request for all entities",
-      "provider_state": "no entity exists",
+      "description": "a DELETE request for two notification rules",
+      "provider_state": "a contact 'abc' with generic notification rule '05983623-fcef-42da-af44-ed6990b500fa' and notification rule '20f182fc-6e32-4794-9007-97366d162c51' exists",
       "request": {
-        "method": "get",
-        "path": "/entities"
+        "method": "delete",
+        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa,20f182fc-6e32-4794-9007-97366d162c51",
+        "body": null
       },
       "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "entities": [
-
-          ]
-        }
+        "status": 204,
+        "body": ""
       }
     },
     {
-      "description": "a GET request for a single entity",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "description": "a DELETE request for a single notification rule",
+      "provider_state": "no notification rule exists",
       "request": {
-        "method": "get",
-        "path": "/entities/1234"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "entities": [
-            {
-              "name": "www.example.com",
-              "id": "1234"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a single entity",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "get",
-        "path": "/entities/1234"
+        "method": "delete",
+        "path": "/notification_rules/05983623-fcef-42da-af44-ed6990b500fa",
+        "body": null
       },
       "response": {
         "status": 404,
@@ -2329,27 +2491,267 @@
         },
         "body": {
           "errors": [
-            "could not find entities: '1234'"
+            "could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"
           ]
         }
       }
     },
     {
-      "description": "a POST request with one set of pagerduty credentials",
-      "provider_state": "a contact with id 'abc' exists",
+      "description": "a POST request with one test notification",
+      "provider_state": "no entity exists",
       "request": {
         "method": "post",
-        "path": "/contacts/abc/pagerduty_credentials",
+        "path": "/test_notifications/entities/1234",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "pagerduty_credentials": [
+          "test_notifications": [
             {
-              "service_key": "abc",
-              "subdomain": "def",
-              "username": "ghi",
-              "password": "jkl"
+              "summary": "testing"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "errors": [
+            "could not find entity '1234'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a POST request with one test notification",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/entities/1234",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with one test notification",
+      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/entities/1234,5678",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+              "summary": "testing"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two test notifications",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/entities/1234",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+              "summary": "testing"
+            },
+            {
+              "summary": "more tests"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two test notifications",
+      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/entities/1234,5678",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+              "summary": "testing"
+            },
+            {
+              "summary": "more tests"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with one test notification",
+      "provider_state": "no check exists",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+              "summary": "testing"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "errors": [
+            "could not find entity 'www.example.com'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a POST request with one test notification",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+              "summary": "testing"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with one test notification",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/checks/www.example.com:SSH,www2.example.com:PING",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+              "summary": "testing"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two test notifications",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+              "summary": "testing"
+            },
+            {
+              "summary": "more tests"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two test notifications",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "post",
+        "path": "/test_notifications/checks/www.example.com:SSH,www2.example.com:PING",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "test_notifications": [
+            {
+              "summary": "testing"
+            },
+            {
+              "summary": "more tests"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with one contact",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "post",
+        "path": "/contacts",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "contacts": [
+            {
+              "id": "abc",
+              "first_name": "Jim",
+              "last_name": "Smith",
+              "email": "jims@example.com",
+              "timezone": "UTC"
             }
           ]
         }
@@ -2365,216 +2767,151 @@
       }
     },
     {
-      "description": "a POST request with one set of pagerduty credentials",
+      "description": "a POST request with two contacts",
       "provider_state": "no contact exists",
       "request": {
         "method": "post",
-        "path": "/contacts/abc/pagerduty_credentials",
+        "path": "/contacts",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "pagerduty_credentials": [
+          "contacts": [
             {
-              "service_key": "abc",
-              "subdomain": "def",
-              "username": "ghi",
-              "password": "jkl"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 422,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "Contact id: 'abc' could not be loaded"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a PATCH request for pagerduty credentials",
-      "provider_state": "a contact with id 'abc' has pagerduty credentials",
-      "request": {
-        "method": "patch",
-        "path": "/pagerduty_credentials/abc",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/pagerduty_credentials/0/password",
-            "value": "pswrd"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request for pagerduty credentials",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "patch",
-        "path": "/pagerduty_credentials/abc",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/pagerduty_credentials/0/password",
-            "value": "pswrd"
-          }
-        ]
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find contact 'abc'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a PATCH request for pagerduty credentials",
-      "provider_state": "contacts with ids 'abc' and '872' have pagerduty credentials",
-      "request": {
-        "method": "patch",
-        "path": "/pagerduty_credentials/abc,872",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/pagerduty_credentials/0/password",
-            "value": "pswrd"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for one set of pagerduty credentials",
-      "provider_state": "a contact with id 'abc' has pagerduty credentials",
-      "request": {
-        "method": "delete",
-        "path": "/pagerduty_credentials/abc",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for one set of pagerduty credentials",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "delete",
-        "path": "/pagerduty_credentials/abc",
-        "body": null
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find contact 'abc'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a DELETE request for two sets of pagerduty credentials",
-      "provider_state": "contacts with ids 'abc' and '872' have pagerduty credentials",
-      "request": {
-        "method": "delete",
-        "path": "/pagerduty_credentials/abc,872",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a GET request for all pagerduty credentials",
-      "provider_state": "a contact with id 'abc' has pagerduty credentials",
-      "request": {
-        "method": "get",
-        "path": "/pagerduty_credentials"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "pagerduty_credentials": [
-            {
-              "service_key": "abc",
-              "subdomain": "def",
-              "username": "ghi",
-              "password": "jkl"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for two sets of pagerduty credentials",
-      "provider_state": "contacts with ids 'abc' and '872' have pagerduty credentials",
-      "request": {
-        "method": "get",
-        "path": "/pagerduty_credentials/abc,872"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "pagerduty_credentials": [
-            {
-              "service_key": "abc",
-              "subdomain": "def",
-              "username": "ghi",
-              "password": "jkl"
+              "id": "abc",
+              "first_name": "Jim",
+              "last_name": "Smith",
+              "email": "jims@example.com",
+              "timezone": "UTC"
             },
             {
-              "service_key": "mno",
-              "subdomain": "pqr",
-              "username": "stu",
-              "password": "vwx"
+              "id": "def",
+              "first_name": "Joan",
+              "last_name": "Smith",
+              "email": "joans@example.com"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": [
+          "abc",
+          "def"
+        ]
+      }
+    },
+    {
+      "description": "a POST request with one contact",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "post",
+        "path": "/contacts",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "contacts": [
+            {
+              "id": "abc",
+              "first_name": "Jim",
+              "last_name": "Smith",
+              "email": "jims@example.com",
+              "timezone": "UTC"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 409,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "Contacts already exist with the following IDs: abc"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for all contacts",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "get",
+        "path": "/contacts"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "contacts": [
+            {
+              "id": "abc",
+              "first_name": "Jim",
+              "last_name": "Smith",
+              "email": "jims@example.com",
+              "timezone": "UTC"
             }
           ]
         }
       }
     },
     {
-      "description": "a GET request for one set of pagerduty credentials",
+      "description": "a GET request for all contacts",
       "provider_state": "no contact exists",
       "request": {
         "method": "get",
-        "path": "/pagerduty_credentials/abc"
+        "path": "/contacts"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "contacts": [
+
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a single contact",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "get",
+        "path": "/contacts/abc"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "contacts": [
+            {
+              "id": "abc",
+              "first_name": "Jim",
+              "last_name": "Smith",
+              "email": "jims@example.com",
+              "timezone": "UTC"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a single contact",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "get",
+        "path": "/contacts/abc"
       },
       "response": {
         "status": 404,
@@ -2583,31 +2920,170 @@
         },
         "body": {
           "errors": [
-            "could not find contact 'abc'"
+            "could not find contacts 'abc'"
           ]
         }
       }
     },
     {
-      "description": "a GET request for one set of pagerduty credentials",
-      "provider_state": "a contact with id 'abc' has pagerduty credentials",
+      "description": "a PATCH request to change properties for a single contact",
+      "provider_state": "no contact exists",
       "request": {
-        "method": "get",
-        "path": "/pagerduty_credentials/abc"
+        "method": "patch",
+        "path": "/contacts/323",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/contacts/0/timezone",
+            "value": "UTC"
+          }
+        ]
       },
       "response": {
-        "status": 200,
+        "status": 404,
         "headers": {
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
         "body": {
-          "pagerduty_credentials": [
-            {
-              "service_key": "abc",
-              "subdomain": "def",
-              "username": "ghi",
-              "password": "jkl"
-            }
+          "errors": [
+            "could not find contacts '323'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a PATCH request to change properties for a single contact",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "patch",
+        "path": "/contacts/abc",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/contacts/0/timezone",
+            "value": "UTC"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request to change properties for two contacts",
+      "provider_state": "contacts with ids 'abc' and '872' exist",
+      "request": {
+        "method": "patch",
+        "path": "/contacts/abc,872",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/contacts/0/timezone",
+            "value": "UTC"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH requestto change a link for a single contact",
+      "provider_state": "a contact with id '872' exists",
+      "request": {
+        "method": "patch",
+        "path": "/contacts/872",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "add",
+            "path": "/contacts/0/links/entities/-",
+            "value": "1234"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request to change links for two contacts",
+      "provider_state": "contacts with ids 'abc' and '872' exist",
+      "request": {
+        "method": "patch",
+        "path": "/contacts/abc,872",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "add",
+            "path": "/contacts/0/links/entities/-",
+            "value": "1234"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for a single contact",
+      "provider_state": "a contact with id 'abc' exists",
+      "request": {
+        "method": "delete",
+        "path": "/contacts/abc",
+        "body": null
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for two contacts",
+      "provider_state": "contacts with ids 'abc' and '872' exist",
+      "request": {
+        "method": "delete",
+        "path": "/contacts/abc,872",
+        "body": null
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for a single contact",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "delete",
+        "path": "/contacts/abc",
+        "body": null
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find contacts 'abc'"
           ]
         }
       }
@@ -2671,57 +3147,6 @@
           "www.example.com:SSH",
           "www2.example.com:PING"
         ]
-      }
-    },
-    {
-      "description": "a PATCH request for a single check",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "patch",
-        "path": "/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/checks/0/enabled",
-            "value": false
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request for a single check",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "patch",
-        "path": "/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/checks/0/enabled",
-            "value": false
-          }
-        ]
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find entity 'www.example.com'"
-          ]
-        }
       }
     },
     {
@@ -2819,21 +3244,21 @@
       }
     },
     {
-      "description": "a POST request with one test notification",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "description": "a PATCH request for a single check",
+      "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
-        "method": "post",
-        "path": "/test_notifications/entities/1234",
+        "method": "patch",
+        "path": "/checks/www.example.com:SSH",
         "headers": {
-          "Content-Type": "application/vnd.api+json"
+          "Content-Type": "application/json-patch+json"
         },
-        "body": {
-          "test_notifications": [
-            {
-              "summary": "testing"
-            }
-          ]
-        }
+        "body": [
+          {
+            "op": "replace",
+            "path": "/checks/0/enabled",
+            "value": false
+          }
+        ]
       },
       "response": {
         "status": 204,
@@ -2841,18 +3266,243 @@
       }
     },
     {
-      "description": "a POST request with one test notification",
+      "description": "a PATCH request for a single check",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "patch",
+        "path": "/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/checks/0/enabled",
+            "value": false
+          }
+        ]
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find entity 'www.example.com'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a POST request with one entity",
       "provider_state": "no entity exists",
       "request": {
         "method": "post",
-        "path": "/test_notifications/entities/1234",
+        "path": "/entities",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "entities": [
             {
-              "summary": "testing"
+              "name": "example.org",
+              "id": "57_example"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": [
+          "57_example"
+        ]
+      }
+    },
+    {
+      "description": "a POST request with two entities",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "post",
+        "path": "/entities",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "entities": [
+            {
+              "name": "example.org",
+              "id": "57_example"
+            },
+            {
+              "name": "example2.org",
+              "id": "58"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": [
+          "57_example",
+          "58"
+        ]
+      }
+    },
+    {
+      "description": "a GET request for all entities",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "get",
+        "path": "/entities"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "entities": [
+            {
+              "name": "www.example.com",
+              "id": "1234"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for all entities",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "get",
+        "path": "/entities"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "entities": [
+
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a single entity",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "get",
+        "path": "/entities/1234"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "entities": [
+            {
+              "name": "www.example.com",
+              "id": "1234"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for a single entity",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "get",
+        "path": "/entities/1234"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find entities: '1234'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a PATCH request for a single entity",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "patch",
+        "path": "/entities/1234",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/entities/0/name",
+            "value": "example3.com"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for a single entity",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "patch",
+        "path": "/entities/1234",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/entities/0/name",
+            "value": "example3.com"
+          }
+        ]
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find entity '1234'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a POST request with one scheduled maintenance period",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "post",
+        "path": "/scheduled_maintenances/entities/1234",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "scheduled_maintenances": [
+            {
+              "start_time": "2014-12-02T10:31:31+10:30",
+              "duration": 3600,
+              "summary": "working"
             }
           ]
         }
@@ -2867,21 +3517,20 @@
       }
     },
     {
-      "description": "a POST request with two test notifications",
+      "description": "a POST request with one scheduled maintenance period",
       "provider_state": "an entity 'www.example.com' with id '1234' exists",
       "request": {
         "method": "post",
-        "path": "/test_notifications/entities/1234",
+        "path": "/scheduled_maintenances/entities/1234",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "scheduled_maintenances": [
             {
-              "summary": "testing"
-            },
-            {
-              "summary": "more tests"
+              "start_time": "2014-12-02T10:31:31+10:30",
+              "duration": 3600,
+              "summary": "working"
             }
           ]
         }
@@ -2892,21 +3541,20 @@
       }
     },
     {
-      "description": "a POST request with two test notifications",
+      "description": "a POST request with one scheduled maintenance period",
       "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
       "request": {
         "method": "post",
-        "path": "/test_notifications/entities/1234,5678",
+        "path": "/scheduled_maintenances/entities/1234,5678",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "scheduled_maintenances": [
             {
-              "summary": "testing"
-            },
-            {
-              "summary": "more tests"
+              "start_time": "2014-12-02T10:31:31+10:30",
+              "duration": 3600,
+              "summary": "working"
             }
           ]
         }
@@ -2917,18 +3565,54 @@
       }
     },
     {
-      "description": "a POST request with one test notification",
+      "description": "a POST request with two scheduled maintenance periods",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "post",
+        "path": "/scheduled_maintenances/entities/1234",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "scheduled_maintenances": [
+            {
+              "start_time": "2014-12-02T10:31:31+10:30",
+              "duration": 3600,
+              "summary": "working"
+            },
+            {
+              "start_time": "2014-12-02T12:31:31+10:30",
+              "duration": 3600,
+              "summary": "more work"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two scheduled maintenance periods",
       "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
       "request": {
         "method": "post",
-        "path": "/test_notifications/entities/1234,5678",
+        "path": "/scheduled_maintenances/entities/1234,5678",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "scheduled_maintenances": [
             {
-              "summary": "testing"
+              "start_time": "2014-12-02T10:31:31+10:30",
+              "duration": 3600,
+              "summary": "working"
+            },
+            {
+              "start_time": "2014-12-02T12:31:31+10:30",
+              "duration": 3600,
+              "summary": "more work"
             }
           ]
         }
@@ -2939,18 +3623,46 @@
       }
     },
     {
-      "description": "a POST request with one test notification",
-      "provider_state": "a check 'www.example.com:SSH' exists",
+      "description": "a POST request with one unscheduled maintenance period",
+      "provider_state": "no entity exists",
       "request": {
         "method": "post",
-        "path": "/test_notifications/checks/www.example.com:SSH",
+        "path": "/unscheduled_maintenances/entities/1234",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "unscheduled_maintenances": [
             {
-              "summary": "testing"
+              "duration": 3600,
+              "summary": "working"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "errors": [
+            "could not find entity '1234'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a POST request with one unscheduled maintenance period",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/entities/1234",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
             }
           ]
         }
@@ -2961,18 +3673,210 @@
       }
     },
     {
-      "description": "a POST request with one test notification",
+      "description": "a POST request with one unscheduled maintenance period",
+      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/entities/1234,5678",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two unscheduled maintenance periods",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/entities/1234",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
+            },
+            {
+              "duration": 3600,
+              "summary": "more work"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two unscheduled maintenance periods",
+      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/entities/1234,5678",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
+            },
+            {
+              "duration": 3600,
+              "summary": "more work"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for an unscheduled maintenance period",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "patch",
+        "path": "/unscheduled_maintenances/entities/1234",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/unscheduled_maintenances/0/end_time",
+            "value": "2014-12-02T10:31:31+10:30"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for an unscheduled maintenance period",
+      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
+      "request": {
+        "method": "patch",
+        "path": "/unscheduled_maintenances/entities/1234,5678",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/unscheduled_maintenances/0/end_time",
+            "value": "2014-12-02T10:31:31+10:30"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for an unscheduled maintenance period",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "patch",
+        "path": "/unscheduled_maintenances/entities/1234",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/unscheduled_maintenances/0/end_time",
+            "value": "2014-12-02T10:31:32+10:30"
+          }
+        ]
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "errors": [
+            "could not find entity '1234'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a DELETE request for a scheduled maintenance period",
+      "provider_state": "an entity 'www.example.com' with id '1234' exists",
+      "request": {
+        "method": "delete",
+        "path": "/scheduled_maintenances/entities/1234",
+        "query": "start_time=2014-12-02T10%3A31%3A32%2B10%3A30"
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for a scheduled maintenance period",
+      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
+      "request": {
+        "method": "delete",
+        "path": "/scheduled_maintenances/entities/1234,5678",
+        "query": "start_time=2014-12-02T10%3A31%3A32%2B10%3A30"
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for a scheduled maintenance period",
+      "provider_state": "no entity exists",
+      "request": {
+        "method": "delete",
+        "path": "/scheduled_maintenances/entities/1234",
+        "query": "start_time=2014-12-02T10%3A31%3A32%2B10%3A30"
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "errors": [
+            "could not find entity '1234'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a POST request with one scheduled maintenance period",
       "provider_state": "no check exists",
       "request": {
         "method": "post",
-        "path": "/test_notifications/checks/www.example.com:SSH",
+        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "scheduled_maintenances": [
             {
-              "summary": "testing"
+              "start_time": "2014-12-02T10:31:32+10:30",
+              "duration": 3600,
+              "summary": "working"
             }
           ]
         }
@@ -2987,21 +3891,20 @@
       }
     },
     {
-      "description": "a POST request with two test notifications",
+      "description": "a POST request with one scheduled maintenance period",
       "provider_state": "a check 'www.example.com:SSH' exists",
       "request": {
         "method": "post",
-        "path": "/test_notifications/checks/www.example.com:SSH",
+        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "scheduled_maintenances": [
             {
-              "summary": "testing"
-            },
-            {
-              "summary": "more tests"
+              "start_time": "2014-12-02T10:31:32+10:30",
+              "duration": 3600,
+              "summary": "working"
             }
           ]
         }
@@ -3012,21 +3915,20 @@
       }
     },
     {
-      "description": "a POST request with two test notifications",
+      "description": "a POST request with one scheduled maintenance period",
       "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "post",
-        "path": "/test_notifications/checks/www.example.com:SSH,www2.example.com:PING",
+        "path": "/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "scheduled_maintenances": [
             {
-              "summary": "testing"
-            },
-            {
-              "summary": "more tests"
+              "start_time": "2014-12-02T10:31:32+10:30",
+              "duration": 3600,
+              "summary": "working"
             }
           ]
         }
@@ -3037,18 +3939,54 @@
       }
     },
     {
-      "description": "a POST request with one test notification",
+      "description": "a POST request with two scheduled maintenance periods",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "post",
+        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "scheduled_maintenances": [
+            {
+              "start_time": "2014-12-02T10:31:32+10:30",
+              "duration": 3600,
+              "summary": "working"
+            },
+            {
+              "start_time": "2014-12-02T12:31:32+10:30",
+              "duration": 3600,
+              "summary": "more work"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two scheduled maintenance periods",
       "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
       "request": {
         "method": "post",
-        "path": "/test_notifications/checks/www.example.com:SSH,www2.example.com:PING",
+        "path": "/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "test_notifications": [
+          "scheduled_maintenances": [
             {
-              "summary": "testing"
+              "start_time": "2014-12-02T10:31:32+10:30",
+              "duration": 3600,
+              "summary": "working"
+            },
+            {
+              "start_time": "2014-12-02T12:31:32+10:30",
+              "duration": 3600,
+              "summary": "more work"
             }
           ]
         }
@@ -3059,21 +3997,261 @@
       }
     },
     {
-      "description": "a POST request with one medium",
+      "description": "a POST request with one unscheduled maintenance period",
+      "provider_state": "no check exists",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "errors": [
+            "could not find entity 'www.example.com'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a POST request with one unscheduled maintenance period",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with one unscheduled maintenance period",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two unscheduled maintenance periods",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
+            },
+            {
+              "duration": 3600,
+              "summary": "more work"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a POST request with two unscheduled maintenance periods",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "unscheduled_maintenances": [
+            {
+              "duration": 3600,
+              "summary": "working"
+            },
+            {
+              "duration": 3600,
+              "summary": "more work"
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for an unscheduled maintenance period",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "patch",
+        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/unscheduled_maintenances/0/end_time",
+            "value": "2014-12-02T10:31:32+10:30"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for an unscheduled maintenance period",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "patch",
+        "path": "/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/unscheduled_maintenances/0/end_time",
+            "value": "2014-12-02T10:31:32+10:30"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for an unscheduled maintenance period",
+      "provider_state": "no check exists",
+      "request": {
+        "method": "patch",
+        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/unscheduled_maintenances/0/end_time",
+            "value": "2014-12-02T10:31:32+10:30"
+          }
+        ]
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "errors": [
+            "could not find entity 'www.example.com'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a DELETE request for a scheduled maintenance period",
+      "provider_state": "a check 'www.example.com:SSH' exists",
+      "request": {
+        "method": "delete",
+        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
+        "query": "start_time=2014-12-02T10%3A31%3A32%2B10%3A30"
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for a scheduled maintenance period",
+      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
+      "request": {
+        "method": "delete",
+        "path": "/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
+        "query": "start_time=2014-12-02T10%3A31%3A32%2B10%3A30"
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for a scheduled maintenance period",
+      "provider_state": "no check exists",
+      "request": {
+        "method": "delete",
+        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
+        "query": "start_time=2014-12-02T10%3A31%3A32%2B10%3A30"
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "errors": [
+            "could not find entity 'www.example.com'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a POST request with one set of pagerduty credentials",
       "provider_state": "a contact with id 'abc' exists",
       "request": {
         "method": "post",
-        "path": "/contacts/abc/media",
+        "path": "/contacts/abc/pagerduty_credentials",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "media": [
+          "pagerduty_credentials": [
             {
-              "type": "sms",
-              "address": "0123456789",
-              "interval": 300,
-              "rollup_threshold": 5
+              "service_key": "abc",
+              "subdomain": "def",
+              "username": "ghi",
+              "password": "jkl"
             }
           ]
         }
@@ -3084,26 +4262,26 @@
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
         "body": [
-          "abc_sms"
+          "abc"
         ]
       }
     },
     {
-      "description": "a POST request with one medium",
+      "description": "a POST request with one set of pagerduty credentials",
       "provider_state": "no contact exists",
       "request": {
         "method": "post",
-        "path": "/contacts/abc/media",
+        "path": "/contacts/abc/pagerduty_credentials",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
-          "media": [
+          "pagerduty_credentials": [
             {
-              "type": "sms",
-              "address": "0123456789",
-              "interval": 300,
-              "rollup_threshold": 5
+              "service_key": "abc",
+              "subdomain": "def",
+              "username": "ghi",
+              "password": "jkl"
             }
           ]
         }
@@ -3121,61 +4299,116 @@
       }
     },
     {
-      "description": "a POST request with two media",
-      "provider_state": "a contact with id 'abc' exists",
+      "description": "a GET request for all pagerduty credentials",
+      "provider_state": "a contact with id 'abc' has pagerduty credentials",
       "request": {
-        "method": "post",
-        "path": "/contacts/abc/media",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "media": [
-            {
-              "type": "sms",
-              "address": "0123456789",
-              "interval": 300,
-              "rollup_threshold": 5
-            },
-            {
-              "type": "email",
-              "address": "ablated@example.org",
-              "interval": 180,
-              "rollup_threshold": 3
-            }
-          ]
-        }
+        "method": "get",
+        "path": "/pagerduty_credentials"
       },
       "response": {
-        "status": 201,
+        "status": 200,
         "headers": {
           "Content-Type": "application/vnd.api+json; charset=utf-8"
         },
-        "body": [
-          "abc_sms",
-          "abc_email"
-        ]
+        "body": {
+          "pagerduty_credentials": [
+            {
+              "service_key": "abc",
+              "subdomain": "def",
+              "username": "ghi",
+              "password": "jkl"
+            }
+          ]
+        }
       }
     },
     {
-      "description": "a PATCH request for email media",
-      "provider_state": "a contact with id 'abc' has email and sms media",
+      "description": "a GET request for one set of pagerduty credentials",
+      "provider_state": "a contact with id 'abc' has pagerduty credentials",
+      "request": {
+        "method": "get",
+        "path": "/pagerduty_credentials/abc"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "pagerduty_credentials": [
+            {
+              "service_key": "abc",
+              "subdomain": "def",
+              "username": "ghi",
+              "password": "jkl"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for two sets of pagerduty credentials",
+      "provider_state": "contacts with ids 'abc' and '872' have pagerduty credentials",
+      "request": {
+        "method": "get",
+        "path": "/pagerduty_credentials/abc,872"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "pagerduty_credentials": [
+            {
+              "service_key": "abc",
+              "subdomain": "def",
+              "username": "ghi",
+              "password": "jkl"
+            },
+            {
+              "service_key": "mno",
+              "subdomain": "pqr",
+              "username": "stu",
+              "password": "vwx"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "a GET request for one set of pagerduty credentials",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "get",
+        "path": "/pagerduty_credentials/abc"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; charset=utf-8"
+        },
+        "body": {
+          "errors": [
+            "could not find contact 'abc'"
+          ]
+        }
+      }
+    },
+    {
+      "description": "a PATCH request for pagerduty credentials",
+      "provider_state": "a contact with id 'abc' has pagerduty credentials",
       "request": {
         "method": "patch",
-        "path": "/media/abc_email",
+        "path": "/pagerduty_credentials/abc",
         "headers": {
           "Content-Type": "application/json-patch+json"
         },
         "body": [
           {
             "op": "replace",
-            "path": "/media/0/interval",
-            "value": 50
-          },
-          {
-            "op": "replace",
-            "path": "/media/0/rollup_threshold",
-            "value": 3
+            "path": "/pagerduty_credentials/0/password",
+            "value": "pswrd"
           }
         ]
       },
@@ -3185,19 +4418,41 @@
       }
     },
     {
-      "description": "a PATCH request for email media",
-      "provider_state": "no contact exists",
+      "description": "a PATCH request for pagerduty credentials",
+      "provider_state": "contacts with ids 'abc' and '872' have pagerduty credentials",
       "request": {
         "method": "patch",
-        "path": "/media/abc_email",
+        "path": "/pagerduty_credentials/abc,872",
         "headers": {
           "Content-Type": "application/json-patch+json"
         },
         "body": [
           {
             "op": "replace",
-            "path": "/media/0/interval",
-            "value": 50
+            "path": "/pagerduty_credentials/0/password",
+            "value": "pswrd"
+          }
+        ]
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a PATCH request for pagerduty credentials",
+      "provider_state": "no contact exists",
+      "request": {
+        "method": "patch",
+        "path": "/pagerduty_credentials/abc",
+        "headers": {
+          "Content-Type": "application/json-patch+json"
+        },
+        "body": [
+          {
+            "op": "replace",
+            "path": "/pagerduty_credentials/0/password",
+            "value": "pswrd"
           }
         ]
       },
@@ -3214,38 +4469,11 @@
       }
     },
     {
-      "description": "a PATCH request for email and sms media",
-      "provider_state": "a contact with id 'abc' has email and sms media",
-      "request": {
-        "method": "patch",
-        "path": "/media/abc_email,abc_sms",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/media/0/interval",
-            "value": 50
-          },
-          {
-            "op": "replace",
-            "path": "/media/0/rollup_threshold",
-            "value": 3
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for one medium",
-      "provider_state": "a contact with id 'abc' has email and sms media",
+      "description": "a DELETE request for one set of pagerduty credentials",
+      "provider_state": "a contact with id 'abc' has pagerduty credentials",
       "request": {
         "method": "delete",
-        "path": "/media/abc_email",
+        "path": "/pagerduty_credentials/abc",
         "body": null
       },
       "response": {
@@ -3254,11 +4482,24 @@
       }
     },
     {
-      "description": "a DELETE request for one medium",
+      "description": "a DELETE request for two sets of pagerduty credentials",
+      "provider_state": "contacts with ids 'abc' and '872' have pagerduty credentials",
+      "request": {
+        "method": "delete",
+        "path": "/pagerduty_credentials/abc,872",
+        "body": null
+      },
+      "response": {
+        "status": 204,
+        "body": ""
+      }
+    },
+    {
+      "description": "a DELETE request for one set of pagerduty credentials",
       "provider_state": "no contact exists",
       "request": {
         "method": "delete",
-        "path": "/media/abc_email",
+        "path": "/pagerduty_credentials/abc",
         "body": null
       },
       "response": {
@@ -3271,1248 +4512,6 @@
             "could not find contact 'abc'"
           ]
         }
-      }
-    },
-    {
-      "description": "a DELETE request for two media",
-      "provider_state": "a contact with id 'abc' has email and sms media",
-      "request": {
-        "method": "delete",
-        "path": "/media/abc_email,abc_sms",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a GET request for all media",
-      "provider_state": "a contact with id 'abc' has email and sms media",
-      "request": {
-        "method": "get",
-        "path": "/media"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "media": [
-            {
-              "type": "email",
-              "address": "ablated@example.org",
-              "interval": 180,
-              "rollup_threshold": 3,
-              "links": {
-                "contacts": [
-                  "abc"
-                ]
-              }
-            },
-            {
-              "type": "sms",
-              "address": "0123456789",
-              "interval": 300,
-              "rollup_threshold": 5,
-              "links": {
-                "contacts": [
-                  "abc"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for email and sms media",
-      "provider_state": "a contact with id 'abc' has email and sms media",
-      "request": {
-        "method": "get",
-        "path": "/media/abc_email,abc_sms"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "media": [
-            {
-              "type": "email",
-              "address": "ablated@example.org",
-              "interval": 180,
-              "rollup_threshold": 3,
-              "links": {
-                "contacts": [
-                  "abc"
-                ]
-              }
-            },
-            {
-              "type": "sms",
-              "address": "0123456789",
-              "interval": 300,
-              "rollup_threshold": 5,
-              "links": {
-                "contacts": [
-                  "abc"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for sms media",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "get",
-        "path": "/media/abc_sms"
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find contact 'abc'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for sms media",
-      "provider_state": "a contact with id 'abc' has email and sms media",
-      "request": {
-        "method": "get",
-        "path": "/media/abc_sms"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "media": [
-            {
-              "type": "sms",
-              "address": "0123456789",
-              "interval": 300,
-              "rollup_threshold": 5,
-              "links": {
-                "contacts": [
-                  "abc"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with one contact",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "post",
-        "path": "/contacts",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "contacts": [
-            {
-              "id": "abc",
-              "first_name": "Jim",
-              "last_name": "Smith",
-              "email": "jims@example.com",
-              "timezone": "UTC"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": [
-          "abc"
-        ]
-      }
-    },
-    {
-      "description": "a POST request with one contact",
-      "provider_state": "a contact with id 'abc' exists",
-      "request": {
-        "method": "post",
-        "path": "/contacts",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "contacts": [
-            {
-              "id": "abc",
-              "first_name": "Jim",
-              "last_name": "Smith",
-              "email": "jims@example.com",
-              "timezone": "UTC"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 409,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "Contacts already exist with the following IDs: abc"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with two contacts",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "post",
-        "path": "/contacts",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "contacts": [
-            {
-              "id": "abc",
-              "first_name": "Jim",
-              "last_name": "Smith",
-              "email": "jims@example.com",
-              "timezone": "UTC"
-            },
-            {
-              "id": "def",
-              "first_name": "Joan",
-              "last_name": "Smith",
-              "email": "joans@example.com"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": [
-          "abc",
-          "def"
-        ]
-      }
-    },
-    {
-      "description": "a PATCH request to change properties for a single contact",
-      "provider_state": "a contact with id 'abc' exists",
-      "request": {
-        "method": "patch",
-        "path": "/contacts/abc",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/contacts/0/timezone",
-            "value": "UTC"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request to change properties for a single contact",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "patch",
-        "path": "/contacts/323",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/contacts/0/timezone",
-            "value": "UTC"
-          }
-        ]
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find contacts '323'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a PATCH requestto change a link for a single contact",
-      "provider_state": "a contact with id '872' exists",
-      "request": {
-        "method": "patch",
-        "path": "/contacts/872",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "add",
-            "path": "/contacts/0/links/entities/-",
-            "value": "1234"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request to change links for two contacts",
-      "provider_state": "contacts with ids 'abc' and '872' exist",
-      "request": {
-        "method": "patch",
-        "path": "/contacts/abc,872",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "add",
-            "path": "/contacts/0/links/entities/-",
-            "value": "1234"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request to change properties for two contacts",
-      "provider_state": "contacts with ids 'abc' and '872' exist",
-      "request": {
-        "method": "patch",
-        "path": "/contacts/abc,872",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/contacts/0/timezone",
-            "value": "UTC"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a single contact",
-      "provider_state": "a contact with id 'abc' exists",
-      "request": {
-        "method": "delete",
-        "path": "/contacts/abc",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a single contact",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "delete",
-        "path": "/contacts/abc",
-        "body": null
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find contacts 'abc'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a DELETE request for two contacts",
-      "provider_state": "contacts with ids 'abc' and '872' exist",
-      "request": {
-        "method": "delete",
-        "path": "/contacts/abc,872",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a GET request for all contacts",
-      "provider_state": "a contact with id 'abc' exists",
-      "request": {
-        "method": "get",
-        "path": "/contacts"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "contacts": [
-            {
-              "id": "abc",
-              "first_name": "Jim",
-              "last_name": "Smith",
-              "email": "jims@example.com",
-              "timezone": "UTC"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for all contacts",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "get",
-        "path": "/contacts"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "contacts": [
-
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a single contact",
-      "provider_state": "a contact with id 'abc' exists",
-      "request": {
-        "method": "get",
-        "path": "/contacts/abc"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "contacts": [
-            {
-              "id": "abc",
-              "first_name": "Jim",
-              "last_name": "Smith",
-              "email": "jims@example.com",
-              "timezone": "UTC"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a GET request for a single contact",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "get",
-        "path": "/contacts/abc"
-      },
-      "response": {
-        "status": 404,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            "could not find contacts 'abc'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with one scheduled maintenance period",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/entities/1234",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:14+10:30",
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one scheduled maintenance period",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/entities/1234",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:14+10:30",
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 404,
-        "body": {
-          "errors": [
-            "could not find entity '1234'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with two scheduled maintenance periods",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/entities/1234",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:14+10:30",
-              "duration": 3600,
-              "summary": "working"
-            },
-            {
-              "start_time": "2014-10-23T11:42:14+10:30",
-              "duration": 3600,
-              "summary": "more work"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with two scheduled maintenance periods",
-      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/entities/1234,5678",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:14+10:30",
-              "duration": 3600,
-              "summary": "working"
-            },
-            {
-              "start_time": "2014-10-23T11:42:14+10:30",
-              "duration": 3600,
-              "summary": "more work"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one scheduled maintenance period",
-      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/entities/1234,5678",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:14+10:30",
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one unscheduled maintenance period",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/entities/1234",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one unscheduled maintenance period",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/entities/1234",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 404,
-        "body": {
-          "errors": [
-            "could not find entity '1234'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with two unscheduled maintenance periods",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/entities/1234",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            },
-            {
-              "duration": 3600,
-              "summary": "more work"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with two unscheduled maintenance periods",
-      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/entities/1234,5678",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            },
-            {
-              "duration": 3600,
-              "summary": "more work"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one unscheduled maintenance period",
-      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/entities/1234,5678",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a scheduled maintenance period",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
-      "request": {
-        "method": "delete",
-        "path": "/scheduled_maintenances/entities/1234",
-        "query": "start_time=2014-10-23T09%3A42%3A14%2B10%3A30"
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a scheduled maintenance period",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "delete",
-        "path": "/scheduled_maintenances/entities/1234",
-        "query": "start_time=2014-10-23T09%3A42%3A14%2B10%3A30"
-      },
-      "response": {
-        "status": 404,
-        "body": {
-          "errors": [
-            "could not find entity '1234'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a DELETE request for a scheduled maintenance period",
-      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
-      "request": {
-        "method": "delete",
-        "path": "/scheduled_maintenances/entities/1234,5678",
-        "query": "start_time=2014-10-23T09%3A42%3A14%2B10%3A30"
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request for an unscheduled maintenance period",
-      "provider_state": "an entity 'www.example.com' with id '1234' exists",
-      "request": {
-        "method": "patch",
-        "path": "/unscheduled_maintenances/entities/1234",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/unscheduled_maintenances/0/end_time",
-            "value": "2014-10-23T09:42:14+10:30"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request for an unscheduled maintenance period",
-      "provider_state": "no entity exists",
-      "request": {
-        "method": "patch",
-        "path": "/unscheduled_maintenances/entities/1234",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/unscheduled_maintenances/0/end_time",
-            "value": "2014-10-23T09:42:15+10:30"
-          }
-        ]
-      },
-      "response": {
-        "status": 404,
-        "body": {
-          "errors": [
-            "could not find entity '1234'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a PATCH request for an unscheduled maintenance period",
-      "provider_state": "entities 'www.example.com', id '1234' and 'www2.example.com', id '5678' exist",
-      "request": {
-        "method": "patch",
-        "path": "/unscheduled_maintenances/entities/1234,5678",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/unscheduled_maintenances/0/end_time",
-            "value": "2014-10-23T09:42:15+10:30"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one scheduled maintenance period",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:15+10:30",
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one scheduled maintenance period",
-      "provider_state": "no check exists",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:15+10:30",
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 404,
-        "body": {
-          "errors": [
-            "could not find entity 'www.example.com'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with two scheduled maintenance periods",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:15+10:30",
-              "duration": 3600,
-              "summary": "working"
-            },
-            {
-              "start_time": "2014-10-23T11:42:15+10:30",
-              "duration": 3600,
-              "summary": "more work"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with two scheduled maintenance periods",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:15+10:30",
-              "duration": 3600,
-              "summary": "working"
-            },
-            {
-              "start_time": "2014-10-23T11:42:15+10:30",
-              "duration": 3600,
-              "summary": "more work"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one scheduled maintenance period",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "scheduled_maintenances": [
-            {
-              "start_time": "2014-10-23T09:42:15+10:30",
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one unscheduled maintenance period",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one unscheduled maintenance period",
-      "provider_state": "no check exists",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 404,
-        "body": {
-          "errors": [
-            "could not find entity 'www.example.com'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with two unscheduled maintenance periods",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            },
-            {
-              "duration": 3600,
-              "summary": "more work"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with two unscheduled maintenance periods",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            },
-            {
-              "duration": 3600,
-              "summary": "more work"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a POST request with one unscheduled maintenance period",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "unscheduled_maintenances": [
-            {
-              "duration": 3600,
-              "summary": "working"
-            }
-          ]
-        }
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a scheduled maintenance period",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "delete",
-        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
-        "query": "start_time=2014-10-23T09%3A42%3A15%2B10%3A30"
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for a scheduled maintenance period",
-      "provider_state": "no check exists",
-      "request": {
-        "method": "delete",
-        "path": "/scheduled_maintenances/checks/www.example.com:SSH",
-        "query": "start_time=2014-10-23T09%3A42%3A15%2B10%3A30"
-      },
-      "response": {
-        "status": 404,
-        "body": {
-          "errors": [
-            "could not find entity 'www.example.com'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a DELETE request for a scheduled maintenance period",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "delete",
-        "path": "/scheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
-        "query": "start_time=2014-10-23T09%3A42%3A15%2B10%3A30"
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request for an unscheduled maintenance period",
-      "provider_state": "a check 'www.example.com:SSH' exists",
-      "request": {
-        "method": "patch",
-        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/unscheduled_maintenances/0/end_time",
-            "value": "2014-10-23T09:42:15+10:30"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
-      }
-    },
-    {
-      "description": "a PATCH request for an unscheduled maintenance period",
-      "provider_state": "no check exists",
-      "request": {
-        "method": "patch",
-        "path": "/unscheduled_maintenances/checks/www.example.com:SSH",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/unscheduled_maintenances/0/end_time",
-            "value": "2014-10-23T09:42:15+10:30"
-          }
-        ]
-      },
-      "response": {
-        "status": 404,
-        "body": {
-          "errors": [
-            "could not find entity 'www.example.com'"
-          ]
-        }
-      }
-    },
-    {
-      "description": "a PATCH request for an unscheduled maintenance period",
-      "provider_state": "checks 'www.example.com:SSH' and 'www2.example.com:PING' exist",
-      "request": {
-        "method": "patch",
-        "path": "/unscheduled_maintenances/checks/www.example.com:SSH,www2.example.com:PING",
-        "headers": {
-          "Content-Type": "application/json-patch+json"
-        },
-        "body": [
-          {
-            "op": "replace",
-            "path": "/unscheduled_maintenances/0/end_time",
-            "value": "2014-10-23T09:42:15+10:30"
-          }
-        ]
-      },
-      "response": {
-        "status": 204,
-        "body": ""
       }
     }
   ],

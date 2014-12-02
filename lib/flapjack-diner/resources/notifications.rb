@@ -14,6 +14,7 @@ module Flapjack
             ids, data = unwrap_ids(*args), unwrap_create_data(*args)
             raise "'create_test_notifications_#{data_type}' requires at " \
               "least one #{data_type} id parameter" if ids.nil? || ids.empty?
+            raise "No notification data provided" if data.nil?
             validate_params(data) do
               validate :query => :summary, :as => :string
             end

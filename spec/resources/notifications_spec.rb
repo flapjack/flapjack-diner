@@ -15,18 +15,16 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
       context 'test notifications' do
 
         it "submits a POST request for an entity" do
-          data = [{:summary => 'testing'}]
-
           flapjack.given("an entity 'www.example.com' with id '1234' exists").
             upon_receiving("a POST request with one test notification").
             with(:method => :post, :path => '/test_notifications/entities/1234',
                  :headers => {'Content-Type' => 'application/vnd.api+json'},
-                 :body => {:test_notifications => data}).
+                 :body => {:test_notifications => [{}]}).
             will_respond_with(
               :status => 204,
               :body => '')
 
-          result = Flapjack::Diner.create_test_notifications_entities('1234', data)
+          result = Flapjack::Diner.create_test_notifications_entities('1234', {})
           expect(result).not_to be_nil
           expect(result).to be_truthy
         end
