@@ -80,6 +80,23 @@ module Flapjack
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
+      def perform_put_links(name, path, ids = [])
+        @last_error = nil
+
+        # TODO validate ids is array of non-empy strings
+        req_uri = build_uri(path)
+        log_request('PUT', req_uri, name.to_sym => ids)
+
+        opts = {:body => prepare_nested_query(name.to_sym => ids).to_json,
+                :headers => {'Content-Type' => 'application/vnd.api+json'}}
+        handled = handle_response(put(req_uri.request_uri, opts))
+
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name.to_s] :
+                 handled
+
+        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
+      end
+
       def perform_delete(path, ids = [], data = nil)
         @last_error = nil
         req_uri = build_uri(path, ids, data)

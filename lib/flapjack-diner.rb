@@ -4,8 +4,8 @@ require 'json'
 require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
 
-%w(contacts media checks maintenance_periods
-   notifications reports rules tags).each do |resource|
+%w(contacts media checks maintenance_periods notifications reports rules tags
+   links).each do |resource|
   require "flapjack-diner/resources/#{resource}"
 end
 
@@ -32,6 +32,7 @@ module Flapjack
       include Flapjack::Diner::Resources::Reports
       include Flapjack::Diner::Resources::Rules
       include Flapjack::Diner::Resources::Tags
+      include Flapjack::Diner::Resources::Links
 
       include Flapjack::Diner::Tools
     end

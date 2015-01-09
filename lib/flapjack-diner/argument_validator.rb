@@ -52,9 +52,19 @@ module Flapjack
     def array_of_strings(*elements)
       elements.each do |element|
         target = @query[element]
-        next if target.nil? || (target.is_a?(Array) &&
-          target.all? {|t| t.is_a?(String) })
-        @errors << "'#{target}' should be an Array of Strings."
+        next if target.nil? || (target.is_a?(Array) && !target.empty? &&
+          target.all? {|t| t.is_a?(String) && !t.empty? })
+        @errors << "'#{target}' should be an Array of non-empty Strings."
+      end
+    end
+
+    def string_or_array_of_strings(*elements)
+      elements.each do |element|
+        target = @query[element]
+        next if target.nil? || (target.is_a?(String) && !target.empty?) ||
+         (target.is_a?(Array) && !target.empty? &&
+          target.all? {|t| t.is_a?(String) && !t.empty? })
+        @errors << "'#{target}' should be a non-empty String, or an Array of non-empty Strings."
       end
     end
 
