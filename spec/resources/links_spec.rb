@@ -36,16 +36,16 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   end
 
   it 'gets tags for a check' do
-    flapjack.given("a check exists").
+    flapjack.given("a check with a tag exists").
       upon_receiving("a GET request for all tags on a check").
       with(:method => :get, :path => "/checks/#{check_data[:id]}/links/tags").
       will_respond_with(
         :status => 200,
         :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-        :body => {:tags => [tag_data]} )
+        :body => {:tags => [tag_data[:name]]} )
 
     result = Flapjack::Diner.checks_link_tags(check_data[:id])
-    expect(result).to eq([tag_data])
+    expect(result).to eq([tag_data[:name]])
   end
 
   it 'updates tags for a check' do
@@ -63,7 +63,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   end
 
   it 'deletes a tag from a check' do
-    flapjack.given("a check and a tag exist").
+    flapjack.given("a check with a tag exists").
       upon_receiving("a DELETE request deleting a tag from a check").
       with(:method => :delete, :path => "/checks/#{check_data[:id]}/links/tags/#{tag_data[:name]}",
            :body => nil).
@@ -76,7 +76,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   end
 
   it 'deletes two tags from a check' do
-    flapjack.given("a check and a tag exist").
+    flapjack.given("a check with two tags exists").
       upon_receiving("a DELETE request deleting two tags from a check").
       with(:method => :delete, :path => "/checks/#{check_data[:id]}/links/tags/#{tag_data[:name]},#{tag_2_data[:name]}",
            :body => nil).
@@ -117,15 +117,14 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   end
 
   it 'deletes the contact from a rule' do
-    flapjack.given("a contact and a rule exist").
+    flapjack.given("a contact with a rule exists").
       upon_receiving("a DELETE request deleting a contact from a rule").
-      with(:method => :delete, :path => "/rules/#{rule_data[:id]}/links/contact/#{contact_data[:id]}",
+      with(:method => :delete, :path => "/rules/#{rule_data[:id]}/links/contact",
            :body => nil).
       will_respond_with(:status => 204,
                         :body => '')
 
-    result = Flapjack::Diner.delete_rules_link_contact(rule_data[:id],
-      contact_data[:id])
+    result = Flapjack::Diner.delete_rules_link_contact(rule_data[:id])
     expect(result).to be true
   end
 

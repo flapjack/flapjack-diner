@@ -56,12 +56,11 @@ module Flapjack
                 "/#{resource}/#{resource_id}/links/#{linked}", linked_id)
             end
 
-            define_method("delete_#{resource}_link_#{linked}") do |resource_id, linked_id|
-              validate_params(:resource_id => resource_id, :linked_id => linked_id) do
+            define_method("delete_#{resource}_link_#{linked}") do |resource_id|
+              validate_params(:resource_id => resource_id) do
                 validate :query => :resource_id, :as => :string
-                validate :query => :linked_id, :as => :string
               end
-              perform_delete("/#{resource}/#{resource_id}/links/#{linked}", [linked_id])
+              perform_delete("/#{resource}/#{resource_id}/links/#{linked}")
             end
           end
 
