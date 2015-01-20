@@ -15,8 +15,6 @@ module Flapjack
             validate :query => :id, :as => :string
             validate :query => :name,    :as => [:required, :string]
             validate :query => :enabled, :as => :boolean
-            validate :query => [:initial_failure_delay, :repeat_failure_delay],
-                     :as => :integer
           end
           perform_post('checks', '/checks', data)
         end
@@ -30,8 +28,6 @@ module Flapjack
           validate_params(data) do
             validate :query => :name,                  :as => :string
             validate :query => :enabled,               :as => :boolean
-            validate :query => [:initial_failure_delay, :repeat_failure_delay],
-                     :as => :integer
           end
           perform_put('checks', "/checks", data)
         end
