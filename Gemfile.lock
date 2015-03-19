@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    flapjack-diner (1.2.0)
+    flapjack-diner (1.3.0)
       httparty (>= 0.10)
       json (>= 1.7.7)
 
@@ -18,7 +18,7 @@ GEM
     httparty (0.13.3)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    json (1.8.1)
+    json (1.8.2)
     multi_json (1.10.1)
     multi_xml (0.5.5)
     pact (1.3.3)
