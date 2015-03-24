@@ -16,7 +16,7 @@ module Flapjack
 
       unless elements.nil?
         elements = [elements] unless elements.is_a?(Array)
-        validations.each {|v|  __send__(v.to_s.downcase, *elements) }
+        validations.each {|v| __send__(v.to_s.downcase, *elements) }
       end
 
       raise(ArgumentError, @errors.join('; ')) unless @errors.empty?

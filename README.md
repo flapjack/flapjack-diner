@@ -434,6 +434,15 @@ some_checks = Flapjack::Diner.checks(ID1, ID2, ...)
 all_checks = Flapjack::Diner.checks
 ```
 
+<a name="checks_matching">&nbsp;</a>
+### checks_matching
+
+Returns an array of checks matching a given regular expression
+
+```ruby
+entities = Flapjack::Diner.checks_matching(/^PING/)
+```
+
 <a name="update_checks">&nbsp;</a>
 ### update_checks
 

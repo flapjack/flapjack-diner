@@ -23,6 +23,12 @@ module Flapjack
           perform_get('checks', '/checks', ids)
         end
 
+        def checks_matching(name_re)
+          raise "Must be a regexp: #{name_re.inspect}" unless
+            name_re.is_a?(Regexp)
+          checks.reject {|e| name_re.match(e[:name]).nil? }
+        end
+
         def update_checks(*args)
           data = unwrap_data(*args)
           validate_params(data) do
