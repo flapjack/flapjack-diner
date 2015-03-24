@@ -3,9 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Tags, :pact => true do
 
-  before do
-    skip "broken"
-  end
 
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
@@ -19,28 +16,30 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
         upon_receiving("a POST request with one tag").
         with(:method => :post, :path => '/tags',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:tags => tag_data}).
+             :body => {:data => {:tags => tag_data.merge(:type => 'tag')}}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {'tags' => tag_data} )
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+          :body => {:data => {:tags => tag_data.merge(:type => 'tag')}}
+        )
 
       result = Flapjack::Diner.create_tags(tag_data)
-      expect(result).to eq(tag_data)
+      expect(result).to eq(tag_data.merge(:type => 'tag'))
     end
 
     it "submits a POST request for several tags" do
-      tags_data = [tag_data, tag_2_data]
+      tags_data = [tag_data.merge(:type => 'tag'), tag_2_data.merge(:type => 'tag')]
 
       flapjack.given("no tag exists").
         upon_receiving("a POST request with two tags").
         with(:method => :post, :path => '/tags',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:tags => tags_data}).
+             :body => {:data => {:tags => tags_data}}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {'tags' => tags_data})
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+          :body => {'data' => {'tags' => tags_data}}
+        )
 
       result = Flapjack::Diner.create_tags(*tags_data)
       expect(result).to eq(tags_data)
@@ -50,6 +49,10 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
   end
 
   context 'read' do
+
+    before do
+      skip "broken"
+    end
 
     context 'GET all tags' do
 
@@ -122,6 +125,11 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
   # no tag updates allowed
 
   context 'delete' do
+
+    before do
+      skip "broken"
+    end
+
     it "submits a DELETE request for a tag" do
       flapjack.given("a tag exists").
         upon_receiving("a DELETE request for a single tag").

@@ -29,7 +29,7 @@
       "response": {
         "status": 201,
         "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
         },
         "body": {
           "data": {
@@ -73,7 +73,7 @@
       "response": {
         "status": 201,
         "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
         },
         "body": {
           "data": {
@@ -89,6 +89,266 @@
                 "name": "www2.example.com:PING",
                 "enabled": true,
                 "type": "check"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a POST request with one tag",
+      "provider_state": "no tag exists",
+      "request": {
+        "method": "post",
+        "path": "/tags",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "tags": {
+              "name": "database",
+              "type": "tag"
+            }
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
+        },
+        "body": {
+          "data": {
+            "tags": {
+              "name": "database",
+              "type": "tag"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "a POST request with two tags",
+      "provider_state": "no tag exists",
+      "request": {
+        "method": "post",
+        "path": "/tags",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "tags": [
+              {
+                "name": "database",
+                "type": "tag"
+              },
+              {
+                "name": "physical",
+                "type": "tag"
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
+        },
+        "body": {
+          "data": {
+            "tags": [
+              {
+                "name": "database",
+                "type": "tag"
+              },
+              {
+                "name": "physical",
+                "type": "tag"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a POST request with one scheduled maintenance period",
+      "provider_state": "no scheduled maintenance period exists",
+      "request": {
+        "method": "post",
+        "path": "/scheduled_maintenances",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "scheduled_maintenances": {
+              "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
+              "start_time": "2015-03-25T09:31:15+10:30",
+              "end_time": "2015-03-25T10:31:15+10:30",
+              "summary": "working",
+              "type": "scheduled_maintenance"
+            }
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+        },
+        "body": {
+          "data": {
+            "scheduled_maintenances": {
+              "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
+              "start_time": "2015-03-25T09:31:15+10:30",
+              "end_time": "2015-03-25T10:31:15+10:30",
+              "summary": "working",
+              "type": "scheduled_maintenance"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "a POST request with two scheduled maintenance periods",
+      "provider_state": "no scheduled maintenance period exists",
+      "request": {
+        "method": "post",
+        "path": "/scheduled_maintenances",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "scheduled_maintenances": [
+              {
+                "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
+                "start_time": "2015-03-25T09:31:15+10:30",
+                "end_time": "2015-03-25T10:31:15+10:30",
+                "summary": "working",
+                "type": "scheduled_maintenance"
+              },
+              {
+                "id": "5a84c82b-0acb-4703-a27e-0b0db50b298a",
+                "start_time": "2015-03-25T11:31:15+10:30",
+                "end_time": "2015-03-25T12:31:15+10:30",
+                "summary": "working",
+                "type": "scheduled_maintenance"
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+        },
+        "body": {
+          "data": {
+            "scheduled_maintenances": [
+              {
+                "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
+                "start_time": "2015-03-25T09:31:15+10:30",
+                "end_time": "2015-03-25T10:31:15+10:30",
+                "summary": "working",
+                "type": "scheduled_maintenance"
+              },
+              {
+                "id": "5a84c82b-0acb-4703-a27e-0b0db50b298a",
+                "start_time": "2015-03-25T11:31:15+10:30",
+                "end_time": "2015-03-25T12:31:15+10:30",
+                "summary": "working",
+                "type": "scheduled_maintenance"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a POST request with one unscheduled maintenance period",
+      "provider_state": "no unscheduled maintenance period exists",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "unscheduled_maintenances": {
+              "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
+              "end_time": "2015-03-25T10:31:15+10:30",
+              "summary": "working",
+              "type": "unscheduled_maintenance"
+            }
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+        },
+        "body": {
+          "data": {
+            "unscheduled_maintenances": {
+              "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
+              "end_time": "2015-03-25T10:31:15+10:30",
+              "summary": "working",
+              "type": "unscheduled_maintenance"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "a POST request with two unscheduled maintenance periods",
+      "provider_state": "no unscheduled maintenance period exists",
+      "request": {
+        "method": "post",
+        "path": "/unscheduled_maintenances",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "unscheduled_maintenances": [
+              {
+                "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
+                "end_time": "2015-03-25T10:31:15+10:30",
+                "summary": "working",
+                "type": "unscheduled_maintenance"
+              },
+              {
+                "id": "41895714-9b77-48a9-a373-5f6005b1ce95",
+                "end_time": "2015-03-25T11:01:15+10:30",
+                "summary": "partly working",
+                "type": "unscheduled_maintenance"
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+        },
+        "body": {
+          "data": {
+            "unscheduled_maintenances": [
+              {
+                "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
+                "end_time": "2015-03-25T10:31:15+10:30",
+                "summary": "working",
+                "type": "unscheduled_maintenance"
+              },
+              {
+                "id": "41895714-9b77-48a9-a373-5f6005b1ce95",
+                "end_time": "2015-03-25T11:01:15+10:30",
+                "summary": "partly working",
+                "type": "unscheduled_maintenance"
               }
             ]
           }
@@ -120,7 +380,7 @@
       "response": {
         "status": 201,
         "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
         },
         "body": {
           "data": {
@@ -171,7 +431,7 @@
       "response": {
         "status": 201,
         "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
         },
         "body": {
           "data": {
@@ -198,238 +458,19 @@
       }
     },
     {
-      "description": "a POST request with one scheduled maintenance period",
-      "provider_state": "no scheduled maintenance period exists",
+      "description": "a POST request with one rule",
+      "provider_state": "no rule exists",
       "request": {
         "method": "post",
-        "path": "/scheduled_maintenances",
+        "path": "/rules",
         "headers": {
           "Content-Type": "application/vnd.api+json"
         },
         "body": {
           "data": {
-            "scheduled_maintenances": {
-              "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
-              "start_time": "2015-03-24T17:06:12+10:30",
-              "end_time": "2015-03-24T18:06:12+10:30",
-              "summary": "working",
-              "type": "scheduled_maintenance"
-            }
-          }
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-        },
-        "body": {
-          "data": {
-            "scheduled_maintenances": {
-              "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
-              "start_time": "2015-03-24T17:06:12+10:30",
-              "end_time": "2015-03-24T18:06:12+10:30",
-              "summary": "working",
-              "type": "scheduled_maintenance"
-            }
-          }
-        }
-      }
-    },
-    {
-      "description": "a POST request with two scheduled maintenance periods",
-      "provider_state": "no scheduled maintenance period exists",
-      "request": {
-        "method": "post",
-        "path": "/scheduled_maintenances",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "data": {
-            "scheduled_maintenances": [
-              {
-                "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
-                "start_time": "2015-03-24T17:06:12+10:30",
-                "end_time": "2015-03-24T18:06:12+10:30",
-                "summary": "working",
-                "type": "scheduled_maintenance"
-              },
-              {
-                "id": "5a84c82b-0acb-4703-a27e-0b0db50b298a",
-                "start_time": "2015-03-24T19:06:12+10:30",
-                "end_time": "2015-03-24T20:06:12+10:30",
-                "summary": "working",
-                "type": "scheduled_maintenance"
-              }
-            ]
-          }
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-        },
-        "body": {
-          "data": {
-            "scheduled_maintenances": [
-              {
-                "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
-                "start_time": "2015-03-24T17:06:12+10:30",
-                "end_time": "2015-03-24T18:06:12+10:30",
-                "summary": "working",
-                "type": "scheduled_maintenance"
-              },
-              {
-                "id": "5a84c82b-0acb-4703-a27e-0b0db50b298a",
-                "start_time": "2015-03-24T19:06:12+10:30",
-                "end_time": "2015-03-24T20:06:12+10:30",
-                "summary": "working",
-                "type": "scheduled_maintenance"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "description": "a POST request with one unscheduled maintenance period",
-      "provider_state": "no unscheduled maintenance period exists",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "data": {
-            "unscheduled_maintenances": {
-              "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
-              "end_time": "2015-03-24T18:06:12+10:30",
-              "summary": "working",
-              "type": "unscheduled_maintenance"
-            }
-          }
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-        },
-        "body": {
-          "data": {
-            "unscheduled_maintenances": {
-              "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
-              "end_time": "2015-03-24T18:06:12+10:30",
-              "summary": "working",
-              "type": "unscheduled_maintenance"
-            }
-          }
-        }
-      }
-    },
-    {
-      "description": "a POST request with two unscheduled maintenance periods",
-      "provider_state": "no unscheduled maintenance period exists",
-      "request": {
-        "method": "post",
-        "path": "/unscheduled_maintenances",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "data": {
-            "unscheduled_maintenances": [
-              {
-                "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
-                "end_time": "2015-03-24T18:06:12+10:30",
-                "summary": "working",
-                "type": "unscheduled_maintenance"
-              },
-              {
-                "id": "41895714-9b77-48a9-a373-5f6005b1ce95",
-                "end_time": "2015-03-24T18:36:12+10:30",
-                "summary": "partly working",
-                "type": "unscheduled_maintenance"
-              }
-            ]
-          }
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-        },
-        "body": {
-          "data": {
-            "unscheduled_maintenances": [
-              {
-                "id": "9b7a7af4-8251-4216-8e86-2d4068447ae4",
-                "end_time": "2015-03-24T18:06:12+10:30",
-                "summary": "working",
-                "type": "unscheduled_maintenance"
-              },
-              {
-                "id": "41895714-9b77-48a9-a373-5f6005b1ce95",
-                "end_time": "2015-03-24T18:36:12+10:30",
-                "summary": "partly working",
-                "type": "unscheduled_maintenance"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "description": "a POST request with one contact",
-      "provider_state": "a contact exists",
-      "request": {
-        "method": "post",
-        "path": "/contacts",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "data": {
-            "contacts": {
-              "id": "c248da6f-ab16-4ce3-9b32-afd4e5f5270e",
-              "name": "Jim Smith",
-              "timezone": "UTC",
-              "type": "contact"
-            }
-          }
-        }
-      },
-      "response": {
-        "status": 403,
-        "headers": {
-          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
-        },
-        "body": {
-          "errors": [
-            {
-              "status": "403",
-              "detail": "Contacts already exist with the following ids: c248da6f-ab16-4ce3-9b32-afd4e5f5270e"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "description": "a POST request with one contact",
-      "provider_state": "no contact exists",
-      "request": {
-        "method": "post",
-        "path": "/contacts",
-        "headers": {
-          "Content-Type": "application/vnd.api+json"
-        },
-        "body": {
-          "data": {
-            "contacts": {
-              "id": "c248da6f-ab16-4ce3-9b32-afd4e5f5270e",
-              "name": "Jim Smith",
-              "timezone": "UTC",
-              "type": "contact"
+            "rules": {
+              "id": "05983623-fcef-42da-af44-ed6990b500fa",
+              "type": "rule"
             }
           }
         }
@@ -441,12 +482,55 @@
         },
         "body": {
           "data": {
-            "contacts": {
-              "id": "c248da6f-ab16-4ce3-9b32-afd4e5f5270e",
-              "name": "Jim Smith",
-              "timezone": "UTC",
-              "type": "contact"
+            "rules": {
+              "id": "05983623-fcef-42da-af44-ed6990b500fa",
+              "type": "rule"
             }
+          }
+        }
+      }
+    },
+    {
+      "description": "a POST request with two rules",
+      "provider_state": "no rule exists",
+      "request": {
+        "method": "post",
+        "path": "/rules",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "rules": [
+              {
+                "id": "05983623-fcef-42da-af44-ed6990b500fa",
+                "type": "rule"
+              },
+              {
+                "id": "20f182fc-6e32-4794-9007-97366d162c51",
+                "type": "rule"
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
+        },
+        "body": {
+          "data": {
+            "rules": [
+              {
+                "id": "05983623-fcef-42da-af44-ed6990b500fa",
+                "type": "rule"
+              },
+              {
+                "id": "20f182fc-6e32-4794-9007-97366d162c51",
+                "type": "rule"
+              }
+            ]
           }
         }
       }
@@ -503,56 +587,75 @@
       }
     },
     {
-      "description": "a DELETE request for a single contact",
-      "provider_state": "no contact exists",
+      "description": "a POST request with one contact",
+      "provider_state": "a contact exists",
       "request": {
-        "method": "delete",
-        "path": "/contacts/c248da6f-ab16-4ce3-9b32-afd4e5f5270e",
-        "body": null
+        "method": "post",
+        "path": "/contacts",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "contacts": {
+              "id": "c248da6f-ab16-4ce3-9b32-afd4e5f5270e",
+              "name": "Jim Smith",
+              "timezone": "UTC",
+              "type": "contact"
+            }
+          }
+        }
       },
       "response": {
-        "status": 404,
+        "status": 409,
         "headers": {
-          "Content-Type": "application/vnd.api+json; charset=utf-8"
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
         },
         "body": {
           "errors": [
             {
-              "status": "404",
-              "detail": "could not find Contact records, ids: 'c248da6f-ab16-4ce3-9b32-afd4e5f5270e'"
+              "status": "409",
+              "detail": "Contacts already exist with the following ids: c248da6f-ab16-4ce3-9b32-afd4e5f5270e"
             }
           ]
         }
       }
     },
     {
-      "description": "a DELETE request for a single contact",
-      "provider_state": "a contact exists",
+      "description": "a POST request with one contact",
+      "provider_state": "no contact exists",
       "request": {
-        "method": "delete",
-        "path": "/contacts/c248da6f-ab16-4ce3-9b32-afd4e5f5270e",
-        "body": null
+        "method": "post",
+        "path": "/contacts",
+        "headers": {
+          "Content-Type": "application/vnd.api+json"
+        },
+        "body": {
+          "data": {
+            "contacts": {
+              "id": "c248da6f-ab16-4ce3-9b32-afd4e5f5270e",
+              "name": "Jim Smith",
+              "timezone": "UTC",
+              "type": "contact"
+            }
+          }
+        }
       },
       "response": {
-        "status": 204,
+        "status": 201,
         "headers": {
+          "Content-Type": "application/vnd.api+json; supported-ext=bulk; charset=utf-8"
         },
-        "body": ""
-      }
-    },
-    {
-      "description": "a DELETE request for two contacts",
-      "provider_state": "two contacts exist",
-      "request": {
-        "method": "delete",
-        "path": "/contacts/c248da6f-ab16-4ce3-9b32-afd4e5f5270e,ff41bfbb-0d04-45e3-a4d2-579ed1655fb8",
-        "body": null
-      },
-      "response": {
-        "status": 204,
-        "headers": {
-        },
-        "body": ""
+        "body": {
+          "data": {
+            "contacts": {
+              "id": "c248da6f-ab16-4ce3-9b32-afd4e5f5270e",
+              "name": "Jim Smith",
+              "timezone": "UTC",
+              "type": "contact"
+            }
+          }
+        }
       }
     }
   ],

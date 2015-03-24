@@ -18,7 +18,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
              :body => {:data => {:checks => check_data.merge(:type => 'check')}}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {'data' => {'checks' => check_data}})
 
       result = Flapjack::Diner.create_checks(check_data)
@@ -36,7 +36,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
              :body => {:data => {:checks => checks_data}}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {'data' => {'checks' => checks_data}})
 
       result = Flapjack::Diner.create_checks(*checks_data)

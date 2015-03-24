@@ -18,7 +18,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :body => {:data => {:media => sms_data.merge(:type => 'medium')}}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:data => {:media => sms_data.merge(:type => 'medium')}})
 
       result = Flapjack::Diner.create_media(sms_data)
@@ -37,7 +37,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :body => {:data => {:media => media_data}}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:data => {:media => media_data}})
 
       result = Flapjack::Diner.create_media(*media_data)

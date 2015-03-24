@@ -3,10 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Rules, :pact => true do
 
-  before do
-    skip "broken"
-  end
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -19,30 +15,30 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
         upon_receiving("a POST request with one rule").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:rules => rule_data}).
+             :body => {:data => {:rules => rule_data.merge(:type => 'rule')}}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:rules => rule_data}
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+         :body => {:data => {:rules => rule_data.merge(:type => 'rule')}}
         )
 
       result = Flapjack::Diner.create_rules(rule_data)
       expect(result).not_to be_nil
-      expect(result).to eq(rule_data)
+      expect(result).to eq(rule_data.merge(:type => 'rule'))
     end
 
     it "submits a POST request for several rules" do
-      rules_data = [rule_data, rule_2_data]
+      rules_data = [rule_data.merge(:type => 'rule'), rule_2_data.merge(:type => 'rule')]
 
       flapjack.given("no rule exists").
         upon_receiving("a POST request with two rules").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:rules => rules_data}).
+             :body => {:data => {:rules => rules_data}}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:rules => rules_data}
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+          :body => {:data => {:rules => rules_data}}
         )
 
       result = Flapjack::Diner.create_rules(*rules_data)
@@ -55,7 +51,12 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
   end
 
   context 'read' do
-   it "submits a GET request for all rules" do
+
+    before do
+      skip "broken"
+    end
+
+    it "submits a GET request for all rules" do
       flapjack.given("a rule exists").
         upon_receiving("a GET request for all rules").
         with(:method => :get, :path => '/rules').
@@ -179,6 +180,11 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
   # end
 
   context 'delete' do
+
+    before do
+      skip "broken"
+    end
+
     it "submits a DELETE request for a rule" do
       flapjack.given("a rule exists").
         upon_receiving("a DELETE request for a single rule").
