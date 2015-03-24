@@ -19,7 +19,7 @@ module Flapjack
                      :as => [:required, :integer]
 
           end
-          perform_post('media', "/media", data)
+          perform_post('medium', 'media', "/media", data)
         end
 
         def media(*ids)
@@ -33,7 +33,7 @@ module Flapjack
             validate :query => [:interval, :rollup_threshold],
                      :as => :integer
           end
-          perform_put('media', "/media", data)
+          perform_patch('media', "/media", data.merge(:type => 'medium'))
         end
 
         def delete_media(*ids)

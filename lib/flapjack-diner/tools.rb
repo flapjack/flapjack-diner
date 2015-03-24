@@ -30,25 +30,34 @@ module Flapjack
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_post(name, path, data = nil)
+      def perform_post(type, name, path, data = nil)
         @last_error = nil
+        case data
+        when Array
+          data.each {|d| d[:type] = type}
+        when Hash
+          data[:type] = type
+        end
         req_uri = build_uri(path)
-        log_request('POST', req_uri, name.to_sym => data)
+        log_request('POST', req_uri, :data => {name.to_sym => data})
         opts = if data.nil?
                  {}
                else
-                 {:body => prepare_nested_query(name.to_sym => data).to_json,
+                 # TODO ext=bulk in header if data is an array
+                 # TODO send current character encoding in content-type
+                 {:body => prepare_nested_query(:data => {name.to_sym => data}).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
         handled = handle_response(post(req_uri.request_uri, opts))
 
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name.to_s] :
+        # TODO validate 'data' for Hash in handle_response
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled['data'][name.to_s] :
                  handled
 
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_put(name, path, data = nil)
+      def perform_patch(name, path, data = nil)
         @last_error = nil
 
         case data
@@ -64,7 +73,7 @@ module Flapjack
         end
 
         req_uri = build_uri(path, ids)
-        log_request('PUT', req_uri, name.to_sym => data)
+        log_request('PATCH', req_uri, name.to_sym => data)
 
         opts = if data.nil?
                  {}
@@ -72,7 +81,7 @@ module Flapjack
                  {:body => prepare_nested_query(name.to_sym => data).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
-        handled = handle_response(put(req_uri.request_uri, opts))
+        handled = handle_response(patch(req_uri.request_uri, opts))
 
         result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name.to_s] :
                  handled
@@ -80,16 +89,16 @@ module Flapjack
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_put_links(name, path, ids = [])
+      def perform_patch_links(name, path, ids = [])
         @last_error = nil
 
         # TODO validate ids is array of non-empy strings
         req_uri = build_uri(path)
-        log_request('PUT', req_uri, name.to_sym => ids)
+        log_request('PATCH', req_uri, name.to_sym => ids)
 
         opts = {:body => prepare_nested_query(name.to_sym => ids).to_json,
                 :headers => {'Content-Type' => 'application/vnd.api+json'}}
-        handled = handle_response(put(req_uri.request_uri, opts))
+        handled = handle_response(patch(req_uri.request_uri, opts))
 
         result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name.to_s] :
                  handled

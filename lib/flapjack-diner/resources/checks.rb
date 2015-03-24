@@ -16,7 +16,7 @@ module Flapjack
             validate :query => :name,    :as => [:required, :string]
             validate :query => :enabled, :as => :boolean
           end
-          perform_post('checks', '/checks', data)
+          perform_post('check', 'checks', '/checks', data)
         end
 
         def checks(*ids)
@@ -24,9 +24,10 @@ module Flapjack
         end
 
         def checks_matching(name_re)
-          raise "Must be a regexp: #{name_re.inspect}" unless
-            name_re.is_a?(Regexp)
-          checks.reject {|e| name_re.match(e[:name]).nil? }
+          raise "FIXME"
+          # raise "Must be a regexp: #{name_re.inspect}" unless
+          #   name_re.is_a?(Regexp)
+          # checks.reject {|e| name_re.match(e[:name]).nil? }
         end
 
         def update_checks(*args)
@@ -35,7 +36,7 @@ module Flapjack
             validate :query => :name,                  :as => :string
             validate :query => :enabled,               :as => :boolean
           end
-          perform_put('checks', "/checks", data)
+          perform_patch('checks', "/checks", data.merge(:type => 'contact'))
         end
 
         # TODO should allow DELETE when API does

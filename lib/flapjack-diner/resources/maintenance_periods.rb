@@ -18,7 +18,7 @@ module Flapjack
             validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
           end
-          perform_post('scheduled_maintenances',
+          perform_post('scheduled_maintenance', 'scheduled_maintenances',
                        '/scheduled_maintenances', data)
         end
 
@@ -29,7 +29,7 @@ module Flapjack
             validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
           end
-          perform_post('unscheduled_maintenances',
+          perform_post('unscheduled_maintenance', 'unscheduled_maintenances',
                        '/unscheduled_maintenances', data)
         end
 
@@ -38,8 +38,8 @@ module Flapjack
           validate_params(data) do
             validate :query => :end_time, :as => :time
           end
-          perform_put('unscheduled_maintenances', "/unscheduled_maintenances",
-                      data)
+          perform_patch('unscheduled_maintenances', "/unscheduled_maintenances",
+                        data.merge(:type => 'unscheduled_maintenance'))
         end
 
         def delete_scheduled_maintenances(*ids)

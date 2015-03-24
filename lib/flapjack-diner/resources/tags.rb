@@ -15,7 +15,7 @@ module Flapjack
             validate :query => :id,   :as => :string
             validate :query => :name, :as => [:required, :string]
           end
-          perform_post('tags', '/tags', data)
+          perform_post('tag', 'tags', '/tags', data)
         end
 
         def tags(*ids)
@@ -27,7 +27,7 @@ module Flapjack
           validate_params(data) do
             validate :query => :name, :as => :string
           end
-          perform_put('tags', "/tags", data)
+          perform_patch('tags', "/tags", data.merge(:type => 'tag'))
         end
 
         def delete_tags(*ids)

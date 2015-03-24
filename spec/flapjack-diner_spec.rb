@@ -71,17 +71,17 @@ describe Flapjack::Diner do
 
     it "logs a POST request" do
       nd = notification_data.merge(:links => {:checks => [check_data[:id]]})
-      response = {:test_notifications => nd}.to_json
+      response = {:data => {:test_notifications => nd.merge(:type => 'test_notification')}}.to_json
       req = stub_request(:post, "http://#{server}/test_notifications").
               to_return(:status => 201, :body => response)
       expect(logger).to receive(:info).with("POST http://#{server}/test_notifications\n" +
-        "  Body: {:test_notifications=>#{nd.inspect}}")
+        "  Body: {:data=>{:test_notifications=>#{nd.merge(:type => 'test_notification').inspect}}}")
       expect(logger).to receive(:info).with("  Response Code: 201")
       expect(logger).to receive(:info).with("  Response Body: #{response}")
 
       result = Flapjack::Diner.create_test_notifications(nd)
       expect(req).to have_been_requested
-      expect(result).to eq(nd)
+      expect(result).to eq(nd.merge(:type => 'test_notification'))
     end
 
     it "logs a DELETE request" do
