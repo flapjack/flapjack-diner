@@ -24,7 +24,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
              :body => {:contacts => contact_data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['abc'] )
 
       result = Flapjack::Diner.create_contacts(contact_data)
@@ -50,7 +50,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
              :body => {:contacts => contact_data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['abc', 'def'] )
 
       result = Flapjack::Diner.create_contacts(contact_data)
@@ -72,7 +72,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
              :body => {:contacts => contact_data}).
         will_respond_with(
           :status => 409,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:errors => ["Contacts already exist with the following IDs: abc"]} )
 
       result = Flapjack::Diner.create_contacts(contact_data)
@@ -99,7 +99,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           with(:method => :get, :path => '/contacts').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
               :body => {:contacts => [contact_data]} )
 
         result = Flapjack::Diner.contacts
@@ -113,7 +113,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           with(:method => :get, :path => '/contacts').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
               :body => {:contacts => []} )
 
         result = Flapjack::Diner.contacts
@@ -138,7 +138,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           with(:method => :get, :path => '/contacts/abc').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
               :body => {:contacts => [contact_data]} )
 
         result = Flapjack::Diner.contacts('abc')
@@ -152,7 +152,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           with(:method => :get, :path => '/contacts/abc').
           will_respond_with(
             :status => 404,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:errors => ["could not find contacts 'abc'"]} )
 
         result = Flapjack::Diner.contacts('abc')
@@ -236,7 +236,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
              :headers => {'Content-Type'=>'application/json-patch+json'}).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find contacts '323'"]} )
 
       result = Flapjack::Diner.update_contacts('323', :timezone => 'UTC')
@@ -284,7 +284,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
              :body => nil).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find contacts 'abc'"]} )
 
       result = Flapjack::Diner.delete_contacts('abc')

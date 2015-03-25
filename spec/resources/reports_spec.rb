@@ -41,7 +41,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
           with(:method => :get, :path => "/#{report_type}_report/entities").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym)
@@ -56,7 +56,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
           with(:method => :get, :path => "/#{report_type}_report/entities/1234").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym, '1234')
@@ -72,7 +72,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
           with(:method => :get, :path => "/#{report_type}_report/entities/1234,5678").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym, '1234', '5678')
@@ -88,7 +88,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :path => "/#{report_type}_report/checks").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym)
@@ -104,7 +104,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :path => "/#{report_type}_report/checks/www.example.com:SSH").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym, 'www.example.com:SSH')
@@ -121,7 +121,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :path => "/#{report_type}_report/checks/www.example.com:SSH,www2.example.com:PING").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym, 'www.example.com:SSH', 'www2.example.com:PING')
@@ -148,7 +148,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :query => "start_time=#{esc_st}&end_time=#{esc_et}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym,
@@ -166,7 +166,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :query => "start_time=#{esc_st}&end_time=#{esc_et}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym, '1234',
@@ -185,7 +185,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :query => "start_time=#{esc_st}&end_time=#{esc_et}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_entities".to_sym, '1234', '5678',
@@ -203,7 +203,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :query => "start_time=#{esc_st}&end_time=#{esc_et}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym,
@@ -221,7 +221,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :query => "start_time=#{esc_st}&end_time=#{esc_et}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym, 'www.example.com:SSH',
@@ -240,7 +240,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
                :query => "start_time=#{esc_st}&end_time=#{esc_et}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {"#{report_type}_reports".to_sym => data} )
 
         result = Flapjack::Diner.send("#{report_type}_report_checks".to_sym, 'www.example.com:SSH', 'www2.example.com:PING',

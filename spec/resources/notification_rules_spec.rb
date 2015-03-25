@@ -32,7 +32,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
              :body => {:notification_rules => data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => [ Pact::Term.new(
             :generate => '05983623-fcef-42da-af44-ed6990b500fa',
             :matcher  => rule_id_regexp
@@ -70,7 +70,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
              :body => {:notification_rules => data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => [ Pact::Term.new(
             :generate => '05983623-fcef-42da-af44-ed6990b500fa',
             :matcher  => rule_id_regexp
@@ -104,7 +104,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
              :body => {:notification_rules => data}).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find contact 'abc'"]}
         )
 
@@ -136,7 +136,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
         with(:method => :get, :path => '/notification_rules').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:notification_rules => [data]} )
 
       result = Flapjack::Diner.notification_rules
@@ -163,7 +163,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
         with(:method => :get, :path => '/notification_rules/05983623-fcef-42da-af44-ed6990b500fa').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:notification_rules => [data]} )
 
       result = Flapjack::Diner.notification_rules('05983623-fcef-42da-af44-ed6990b500fa')
@@ -203,7 +203,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
         with(:method => :get, :path => '/notification_rules/05983623-fcef-42da-af44-ed6990b500fa,20f182fc-6e32-4794-9007-97366d162c51').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:notification_rules => [data, data_2]} )
 
       result = Flapjack::Diner.notification_rules('05983623-fcef-42da-af44-ed6990b500fa',
@@ -218,7 +218,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
         with(:method => :get, :path => '/notification_rules/05983623-fcef-42da-af44-ed6990b500fa').
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find notification rules '05983623-fcef-42da-af44-ed6990b500fa'"]}
         )
 
@@ -275,7 +275,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
              :headers => {'Content-Type'=>'application/json-patch+json'}).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"]}
         )
 
@@ -326,7 +326,7 @@ describe Flapjack::Diner::Resources::NotificationRules, :pact => true do
              :body => nil).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find notification rule '05983623-fcef-42da-af44-ed6990b500fa'"]}
         )
 

@@ -23,7 +23,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
              :body => {:checks => check_data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['www.example.com:SSH'] )
 
       result = Flapjack::Diner.create_checks(check_data)
@@ -46,7 +46,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
              :body => {:checks => check_data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['www.example.com:SSH', 'www2.example.com:PING'] )
 
       result = Flapjack::Diner.create_checks(check_data)
@@ -74,7 +74,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           with(:method => :get, :path => '/checks').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:checks => []} )
 
         result = Flapjack::Diner.checks
@@ -87,7 +87,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           with(:method => :get, :path => '/checks').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:checks => [check_data]} )
 
         result = Flapjack::Diner.checks
@@ -104,7 +104,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           with(:method => :get, :path => '/checks/www.example.com:SSH').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:checks => [check_data]} )
 
         result = Flapjack::Diner.checks('www.example.com:SSH')
@@ -117,7 +117,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           with(:method => :get, :path => '/checks/www.example.com:SSH').
           will_respond_with(
             :status => 404,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:errors => ["could not find entity checks: 'www.example.com:SSH'"]} )
 
         result = Flapjack::Diner.checks('www.example.com:SSH')
@@ -157,7 +157,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
              :headers => {'Content-Type'=>'application/json-patch+json'}).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find entity 'www.example.com'"]} )
 
       result = Flapjack::Diner.update_checks('www.example.com:SSH', :enabled => false)

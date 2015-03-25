@@ -23,7 +23,7 @@ describe Flapjack::Diner, :pact => true do
              :body => {:entities => entity_data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['57_example'] )
 
       result = Flapjack::Diner.create_entities(entity_data)
@@ -47,7 +47,7 @@ describe Flapjack::Diner, :pact => true do
              :body => {:entities => entity_data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['57_example', '58'] )
 
       result = Flapjack::Diner.create_entities(entity_data)
@@ -72,7 +72,7 @@ describe Flapjack::Diner, :pact => true do
           with(:method => :get, :path => '/entities').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
               :body => {:entities => [entity_data]} )
 
         result = Flapjack::Diner.entities
@@ -86,7 +86,7 @@ describe Flapjack::Diner, :pact => true do
           with(:method => :get, :path => '/entities').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
               :body => {:entities => []} )
 
         result = Flapjack::Diner.entities
@@ -109,7 +109,7 @@ describe Flapjack::Diner, :pact => true do
           with(:method => :get, :path => '/entities/1234').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
               :body => {:entities => [entity_data]} )
 
         result = Flapjack::Diner.entities('1234')
@@ -128,7 +128,7 @@ describe Flapjack::Diner, :pact => true do
           with(:method => :get, :path => '/entities/1234').
           will_respond_with(
             :status => 404,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
             :body => {:errors => ["could not find entities: '1234'"]} )
 
         result = Flapjack::Diner.entities('1234')
@@ -168,7 +168,7 @@ describe Flapjack::Diner, :pact => true do
              :headers => {'Content-Type'=>'application/json-patch+json'}).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find entity '1234'"]} )
 
       result = Flapjack::Diner.update_entities('1234', :name => 'example3.com')

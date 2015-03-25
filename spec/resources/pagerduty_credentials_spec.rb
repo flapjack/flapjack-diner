@@ -24,7 +24,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
              :body => {:pagerduty_credentials => data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['abc'] )
 
       result = Flapjack::Diner.create_contact_pagerduty_credentials('abc', data)
@@ -45,7 +45,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
              :body => {:pagerduty_credentials => data}).
         will_respond_with(
           :status => 422,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["Contact id: 'abc' could not be loaded"]} )
 
       result = Flapjack::Diner.create_contact_pagerduty_credentials('abc', data)
@@ -70,7 +70,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
         with(:method => :get, :path => '/pagerduty_credentials').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:pagerduty_credentials => pdc_data} )
 
       result = Flapjack::Diner.pagerduty_credentials
@@ -90,7 +90,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
         with(:method => :get, :path => '/pagerduty_credentials/abc').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:pagerduty_credentials => pdc_data} )
 
       result = Flapjack::Diner.pagerduty_credentials('abc')
@@ -115,7 +115,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
         with(:method => :get, :path => '/pagerduty_credentials/abc,872').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:pagerduty_credentials => pdc_data} )
 
       result = Flapjack::Diner.pagerduty_credentials('abc', '872')
@@ -128,7 +128,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
         with(:method => :get, :path => '/pagerduty_credentials/abc').
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find contact 'abc'"]} )
 
       result = Flapjack::Diner.pagerduty_credentials('abc')
@@ -181,7 +181,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
              :headers => {'Content-Type'=>'application/json-patch+json'},
              :body => [{:op => 'replace', :path => '/pagerduty_credentials/0/password', :value => 'pswrd'}]).
         will_respond_with(:status => 404,
-                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
                           :body => {:errors => ["could not find contact 'abc'"]} )
 
       result = Flapjack::Diner.update_pagerduty_credentials('abc', :password => 'pswrd')
@@ -229,7 +229,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
              :path => '/pagerduty_credentials/abc',
              :body => nil).
         will_respond_with(:status => 404,
-                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
                           :body => {:errors => ["could not find contact 'abc'"]} )
 
       result = Flapjack::Diner.delete_pagerduty_credentials('abc')

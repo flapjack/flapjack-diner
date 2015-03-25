@@ -25,7 +25,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :body => {:media => data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['abc_sms'] )
 
       result = Flapjack::Diner.create_contact_media('abc', data)
@@ -53,7 +53,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :body => {:media => data}).
         will_respond_with(
           :status => 201,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => ['abc_sms', 'abc_email'] )
 
       result = Flapjack::Diner.create_contact_media('abc', data)
@@ -76,7 +76,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :body => {:media => data}).
         will_respond_with(
           :status => 422,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["Contact id: 'abc' could not be loaded"]} )
 
       result = Flapjack::Diner.create_contact_media('abc', data)
@@ -117,7 +117,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         with(:method => :get, :path => '/media').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:media => media_data} )
 
       result = Flapjack::Diner.media
@@ -132,7 +132,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         with(:method => :get, :path => '/media/abc_sms').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:media => media_data} )
 
       result = Flapjack::Diner.media('abc_sms')
@@ -147,7 +147,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         with(:method => :get, :path => '/media/abc_email,abc_sms').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:media => media_data} )
 
       result = Flapjack::Diner.media('abc_email', 'abc_sms')
@@ -160,7 +160,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         with(:method => :get, :path => '/media/abc_sms').
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
           :body => {:errors => ["could not find contact 'abc'"]} )
 
       result = Flapjack::Diner.media('abc_sms')
@@ -215,7 +215,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :headers => {'Content-Type'=>'application/json-patch+json'},
              :body => [{:op => 'replace', :path => '/media/0/interval', :value => 50}]).
         will_respond_with(:status => 404,
-                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
                           :body => {:errors => ["could not find contact 'abc'"]} )
 
       result = Flapjack::Diner.update_media('abc_email', :interval => 50)
@@ -263,7 +263,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :path => '/media/abc_email',
              :body => nil).
         will_respond_with(:status => 404,
-                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+                          :headers => {'Content-Type' => 'application/vnd.api+json; charset=UTF-8'},
                           :body => {:errors => ["could not find contact 'abc'"]} )
 
       result = Flapjack::Diner.delete_media('abc_email')

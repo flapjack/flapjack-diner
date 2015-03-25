@@ -135,6 +135,14 @@ If any operation fails (returning nil), `Flapjack::Diner.last_error` will contai
 * [downtime_report_checks](#downtime_report_checks)
 * [outage_report_checks](#outage_report_checks)
 
+### Metrics
+
+* [metrics_check_freshness](#metrics_check_freshness)
+* [metrics_checks](#metrics_checks)
+* [metrics_entities](#metrics_entities)
+* [metrics_event_queue](#metrics_event_queue)
+* [metrics_processed_events](#metrics_processed_events)
+
 ---
 
 <a name="create_contacts">&nbsp;</a>
@@ -829,6 +837,66 @@ Return a report on outage data for one, some or all checks. (Check ids are compo
 report = Flapjack::Diner.outage_report_checks(CHECK_ID)
 report_some = Flapjack::Diner.outage_report_checks(CHECK_ID1, CHECK_ID2, ...)
 report_all = Flapjack::Diner.outage_report_checks
+```
+
+
+<a name="metrics_check_freshness">&nbsp;</a>
+### metrics_check_freshness
+
+Returns the freshness distribution of all active checks in flapjack. This is the count of checks in defined age bands as follows:
+
+* between 0 and 1 minutes
+* between 1 and 5 minutes
+* between 5 and 15 minutes
+* between 15 minutes and 1 hour
+* greater than 1 hour
+
+```ruby
+data = Flapjack::Diner.metrics_check_freshness
+```
+
+
+<a name="metrics_checks">&nbsp;</a>
+### metrics_checks
+
+Returns some statistics about checks:
+
+* total number of checks
+* number of failing checks
+
+```ruby
+data = Flapjack::Diner.metrics_checks
+```
+
+<a name="metrics_entities">&nbsp;</a>
+### metrics_entities
+
+Returns some statistics about entities:
+
+* total number of entities
+* number of entities with at least one failing check
+
+```ruby
+data = Flapjack::Diner.metrics_entities
+```
+
+<a name="">&nbsp;</a>
+### metrics_events
+
+Returns statistics about the processing of events (check execution results) received by Flapjack as follows:
+
+* The number of events processed:
+
+  * in total
+  * that had a failure state (eg 'warning', 'critical', 'unknown')
+  * that had an ok state
+  * that were action events (eg 'acknowledgement')
+  * that were discarded due to being invalid
+
+* The size (length) of the event queue, ie the number of events waiting to be processed. This number should often be zero otherwise Flapjack is probably not keeping up with the events being fed in from the check executors for processing.
+
+```ruby
+data = Flapjack::Diner.metrics_events
 ```
 
 ---
