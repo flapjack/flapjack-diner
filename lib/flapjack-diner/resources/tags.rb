@@ -19,7 +19,7 @@ module Flapjack
         end
 
         def tags(*ids)
-          perform_get('tags', '/tags', ids)
+          perform_get('/tags', ids)
         end
 
         def update_tags(*args)

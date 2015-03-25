@@ -3,11 +3,8 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Reports, :pact => true do
 
-  before do
-    skip "broken"
-  end
-
   before(:each) do
+    skip "broken"
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
   end
@@ -45,13 +42,13 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
         flapjack.given("a check exists").
           upon_receiving("a GET request for a #{report_type} report on all checks").
           with(:method => :get,
-               :path => "/#{report_type}_reports").
+               :path => "/#{report_type}_reports/checks").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {"#{report_type}_reports".to_sym => data} )
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => data} )
 
-        result = Flapjack::Diner.send("#{report_type}_reports".to_sym)
+        result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym)
         expect(result).to eq(data)
       end
 
@@ -61,32 +58,32 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
         flapjack.given("a check exists").
           upon_receiving("a GET request for a #{report_type} report on a single check").
           with(:method => :get,
-               :path => "/#{report_type}_reports/#{check_data[:id]}").
+               :path => "/#{report_type}_reports/checks/#{check_data[:id]}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {"#{report_type}_reports".to_sym => data} )
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => data} )
 
-        result = Flapjack::Diner.send("#{report_type}_reports".to_sym, check_data[:id])
+        result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym, check_data[:id])
         expect(result).to eq(data)
       end
 
-      it "submits a GET request for a #{report_type} report on several checks" do
-        data = [report_data(report_type, linked_check),
-                report_data(report_type, linked_check_2)]
+      it "submits a GET request for a #{report_type} report on several checks" # do
+      #   data = [report_data(report_type, linked_check),
+      #           report_data(report_type, linked_check_2)]
 
-        flapjack.given("two checks exist").
-          upon_receiving("a GET request for a #{report_type} report on two checks").
-          with(:method => :get,
-               :path => "/#{report_type}_reports/#{check_data[:id]},#{check_2_data[:id]}").
-          will_respond_with(
-            :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {"#{report_type}_reports".to_sym => data} )
+      #   flapjack.given("two checks exist").
+      #     upon_receiving("a GET request for a #{report_type} report on two checks").
+      #     with(:method => :get,
+      #          :path => "/#{report_type}_reports/#{check_data[:id]},#{check_2_data[:id]}").
+      #     will_respond_with(
+      #       :status => 200,
+      #       :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+      #       :body => {:data => data} )
 
-        result = Flapjack::Diner.send("#{report_type}_reports".to_sym, check_data[:id], check_2_data[:id])
-        expect(result).to eq(data)
-      end
+      #   result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym, check_data[:id], check_2_data[:id])
+      #   expect(result).to eq(data)
+      # end
 
     end
 
@@ -98,61 +95,43 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
       let(:esc_st) { URI.encode_www_form_component(start_time.iso8601) }
       let(:esc_et) { URI.encode_www_form_component(end_time.iso8601) }
 
-      it "submits a time-limited GET request for a #{report_type} report on all checks" do
-        data = [report_data(report_type, linked_check)]
-
-        flapjack.given("a check exists").
-          upon_receiving("a time limited GET request for a #{report_type} report on all checks").
-          with(:method => :get,
-               :path => "/#{report_type}_reports",
-               :query => "start_time=#{esc_st}&end_time=#{esc_et}").
-          will_respond_with(
-            :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {"#{report_type}_reports".to_sym => data} )
-
-        result = Flapjack::Diner.send("#{report_type}_reports".to_sym,
-          :start_time => start_time, :end_time => end_time)
-        expect(result).to eq(data)
-      end
-
       it "submits a time-limited GET request for a #{report_type} report on one check" do
         data = report_data(report_type, linked_check)
 
         flapjack.given("a check exists").
           upon_receiving("a time limited GET request for a #{report_type} report on a single check").
           with(:method => :get,
-               :path => "/#{report_type}_reports/#{check_data[:id]}",
+               :path => "/#{report_type}_reports/checks/#{check_data[:id]}",
                :query => "start_time=#{esc_st}&end_time=#{esc_et}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {"#{report_type}_reports".to_sym => data} )
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => data} )
 
-        result = Flapjack::Diner.send("#{report_type}_reports".to_sym,
+        result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym,
           check_data[:id], :start_time => start_time, :end_time => end_time)
         expect(result).to eq(data)
       end
 
-      it "submits a time-limited GET request for a #{report_type} report on several checks" do
-        data = [report_data(report_type, linked_check),
-                report_data(report_type, linked_check_2)]
+      it "submits a time-limited GET request for a #{report_type} report on several checks" # do
+      #   data = [report_data(report_type, linked_check),
+      #           report_data(report_type, linked_check_2)]
 
-        flapjack.given("two checks exist").
-          upon_receiving("a time-limited GET request for a #{report_type} report on two checks").
-          with(:method => :get,
-               :path => "/#{report_type}_reports/#{check_data[:id]},#{check_2_data[:id]}",
-               :query => "start_time=#{esc_st}&end_time=#{esc_et}").
-          will_respond_with(
-            :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {"#{report_type}_reports".to_sym => data} )
+      #   flapjack.given("two checks exist").
+      #     upon_receiving("a time-limited GET request for a #{report_type} report on two checks").
+      #     with(:method => :get,
+      #          :path => "/#{report_type}_reports/#{check_data[:id]},#{check_2_data[:id]}",
+      #          :query => "start_time=#{esc_st}&end_time=#{esc_et}").
+      #     will_respond_with(
+      #       :status => 200,
+      #       :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+      #       :body => {:data => data} )
 
-        result = Flapjack::Diner.send("#{report_type}_reports".to_sym,
-          check_data[:id], check_2_data[:id],
-          :start_time => start_time, :end_time => end_time)
-        expect(result).to eq(data)
-      end
+      #   result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym,
+      #     check_data[:id], check_2_data[:id],
+      #     :start_time => start_time, :end_time => end_time)
+      #   expect(result).to eq(data)
+      # end
 
     end
 

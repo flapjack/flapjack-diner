@@ -23,7 +23,7 @@ module Flapjack
         end
 
         def media(*ids)
-          perform_get('media', '/media', ids)
+          perform_get('/media', ids)
         end
 
         def update_media(*args)

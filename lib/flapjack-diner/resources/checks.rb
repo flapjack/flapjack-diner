@@ -19,8 +19,11 @@ module Flapjack
           perform_post('check', '/checks', data)
         end
 
-        def checks(*ids)
-          perform_get('checks', '/checks', ids)
+        def checks(*args)
+          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          validate_params(data) do
+          end
+          perform_get('/checks', ids, data)
         end
 
         def checks_matching(name_re)

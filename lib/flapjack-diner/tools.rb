@@ -18,13 +18,13 @@ module Flapjack
         logger.info log_msg
       end
 
-      def perform_get(name, path, ids = [], data = nil)
+      def perform_get(path, ids = [], data = [])
         @last_error = nil
-        req_uri = build_uri(path, ids, data)
+        req_uri = build_uri(:get, path, ids, data)
         log_request('GET', req_uri, data)
         handled = handle_response(get(req_uri.request_uri))
 
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name] :
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled['data'] :
                  handled
 
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
@@ -38,7 +38,7 @@ module Flapjack
         when Hash
           data[:type] = type
         end
-        req_uri = build_uri(path)
+        req_uri = build_uri(:post, path)
         log_request('POST', req_uri, :data => data)
         opts = if data.nil?
                  {}
@@ -60,11 +60,14 @@ module Flapjack
       def perform_patch(type, path, data = nil)
         @last_error = nil
 
+        req_uri = nil
+
         case data
         when Hash
           raise "Update data does not contain :id" unless data[:id]
           data[:type] = type
           ids = [data[:id]]
+          req_uri = build_uri(:patch, path, ids)
         when Array
           ids = []
           data.each do |d|
@@ -73,9 +76,9 @@ module Flapjack
             ids << d_id unless d_id.nil? || d_id.empty?
           end
           raise "Update data must each contain :id" unless ids.size == data.size
+          req_uri = build_uri(:patch, path)
         end
 
-        req_uri = build_uri(path, ids)
         log_request('PATCH', req_uri, :data => data)
 
         opts = if data.nil?
@@ -96,7 +99,7 @@ module Flapjack
         @last_error = nil
 
         # TODO validate ids is array of non-empy strings
-        req_uri = build_uri(path)
+        req_uri = build_uri(:patch, path)
         log_request('PATCH', req_uri, name.to_sym => ids)
 
         opts = {:body => prepare_nested_query(name.to_sym => ids).to_json,
@@ -111,7 +114,7 @@ module Flapjack
 
       def perform_delete(type, path, ids = [])
         @last_error = nil
-        req_uri = build_uri(path, ids)
+        req_uri = build_uri(:patch, path, ids)
         opts = if ids.size == 1
                  {}
                else
@@ -201,10 +204,6 @@ module Flapjack
         end
       end
 
-      def escaped_ids(ids = [])
-        ids.map {|id| URI.escape(id.to_s) }.join(',')
-      end
-
       def escape(s)
         URI.encode_www_form_component(s)
       end
@@ -217,7 +216,7 @@ module Flapjack
         data = args.reject {|a| a.is_a?(String) || a.is_a?(Integer) }
         raise "Data must be passed as a Hash, or multiple Hashes" unless data.all? {|a| a.is_a?(Hash) }
         return symbolize(data.first) if data.size == 1
-         data.each_with_object([]) {|d, o| o << symbolize(d) }
+        data.each_with_object([]) {|d, o| o << symbolize(d) }
       end
 
       # used for the JSON data hashes in POST, PUT, DELETE
@@ -273,12 +272,24 @@ module Flapjack
         [protocol, host, normalise_port(port, protocol)]
       end
 
-      def build_uri(path, ids = [], params = [])
+      def build_uri(method, path, ids = [], params = [])
         pr, ho, po = protocol_host_port
-        path += '/' + escaped_ids(ids) unless ids.nil? || ids.empty? || (ids.size > 1)
+        if :get.eql?(method) && (ids.size > 1)
+          # TODO check this works even if filter param already set --
+          # maybe set values as separate strings in array?
+          case params
+          when Array
+            params << {"filter[]".to_sym => "id:#{ids.join('|')}"}
+          when Hash
+            params["filter[]".to_sym] = "id:#{ids.join('|')}"
+          end
+        elsif ids.size == 1
+          path += "/#{URI.escape(ids.first.to_s)}"
+        end
         query = if params.nil? || params.empty?
                   nil
                 else
+                  params = params.reduce(&:merge) if params.is_a?(Array)
                   build_nested_query(params)
                 end
         URI::HTTP.build(:protocol => pr, :host => ho, :port => po,

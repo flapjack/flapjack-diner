@@ -20,7 +20,7 @@ module Flapjack
         end
 
         def contacts(*ids)
-          perform_get('contacts', '/contacts', ids)
+          perform_get('/contacts', ids)
         end
 
         def update_contacts(*args)

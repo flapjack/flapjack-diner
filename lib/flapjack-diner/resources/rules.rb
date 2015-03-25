@@ -20,7 +20,7 @@ module Flapjack
         end
 
         def rules(*ids)
-          perform_get('rules', '/rules', ids)
+          perform_get('/rules', ids)
         end
 
         def update_rules(*args)

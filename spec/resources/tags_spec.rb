@@ -50,10 +50,6 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
 
   context 'read' do
 
-    before do
-      skip "broken"
-    end
-
     context 'GET all tags' do
 
       it "has no data" do
@@ -62,8 +58,8 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
           with(:method => :get, :path => '/tags').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:tags => []} )
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => []} )
 
         result = Flapjack::Diner.tags
         expect(result).to eq([])
@@ -75,11 +71,11 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
           with(:method => :get, :path => '/tags').
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:tags => [tag_data]} )
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => [tag_data.merge(:type => 'tag')]} )
 
         result = Flapjack::Diner.tags
-        expect(result).to eq([tag_data])
+        expect(result).to eq([tag_data.merge(:type => 'tag')])
       end
 
     end
@@ -92,11 +88,11 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
           with(:method => :get, :path => "/tags/#{tag_data[:name]}").
           will_respond_with(
             :status => 200,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:tags => tag_data} )
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => tag_data.merge(:type => 'tag')} )
 
         result = Flapjack::Diner.tags(tag_data[:name])
-        expect(result).to eq(tag_data)
+        expect(result).to eq(tag_data.merge(:type => 'tag'))
       end
 
       it "can't find tag" do
@@ -105,7 +101,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
           with(:method => :get, :path => "/tags/#{tag_data[:name]}").
           will_respond_with(
             :status => 404,
-            :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:errors => [{
               :status => '404',
               :detail => "could not find Tag record, id: '#{tag_data[:name]}'"

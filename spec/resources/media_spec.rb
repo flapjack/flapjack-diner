@@ -49,61 +49,48 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
   context 'read' do
 
-    before do
-      skip "broken"
-    end
-
-    let(:links) { {} } # {:links => {:contacts => ['c248da6f-ab16-4ce3-9b32-afd4e5f5270e']}} }
-
     it "submits a GET request for all media" do
-      # passes rspec, but fails the flapjack server pact run, so can't set
-      # as pending
-      skip "ordering not consistent, no way to indicate this in pact"
-      # should sandstorm enforce a sorted order on ids returned?
-
-      media_data = [email_data.merge(links), sms_data.merge(links)]
+      media_data = [email_data.merge(:type => 'medium'), sms_data.merge(:type => 'medium')]
 
       flapjack.given("two media exist").
         upon_receiving("a GET request for all media").
         with(:method => :get, :path => '/media').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:media => media_data} )
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+          :body => {:data => media_data})
 
       result = Flapjack::Diner.media
       expect(result).to contain_exactly(*media_data)
     end
 
     it "submits a GET request for one medium" do
-      # media_data = []
-
       flapjack.given("a medium exists").
         upon_receiving("a GET request for one medium").
         with(:method => :get, :path => "/media/#{sms_data[:id]}").
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:media => sms_data.merge(links)} )
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+          :body => {:data => sms_data.merge(:type => 'medium')} )
 
       result = Flapjack::Diner.media(sms_data[:id])
-      expect(result).to eq(sms_data.merge(links))
+      expect(result).to eq(sms_data.merge(:type => 'medium'))
     end
 
-    it "submits a GET request for several media" do
-      media_data = [email_data.merge(links), sms_data.merge(links)]
+    it "submits a GET request for several media" # do
+    #   media_data = [email_data.merge(links), sms_data.merge(links)]
 
-      flapjack.given("two media exist").
-        upon_receiving("a GET request for two media").
-        with(:method => :get, :path => "/media/#{email_data[:id]},#{sms_data[:id]}").
-        will_respond_with(
-          :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-          :body => {:media => media_data} )
+    #   flapjack.given("two media exist").
+    #     upon_receiving("a GET request for two media").
+    #     with(:method => :get, :path => "/media/#{email_data[:id]},#{sms_data[:id]}").
+    #     will_respond_with(
+    #       :status => 200,
+    #       :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+    #       :body => {:media => media_data} )
 
-      result = Flapjack::Diner.media(email_data[:id], sms_data[:id])
-      expect(result).to eq(media_data)
-    end
+    #   result = Flapjack::Diner.media(email_data[:id], sms_data[:id])
+    #   expect(result).to eq(media_data)
+    # end
 
   end
 

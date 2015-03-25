@@ -52,22 +52,18 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
   context 'read' do
 
-    before do
-      skip "broken"
-    end
-
     it "submits a GET request for all rules" do
       flapjack.given("a rule exists").
         upon_receiving("a GET request for all rules").
         with(:method => :get, :path => '/rules').
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:rules => [rule_data]} )
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => [rule_data.merge(:type => 'rule')]} )
 
       result = Flapjack::Diner.rules
       expect(result).not_to be_nil
-      expect(result).to eq([rule_data])
+      expect(result).to eq([rule_data.merge(:type => 'rule')])
     end
 
     it "submits a GET request for one rule" do
@@ -76,29 +72,29 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
         with(:method => :get, :path => "/rules/#{rule_data[:id]}").
         will_respond_with(
           :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:rules => rule_data} )
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => rule_data.merge(:type => 'rule')} )
 
       result = Flapjack::Diner.rules(rule_data[:id])
       expect(result).not_to be_nil
-      expect(result).to eq(rule_data)
+      expect(result).to eq(rule_data.merge(:type => 'rule'))
     end
 
-    it "submits a GET request for several rules" do
-      rules_data = [rule_data, rule_2_data]
+    it "submits a GET request for several rules" # do
+    #   rules_data = [rule_data.merge(:type => 'tag'), rule_2_data.merge(:type => 'tag')]
 
-      flapjack.given("two rules exist").
-        upon_receiving("a GET request for two rules").
-        with(:method => :get, :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}").
-        will_respond_with(
-          :status => 200,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-            :body => {:rules => rules_data} )
+    #   flapjack.given("two rules exist").
+    #     upon_receiving("a GET request for two rules").
+    #     with(:method => :get, :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}").
+    #     will_respond_with(
+    #       :status => 200,
+    #       :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+    #         :body => {:data => rules_data} )
 
-      result = Flapjack::Diner.rules(rule_data[:id], rule_2_data[:id])
-      expect(result).not_to be_nil
-      expect(result).to eq(rules_data)
-    end
+    #   result = Flapjack::Diner.rules(rule_data[:id], rule_2_data[:id])
+    #   expect(result).not_to be_nil
+    #   expect(result).to eq(rules_data)
+    # end
 
     it "can't find the rule to read" do
       flapjack.given("no rule exists").
@@ -106,7 +102,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
         with(:method => :get, :path => "/rules/#{rule_data[:id]}").
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
               :detail => "could not find Rule record, id: '#{rule_data[:id]}'"

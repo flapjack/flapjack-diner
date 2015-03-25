@@ -70,10 +70,6 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
   context 'read' do
 
-    before do
-      skip "broken"
-    end
-
     context 'GET all contacts' do
 
       it "has some data" do
@@ -83,11 +79,11 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => {:contacts => contact_data.merge('type' => 'contact')}}).
+            :body => {:data => [contact_data.merge('type' => 'contact')]})
 
         result = Flapjack::Diner.contacts
         expect(result).not_to be_nil
-        expect(result).to eq([contact_data])
+        expect(result).to eq([contact_data.merge(:type => 'contact')])
       end
 
       it "has no data" do
@@ -97,7 +93,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => {:contacts => []}})
+            :body => {:data => []})
 
         result = Flapjack::Diner.contacts
         expect(result).not_to be_nil
@@ -116,11 +112,11 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => {:contacts => contact_data.merge('type' => 'contact')}})
+            :body => {:data => contact_data.merge('type' => 'contact')})
 
         result = Flapjack::Diner.contacts(contact_data[:id])
         expect(result).not_to be_nil
-        expect(result).to eq(contact_data)
+        expect(result).to eq(contact_data.merge(:type => 'contact'))
       end
 
       it "can't find the contact" do

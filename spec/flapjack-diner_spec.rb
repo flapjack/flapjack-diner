@@ -34,7 +34,7 @@ describe Flapjack::Diner do
 
     it 'can return keys as strings' do
       req = stub_request(:get, "http://#{server}/contacts").to_return(
-        :status => 200, :body => {:contacts => [contact_data]}.to_json)
+        :status => 200, :body => {:data => [contact_data]}.to_json)
 
       result = Flapjack::Diner.contacts
       expect(req).to have_been_requested
@@ -56,7 +56,7 @@ describe Flapjack::Diner do
     end
 
     it "logs a GET request without a path" do
-      response = {:contacts => [contact_data]}.to_json
+      response = {:data => [contact_data]}.to_json
       req = stub_request(:get, "http://#{server}/contacts").
         to_return(:body => response)
 
