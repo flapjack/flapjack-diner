@@ -172,10 +172,6 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
   context 'delete' do
 
-    before do
-      skip "broken"
-    end
-
     it "submits a DELETE request for one medium" do
 
     flapjack.given("a medium exists").
@@ -191,11 +187,15 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "submits a DELETE request for several media" do
+      media_data = [{:type => 'medium', :id => sms_data[:id]},
+                    {:type => 'medium', :id => email_data[:id]}]
+
       flapjack.given("two media exist").
         upon_receiving("a DELETE request for two media").
         with(:method => :delete,
-             :path => "/media/#{sms_data[:id]},#{email_data[:id]}",
-             :body => nil).
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :path => "/media",
+             :body => {:data => media_data}).
         will_respond_with(:status => 204,
                           :body => '')
 
@@ -211,17 +211,17 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :body => nil).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
-              :detail => "could not find Medium records, ids: '#{sms_data[:id]}'"
+              :detail => "could not find Medium record, id: '#{sms_data[:id]}'"
             }]}
           )
 
       result = Flapjack::Diner.delete_media(sms_data[:id])
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq([{:status => '404',
-        :detail => "could not find Medium records, ids: '#{sms_data[:id]}'"}])
+        :detail => "could not find Medium record, id: '#{sms_data[:id]}'"}])
     end
 
   end

@@ -38,7 +38,7 @@ module Flapjack
           validate_params(data) do
             validate :query => :end_time, :as => :time
           end
-          perform_patch('unscheduled_maintenances', "/unscheduled_maintenances",
+          perform_patch('unscheduled_maintenances', '/unscheduled_maintenances',
                         data.merge(:type => 'unscheduled_maintenance'))
         end
 
@@ -47,7 +47,8 @@ module Flapjack
             raise "'delete_scheduled_maintenances' requires " \
                   "at least one scheduled maintenance id parameter"
           end
-          perform_delete("/scheduled_maintenances", ids)
+          perform_delete('scheduled_maintenance', '/scheduled_maintenances',
+                         ids)
         end
       end
     end

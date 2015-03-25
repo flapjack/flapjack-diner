@@ -33,7 +33,7 @@ module Flapjack
 
         def delete_rules(*ids)
           raise "'delete_rules' requires at least one rule id parameter" if ids.nil? || ids.empty?
-          perform_delete('/rules', ids)
+          perform_delete('rule', '/rules', ids)
         end
       end
     end

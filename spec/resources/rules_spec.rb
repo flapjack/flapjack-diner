@@ -181,10 +181,6 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
   context 'delete' do
 
-    before do
-      skip "broken"
-    end
-
     it "submits a DELETE request for a rule" do
       flapjack.given("a rule exists").
         upon_receiving("a DELETE request for a single rule").
@@ -199,11 +195,15 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     end
 
     it "submits a DELETE request for several rules" do
+      rules_data = [{:type => 'rule', :id => rule_data[:id]},
+                    {:type => 'rule', :id => rule_2_data[:id]}]
+
       flapjack.given("two rules exist").
         upon_receiving("a DELETE request for two rules").
         with(:method => :delete,
-             :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}",
-             :body => nil).
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :path => "/rules",
+             :body => {:data => rules_data}).
         will_respond_with(:status => 204,
                           :body => '')
 
@@ -219,17 +219,17 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
              :body => nil).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
-              :detail => "could not find Rule records, ids: '#{rule_data[:id]}'"
+              :detail => "could not find Rule record, id: '#{rule_data[:id]}'"
             }]}
           )
 
       result = Flapjack::Diner.delete_rules(rule_data[:id])
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq([{:status => '404',
-        :detail => "could not find Rule records, ids: '#{rule_data[:id]}'"}])
+        :detail => "could not find Rule record, id: '#{rule_data[:id]}'"}])
     end
   end
 

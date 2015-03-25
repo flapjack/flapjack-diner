@@ -34,7 +34,7 @@ module Flapjack
         def delete_contacts(*ids)
           raise "'delete_contacts' requires at least one contact id " \
                 'parameter' if ids.nil? || ids.empty?
-          perform_delete('/contacts', ids)
+          perform_delete('contact', '/contacts', ids)
         end
 
       end

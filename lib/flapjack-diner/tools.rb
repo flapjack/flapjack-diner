@@ -106,11 +106,18 @@ module Flapjack
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_delete(path, ids = [], data = nil)
+      def perform_delete(type, path, ids = [])
         @last_error = nil
-        req_uri = build_uri(path, ids, data)
-        log_request('DELETE', req_uri, data)
-        handle_response(delete(req_uri.request_uri))
+        req_uri = build_uri(path, ids)
+        opts = if ids.size == 1
+                 {}
+               else
+                 data = ids.collect {|id| {:type => type, :id => id} }
+                 {:body => prepare_nested_query(:data => data).to_json,
+                  :headers => {'Content-Type' => 'application/vnd.api+json'}}
+               end
+        log_request('DELETE', req_uri, opts)
+        handle_response(delete(req_uri.request_uri, opts))
       end
 
       def log_response(response)
@@ -265,7 +272,7 @@ module Flapjack
 
       def build_uri(path, ids = [], params = [])
         pr, ho, po = protocol_host_port
-        path += '/' + escaped_ids(ids) unless ids.nil? || ids.empty?
+        path += '/' + escaped_ids(ids) unless ids.nil? || ids.empty? || (ids.size > 1)
         query = if params.nil? || params.empty?
                   nil
                 else

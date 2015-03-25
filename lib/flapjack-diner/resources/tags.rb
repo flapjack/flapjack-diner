@@ -33,7 +33,7 @@ module Flapjack
         def delete_tags(*ids)
           raise "'delete_tags' requires at least one tag ID " \
                 'parameter' if ids.nil? || ids.empty?
-          perform_delete('/tags', ids)
+          perform_delete('tag', '/tags', ids)
         end
       end
     end

@@ -126,10 +126,6 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
 
   context 'delete' do
 
-    before do
-      skip "broken"
-    end
-
     it "submits a DELETE request for a tag" do
       flapjack.given("a tag exists").
         upon_receiving("a DELETE request for a single tag").
@@ -144,11 +140,15 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
     end
 
     it "submits a DELETE request for several tags" do
+      tags_data = [{:type => 'tag', :id => tag_data[:name]},
+                   {:type => 'tag', :id => tag_2_data[:name]}]
+
       flapjack.given("two tags exist").
         upon_receiving("a DELETE request for two tags").
         with(:method => :delete,
-             :path => "/tags/#{tag_data[:name]},#{tag_2_data[:name]}",
-             :body => nil).
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :path => "/tags",
+             :body => {:data => tags_data}).
         will_respond_with(:status => 204,
                           :body => '')
 
@@ -164,18 +164,17 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
              :body => nil).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
             :status => '404',
-            :detail => "could not find Tag records, ids: '#{tag_data[:name]}'"
+            :detail => "could not find Tag record, id: '#{tag_data[:name]}'"
           }]}
         )
 
       result = Flapjack::Diner.delete_tags(tag_data[:name])
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq([{:status => '404',
-        :detail => "could not find Tag records, ids: '#{tag_data[:name]}'"}])
-
+        :detail => "could not find Tag record, id: '#{tag_data[:name]}'"}])
     end
   end
 

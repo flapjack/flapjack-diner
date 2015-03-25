@@ -210,10 +210,6 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
   context 'delete' do
 
-    before do
-      skip "broken"
-    end
-
     it "submits a DELETE request for one contact" do
       flapjack.given("a contact exists").
         upon_receiving("a DELETE request for a single contact").
@@ -228,11 +224,15 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     end
 
     it "submits a DELETE request for several contacts" do
+      contacts_data = [{:type => 'contact', :id => contact_data[:id]},
+                       {:type => 'contact', :id => contact_2_data[:id]}]
+
       flapjack.given("two contacts exist").
         upon_receiving("a DELETE request for two contacts").
         with(:method => :delete,
-             :path => "/contacts/#{contact_data[:id]},#{contact_2_data[:id]}",
-             :body => nil).
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :path => "/contacts",
+             :body => {:data => contacts_data}).
         will_respond_with(:status => 204,
                           :body => '')
 
@@ -248,17 +248,17 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
              :body => nil).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
-              :detail => "could not find Contact records, ids: '#{contact_data[:id]}'"
+              :detail => "could not find Contact record, id: '#{contact_data[:id]}'"
             }]}
           )
 
       result = Flapjack::Diner.delete_contacts(contact_data[:id])
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq([{:status => '404',
-        :detail => "could not find Contact records, ids: '#{contact_data[:id]}'"}])
+        :detail => "could not find Contact record, id: '#{contact_data[:id]}'"}])
     end
   end
 
