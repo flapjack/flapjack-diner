@@ -21,7 +21,7 @@ module Flapjack
             validate_params(data) do
               validate :query => [:start_time, :end_time], :as => :time
             end
-            perform_get("#{report_type}_reports",
+            perform_get("#{report_type}_report",
                         "/#{report_type}_reports", ids,
                         data)
           end

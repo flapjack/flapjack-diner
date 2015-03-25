@@ -16,7 +16,7 @@ module Flapjack
             validate :query => :name,    :as => [:required, :string]
             validate :query => :enabled, :as => :boolean
           end
-          perform_post('check', 'checks', '/checks', data)
+          perform_post('check', '/checks', data)
         end
 
         def checks(*ids)
@@ -36,7 +36,7 @@ module Flapjack
             validate :query => :name,                  :as => :string
             validate :query => :enabled,               :as => :boolean
           end
-          perform_patch('checks', "/checks", data.merge(:type => 'contact'))
+          perform_patch('check', "/checks", data)
         end
 
         # TODO should allow DELETE when API does

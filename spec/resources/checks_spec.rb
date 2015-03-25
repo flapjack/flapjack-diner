@@ -15,11 +15,11 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         upon_receiving("a POST request with one check").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => {:checks => check_data.merge(:type => 'check')}}).
+             :body => {:data => check_data.merge(:type => 'check')}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => {'checks' => check_data}})
+          :body => {'data' => check_data})
 
       result = Flapjack::Diner.create_checks(check_data)
       expect(result).to eq(check_data)
@@ -33,11 +33,11 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         upon_receiving("a POST request with two checks").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => {:checks => checks_data}}).
+             :body => {:data => checks_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => {'checks' => checks_data}})
+          :body => {'data' => checks_data})
 
       result = Flapjack::Diner.create_checks(*checks_data)
       expect(result).to eq(checks_data)
@@ -156,16 +156,12 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
   context 'update' do
 
-    before do
-      skip "broken"
-    end
-
-    it 'submits a PUT request for a check' do
+    it 'submits a PATCH request for a check' do
       flapjack.given("a check exists").
-        upon_receiving("a PUT request for a single check").
-        with(:method => :put,
+        upon_receiving("a PATCH request for a single check").
+        with(:method => :patch,
              :path => "/checks/#{check_data[:id]}",
-             :body => {:checks => {:id => check_data[:id], :enabled => false}},
+             :body => {:data => {:id => check_data[:id], :type => 'check', :enabled => false}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 204,
@@ -175,13 +171,13 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       expect(result).to be_a(TrueClass)
     end
 
-    it 'submits a PUT request for several checks' do
+    it 'submits a PATCH request for several checks' do
       flapjack.given("two checks exist").
-        upon_receiving("a PUT request for two checks").
-        with(:method => :put,
-             :path => "/checks/#{check_data[:id]},#{check_2_data[:id]}",
-             :body => {:checks => [{:id => check_data[:id], :enabled => false},
-             {:id => check_2_data[:id], :enabled => true}]},
+        upon_receiving("a PATCH request for two checks").
+        with(:method => :patch,
+             :path => "/checks",
+             :body => {:data => [{:id => check_data[:id], :type => 'check', :enabled => false},
+                                 {:id => check_2_data[:id], :type => 'check', :enabled => true}]},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 204,
@@ -195,24 +191,24 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
     it "can't find the check to update" do
       flapjack.given("no check exists").
-        upon_receiving("a PUT request for a single check").
-        with(:method => :put,
+        upon_receiving("a PATCH request for a single check").
+        with(:method => :patch,
              :path => "/checks/#{check_data[:id]}",
-             :body => {:checks => {:id => check_data[:id], :enabled => false}},
+             :body => {:data => {:id => check_data[:id], :type => 'check', :enabled => false}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
-              :detail => "could not find Check records, ids: '#{check_data[:id]}'"
+              :detail => "could not find Check record, id: '#{check_data[:id]}'"
             }]}
           )
 
       result = Flapjack::Diner.update_checks(:id => check_data[:id], :enabled => false)
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq([{:status => '404',
-        :detail => "could not find Check records, ids: '#{check_data[:id]}'"}])
+        :detail => "could not find Check record, id: '#{check_data[:id]}'"}])
     end
 
   end

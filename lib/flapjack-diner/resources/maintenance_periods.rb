@@ -18,8 +18,7 @@ module Flapjack
             validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
           end
-          perform_post('scheduled_maintenance', 'scheduled_maintenances',
-                       '/scheduled_maintenances', data)
+          perform_post('scheduled_maintenance', '/scheduled_maintenances', data)
         end
 
         def create_unscheduled_maintenances(*args)
@@ -29,8 +28,8 @@ module Flapjack
             validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
           end
-          perform_post('unscheduled_maintenance', 'unscheduled_maintenances',
-                       '/unscheduled_maintenances', data)
+          perform_post('unscheduled_maintenance', '/unscheduled_maintenances',
+                       data)
         end
 
         def update_unscheduled_maintenances(*args)
@@ -38,8 +37,8 @@ module Flapjack
           validate_params(data) do
             validate :query => :end_time, :as => :time
           end
-          perform_patch('unscheduled_maintenances', '/unscheduled_maintenances',
-                        data.merge(:type => 'unscheduled_maintenance'))
+          perform_patch('unscheduled_maintenance', '/unscheduled_maintenances',
+                        data)
         end
 
         def delete_scheduled_maintenances(*ids)
@@ -48,7 +47,7 @@ module Flapjack
                   "at least one scheduled maintenance id parameter"
           end
           perform_delete('scheduled_maintenance', '/scheduled_maintenances',
-                         ids)
+            ids)
         end
       end
     end

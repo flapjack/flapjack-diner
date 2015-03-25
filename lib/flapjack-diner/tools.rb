@@ -30,7 +30,7 @@ module Flapjack
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_post(type, name, path, data = nil)
+      def perform_post(type, path, data = nil)
         @last_error = nil
         case data
         when Array
@@ -39,51 +39,54 @@ module Flapjack
           data[:type] = type
         end
         req_uri = build_uri(path)
-        log_request('POST', req_uri, :data => {name.to_sym => data})
+        log_request('POST', req_uri, :data => data)
         opts = if data.nil?
                  {}
                else
                  # TODO ext=bulk in header if data is an array
                  # TODO send current character encoding in content-type
-                 {:body => prepare_nested_query(:data => {name.to_sym => data}).to_json,
+                 {:body => prepare_nested_query(:data => data).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
         handled = handle_response(post(req_uri.request_uri, opts))
 
         # TODO validate 'data' for Hash in handle_response
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled['data'][name.to_s] :
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled['data'] :
                  handled
 
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
       end
 
-      def perform_patch(name, path, data = nil)
+      def perform_patch(type, path, data = nil)
         @last_error = nil
 
         case data
         when Hash
           raise "Update data does not contain :id" unless data[:id]
+          data[:type] = type
           ids = [data[:id]]
         when Array
-          ids = data.each_with_object([]) do |d, o|
+          ids = []
+          data.each do |d|
+            d[:type] = type
             d_id = d[:id]
-            o << d_id unless d_id.nil? || d_id.empty?
+            ids << d_id unless d_id.nil? || d_id.empty?
           end
           raise "Update data must each contain :id" unless ids.size == data.size
         end
 
         req_uri = build_uri(path, ids)
-        log_request('PATCH', req_uri, name.to_sym => data)
+        log_request('PATCH', req_uri, :data => data)
 
         opts = if data.nil?
                  {}
                else
-                 {:body => prepare_nested_query(name.to_sym => data).to_json,
+                 {:body => prepare_nested_query(:data => data).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
         handled = handle_response(patch(req_uri.request_uri, opts))
 
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name.to_s] :
+        result = (!handled.nil? && handled.is_a?(Hash)) ? handled['data'] :
                  handled
 
         return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)

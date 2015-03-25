@@ -15,11 +15,11 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
         upon_receiving("a POST request with one rule").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => {:rules => rule_data.merge(:type => 'rule')}}).
+             :body => {:data => rule_data.merge(:type => 'rule')}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-         :body => {:data => {:rules => rule_data.merge(:type => 'rule')}}
+         :body => {:data => rule_data.merge(:type => 'rule')}
         )
 
       result = Flapjack::Diner.create_rules(rule_data)
@@ -34,11 +34,11 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
         upon_receiving("a POST request with two rules").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => {:rules => rules_data}}).
+             :body => {:data => rules_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {:data => {:rules => rules_data}}
+          :body => {:data => rules_data}
         )
 
       result = Flapjack::Diner.create_rules(*rules_data)

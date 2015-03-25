@@ -15,11 +15,11 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         upon_receiving("a POST request with one contact").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {'data' => {'contacts' => contact_data.merge('type' => 'contact')}}).
+             :body => {'data' => contact_data.merge('type' => 'contact')}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => {'contacts' => contact_data.merge('type' => 'contact')}})
+          :body => {'data' => contact_data.merge('type' => 'contact')})
 
       result = Flapjack::Diner.create_contacts(contact_data)
       expect(result).not_to be_nil
@@ -34,11 +34,11 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         upon_receiving("a POST request with two contacts").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => {:contacts => contacts_data}}).
+             :body => {:data => contacts_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {:data => {:contacts => contacts_data}})
+          :body => {:data => contacts_data})
 
       result = Flapjack::Diner.create_contacts(*contacts_data)
       expect(result).not_to be_nil
@@ -50,7 +50,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         upon_receiving("a POST request with one contact").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => {:contacts => contact_data.merge(:type => 'contact')}}).
+             :body => {:data => contact_data.merge(:type => 'contact')}).
         will_respond_with(
           :status => 409,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
@@ -148,16 +148,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
   context 'update' do
 
-    before do
-      skip "broken"
-    end
-
     it 'submits a PATCH request for a contact' do
       flapjack.given("a contact exists").
         upon_receiving("a PATCH request for a single contact").
         with(:method => :patch,
              :path => "/contacts/#{contact_data[:id]}",
-             :body => {:contacts => {:id => contact_data[:id], :type => 'contact', :name => 'Hello There'}},
+             :body => {:data => {:id => contact_data[:id], :type => 'contact', :name => 'Hello There'}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 204,
@@ -172,8 +168,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         upon_receiving("a PATCH request for two contacts").
         with(:method => :patch,
              :path => "/contacts",
-             :body => {:contacts => [{:id => contact_data[:id], :type => 'contact', :name => 'Hello There'},
-                                     {:id => contact_2_data[:id], :type => 'contact', :name => 'Goodbye Now'}]},
+             :body => {:data => [{:id => contact_data[:id], :type => 'contact', :name => 'Hello There'},
+                                 {:id => contact_2_data[:id], :type => 'contact', :name => 'Goodbye Now'}]},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 204,
@@ -190,21 +186,21 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         upon_receiving("a PATCH request for a single contact").
         with(:method => :patch,
              :path => "/contacts/#{contact_data[:id]}",
-             :body => {:contacts => {:id => contact_data[:id], :type => 'contact', :name => 'Hello There'}},
+             :body => {:data => {:id => contact_data[:id], :type => 'contact', :name => 'Hello There'}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 404,
-          :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
-              :detail => "could not find Contact records, ids: '#{contact_data[:id]}'"
+              :detail => "could not find Contact record, id: '#{contact_data[:id]}'"
             }]}
           )
 
       result = Flapjack::Diner.update_contacts(:id => contact_data[:id], :name => 'Hello There')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq([{:status => '404',
-        :detail => "could not find Contact records, ids: '#{contact_data[:id]}'"}])
+        :detail => "could not find Contact record, id: '#{contact_data[:id]}'"}])
     end
   end
 

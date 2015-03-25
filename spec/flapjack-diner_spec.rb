@@ -71,11 +71,11 @@ describe Flapjack::Diner do
 
     it "logs a POST request" do
       nd = notification_data.merge(:links => {:checks => [check_data[:id]]})
-      response = {:data => {:test_notifications => nd.merge(:type => 'test_notification')}}.to_json
+      response = {:data => nd.merge(:type => 'test_notification')}.to_json
       req = stub_request(:post, "http://#{server}/test_notifications").
               to_return(:status => 201, :body => response)
       expect(logger).to receive(:info).with("POST http://#{server}/test_notifications\n" +
-        "  Body: {:data=>{:test_notifications=>#{nd.merge(:type => 'test_notification').inspect}}}")
+        "  Body: {:data=>#{nd.merge(:type => 'test_notification').inspect}}")
       expect(logger).to receive(:info).with("  Response Code: 201")
       expect(logger).to receive(:info).with("  Response Body: #{response}")
 

@@ -16,7 +16,7 @@ module Flapjack
             validate :query => :name,       :as => [:required, :string]
             validate :query => :timezone,   :as => :string
           end
-          perform_post('contact', 'contacts', '/contacts', data)
+          perform_post('contact', '/contacts', data)
         end
 
         def contacts(*ids)
@@ -28,7 +28,7 @@ module Flapjack
           validate_params(data) do
             validate :query => [:name, :timezone], :as => :string
           end
-          perform_patch('contacts', "/contacts", data.merge(:type => 'contact'))
+          perform_patch('contact', "/contacts", data)
         end
 
         def delete_contacts(*ids)

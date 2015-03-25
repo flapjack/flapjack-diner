@@ -16,11 +16,11 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
         upon_receiving("a POST request with one tag").
         with(:method => :post, :path => '/tags',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => {:tags => tag_data.merge(:type => 'tag')}}).
+             :body => {:data => tag_data.merge(:type => 'tag')}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {:data => {:tags => tag_data.merge(:type => 'tag')}}
+          :body => {:data => tag_data.merge(:type => 'tag')}
         )
 
       result = Flapjack::Diner.create_tags(tag_data)
@@ -34,11 +34,11 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
         upon_receiving("a POST request with two tags").
         with(:method => :post, :path => '/tags',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => {:tags => tags_data}}).
+             :body => {:data => tags_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => {'tags' => tags_data}}
+          :body => {'data' => tags_data}
         )
 
       result = Flapjack::Diner.create_tags(*tags_data)

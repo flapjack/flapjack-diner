@@ -16,7 +16,7 @@ module Flapjack
             validate :query => :id, :as => :string
             # TODO proper validation of time_restrictions field
           end
-          perform_post('rule', 'rules', "/rules", data)
+          perform_post('rule', '/rules', data)
         end
 
         def rules(*ids)
@@ -28,7 +28,7 @@ module Flapjack
           validate_params(data) do
             # TODO proper validation of time_restrictions field
           end
-          perform_patch('rules', "/rules", data.merge(:type => 'rule'))
+          perform_patch('rules', "/rules", data)
         end
 
         def delete_rules(*ids)
