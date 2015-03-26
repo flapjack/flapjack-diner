@@ -279,9 +279,9 @@ module Flapjack
           # maybe set values as separate strings in array?
           case params
           when Array
-            params << {"filter[]".to_sym => "id:#{ids.join('|')}"}
+            params << {:filter => ["id:#{ids.join('|')}"]}
           when Hash
-            params["filter[]".to_sym] = "id:#{ids.join('|')}"
+            params[:filter] = ["id:#{ids.join('|')}"]
           end
         elsif ids.size == 1
           path += "/#{URI.escape(ids.first.to_s)}"
