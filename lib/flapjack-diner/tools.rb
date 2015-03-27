@@ -187,7 +187,7 @@ module Flapjack
 
       def build_hash_query(value, prefix)
         value.map do |k, v|
-          data = prefix ? "#{prefix}[#{escape(k)}]" : escape(k)
+          data = prefix ? "#{prefix}[#{k}]" : k
           build_nested_query(v, data)
         end.join('&')
       end
@@ -195,10 +195,10 @@ module Flapjack
       def build_data_query(value, prefix)
         if value.respond_to?(:iso8601)
           raise(ArgumentError, 'Value must be a Hash') if prefix.nil?
-          "#{prefix}=#{escape(value.iso8601)}"
+          "#{escape(prefix)}=#{escape(value.iso8601)}"
         elsif value.is_a?(String) || value.is_a?(Integer)
           raise(ArgumentError, 'Value must be a Hash') if prefix.nil?
-          "#{prefix}=#{escape(value.to_s)}"
+          "#{escape(prefix)}=#{escape(value.to_s)}"
         else
           prefix
         end

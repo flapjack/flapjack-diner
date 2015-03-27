@@ -80,15 +80,11 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
     context 'GET several checks' do
 
-      before do
-        skip "broken"
-      end
-
       it 'has some data' do
         flapjack.given("two checks exist").
           upon_receiving("a GET request for two checks").
           with(:method => :get, :path => "/checks",
-               :query => {"filter[]" => "id:#{check_data[:id]}|#{check_2_data[:id]}"}).
+               :query => "filter%5B%5D=id%3A#{check_data[:id]}%7C#{check_2_data[:id]}").
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
@@ -103,7 +99,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         flapjack.given("no check exists").
           upon_receiving("a GET request for two checks").
           with(:method => :get, :path => "/checks",
-               :query => {"filter[]" => "id:#{check_data[:id]}|#{check_2_data[:id]}"}).
+               :query => "filter%5B%5D=id%3A#{check_data[:id]}%7C#{check_2_data[:id]}").
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
