@@ -9,12 +9,16 @@ module Flapjack
   module Diner
     module Resources
       module Notifications
-        def create_test_notifications(*args)
-          data = unwrap_data(*args)
-          validate_params(data) do
-            validate :query => :summary, :as => :string
+        %w(checks tags).each do |resource_type|
+          define_method("create_test_notifications_#{resource_type}") do |*args|
+            ids, data = unwrap_ids(*args), unwrap_data(*args)
+            # TODO raise error unless ids.size == 1
+            validate_params(data) do
+              validate :query => :summary, :as => :string
+            end
+            perform_post('test_notification',
+              "/test_notifications/#{resource_type}/#{ids.first}", data)
           end
-          perform_post('test_notification', '/test_notifications', data)
         end
       end
     end
