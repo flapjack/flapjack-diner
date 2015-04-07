@@ -19,8 +19,13 @@ module Flapjack
           perform_post('rule', '/rules', data)
         end
 
-        def rules(*ids)
-          perform_get('/rules', ids)
+        def rules(*args)
+          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          validate_params(data) do
+            validate :query => :filter,  :as => :hash
+            validate :query => :include, :as => :string_or_array_of_strings
+          end
+          perform_get('/rules', ids, data)
         end
 
         def update_rules(*args)

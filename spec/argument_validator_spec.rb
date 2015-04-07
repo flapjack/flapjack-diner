@@ -6,27 +6,27 @@ describe Flapjack::ArgumentValidator do
   context 'required' do
 
     let(:query) do
-      {:entity => 'myservice', :check => 'HOST'}
+      {:name => 'HOST', :enabled => false}
     end
 
     subject { Flapjack::ArgumentValidator.new(query) }
 
     it 'does not raise an exception when query entity is valid' do
-      expect { subject.validate(:query => :entity, :as => :required) }.not_to raise_exception
+      expect { subject.validate(:query => :name, :as => :required) }.not_to raise_exception
     end
 
     it 'raises ArgumentError when query entity is invalid' do
-      query[:entity] = nil
-      expect { subject.validate(:query => :entity, :as => :required) }.to raise_exception
+      query[:name] = nil
+      expect { subject.validate(:query => :name, :as => :required) }.to raise_exception
     end
 
     it 'handles arrays as query values valid' do
-      expect { subject.validate(:query => [:entity, :check], :as => :required) }.not_to raise_exception
+      expect { subject.validate(:query => [:name, :enabled], :as => :required) }.not_to raise_exception
     end
 
     it 'handles arrays as query values invalid' do
-      query[:check] = nil
-      expect { subject.validate(:query => [:entity, :check], :as => :required) }.to raise_exception
+      query[:name] = nil
+      expect { subject.validate(:query => [:name, :enabled], :as => :required) }.to raise_exception
     end
   end
 

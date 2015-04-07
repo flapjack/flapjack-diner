@@ -19,8 +19,13 @@ module Flapjack
           perform_post('contact', '/contacts', data)
         end
 
-        def contacts(*ids)
-          perform_get('/contacts', ids)
+        def contacts(*args)
+          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          validate_params(data) do
+            validate :query => :filter,  :as => :hash
+            validate :query => :include, :as => :string_or_array_of_strings
+          end
+          perform_get('/contacts', ids, data)
         end
 
         def update_contacts(*args)

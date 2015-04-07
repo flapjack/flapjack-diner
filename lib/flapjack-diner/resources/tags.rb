@@ -18,17 +18,16 @@ module Flapjack
           perform_post('tag', '/tags', data)
         end
 
-        def tags(*ids)
-          perform_get('/tags', ids)
+        def tags(*args)
+          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          validate_params(data) do
+            validate :query => :filter,  :as => :hash
+            validate :query => :include, :as => :string_or_array_of_strings
+          end
+          perform_get('/tags', ids, data)
         end
 
-        def update_tags(*args)
-          data = unwrap_data(*args)
-          validate_params(data) do
-            validate :query => :name, :as => :string
-          end
-          perform_patch('tags', "/tags", data)
-        end
+        # tags cannot be updated
 
         def delete_tags(*ids)
           raise "'delete_tags' requires at least one tag ID " \

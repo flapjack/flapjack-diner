@@ -140,6 +140,50 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
     end
 
+    context 'GET a single contact by name, including media' do
+
+      it 'returns a contact with media' do
+        data = contact_data.merge(:type => 'contact', :links => {
+          :self  => "http://example.org/contacts/#{contact_data[:id]}",
+          :media => {
+            :self => "http://example.org/contacts/#{contact_data[:id]}/links/media",
+            :related => "http://example.org/contacts/#{contact_data[:id]}/media",
+            :linkage => [
+              {:type => 'medium', :id => email_data[:id]}
+            ]
+          },
+          :rules => "http://example.org/contacts/#{contact_data[:id]}/rules",
+        })
+
+        context = {:included => [
+          email_data.merge(:type => 'medium', :links => {
+            :self => "http://example.org/media/#{email_data[:id]}",
+            :contact => "http://example.org/media/#{email_data[:id]}/contact",
+            :rules => "http://example.org/media/#{email_data[:id]}/rules"
+          })],
+          :links => {
+            :self  => "http://example.org/contacts/#{contact_data[:id]}?include=media"
+          }
+        }
+
+        flapjack.given("a contact with one medium exists").
+          upon_receiving("a GET request for a single contact with media").
+          with(:method => :get, :path => "/contacts/#{contact_data[:id]}",
+            :query => 'include=media').
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => data, :included => context[:included],
+                      :links => context[:links]})
+
+        result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media')
+        expect(result).not_to be_nil
+        expect(result).to eq(data)
+        expect(Flapjack::Diner.context).to eq(context)
+      end
+
+    end
+
   end
 
   context 'update' do

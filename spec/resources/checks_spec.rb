@@ -112,6 +112,14 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
     end
 
+    context 'GET a single check by name' do
+
+      it 'has some data'
+
+      it "can't find check"
+
+    end
+
     context 'GET a single check' do
 
       it "has some data" do

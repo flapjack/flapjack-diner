@@ -5,7 +5,7 @@ module Flapjack
     module Tools
       SUCCESS_STATUS_CODES = [200, 201, 204]
 
-      attr_accessor :last_error
+      attr_accessor :last_error, :context
 
       private
 
@@ -20,18 +20,29 @@ module Flapjack
 
       def perform_get(path, ids = [], data = [])
         @last_error = nil
+        @context = nil
         req_uri = build_uri(:get, path, ids, data)
         log_request('GET', req_uri, data)
         handled = handle_response(get(req_uri.request_uri))
 
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled['data'] :
-                 handled
+        strify = return_keys_as_strings.is_a?(TrueClass)
+        if !handled.nil? && handled.is_a?(Hash)
+          result = handled['data']
+          @context = {}
+          (['included', 'links', 'meta'] & handled.keys).each do |k|
+            c = handled[k]
+            @context[k.to_sym] = (strify ? c : symbolize(c))
+          end
+        else
+          result = handled
+        end
 
-        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
+        strify ? result : symbolize(result)
       end
 
       def perform_post(type, path, data = nil)
         @last_error = nil
+        @context = nil
         case data
         when Array
           data.each {|d| d[:type] = type}
@@ -59,6 +70,7 @@ module Flapjack
 
       def perform_patch(type, path, data = nil)
         @last_error = nil
+        @context = nil
 
         req_uri = nil
 
@@ -97,6 +109,7 @@ module Flapjack
 
       def perform_patch_links(name, path, ids = [])
         @last_error = nil
+        @context = nil
 
         # TODO validate ids is array of non-empy strings
         req_uri = build_uri(:patch, path)
@@ -114,6 +127,8 @@ module Flapjack
 
       def perform_delete(type, path, ids = [])
         @last_error = nil
+        @context = nil
+
         req_uri = build_uri(:patch, path, ids)
         opts = if ids.size == 1
                  {}

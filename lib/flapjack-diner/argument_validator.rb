@@ -68,10 +68,18 @@ module Flapjack
       end
     end
 
+    def hash(*elements)
+      elements.each do |element|
+        target = @query[element]
+        next if target.nil? || (target.is_a?(Hash) &&
+          target.keys.all? {|t| (t.is_a?(String) && !t.empty?) || t.is_a?(Symbol) })
+        @errors << "'#{target}' should be a Hash with String or Symbol keys."
+      end
+    end
+
     def required(*elements)
       elements.each do |element|
-        next unless @query[element].nil?
-        @errors << "'#{element}' is required."
+        @errors << "'#{element}' is required." if @query[element].nil?
       end
     end
 

@@ -22,6 +22,8 @@ module Flapjack
         def checks(*args)
           ids, data = unwrap_ids(*args), unwrap_data(*args)
           validate_params(data) do
+            validate :query => :filter,  :as => :hash
+            validate :query => :include, :as => :string_or_array_of_strings
           end
           perform_get('/checks', ids, data)
         end

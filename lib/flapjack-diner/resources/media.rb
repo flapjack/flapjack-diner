@@ -22,8 +22,13 @@ module Flapjack
           perform_post('medium', "/media", data)
         end
 
-        def media(*ids)
-          perform_get('/media', ids)
+        def media(*args)
+          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          validate_params(data) do
+            validate :query => :filter,  :as => :hash
+            validate :query => :include, :as => :string_or_array_of_strings
+          end
+          perform_get('/media', ids, data)
         end
 
         def update_media(*args)
