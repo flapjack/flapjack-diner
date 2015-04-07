@@ -123,6 +123,23 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
         expect(result).to eq(data)
       end
 
+      it "submits a GET request for a #{report_type} report on a tag" do
+        data = [report_data(report_type, check_data)]
+
+        flapjack.given("a check with a tag exists").
+          upon_receiving("a GET request for a #{report_type} report on a single tag").
+          with(:method => :get,
+               :path => "/#{report_type}_reports/tags/#{tag_data[:name]}").
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => data, :links => {:self => "http://example.org/#{report_type}_reports/tags/#{tag_data[:name]}"}}
+          )
+
+        result = Flapjack::Diner.send("#{report_type}_reports_tags".to_sym, tag_data[:name])
+        expect(result).to eq(data)
+      end
+
     end
 
     ['scheduled_maintenance', 'unscheduled_maintenance', 'downtime', 'outage'].each do |report_type|
@@ -195,8 +212,25 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
         expect(result).to eq(data)
       end
 
+      it "submits a time-limited GET request for a #{report_type} report on a tag" do
+        data = [report_data(report_type, check_data)]
+
+        flapjack.given("a check with a tag exists").
+          upon_receiving("a time limited GET request for a #{report_type} report on a single tag").
+          with(:method => :get,
+               :path => "/#{report_type}_reports/tags/#{tag_data[:name]}",
+               :query => "start_time=#{esc_st}&end_time=#{esc_et}").
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => data, :links => {:self => "http://example.org/#{report_type}_reports/tags/#{tag_data[:name]}?end_time=#{esc_et}&start_time=#{esc_st}"}}
+          )
+
+        result = Flapjack::Diner.send("#{report_type}_reports_tags".to_sym,
+          tag_data[:name], :start_time => start_time, :end_time => end_time)
+        expect(result).to eq(data)
+      end
+
     end
-
   end
-
 end
