@@ -49,6 +49,14 @@ module Flapjack
       end
     end
 
+    def positive_integer(*elements)
+      elements.each do |element|
+        target = @query[element]
+        next if target.nil? || (target.is_a?(Integer) && (target > 0))
+        @errors << "'#{target}' should be an integer greater than 0."
+      end
+    end
+
     def array_of_strings(*elements)
       elements.each do |element|
         target = @query[element]
