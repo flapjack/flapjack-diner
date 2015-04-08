@@ -12,17 +12,17 @@ module Flapjack
         def create_checks(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :id, :as => :string
-            validate :query => :name,    :as => [:required, :string]
+            validate :query => :id, :as => :uuid
+            validate :query => :name, :as => [:required, :string]
             validate :query => :enabled, :as => :boolean
           end
           perform_post('check', '/checks', data)
         end
 
         def checks(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          ids, data = unwrap_uuids(*args), unwrap_data(*args)
           validate_params(data) do
-            validate :query => :filter,  :as => :hash
+            validate :query => :filter, :as => :hash
             validate :query => :include, :as => :string_or_array_of_strings
             validate :query => [:page, :per_page], :as => :positive_integer
           end

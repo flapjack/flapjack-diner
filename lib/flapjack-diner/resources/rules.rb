@@ -13,14 +13,14 @@ module Flapjack
         def create_rules(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :id, :as => :string
+            validate :query => :id, :as => :uuid
             # TODO proper validation of time_restrictions field
           end
           perform_post('rule', '/rules', data)
         end
 
         def rules(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          ids, data = unwrap_uuids(*args), unwrap_data(*args)
           validate_params(data) do
             validate :query => :filter,  :as => :hash
             validate :query => :include, :as => :string_or_array_of_strings

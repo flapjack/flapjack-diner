@@ -12,7 +12,6 @@ module Flapjack
         def create_tags(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :id,   :as => :string
             validate :query => :name, :as => [:required, :string]
           end
           perform_post('tag', '/tags', data)

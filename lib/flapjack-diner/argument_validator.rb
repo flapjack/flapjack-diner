@@ -31,12 +31,20 @@ module Flapjack
       false
     end
 
+    def uuid(*elements)
+      elements.each do |element|
+        target = @query[element]
+        next if target.nil? || (target =~ /^#{Flapjack::UUID_RE}$/i)
+        @errors << "'#{target}' must be a RFC 4122-compliant UUID."
+      end
+    end
+
     def time(*elements)
       elements.each do |element|
         target = @query[element]
         next if target.nil? || target.respond_to?(:iso8601) ||
           (target.is_a?(String) && valid_time_str?(target))
-        @errors << "'#{target}' should be a time object or ISO " \
+        @errors << "'#{target}' must be a time object or ISO " \
                    '8601-formatted string.'
       end
     end
@@ -45,7 +53,7 @@ module Flapjack
       elements.each do |element|
         target = @query[element]
         next if target.nil? || [TrueClass, FalseClass].include?(target.class)
-        @errors << "'#{target}' should be 'true' or 'false'."
+        @errors << "'#{target}' must be 'true' or 'false'."
       end
     end
 
@@ -53,7 +61,7 @@ module Flapjack
       elements.each do |element|
         target = @query[element]
         next if target.nil? || (target.is_a?(Integer) && (target > 0))
-        @errors << "'#{target}' should be an integer greater than 0."
+        @errors << "'#{target}' must be an integer greater than 0."
       end
     end
 
@@ -62,7 +70,7 @@ module Flapjack
         target = @query[element]
         next if target.nil? || (target.is_a?(Array) && !target.empty? &&
           target.all? {|t| t.is_a?(String) && !t.empty? })
-        @errors << "'#{target}' should be an Array of non-empty Strings."
+        @errors << "'#{target}' must be an Array of non-empty Strings."
       end
     end
 
@@ -72,7 +80,7 @@ module Flapjack
         next if target.nil? || (target.is_a?(String) && !target.empty?) ||
          (target.is_a?(Array) && !target.empty? &&
           target.all? {|t| t.is_a?(String) && !t.empty? })
-        @errors << "'#{target}' should be a non-empty String, or an Array of non-empty Strings."
+        @errors << "'#{target}' must be a non-empty String, or an Array of non-empty Strings."
       end
     end
 
@@ -81,7 +89,7 @@ module Flapjack
         target = @query[element]
         next if target.nil? || (target.is_a?(Hash) &&
           target.keys.all? {|t| (t.is_a?(String) && !t.empty?) || t.is_a?(Symbol) })
-        @errors << "'#{target}' should be a Hash with String or Symbol keys."
+        @errors << "'#{target}' must be a Hash with String or Symbol keys."
       end
     end
 

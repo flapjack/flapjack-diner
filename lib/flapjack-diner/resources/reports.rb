@@ -11,7 +11,8 @@ module Flapjack
       module Reports
         %w(checks tags).each do |resource_type|
           define_method("status_reports_#{resource_type}") do |*args|
-            ids, data = unwrap_ids(*args), unwrap_data(*args)
+            ids  = 'tags'.eql?(resource_type) ? unwrap_ids(*args) : unwrap_uuids(*args)
+            data = unwrap_data(*args)
             validate_params(data) do
               validate :query => :filter, :as => :hash
               validate :query => :include, :as => :string_or_array_of_strings
@@ -23,7 +24,8 @@ module Flapjack
           %w(scheduled_maintenance unscheduled_maintenance
              downtime outage).each do |report_type|
             define_method("#{report_type}_reports_#{resource_type}") do |*args|
-              ids, data = unwrap_ids(*args), unwrap_data(*args)
+              ids  = 'tags'.eql?(resource_type) ? unwrap_ids(*args) : unwrap_uuids(*args)
+              data = unwrap_data(*args)
               validate_params(data) do
                 validate :query => :filter,  :as => :hash
                 validate :query => :include, :as => :string_or_array_of_strings

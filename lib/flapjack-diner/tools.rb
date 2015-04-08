@@ -227,6 +227,14 @@ module Flapjack
         args.select {|a| a.is_a?(String) || a.is_a?(Integer) }
       end
 
+      def unwrap_uuids(*args)
+        ids = args.select {|a| a.is_a?(String) || a.is_a?(Integer) }
+        raise "IDs must be RFC 4122-compliant UUIDs" unless ids.all? {|id|
+          id =~ /^#{Flapjack::UUID_RE}$/i
+        }
+        ids
+      end
+
       def unwrap_data(*args)
         data = args.reject {|a| a.is_a?(String) || a.is_a?(Integer) }
         raise "Data must be passed as a Hash, or multiple Hashes" unless data.all? {|a| a.is_a?(Hash) }

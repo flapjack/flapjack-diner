@@ -11,7 +11,8 @@ module Flapjack
       module Notifications
         %w(checks tags).each do |resource_type|
           define_method("create_test_notifications_#{resource_type}") do |*args|
-            ids, data = unwrap_ids(*args), unwrap_data(*args)
+            ids  = 'tags'.eql?(resource_type) ? unwrap_ids(*args) : unwrap_uuids(*args)
+            data = unwrap_data(*args)
             # TODO raise error unless ids.size == 1
             validate_params(data) do
               validate :query => :summary, :as => :string

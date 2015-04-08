@@ -12,7 +12,7 @@ module Flapjack
         def create_media(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :id, :as => :string
+            validate :query => :id, :as => :uuid
             validate :query => [:transport, :address],
               :as => [:required, :string]
             validate :query => [:interval, :rollup_threshold],
@@ -23,7 +23,7 @@ module Flapjack
         end
 
         def media(*args)
-          ids, data = unwrap_ids(*args), unwrap_data(*args)
+          ids, data = unwrap_uuids(*args), unwrap_data(*args)
           validate_params(data) do
             validate :query => :filter,  :as => :hash
             validate :query => :include, :as => :string_or_array_of_strings

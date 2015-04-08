@@ -33,7 +33,7 @@ module Flapjack
                 validate :query => :resource_id, :as => :string
               end
               perform_get("#{linked}",
-                "/#{resource}/#{resource_id}/links/#{linked}")
+                "/#{resource}/#{resource_id}/#{linked}")
             end
           end
 
