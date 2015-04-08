@@ -45,7 +45,7 @@ module Flapjack
         def delete_media(*ids)
           raise "'delete_media' requires at least one medium id " \
                 'parameter' if ids.nil? || ids.empty?
-          perform_delete('medium', '/media', ids)
+          perform_delete('medium', '/media', *ids)
         end
 
       end

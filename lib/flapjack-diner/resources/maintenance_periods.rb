@@ -13,7 +13,7 @@ module Flapjack
         def create_scheduled_maintenances(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :id, :as => :string
+            validate :query => :id, :as => :uuid
             validate :query => :start_time, :as => [:required, :time]
             validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
@@ -24,7 +24,7 @@ module Flapjack
         def create_unscheduled_maintenances(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :id, :as => :string
+            validate :query => :id, :as => :uuid
             validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
           end
@@ -47,7 +47,7 @@ module Flapjack
                   "at least one scheduled maintenance id parameter"
           end
           perform_delete('scheduled_maintenance', '/scheduled_maintenances',
-            ids)
+            *ids)
         end
       end
     end

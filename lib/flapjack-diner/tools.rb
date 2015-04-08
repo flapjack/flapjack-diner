@@ -23,24 +23,10 @@ module Flapjack
         @context = nil
         req_uri = build_uri(:get, path, ids, data)
         log_request('GET', req_uri, data)
-        handled = handle_response(get(req_uri.request_uri))
-
-        strify = return_keys_as_strings.is_a?(TrueClass)
-        if !handled.nil? && handled.is_a?(Hash)
-          result = handled['data']
-          @context = {}
-          (['included', 'links', 'meta'] & handled.keys).each do |k|
-            c = handled[k]
-            @context[k.to_sym] = (strify ? c : symbolize(c))
-          end
-        else
-          result = handled
-        end
-
-        strify ? result : symbolize(result)
+        handle_response(get(req_uri.request_uri))
       end
 
-      def perform_post(type, path, data = nil)
+      def perform_post(type, path, data = {})
         @last_error = nil
         @context = nil
         case data
@@ -51,21 +37,22 @@ module Flapjack
         end
         req_uri = build_uri(:post, path)
         log_request('POST', req_uri, :data => data)
-        opts = if data.nil?
-                 {}
-               else
-                 # TODO ext=bulk in header if data is an array
-                 # TODO send current character encoding in content-type
-                 {:body => prepare_nested_query(:data => data).to_json,
-                  :headers => {'Content-Type' => 'application/vnd.api+json'}}
-               end
-        handled = handle_response(post(req_uri.request_uri, opts))
+        # TODO ext=bulk in header if data is an array
+        # TODO send current character encoding in content-type
+        opts = {:body => prepare_nested_query(:data => data).to_json,
+                :headers => {'Content-Type' => 'application/vnd.api+json'}}
+        handle_response(post(req_uri.request_uri, opts))
+      end
 
-        # TODO validate 'data' for Hash in handle_response
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled['data'] :
-                 handled
-
-        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
+      def perform_post_links(type, path, *ids)
+        @last_error = nil
+        @context = nil
+        data = ids.collect {|id| {:type => type, :id => id}}
+        req_uri = build_uri(:post, path)
+        log_request('POST', req_uri, :data => data)
+        opts = {:body => prepare_nested_query(:data => data).to_json,
+                :headers => {'Content-Type' => 'application/vnd.api+json'}}
+        handle_response(post(req_uri.request_uri, opts))
       end
 
       def perform_patch(type, path, data = nil)
@@ -99,37 +86,32 @@ module Flapjack
                  {:body => prepare_nested_query(:data => data).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
-        handled = handle_response(patch(req_uri.request_uri, opts))
-
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled['data'] :
-                 handled
-
-        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
+        handle_response(patch(req_uri.request_uri, opts))
       end
 
-      def perform_patch_links(name, path, ids = [])
+      def perform_patch_links(type, path, single, *ids)
         @last_error = nil
         @context = nil
 
-        # TODO validate ids is array of non-empy strings
+        data = if single
+          raise "Must provide one ID for a singular link" unless ids.size == 1
+          [nil].eql?(ids) ? nil : {:type => type, :id => ids.first}
+        else
+          [].eql?(ids) ? [] : ids.collect {|id| {:type => type, :id => id}}
+        end
+
         req_uri = build_uri(:patch, path)
-        log_request('PATCH', req_uri, name.to_sym => ids)
 
-        opts = {:body => prepare_nested_query(name.to_sym => ids).to_json,
+        opts = {:body => prepare_nested_query(:data => data).to_json,
                 :headers => {'Content-Type' => 'application/vnd.api+json'}}
-        handled = handle_response(patch(req_uri.request_uri, opts))
-
-        result = (!handled.nil? && handled.is_a?(Hash)) ? handled[name.to_s] :
-                 handled
-
-        return_keys_as_strings.is_a?(TrueClass) ? result : symbolize(result)
+        log_request('PATCH', req_uri, opts)
+        handle_response(patch(req_uri.request_uri, opts))
       end
 
-      def perform_delete(type, path, ids = [])
+      def perform_delete(type, path, *ids)
         @last_error = nil
         @context = nil
-
-        req_uri = build_uri(:patch, path, ids)
+        req_uri = build_uri(:delete, path, ids)
         opts = if ids.size == 1
                  {}
                else
@@ -137,6 +119,17 @@ module Flapjack
                  {:body => prepare_nested_query(:data => data).to_json,
                   :headers => {'Content-Type' => 'application/vnd.api+json'}}
                end
+        log_request('DELETE', req_uri, opts)
+        handle_response(delete(req_uri.request_uri, opts))
+      end
+
+      def perform_delete_links(type, path, *ids)
+        @last_error = nil
+        @context = nil
+        req_uri = build_uri(:delete, path)
+        data = ids.collect {|id| {:type => type, :id => id}}
+        opts = {:body => prepare_nested_query(:data => data).to_json,
+                :headers => {'Content-Type' => 'application/vnd.api+json'}}
         log_request('DELETE', req_uri, opts)
         handle_response(delete(req_uri.request_uri, opts))
       end
@@ -160,15 +153,24 @@ module Flapjack
                  else
                    nil
                  end
-        return parsed if [200, 201].include?(response.code)
-        @last_error = handle_error(response.code, parsed)
+        strify = return_keys_as_strings.is_a?(TrueClass)
+        if [200, 201].include?(response.code)
+          return handle_response_data(parsed, 'data', strify)
+        end
+        @last_error = handle_response_data(parsed, 'errors', strify)
         nil
       end
 
-      def handle_error(code, parsed)
-        return parsed unless parsed.is_a?(Hash)
-        parsed = parsed['errors'] if parsed.has_key?('errors')
-        return parsed if return_keys_as_strings.is_a?(TrueClass)
+      def handle_response_data(parsed, key, strify)
+        return parsed if parsed.nil? || !parsed.is_a?(Hash) ||
+          !parsed.has_key?(key)
+        @context = {}
+        (['included', 'links', 'meta'] & parsed.keys).each do |k|
+          c = parsed[k]
+          @context[k.to_sym] = (strify ? c : symbolize(c))
+        end
+        parsed = parsed[key]
+        return parsed if strify
         symbolize(parsed)
       end
 
