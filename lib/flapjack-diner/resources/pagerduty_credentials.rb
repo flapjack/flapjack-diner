@@ -30,7 +30,7 @@ module Flapjack
                 ' pagerduty_credentials id parameter' if ids.nil? || ids.empty?
           validate_params(params) do
             validate :query => [:service_key, :subdomain,
-                                :username, :password], :as => :string
+                                :token], :as => :string
           end
           perform_patch("/pagerduty_credentials/#{escaped_ids(ids)}",
                         nil, update_pagerduty_credentials_ops(params))
@@ -46,8 +46,7 @@ module Flapjack
 
         def update_pagerduty_credentials_ops(params)
           ops = params.each_with_object([]) do |(k, v), memo|
-            next unless [:service_key, :subdomain,
-                         :username, :password].include?(k)
+            next unless [:service_key, :subdomain, :token].include?(k)
             memo << patch_replace('pagerduty_credentials', k, v)
           end
           raise "'update_pagerduty_credentials' did not find any valid " \
