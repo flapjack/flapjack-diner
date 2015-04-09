@@ -77,20 +77,22 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
       expect(result).to eq(sms_data.merge(:type => 'medium'))
     end
 
-    it "submits a GET request for several media" # do
-    #   media_data = [email_data.merge(links), sms_data.merge(links)]
+    it "submits a GET request for several media" do
+      media_data = [email_data.merge(:type => 'medium'),
+                    sms_data.merge(:type => 'medium')]
 
-    #   flapjack.given("two media exist").
-    #     upon_receiving("a GET request for two media").
-    #     with(:method => :get, :path => "/media/#{email_data[:id]},#{sms_data[:id]}").
-    #     will_respond_with(
-    #       :status => 200,
-    #       :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-    #       :body => {:media => media_data} )
+      flapjack.given("two media exist").
+        upon_receiving("a GET request for two media").
+        with(:method => :get, :path => '/media',
+             :query => "filter%5B%5D=id%3A#{email_data[:id]}%7C#{sms_data[:id]}").
+        will_respond_with(
+          :status => 200,
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+          :body => {:data => media_data} )
 
-    #   result = Flapjack::Diner.media(email_data[:id], sms_data[:id])
-    #   expect(result).to eq(media_data)
-    # end
+      result = Flapjack::Diner.media(email_data[:id], sms_data[:id])
+      expect(result).to eq(media_data)
+    end
 
   end
 

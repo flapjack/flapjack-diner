@@ -112,11 +112,38 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
     end
 
-    context 'GET a single check by name' do
+    context 'GET checks by name' do
 
-      it 'has some data'
+      let(:name) { CGI.escape(check_data[:name]) }
 
-      it "can't find check"
+      it 'has some data' do
+        flapjack.given("a check exists").
+          upon_receiving("a GET request for checks by name").
+          with(:method => :get, :path => "/checks",
+               :query => "filter%5B%5D=name%3A#{name}").
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => [check_data.merge(:type => 'check')]} )
+
+        result = Flapjack::Diner.checks(:filter => {:name => check_data[:name]})
+        expect(result).to eq([check_data.merge(:type => 'check')])
+      end
+
+      it "can't find check" do
+        flapjack.given("no check exists").
+          upon_receiving("a GET request for checks by name").
+          with(:method => :get, :path => "/checks",
+               :query => "filter%5B%5D=name%3A#{name}").
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => []}
+          )
+
+        result = Flapjack::Diner.checks(:filter => {:name => check_data[:name]})
+        expect(result).to eq([])
+      end
 
     end
 

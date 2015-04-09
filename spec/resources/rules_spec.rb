@@ -80,21 +80,22 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
       expect(result).to eq(rule_data.merge(:type => 'rule'))
     end
 
-    it "submits a GET request for several rules" # do
-    #   rules_data = [rule_data.merge(:type => 'tag'), rule_2_data.merge(:type => 'tag')]
+    it "submits a GET request for several rules" do
+      rules_data = [rule_data.merge(:type => 'rule'), rule_2_data.merge(:type => 'rule')]
 
-    #   flapjack.given("two rules exist").
-    #     upon_receiving("a GET request for two rules").
-    #     with(:method => :get, :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}").
-    #     will_respond_with(
-    #       :status => 200,
-    #       :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-    #         :body => {:data => rules_data} )
+      flapjack.given("two rules exist").
+        upon_receiving("a GET request for two rules").
+        with(:method => :get, :path => "/rules",
+             :query => "filter%5B%5D=id%3A#{rule_data[:id]}%7C#{rule_2_data[:id]}").
+        will_respond_with(
+          :status => 200,
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => rules_data} )
 
-    #   result = Flapjack::Diner.rules(rule_data[:id], rule_2_data[:id])
-    #   expect(result).not_to be_nil
-    #   expect(result).to eq(rules_data)
-    # end
+      result = Flapjack::Diner.rules(rule_data[:id], rule_2_data[:id])
+      expect(result).not_to be_nil
+      expect(result).to eq(rules_data)
+    end
 
     it "can't find the rule to read" do
       flapjack.given("no rule exists").
@@ -117,7 +118,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
   end
 
-  # # Not immediately relevant
+  # # Not immediately relevant, no data fields to update until time_restrictions are fixed
   # context 'update' do
   #   it 'submits a PUT request for a rule' do
   #     flapjack.given("a rule exists").

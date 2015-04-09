@@ -63,7 +63,18 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
     expect(result).to be true
   end
 
-  it 'clears all tags from a check'
+  it 'clears all tags from a check' do
+    flapjack.given("a check and a tag exist").
+      upon_receiving("a PATCH request clearing tags for a check").
+      with(:method => :patch, :path => "/checks/#{check_data[:id]}/links/tags",
+           :headers => {'Content-Type' => 'application/vnd.api+json'},
+           :body => {:data => []}).
+      will_respond_with(:status => 204,
+                        :body => '')
+
+    result = Flapjack::Diner.update_checks_link_tags(check_data[:id], [])
+    expect(result).to be true
+  end
 
   it 'deletes a tag from a check' do
     flapjack.given("a check with a tag exists").
@@ -94,7 +105,18 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
     expect(result).to be true
   end
 
-  it 'gets the contact for a medium'
+  it 'gets the contact for a medium' do
+    flapjack.given("a contact with a medium exists").
+      upon_receiving("a GET request for a medium's contact").
+      with(:method => :get, :path => "/media/#{email_data[:id]}/contact").
+      will_respond_with(
+        :status => 200,
+        :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+        :body => {:data => {:id => contact_data[:id], :type => 'contact'}})
+
+    result = Flapjack::Diner.media_link_contact(email_data[:id])
+    expect(result).to eq(:id => contact_data[:id], :type => 'contact')
+  end
 
   it 'sets the contact for a medium' do
     flapjack.given("a contact and a medium exist").

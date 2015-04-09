@@ -18,10 +18,35 @@ module Flapjack
         logger.info log_msg
       end
 
-      def perform_get(path, ids = [], data = [])
+      def perform_get(path, ids = [], data = {})
         @last_error = nil
         @context = nil
-        req_uri = build_uri(:get, path, ids, data)
+
+        data = data.reduce({}, &:merge) if data.is_a?(Array)
+        if (ids.size > 1)
+          if data[:filter].nil?
+            data[:filter] = {:id => ids}
+          elsif !data[:filter].has_key?(:id)
+            data[:filter][:id] = ids
+          else
+            data[:filter][:id] |= ids
+          end
+        end
+
+        filt = data.delete(:filter)
+        unless filt.nil?
+          data[:filter] = filt.each_with_object([]) do |(k, v), memo|
+            value = case v
+            when Array, Set
+              v.to_a.join("|")
+            else
+              v.to_s
+            end
+            memo << "#{k}:#{value}"
+          end
+        end
+
+        req_uri = build_uri(path, ids, data)
         log_request('GET', req_uri, data)
         handle_response(get(req_uri.request_uri))
       end
@@ -35,7 +60,7 @@ module Flapjack
         when Hash
           data[:type] = type
         end
-        req_uri = build_uri(:post, path)
+        req_uri = build_uri(path)
         log_request('POST', req_uri, :data => data)
         # TODO ext=bulk in header if data is an array
         # TODO send current character encoding in content-type
@@ -48,7 +73,7 @@ module Flapjack
         @last_error = nil
         @context = nil
         data = ids.collect {|id| {:type => type, :id => id}}
-        req_uri = build_uri(:post, path)
+        req_uri = build_uri(path)
         log_request('POST', req_uri, :data => data)
         opts = {:body => prepare_nested_query(:data => data).to_json,
                 :headers => {'Content-Type' => 'application/vnd.api+json'}}
@@ -66,7 +91,7 @@ module Flapjack
           raise "Update data does not contain :id" unless data[:id]
           data[:type] = type
           ids = [data[:id]]
-          req_uri = build_uri(:patch, path, ids)
+          req_uri = build_uri(path, ids)
         when Array
           ids = []
           data.each do |d|
@@ -75,7 +100,7 @@ module Flapjack
             ids << d_id unless d_id.nil? || d_id.empty?
           end
           raise "Update data must each contain :id" unless ids.size == data.size
-          req_uri = build_uri(:patch, path)
+          req_uri = build_uri(path)
         end
 
         log_request('PATCH', req_uri, :data => data)
@@ -97,10 +122,10 @@ module Flapjack
           raise "Must provide one ID for a singular link" unless ids.size == 1
           [nil].eql?(ids) ? nil : {:type => type, :id => ids.first}
         else
-          [].eql?(ids) ? [] : ids.collect {|id| {:type => type, :id => id}}
+          [[]].eql?(ids) ? [] : ids.collect {|id| {:type => type, :id => id}}
         end
 
-        req_uri = build_uri(:patch, path)
+        req_uri = build_uri(path)
 
         opts = {:body => prepare_nested_query(:data => data).to_json,
                 :headers => {'Content-Type' => 'application/vnd.api+json'}}
@@ -111,7 +136,7 @@ module Flapjack
       def perform_delete(type, path, *ids)
         @last_error = nil
         @context = nil
-        req_uri = build_uri(:delete, path, ids)
+        req_uri = build_uri(path, ids)
         opts = if ids.size == 1
                  {}
                else
@@ -126,7 +151,7 @@ module Flapjack
       def perform_delete_links(type, path, *ids)
         @last_error = nil
         @context = nil
-        req_uri = build_uri(:delete, path)
+        req_uri = build_uri(path)
         data = ids.collect {|id| {:type => type, :id => id}}
         opts = {:body => prepare_nested_query(:data => data).to_json,
                 :headers => {'Content-Type' => 'application/vnd.api+json'}}
@@ -297,26 +322,13 @@ module Flapjack
         [protocol, host, normalise_port(port, protocol)]
       end
 
-      def build_uri(method, path, ids = [], params = [])
+      def build_uri(path, ids = [], params = [])
         pr, ho, po = protocol_host_port
-        if :get.eql?(method) && (ids.size > 1)
-          # TODO check this works even if filter param already set --
-          # maybe set values as separate strings in array?
-          case params
-          when Array
-            params << {:filter => ["id:#{ids.join('|')}"]}
-          when Hash
-            params[:filter] = ["id:#{ids.join('|')}"]
-          end
-        elsif ids.size == 1
+         if ids.size == 1
           path += "/#{URI.escape(ids.first.to_s)}"
         end
-        query = if params.nil? || params.empty?
-                  nil
-                else
-                  params = params.reduce(&:merge) if params.is_a?(Array)
-                  build_nested_query(params)
-                end
+        params = params.reduce({}, &:merge) if params.is_a?(Array)
+        query = params.empty? ? nil : build_nested_query(params)
         URI::HTTP.build(:protocol => pr, :host => ho, :port => po,
           :path => path, :query => query)
       end
