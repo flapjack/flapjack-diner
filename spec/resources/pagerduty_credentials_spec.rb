@@ -13,8 +13,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
     it "submits a POST request for pagerduty credentials" do
       data = [{:service_key => 'abc',
                :subdomain   => 'def',
-               :username    => 'ghi',
-               :password    => 'jkl',
+               :token       => 'ghi',
               }]
 
       flapjack.given("a contact with id 'abc' exists").
@@ -34,8 +33,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
     it "can't find the contact to create pagerduty credentials for" do
       data = [{:service_key => 'abc',
                :subdomain   => 'def',
-               :username    => 'ghi',
-               :password    => 'jkl',
+               :token       => 'ghi',
               }]
 
       flapjack.given("no contact exists").
@@ -61,8 +59,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
       pdc_data = [{
         :service_key => 'abc',
         :subdomain   => 'def',
-        :username    => 'ghi',
-        :password    => 'jkl',
+        :token       => 'ghi',
       }]
 
       flapjack.given("a contact with id 'abc' has pagerduty credentials").
@@ -81,8 +78,7 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
       pdc_data = [{
         :service_key => 'abc',
         :subdomain   => 'def',
-        :username    => 'ghi',
-        :password    => 'jkl',
+        :token       => 'ghi',
       }]
 
       flapjack.given("a contact with id 'abc' has pagerduty credentials").
@@ -101,13 +97,11 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
       pdc_data = [{
         :service_key => 'abc',
         :subdomain   => 'def',
-        :username    => 'ghi',
-        :password    => 'jkl',
+        :token       => 'ghi',
       }, {
         :service_key => 'mno',
         :subdomain   => 'pqr',
-        :username    => 'stu',
-        :password    => 'vwx',
+        :token       => 'stu',
       }]
 
       flapjack.given("contacts with ids 'abc' and '872' have pagerduty credentials").
@@ -147,12 +141,12 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
         with(:method => :patch,
              :path => '/pagerduty_credentials/abc',
              :headers => {'Content-Type'=>'application/json-patch+json'},
-             :body => [{:op => 'replace', :path => '/pagerduty_credentials/0/password', :value => 'pswrd'}]).
+             :body => [{:op => 'replace', :path => '/pagerduty_credentials/0/token', :value => 'token123'}]).
         will_respond_with(
           :status => 204,
           :body => '' )
 
-      result = Flapjack::Diner.update_pagerduty_credentials('abc', :password => 'pswrd')
+      result = Flapjack::Diner.update_pagerduty_credentials('abc', :token => 'token123')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
@@ -163,12 +157,12 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
         with(:method => :patch,
              :path => '/pagerduty_credentials/abc,872',
              :headers => {'Content-Type'=>'application/json-patch+json'},
-             :body => [{:op => 'replace', :path => '/pagerduty_credentials/0/password', :value => 'pswrd'}]).
+             :body => [{:op => 'replace', :path => '/pagerduty_credentials/0/token', :value => 'token123'}]).
         will_respond_with(
           :status => 204,
           :body => '' )
 
-      result = Flapjack::Diner.update_pagerduty_credentials('abc', '872', :password => 'pswrd')
+      result = Flapjack::Diner.update_pagerduty_credentials('abc', '872', :token => 'token123')
       expect(result).not_to be_nil
       expect(result).to be_truthy
     end
@@ -179,12 +173,12 @@ describe Flapjack::Diner::Resources::PagerdutyCredentials, :pact => true do
         with(:method => :patch,
              :path => '/pagerduty_credentials/abc',
              :headers => {'Content-Type'=>'application/json-patch+json'},
-             :body => [{:op => 'replace', :path => '/pagerduty_credentials/0/password', :value => 'pswrd'}]).
+             :body => [{:op => 'replace', :path => '/pagerduty_credentials/0/token', :value => 'token123'}]).
         will_respond_with(:status => 404,
                           :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
                           :body => {:errors => ["could not find contact 'abc'"]} )
 
-      result = Flapjack::Diner.update_pagerduty_credentials('abc', :password => 'pswrd')
+      result = Flapjack::Diner.update_pagerduty_credentials('abc', :token => 'token123')
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq(:status_code => 404,
         :errors => ["could not find contact 'abc'"])
