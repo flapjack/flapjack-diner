@@ -33,7 +33,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       flapjack.given("no contact exists").
         upon_receiving("a POST request with two contacts").
         with(:method => :post, :path => '/contacts',
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => contacts_data}).
         will_respond_with(
           :status => 201,
@@ -203,14 +203,14 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       expect(result).to be_a(TrueClass)
     end
 
-    it 'submits a PUT request for several contacts' do
+    it 'submits a PATCH request for several contacts' do
       flapjack.given("two contacts exist").
         upon_receiving("a PATCH request for two contacts").
         with(:method => :patch,
              :path => "/contacts",
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => [{:id => contact_data[:id], :type => 'contact', :name => 'Hello There'},
-                                 {:id => contact_2_data[:id], :type => 'contact', :name => 'Goodbye Now'}]},
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+                                 {:id => contact_2_data[:id], :type => 'contact', :name => 'Goodbye Now'}]}).
         will_respond_with(
           :status => 204,
           :body => '' )
@@ -266,7 +266,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       flapjack.given("two contacts exist").
         upon_receiving("a DELETE request for two contacts").
         with(:method => :delete,
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :path => "/contacts",
              :body => {:data => contacts_data}).
         will_respond_with(:status => 204,

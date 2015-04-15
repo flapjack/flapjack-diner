@@ -32,7 +32,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       flapjack.given("no check exists").
         upon_receiving("a POST request with two checks").
         with(:method => :post, :path => '/checks',
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => checks_data}).
         will_respond_with(
           :status => 201,
@@ -205,9 +205,9 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         upon_receiving("a PATCH request for two checks").
         with(:method => :patch,
              :path => "/checks",
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => [{:id => check_data[:id], :type => 'check', :enabled => false},
-                                 {:id => check_2_data[:id], :type => 'check', :enabled => true}]},
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+                                 {:id => check_2_data[:id], :type => 'check', :enabled => true}]}).
         will_respond_with(
           :status => 204,
           :body => '' )

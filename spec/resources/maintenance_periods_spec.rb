@@ -19,7 +19,8 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       it "creates a scheduled maintenance period" do
         flapjack.given("no scheduled maintenance period exists").
           upon_receiving("a POST request with one scheduled maintenance period").
-          with(:method => :post, :path => '/scheduled_maintenances',
+          with(:method => :post,
+               :path => '/scheduled_maintenances',
                :headers => {'Content-Type' => 'application/vnd.api+json'},
                :body => {:data => scheduled_maintenance_data.merge(:type => 'scheduled_maintenance')}).
           will_respond_with(
@@ -36,11 +37,13 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
                                        scheduled_maintenance_2_data.merge(:type => 'scheduled_maintenance')]
         flapjack.given("no scheduled maintenance period exists").
           upon_receiving("a POST request with two scheduled maintenance periods").
-          with(:method => :post, :path => '/scheduled_maintenances',
-               :headers => {'Content-Type' => 'application/vnd.api+json'},
+          with(:method => :post,
+               :path => '/scheduled_maintenances',
+               :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
                :body => {:data => scheduled_maintenances_data}).
           will_respond_with(
             :status => 201,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {'data' => scheduled_maintenances_data})
 
         result = Flapjack::Diner.create_scheduled_maintenances(*scheduled_maintenances_data)
@@ -55,7 +58,8 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       it "creates an unscheduled maintenance period" do
         flapjack.given("no unscheduled maintenance period exists").
           upon_receiving("a POST request with one unscheduled maintenance period").
-          with(:method => :post, :path => '/unscheduled_maintenances',
+          with(:method => :post,
+               :path => '/unscheduled_maintenances',
                :headers => {'Content-Type' => 'application/vnd.api+json'},
                :body => {:data => unscheduled_maintenance_data.merge(:type => 'unscheduled_maintenance')}).
           will_respond_with(
@@ -72,8 +76,9 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
                                          unscheduled_maintenance_2_data.merge(:type => 'unscheduled_maintenance')]
         flapjack.given("no unscheduled maintenance period exists").
           upon_receiving("a POST request with two unscheduled maintenance periods").
-          with(:method => :post, :path => '/unscheduled_maintenances',
-               :headers => {'Content-Type' => 'application/vnd.api+json'},
+          with(:method => :post,
+               :path => '/unscheduled_maintenances',
+               :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
                :body => {:data => unscheduled_maintenances_data}).
           will_respond_with(
             :status => 201,
@@ -96,8 +101,8 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
         upon_receiving("a PATCH request for a single unscheduled maintenance period").
         with(:method => :patch,
              :path => "/unscheduled_maintenances/#{unscheduled_maintenance_data[:id]}",
-             :body => {:data => {:id => unscheduled_maintenance_data[:id], :type => 'unscheduled_maintenance', :end_time => time.iso8601}},
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:data => {:id => unscheduled_maintenance_data[:id], :type => 'unscheduled_maintenance', :end_time => time.iso8601}}).
         will_respond_with(
           :status => 204,
           :body => '' )
@@ -111,9 +116,9 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
         upon_receiving("a PATCH request for two unscheduled maintenance periods").
         with(:method => :patch,
              :path => "/unscheduled_maintenances",
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => [{:id => unscheduled_maintenance_data[:id], :type => 'unscheduled_maintenance', :end_time => time.iso8601},
-                                 {:id => unscheduled_maintenance_2_data[:id], :type => 'unscheduled_maintenance', :end_time => (time + 3600).iso8601}]},
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+                                 {:id => unscheduled_maintenance_2_data[:id], :type => 'unscheduled_maintenance', :end_time => (time + 3600).iso8601}]}).
         will_respond_with(
           :status => 204,
           :body => '' )
@@ -129,8 +134,8 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
         upon_receiving("a PATCH request for a single unscheduled maintenance period").
         with(:method => :patch,
              :path => "/unscheduled_maintenances/#{unscheduled_maintenance_data[:id]}",
-             :body => {:data => {:id => unscheduled_maintenance_data[:id], :type => 'unscheduled_maintenance', :end_time => time.iso8601}},
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:data => {:id => unscheduled_maintenance_data[:id], :type => 'unscheduled_maintenance', :end_time => time.iso8601}}).
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
@@ -172,8 +177,8 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       flapjack.given("two scheduled maintenance periods exist").
         upon_receiving("a DELETE request for two scheduled maintenance periods").
         with(:method => :delete,
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
              :path => "/scheduled_maintenances",
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => scheduled_maintenances_data}).
         will_respond_with(
           :status => 204,

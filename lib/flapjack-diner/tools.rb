@@ -54,18 +54,19 @@ module Flapjack
       def perform_post(type, path, data = {})
         @last_error = nil
         @context = nil
+        jsonapi_ext = ""
         case data
         when Array
           data.each {|d| d[:type] = type}
+          jsonapi_ext = "; ext=bulk"
         when Hash
           data[:type] = type
         end
         req_uri = build_uri(path)
         log_request('POST', req_uri, :data => data)
-        # TODO ext=bulk in header if data is an array
-        # TODO send current character encoding in content-type
+        # TODO send current character encoding in content-type ?
         opts = {:body => prepare_nested_query(:data => data).to_json,
-                :headers => {'Content-Type' => 'application/vnd.api+json'}}
+                :headers => {'Content-Type' => "application/vnd.api+json#{jsonapi_ext}"}}
         handle_response(post(req_uri.request_uri, opts))
       end
 
@@ -86,6 +87,7 @@ module Flapjack
 
         req_uri = nil
 
+        jsonapi_ext = ""
         case data
         when Hash
           raise "Update data does not contain :id" unless data[:id]
@@ -101,6 +103,7 @@ module Flapjack
           end
           raise "Update data must each contain :id" unless ids.size == data.size
           req_uri = build_uri(path)
+          jsonapi_ext = "; ext=bulk"
         end
 
         log_request('PATCH', req_uri, :data => data)
@@ -109,7 +112,7 @@ module Flapjack
                  {}
                else
                  {:body => prepare_nested_query(:data => data).to_json,
-                  :headers => {'Content-Type' => 'application/vnd.api+json'}}
+                  :headers => {'Content-Type' => "application/vnd.api+json#{jsonapi_ext}"}}
                end
         handle_response(patch(req_uri.request_uri, opts))
       end
@@ -142,7 +145,7 @@ module Flapjack
                else
                  data = ids.collect {|id| {:type => type, :id => id} }
                  {:body => prepare_nested_query(:data => data).to_json,
-                  :headers => {'Content-Type' => 'application/vnd.api+json'}}
+                  :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'}}
                end
         log_request('DELETE', req_uri, opts)
         handle_response(delete(req_uri.request_uri, opts))

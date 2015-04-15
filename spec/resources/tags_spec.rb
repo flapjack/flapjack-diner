@@ -33,7 +33,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
       flapjack.given("no tag exists").
         upon_receiving("a POST request with two tags").
         with(:method => :post, :path => '/tags',
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => tags_data}).
         will_respond_with(
           :status => 201,
@@ -142,7 +142,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
       flapjack.given("two tags exist").
         upon_receiving("a DELETE request for two tags").
         with(:method => :delete,
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :path => "/tags",
              :body => {:data => tags_data}).
         will_respond_with(:status => 204,

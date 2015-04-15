@@ -46,7 +46,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
         flapjack.given("a check exists").
           upon_receiving("a POST request with two test notifications").
           with(:method => :post, :path => "/test_notifications/checks/#{check_data[:id]}",
-               :headers => {'Content-Type' => 'application/vnd.api+json'},
+               :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
                :body => {:data => [notification_data.merge(:type => 'test_notification'),
                                    notification_2_data.merge(:type => 'test_notification')]}).
           will_respond_with(
@@ -64,7 +64,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
         flapjack.given("a tag with two checks exists").
           upon_receiving("a POST request with two test notifications").
           with(:method => :post, :path => "/test_notifications/tags/#{tag_data[:name]}",
-               :headers => {'Content-Type' => 'application/vnd.api+json'},
+               :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
                :body => {:data => [notification_data.merge(:type => 'test_notification'),
                                    notification_2_data.merge(:type => 'test_notification')]}).
           will_respond_with(

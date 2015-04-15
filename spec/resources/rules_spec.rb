@@ -33,7 +33,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
       flapjack.given("no rule exists").
         upon_receiving("a POST request with two rules").
         with(:method => :post, :path => '/rules',
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => rules_data}).
         will_respond_with(
           :status => 201,
@@ -198,7 +198,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
       flapjack.given("two rules exist").
         upon_receiving("a DELETE request for two rules").
         with(:method => :delete,
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :path => "/rules",
              :body => {:data => rules_data}).
         will_respond_with(:status => 204,

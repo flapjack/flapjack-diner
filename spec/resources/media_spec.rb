@@ -13,7 +13,8 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     it "submits a POST request for a medium" do
       flapjack.given("no medium exists").
         upon_receiving("a POST request with one medium").
-        with(:method => :post, :path => '/media',
+        with(:method => :post,
+             :path => '/media',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
              :body => {:data => sms_data.merge(:type => 'medium')}).
         will_respond_with(
@@ -32,8 +33,9 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
       flapjack.given("no medium exists").
         upon_receiving("a POST request with two media").
-        with(:method => :post, :path => '/media',
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+        with(:method => :post,
+             :path => '/media',
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => media_data}).
         will_respond_with(
           :status => 201,
@@ -54,7 +56,8 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
       flapjack.given("two media exist").
         upon_receiving("a GET request for all media").
-        with(:method => :get, :path => '/media').
+        with(:method => :get,
+             :path => '/media').
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
@@ -118,9 +121,9 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
         upon_receiving("a PATCH request for two media").
         with(:method => :patch,
              :path => "/media",
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => [{:id => email_data[:id], :type => 'medium', :interval => 50},
-                                 {:id => sms_data[:id], :type => 'medium', :rollup_threshold => 5}]},
-             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+                                 {:id => sms_data[:id], :type => 'medium', :rollup_threshold => 5}]}).
         will_respond_with(
           :status => 204,
           :body => '' )
@@ -178,7 +181,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
       flapjack.given("two media exist").
         upon_receiving("a DELETE request for two media").
         with(:method => :delete,
-             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :path => "/media",
              :body => {:data => media_data}).
         will_respond_with(:status => 204,
