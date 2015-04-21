@@ -11,13 +11,15 @@ module Flapjack
       module Links
 
         TYPES = {:checks => 'check',
+                 :contacts => 'contact',
                  :media => 'medium',
                  :rules => 'rule',
                  :scheduled_maintenances   => 'scheduled_maintenance',
                  :tags => 'tag',
+                 :test_notifications => 'test_notification',
                  :unscheduled_maintenances => 'unscheduled_maintenance'}
 
-        {
+        ASSOCIATIONS = {
           :checks                   => {:many   => [:scheduled_maintenances,
                                                     :tags,
                                                     :unscheduled_maintenances]},
@@ -29,7 +31,9 @@ module Flapjack
           :scheduled_maintenances   => {:one    => [:check]},
           :tags                     => {:many   => [:checks, :rules]},
           :unscheduled_maintenances => {:one    => [:check]},
-        }.each_pair do |resource, mappings|
+        }
+
+        ASSOCIATIONS.each_pair do |resource, mappings|
 
           singular = mappings[:one]  || []
           multiple = mappings[:many] || []

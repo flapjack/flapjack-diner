@@ -44,6 +44,24 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     end
 
     # TODO fails to create with invalid data
+
+    it "creates a check and links it to a tag" do
+      flapjack.given("a tag exists").
+        upon_receiving("a POST request with a check linking to a tag").
+        with(:method => :post, :path => '/checks',
+             :headers => {'Content-Type' => 'application/vnd.api+json'},
+             :body => {:data => check_data.merge(:type => 'check', :links => {
+               :tags => {:linkage => [{:type => 'tag', :id => tag_data[:name]}]}
+             })}).
+        will_respond_with(
+          :status => 201,
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+          :body => {'data' => check_data.merge(:type => 'check')})
+
+      result = Flapjack::Diner.create_checks(check_data.merge(:tags => [tag_data[:name]]))
+      expect(result).to eq(check_data.merge(:type => 'check'))
+    end
+
   end
 
   context 'read' do
@@ -238,6 +256,22 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       expect(result).to be_nil
       expect(Flapjack::Diner.last_error).to eq([{:status => '404',
         :detail => "could not find Check record, id: '#{check_data[:id]}'"}])
+    end
+
+    it "replaces the tags for a check" do
+      flapjack.given("a check and a tag exist").
+        upon_receiving("a PATCH request for a single check").
+        with(:method => :patch,
+             :path => "/checks/#{check_data[:id]}",
+             :body => {:data => {:id => check_data[:id], :type => 'check',
+                                 :links => {:tags => {:linkage => [:type => 'tag', :id => tag_data[:name]]}}}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
+
+      result = Flapjack::Diner.update_checks(:id => check_data[:id], :tags => [tag_data[:name]])
+      expect(result).to be_a(TrueClass)
     end
 
   end

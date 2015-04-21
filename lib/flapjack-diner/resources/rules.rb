@@ -15,8 +15,11 @@ module Flapjack
           validate_params(data) do
             validate :query => :id, :as => :uuid
             # TODO proper validation of time_restrictions field
+            validate :query => :contact, :as => :singular_link_uuid
+            validate :query => :media, :as => :multiple_link_uuid
+            validate :query => :tags, :as => :multiple_link
           end
-          perform_post('rule', '/rules', data)
+          perform_post(:rules, '/rules', data)
         end
 
         def rules(*args)
@@ -33,13 +36,16 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             # TODO proper validation of time_restrictions field
+            validate :query => :contact, :as => :singular_link_uuid
+            validate :query => :media, :as => :multiple_link_uuid
+            validate :query => :tags, :as => :multiple_link
           end
-          perform_patch('rules', "/rules", data)
+          perform_patch(:rules, "/rules", data)
         end
 
         def delete_rules(*ids)
           raise "'delete_rules' requires at least one rule id parameter" if ids.nil? || ids.empty?
-          perform_delete('rule', '/rules', *ids)
+          perform_delete(:rules, '/rules', *ids)
         end
       end
     end

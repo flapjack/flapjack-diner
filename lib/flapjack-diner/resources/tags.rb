@@ -13,8 +13,9 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :name, :as => [:required, :string]
+            validate :query => [:checks, :rules], :as => :multiple_link_uuid
           end
-          perform_post('tag', '/tags', data)
+          perform_post(:tags, '/tags', data)
         end
 
         def tags(*args)
@@ -27,12 +28,18 @@ module Flapjack
           perform_get('/tags', ids, data)
         end
 
-        # tags cannot be updated
+        def update_tags(*args)
+          data = unwrap_data(*args)
+          validate_params(data) do
+            validate :query => [:checks, :rules], :as => :multiple_link_uuid
+          end
+          perform_patch(:tags, "/tags", data)
+        end
 
         def delete_tags(*ids)
           raise "'delete_tags' requires at least one tag ID " \
                 'parameter' if ids.nil? || ids.empty?
-          perform_delete('tag', '/tags', *ids)
+          perform_delete(:tags, '/tags', *ids)
         end
       end
     end

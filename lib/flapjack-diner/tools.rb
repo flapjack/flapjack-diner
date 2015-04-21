@@ -51,19 +51,63 @@ module Flapjack
         handle_response(get(req_uri.request_uri))
       end
 
+      def populate_link_data(data, links)
+        link_data = {}
+
+        if links.has_key?(:one)
+          links[:one].each do |singular_link|
+            converted = false
+            [singular_link, singular_link.to_s].each do |sl|
+              if data.has_key?(sl)
+                sl_data = data.delete(sl)
+                link_data[singular_link] = {:linkage => {:type => singular_link.to_s, :id => sl_data}}
+                converted = true
+              end
+            end
+            next if converted
+          end
+        end
+
+        if links.has_key?(:many)
+          links[:many].each do |multiple_link|
+            converted = false
+            ml_type = Flapjack::Diner::Resources::Links::TYPES[multiple_link]
+            [multiple_link, multiple_link.to_s].each do |ml|
+              if data.has_key?(ml)
+                ml_data = data.delete(ml)
+                link_data[multiple_link] = {:linkage => ml_data.map {|id|
+                  {:type => ml_type, :id => id}}
+                }
+                converted = true
+              end
+            end
+            next if converted
+          end
+        end
+
+        data[:links] = link_data unless link_data.empty?
+      end
+
       def perform_post(type, path, data = {})
         @last_error = nil
         @context = nil
+        links = Flapjack::Diner::Resources::Links::ASSOCIATIONS[type]
+        type  = Flapjack::Diner::Resources::Links::TYPES[type]
         jsonapi_ext = ""
         case data
         when Array
-          data.each {|d| d[:type] = type}
+          data.each do |d|
+            d[:type] = type
+            populate_link_data(d, links) unless links.nil?
+          end
           jsonapi_ext = "; ext=bulk"
         when Hash
           data[:type] = type
+          populate_link_data(data, links) unless links.nil?
         end
         req_uri = build_uri(path)
         log_request('POST', req_uri, :data => data)
+
         # TODO send current character encoding in content-type ?
         opts = {:body => prepare_nested_query(:data => data).to_json,
                 :headers => {'Content-Type' => "application/vnd.api+json#{jsonapi_ext}"}}
@@ -84,6 +128,8 @@ module Flapjack
       def perform_patch(type, path, data = nil)
         @last_error = nil
         @context = nil
+        links = Flapjack::Diner::Resources::Links::ASSOCIATIONS[type]
+        type = Flapjack::Diner::Resources::Links::TYPES[type]
 
         req_uri = nil
 
@@ -92,12 +138,14 @@ module Flapjack
         when Hash
           raise "Update data does not contain :id" unless data[:id]
           data[:type] = type
+          populate_link_data(data, links) unless links.nil?
           ids = [data[:id]]
           req_uri = build_uri(path, ids)
         when Array
           ids = []
           data.each do |d|
             d[:type] = type
+            populate_link_data(d, links) unless links.nil?
             d_id = d[:id]
             ids << d_id unless d_id.nil? || d_id.empty?
           end
@@ -120,7 +168,6 @@ module Flapjack
       def perform_patch_links(type, path, single, *ids)
         @last_error = nil
         @context = nil
-
         data = if single
           raise "Must provide one ID for a singular link" unless ids.size == 1
           [nil].eql?(ids) ? nil : {:type => type, :id => ids.first}
@@ -139,6 +186,8 @@ module Flapjack
       def perform_delete(type, path, *ids)
         @last_error = nil
         @context = nil
+        type = Flapjack::Diner::Resources::Links::TYPES[type]
+
         req_uri = build_uri(path, ids)
         opts = if ids.size == 1
                  {}

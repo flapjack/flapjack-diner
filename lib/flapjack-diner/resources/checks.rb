@@ -15,8 +15,11 @@ module Flapjack
             validate :query => :id, :as => :uuid
             validate :query => :name, :as => [:required, :string]
             validate :query => :enabled, :as => :boolean
+            validate :query => [:scheduled_maintenances,
+              :unscheduled_maintenances], :as => :multiple_link_uuid
+            validate :query => :tags, :as => :multiple_link
           end
-          perform_post('check', '/checks', data)
+          perform_post(:checks, '/checks', data)
         end
 
         def checks(*args)
@@ -41,11 +44,18 @@ module Flapjack
           validate_params(data) do
             validate :query => :name,                  :as => :string
             validate :query => :enabled,               :as => :boolean
+            validate :query => [:scheduled_maintenances,
+              :unscheduled_maintenances], :as => :multiple_link_uuid
+            validate :query => :tags, :as => :multiple_link
           end
-          perform_patch('check', "/checks", data)
+          perform_patch(:checks, "/checks", data)
         end
 
-        # TODO should allow DELETE when API does
+        def delete_checks(*ids)
+          raise "'delete_checks' requires at least one check id " \
+                'parameter' if ids.nil? || ids.empty?
+          perform_delete(:checks, '/checks', *ids)
+        end
       end
     end
   end

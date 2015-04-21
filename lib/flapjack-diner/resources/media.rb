@@ -17,9 +17,10 @@ module Flapjack
               :as => [:required, :string]
             validate :query => [:interval, :rollup_threshold],
                      :as => [:required, :integer]
-
+            validate :query => :contact, :as => :singular_link_uuid
+            validate :query => :rules, :as => :multiple_link_uuid
           end
-          perform_post('medium', "/media", data)
+          perform_post(:media, "/media", data)
         end
 
         def media(*args)
@@ -38,14 +39,16 @@ module Flapjack
             validate :query => [:address, :transport], :as => :string
             validate :query => [:interval, :rollup_threshold],
                      :as => :integer
+            validate :query => :contact, :as => :singular_link_uuid
+            validate :query => :rules, :as => :multiple_link_uuid
           end
-          perform_patch('medium', "/media", data)
+          perform_patch(:media, "/media", data)
         end
 
         def delete_media(*ids)
           raise "'delete_media' requires at least one medium id " \
                 'parameter' if ids.nil? || ids.empty?
-          perform_delete('medium', '/media', *ids)
+          perform_delete(:media, '/media', *ids)
         end
 
       end

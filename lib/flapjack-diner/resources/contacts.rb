@@ -15,8 +15,9 @@ module Flapjack
             validate :query => :id, :as => :uuid
             validate :query => :name, :as => [:required, :string]
             validate :query => :timezone, :as => :string
+            validate :query => [:media, :rules], :as => :multiple_link_uuid
           end
-          perform_post('contact', '/contacts', data)
+          perform_post(:contacts, '/contacts', data)
         end
 
         def contacts(*args)
@@ -33,14 +34,15 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => [:name, :timezone], :as => :string
+            validate :query => [:media, :rules], :as => :multiple_link_uuid
           end
-          perform_patch('contact', "/contacts", data)
+          perform_patch(:contacts, "/contacts", data)
         end
 
         def delete_contacts(*ids)
           raise "'delete_contacts' requires at least one contact id " \
                 'parameter' if ids.nil? || ids.empty?
-          perform_delete('contact', '/contacts', *ids)
+          perform_delete(:contacts, '/contacts', *ids)
         end
 
       end

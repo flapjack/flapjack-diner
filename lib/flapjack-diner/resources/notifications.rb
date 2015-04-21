@@ -17,7 +17,7 @@ module Flapjack
             validate_params(data) do
               validate :query => :summary, :as => :string
             end
-            perform_post('test_notification',
+            perform_post(:test_notifications,
               "/test_notifications/#{resource_type}/#{ids.first}", data)
           end
         end
