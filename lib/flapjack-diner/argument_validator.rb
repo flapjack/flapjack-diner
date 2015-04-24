@@ -34,7 +34,7 @@ module Flapjack
     def uuid(*elements)
       elements.each do |element|
         target = @query[element]
-        next if target.nil? || (target =~ /^#{Flapjack::UUID_RE}$/i)
+        next if target.nil? || (target =~ /^#{Flapjack::Diner::UUID_RE}$/i)
         @errors << "'#{target}' must be a RFC 4122-compliant UUID."
       end
     end
@@ -87,9 +87,9 @@ module Flapjack
     def uuid_or_array_of_uuids(*elements)
       elements.each do |element|
         target = @query[element]
-        next if target.nil? || (target.is_a?(String) && (target =~ /^#{Flapjack::UUID_RE}$/i)) ||
+        next if target.nil? || (target.is_a?(String) && (target =~ /^#{Flapjack::Diner::UUID_RE}$/i)) ||
          (target.is_a?(Array) && !target.empty? &&
-          target.all? {|t| t.is_a?(String) && (t =~ /^#{Flapjack::UUID_RE}$/i)})
+          target.all? {|t| t.is_a?(String) && (t =~ /^#{Flapjack::Diner::UUID_RE}$/i)})
         @errors << "'#{target}' must be a RFC 4122-compliant UUID, or an Array of RFC 4122-compliant UUIDs."
       end
     end
@@ -107,7 +107,7 @@ module Flapjack
       elements.each do |element|
         target = @query[element]
         next if target.nil? || (target.is_a?(String) &&
-          (target =~ /^#{Flapjack::UUID_RE}$/i))
+          (target =~ /^#{Flapjack::Diner::UUID_RE}$/i))
         @errors << "'#{target}' association must be a RFC 4122-compliant UUID."
       end
     end
@@ -125,7 +125,7 @@ module Flapjack
       elements.each do |element|
         target = @query[element]
         next if target.nil? || (target.is_a?(Array) &&
-          target.all? {|t| t =~ /^#{Flapjack::UUID_RE}$/i })
+          target.all? {|t| t =~ /^#{Flapjack::Diner::UUID_RE}$/i })
         @errors << "'#{target}' association must be an Array of RFC 4122-compliant UUIDs."
       end
     end

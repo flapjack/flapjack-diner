@@ -16,13 +16,12 @@ require 'flapjack-diner/tools'
 
 module Flapjack
 
-  UUID_RE = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-
   # Top level module for Flapjack::Diner API consumer.
   module Diner
     include HTTParty
-
     format :json
+
+    UUID_RE = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 
     class << self
       attr_accessor :logger, :return_keys_as_strings

@@ -309,7 +309,7 @@ module Flapjack
       def unwrap_uuids(*args)
         ids = args.select {|a| a.is_a?(String) || a.is_a?(Integer) }
         raise "IDs must be RFC 4122-compliant UUIDs" unless ids.all? {|id|
-          id =~ /^#{Flapjack::UUID_RE}$/i
+          id =~ /^#{Flapjack::Diner::UUID_RE}$/i
         }
         ids
       end
