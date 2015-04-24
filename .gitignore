@@ -19,3 +19,4 @@ tmp
 .rbenv-version
 .ruby-version
 .rvmrc
+spec/pacts
