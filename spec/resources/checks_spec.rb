@@ -11,7 +11,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
   context 'create' do
 
     it "submits a POST request for a check" do
-      flapjack.given("no check exists").
+      flapjack.given("no data exists").
         upon_receiving("a POST request with one check").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -29,7 +29,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       checks_data = [check_data.merge(:type => 'check'),
                      check_2_data.merge(:type => 'check')]
 
-      flapjack.given("no check exists").
+      flapjack.given("no data exists").
         upon_receiving("a POST request with two checks").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
@@ -69,7 +69,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     context 'GET all checks' do
 
       it "has no data" do
-        flapjack.given("no check exists").
+        flapjack.given("no data exists").
           upon_receiving("a GET request for all checks").
           with(:method => :get, :path => '/checks').
           will_respond_with(
@@ -114,7 +114,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       end
 
       it 'has no data' do
-        flapjack.given("no check exists").
+        flapjack.given("no data exists").
           upon_receiving("a GET request for two checks").
           with(:method => :get, :path => "/checks",
                :query => "filter%5B%5D=id%3A#{check_data[:id]}%7C#{check_2_data[:id]}").
@@ -149,7 +149,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       end
 
       it "can't find check" do
-        flapjack.given("no check exists").
+        flapjack.given("no data exists").
           upon_receiving("a GET request for checks by name").
           with(:method => :get, :path => "/checks",
                :query => "filter%5B%5D=name%3A#{name}").
@@ -181,7 +181,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       end
 
       it "can't find check" do
-        flapjack.given("no check exists").
+        flapjack.given("no data exists").
           upon_receiving("a GET request for a check").
           with(:method => :get, :path => "/checks/#{check_data[:id]}").
           will_respond_with(
@@ -237,7 +237,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     end
 
     it "can't find the check to update" do
-      flapjack.given("no check exists").
+      flapjack.given("no data exists").
         upon_receiving("a PATCH request for a single check").
         with(:method => :patch,
              :path => "/checks/#{check_data[:id]}",

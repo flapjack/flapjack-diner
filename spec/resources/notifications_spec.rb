@@ -20,6 +20,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
                :body => {:data => notification_data.merge(:type => 'test_notification')}).
           will_respond_with(
             :status => 201,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:data => notification_data.merge(:type => 'test_notification')})
 
         result = Flapjack::Diner.create_test_notifications_checks(check_data[:id], notification_data)
@@ -35,6 +36,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
                :body => {:data => notification_data.merge(:type => 'test_notification')}).
           will_respond_with(
             :status => 201,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:data => notification_data.merge(:type => 'test_notification')})
 
         result = Flapjack::Diner.create_test_notifications_tags(tag_data[:name], notification_data)
@@ -51,6 +53,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
                                    notification_2_data.merge(:type => 'test_notification')]}).
           will_respond_with(
             :status => 201,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:data => [notification_data.merge(:type => 'test_notification'),
                                 notification_2_data.merge(:type => 'test_notification')]})
 
@@ -69,6 +72,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
                                    notification_2_data.merge(:type => 'test_notification')]}).
           will_respond_with(
             :status => 201,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:data => [notification_data.merge(:type => 'test_notification'),
                                 notification_2_data.merge(:type => 'test_notification')]})
 
@@ -79,13 +83,14 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
       end
 
       it "can't find the check to create notifications for" do
-        flapjack.given("no check exists").
-          upon_receiving("a POST request with one test notification").
+        flapjack.given("no data exists").
+          upon_receiving("a POST request with one test notification for a check").
           with(:method => :post, :path => "/test_notifications/checks/#{check_data[:id]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
                :body => {:data => notification_data.merge(:type => 'test_notification')}).
         will_respond_with(
           :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
               :detail => "could not find Check record, id: '#{check_data[:id]}'"
@@ -99,13 +104,14 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
       end
 
       it "can't find the tag to create notifications for" do
-        flapjack.given("no tag exists").
-          upon_receiving("a POST request with one test notification").
+        flapjack.given("no data exists").
+          upon_receiving("a POST request with one test notification for a tag").
           with(:method => :post, :path => "/test_notifications/tags/#{tag_data[:name]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
                :body => {:data => notification_data.merge(:type => 'test_notification')}).
         will_respond_with(
           :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
               :detail => "could not find Tag record, id: '#{tag_data[:name]}'"

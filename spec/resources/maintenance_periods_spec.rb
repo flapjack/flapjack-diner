@@ -17,7 +17,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
     context 'scheduled maintenance periods' do
 
       it "creates a scheduled maintenance period" do
-        flapjack.given("no scheduled maintenance period exists").
+        flapjack.given("no data exists").
           upon_receiving("a POST request with one scheduled maintenance period").
           with(:method => :post,
                :path => '/scheduled_maintenances',
@@ -35,7 +35,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       it "creates several scheduled maintenance periods" do
         scheduled_maintenances_data = [scheduled_maintenance_data.merge(:type => 'scheduled_maintenance'),
                                        scheduled_maintenance_2_data.merge(:type => 'scheduled_maintenance')]
-        flapjack.given("no scheduled maintenance period exists").
+        flapjack.given("no data exists").
           upon_receiving("a POST request with two scheduled maintenance periods").
           with(:method => :post,
                :path => '/scheduled_maintenances',
@@ -56,7 +56,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
     context 'unscheduled maintenance periods' do
 
       it "creates an unscheduled maintenance period" do
-        flapjack.given("no unscheduled maintenance period exists").
+        flapjack.given("no data exists").
           upon_receiving("a POST request with one unscheduled maintenance period").
           with(:method => :post,
                :path => '/unscheduled_maintenances',
@@ -74,7 +74,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       it "creates several unscheduled maintenance periods" do
         unscheduled_maintenances_data = [unscheduled_maintenance_data.merge(:type => 'unscheduled_maintenance'),
                                          unscheduled_maintenance_2_data.merge(:type => 'unscheduled_maintenance')]
-        flapjack.given("no unscheduled maintenance period exists").
+        flapjack.given("no data exists").
           upon_receiving("a POST request with two unscheduled maintenance periods").
           with(:method => :post,
                :path => '/unscheduled_maintenances',
@@ -130,7 +130,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
     end
 
     it "can't find the unscheduled maintenance period to update" do
-      flapjack.given("no unscheduled maintenance period exists").
+      flapjack.given("no data exists").
         upon_receiving("a PATCH request for a single unscheduled maintenance period").
         with(:method => :patch,
              :path => "/unscheduled_maintenances/#{unscheduled_maintenance_data[:id]}",
@@ -189,7 +189,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
     end
 
     it "can't find the scheduled maintenance period to delete" do
-      flapjack.given("no scheduled maintenance period exists").
+      flapjack.given("no data exists").
         upon_receiving("a DELETE request for a scheduled maintenance period").
         with(:method => :delete,
              :path => "/scheduled_maintenances/#{scheduled_maintenance_data[:id]}",

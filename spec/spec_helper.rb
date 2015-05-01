@@ -25,6 +25,8 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
+ISO8601_RE = %r{^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$}
+
 Pact.service_consumer 'flapjack-diner' do
 
   has_pact_with "flapjack" do

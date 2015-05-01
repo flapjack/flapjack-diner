@@ -23,8 +23,8 @@ module Flapjack
         def contacts(*args)
           ids, data = unwrap_uuids(*args), unwrap_data(*args)
           validate_params(data) do
+            validate :query => [:fields, :sort, :include], :as => :string_or_array_of_strings
             validate :query => :filter, :as => :hash
-            validate :query => :include, :as => :string_or_array_of_strings
             validate :query => [:page, :per_page], :as => :positive_integer
           end
           perform_get('/contacts', ids, data)

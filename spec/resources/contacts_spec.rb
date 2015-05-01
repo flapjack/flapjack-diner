@@ -11,7 +11,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
   context 'create' do
 
     it "submits a POST request for a contact" do
-      flapjack.given("no contact exists").
+      flapjack.given("no data exists").
         upon_receiving("a POST request with one contact").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -30,7 +30,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       contacts_data = [contact_data.merge(:type => 'contact'),
                        contact_2_data.merge(:type => 'contact')]
 
-      flapjack.given("no contact exists").
+      flapjack.given("no data exists").
         upon_receiving("a POST request with two contacts").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
@@ -87,7 +87,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       end
 
       it "has no data" do
-        flapjack.given("no contact exists").
+        flapjack.given("no data exists").
           upon_receiving("a GET request for all contacts").
           with(:method => :get, :path => '/contacts').
           will_respond_with(
@@ -120,7 +120,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
       end
 
       it "can't find the contact" do
-        flapjack.given("no contact exists").
+        flapjack.given("no data exists").
           upon_receiving("a GET request for a single contact").
           with(:method => :get, :path => "/contacts/#{contact_data[:id]}").
           will_respond_with(
@@ -222,7 +222,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     end
 
     it "can't find the contact to update" do
-      flapjack.given("no contact exists").
+      flapjack.given("no data exists").
         upon_receiving("a PATCH request for a single contact").
         with(:method => :patch,
              :path => "/contacts/#{contact_data[:id]}",
@@ -277,7 +277,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     end
 
     it "can't find the contact to delete" do
-      flapjack.given("no contact exists").
+      flapjack.given("no data exists").
         upon_receiving("a DELETE request for a single contact").
         with(:method => :delete,
              :path => "/contacts/#{contact_data[:id]}",

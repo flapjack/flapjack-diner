@@ -11,7 +11,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
   context 'create' do
 
     it "submits a POST request for a rule" do
-      flapjack.given("no rule exists").
+      flapjack.given("no data exists").
         upon_receiving("a POST request with one rule").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
@@ -30,7 +30,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     it "submits a POST request for several rules" do
       rules_data = [rule_data.merge(:type => 'rule'), rule_2_data.merge(:type => 'rule')]
 
-      flapjack.given("no rule exists").
+      flapjack.given("no data exists").
         upon_receiving("a POST request with two rules").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
@@ -98,7 +98,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     end
 
     it "can't find the rule to read" do
-      flapjack.given("no rule exists").
+      flapjack.given("no data exists").
         upon_receiving("a GET request for a single rule").
         with(:method => :get, :path => "/rules/#{rule_data[:id]}").
         will_respond_with(
@@ -154,7 +154,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
   #   end
 
   #   it "can't find the rule to update" do
-  #     flapjack.given("no rule exists").
+  #     flapjack.given("no data exists").
   #       upon_receiving("a PUT request for a single rule").
   #       with(:method => :put,
   #            :path => "/rules/#{rule_data[:id]}",
@@ -209,7 +209,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
     end
 
     it "can't find the rule to delete" do
-      flapjack.given("no rule exists").
+      flapjack.given("no data exists").
         upon_receiving("a DELETE request for a single rule").
         with(:method => :delete,
              :path => "/rules/#{rule_data[:id]}",

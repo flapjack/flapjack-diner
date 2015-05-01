@@ -11,7 +11,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
   context 'create' do
 
     it "submits a POST request for a medium" do
-      flapjack.given("no medium exists").
+      flapjack.given("no data exists").
         upon_receiving("a POST request with one medium").
         with(:method => :post,
              :path => '/media',
@@ -31,7 +31,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
       media_data = [sms_data.merge(:type => 'medium'),
                     email_data.merge(:type => 'medium')]
 
-      flapjack.given("no medium exists").
+      flapjack.given("no data exists").
         upon_receiving("a POST request with two media").
         with(:method => :post,
              :path => '/media',
@@ -135,7 +135,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "can't find the medium to update" do
-      flapjack.given("no medium exists").
+      flapjack.given("no data exists").
         upon_receiving("a PATCH request for a single medium").
         with(:method => :patch,
              :path => "/media/#{email_data[:id]}",
@@ -192,7 +192,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
     end
 
     it "can't find the contact with media to delete" do
-      flapjack.given("no medium exists").
+      flapjack.given("no data exists").
         upon_receiving("a DELETE request for one medium").
         with(:method => :delete,
              :path => "/media/#{sms_data[:id]}",
