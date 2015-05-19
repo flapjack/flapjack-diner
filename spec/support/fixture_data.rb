@@ -2,6 +2,11 @@ module FixtureData
 
   # Not RSpec shared context, so it can be used in the pact provider too
 
+  def default_tear_down
+    Flapjack.logger.messages.clear
+    Flapjack.redis.flushdb
+  end
+
   def time
     @time ||= Time.now
   end
@@ -176,6 +181,19 @@ module FixtureData
       :failure_events => 0,
       :action_events  => 0,
       :invalid_events => 0
+    }
+  end
+
+  def status_data
+    @status_data ||= {
+      :id => 'b25335ca-3e80-42e8-91b3-07026066b515',
+      :last_update          => time.iso8601,
+      :last_change          => time.iso8601,
+      :last_problem         => (time - 20).iso8601,
+      :last_recovery        => time.iso8601,
+      :last_acknowledgement => (time - 10).iso8601,
+      :summary              => 'all good',
+      :details              => "trust me, it's ok"
     }
   end
 

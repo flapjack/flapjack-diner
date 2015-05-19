@@ -21,7 +21,7 @@ describe Flapjack::Diner::Resources::Metrics, :pact => true do
         },
         :event_queue_length => 0,
         :check_freshness    => {:"0" => 0, :"60" => 0, :"300" => 0, :"900" => 0, :"3600" => 0},
-        :check_counts       => {:all => 0, :failing => 0}
+        :check_counts       => {:all => 0, :enabled => 0, :failing => 0}
       }
 
       flapjack.given("no data exists").

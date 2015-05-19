@@ -26,8 +26,8 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :uuid
-            validate :query => :end_time,   :as => [:required, :time]
-            validate :query => :summary,    :as => :string
+            validate :query => :end_time, :as => [:required, :time]
+            validate :query => :summary,  :as => :string
             validate :query => :check, :as => :singular_link_uuid
           end
           perform_post(:unscheduled_maintenances, '/unscheduled_maintenances',

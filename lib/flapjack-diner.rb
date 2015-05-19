@@ -5,7 +5,7 @@ require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
 
 %w(contacts media checks maintenance_periods metrics notifications reports
-   rules statistics tags links).each do |resource|
+   rules statistics states tags links).each do |resource|
   require "flapjack-diner/resources/#{resource}"
 end
 
@@ -35,6 +35,7 @@ module Flapjack
       include Flapjack::Diner::Resources::Reports
       include Flapjack::Diner::Resources::Rules
       include Flapjack::Diner::Resources::Statistics
+      include Flapjack::Diner::Resources::States
       include Flapjack::Diner::Resources::Tags
       include Flapjack::Diner::Resources::Links
 
