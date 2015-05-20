@@ -15,41 +15,121 @@ module Flapjack
                  :media => 'medium',
                  :rules => 'rule',
                  :scheduled_maintenances   => 'scheduled_maintenance',
+                 :states => 'state',
                  :tags => 'tag',
                  :test_notifications => 'test_notification',
                  :unscheduled_maintenances => 'unscheduled_maintenance'}
 
+        # copied from flapjack data models' "jsonapi_associations" class methods
         ASSOCIATIONS = {
-          :checks                   => {:many   => [:scheduled_maintenances,
-                                                    :tags,
-                                                    :unscheduled_maintenances]},
-          :contacts                 => {:many   => [:media, :rules]},
-          :media                    => {:one    => [:contact],
-                                        :many   => [:rules]},
-          :rules                    => {:one    => [:contact],
-                                        :many   => [:media, :tags]},
-          :scheduled_maintenances   => {:one    => [:check]},
-          :tags                     => {:many   => [:checks, :rules]},
-          :unscheduled_maintenances => {:one    => [:check]},
+          :checks => {
+            :read_only  => {
+              :singular => [:current_state],
+              :multiple => [:alerting_media, :contacts, :latest_notifications,
+                            :states]
+            },
+            :read_write => {
+              :singular => [],
+              :multiple => [:scheduled_maintenances, :tags,
+                            :unscheduled_maintenances]
+            }
+          },
+          :contacts =>         {
+            :read_only => {
+              :singular => [],
+              :multiple => [:checks]
+            },
+            :read_write => {
+              :singular => [],
+              :multiple => [:media, :rules]
+            }
+          },
+          :media => {
+            :read_only => {
+              :singular => [],
+              :multiple => [:alerting_checks]
+            },
+            :read_write => {
+              :singular => [:contact],
+              :multiple => [:rules]
+            }
+          },
+          :rules => {
+            :read_only => {
+              :singular => [],
+              :multiple => []
+            },
+            :read_write => {
+              :singular => [:contact],
+              :multiple => [:media, :tags]
+            }
+          },
+          :scheduled_maintenances => {
+            :read_only => {
+              :singular => [],
+              :multiple => []
+            },
+            :read_write => {
+              :singular => [:check],
+              :multiple => []
+            }
+          },
+          :states => {
+            :read_only => {
+              :singular => [:check],
+              :multiple => []
+            },
+            :read_write => {
+              :singular => [],
+              :multiple => []
+            }
+          },
+          :tags => {
+            :read_only => {
+              :singular => [],
+              :multiple => []
+            },
+            :read_write => {
+              :singular => [],
+              :multiple => [:checks, :rules]
+            }
+          },
+          :unscheduled_maintenances => {
+            :read_only => {
+              :singular => [],
+              :multiple => []
+            },
+            :read_write => {
+              :singular => [:check],
+              :multiple => []
+            }
+          }
+
         }
 
         ASSOCIATIONS.each_pair do |resource, mappings|
 
-          singular = mappings[:one]  || []
-          multiple = mappings[:many] || []
+          read_only_singular  = mappings[:read_only][:singular]
+          read_only_multiple  = mappings[:read_only][:multiple]
+
+          read_write_singular = mappings[:read_write][:singular]
+          read_write_multiple = mappings[:read_write][:multiple]
 
           resource_id_validator  = :tags.eql?(resource) ? :string : :uuid
 
-          (singular + multiple).each do |linked|
+          (read_only_singular + read_write_singular +
+           read_only_multiple + read_write_multiple).sort.each do |linked|
+
             define_method("#{resource}_link_#{linked}") do |resource_id|
               validate_params(:resource_id => resource_id) do
                 validate :query => :resource_id, :as => resource_id_validator
               end
               perform_get("/#{resource}/#{resource_id}/#{linked}")
             end
+
           end
 
-          singular.each do |linked|
+          read_write_singular.each do |linked|
             linked_id_validator  = :tags.eql?(linked) ? :string : :uuid
 
             define_method("create_#{resource}_link_#{linked}") do |resource_id, linked_id|
@@ -80,7 +160,7 @@ module Flapjack
             end
           end
 
-          multiple.each do |linked|
+          read_write_multiple.each do |linked|
             type = TYPES[linked] || linked
             linked_ids_validator = :tags.eql?(linked) ? :string_or_array_of_strings : :uuid_or_array_of_uuids
 

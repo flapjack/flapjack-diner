@@ -54,8 +54,8 @@ module Flapjack
       def populate_link_data(data, links)
         link_data = {}
 
-        if links.has_key?(:one)
-          links[:one].each do |singular_link|
+        if links.has_key?(:singular)
+          links[:singular].each do |singular_link|
             converted = false
             [singular_link, singular_link.to_s].each do |sl|
               if data.has_key?(sl)
@@ -68,8 +68,8 @@ module Flapjack
           end
         end
 
-        if links.has_key?(:many)
-          links[:many].each do |multiple_link|
+        if links.has_key?(:multiple)
+          links[:multiple].each do |multiple_link|
             converted = false
             ml_type = Flapjack::Diner::Resources::Links::TYPES[multiple_link]
             [multiple_link, multiple_link.to_s].each do |ml|
@@ -98,12 +98,12 @@ module Flapjack
         when Array
           data.each do |d|
             d[:type] = type
-            populate_link_data(d, links) unless links.nil?
+            populate_link_data(d, links[:read_write]) unless links.nil?
           end
           jsonapi_ext = "; ext=bulk"
         when Hash
           data[:type] = type
-          populate_link_data(data, links) unless links.nil?
+          populate_link_data(data, links[:read_write]) unless links.nil?
         end
         req_uri = build_uri(path)
         log_request('POST', req_uri, :data => data)
@@ -138,14 +138,14 @@ module Flapjack
         when Hash
           raise "Update data does not contain :id" unless data[:id]
           data[:type] = type
-          populate_link_data(data, links) unless links.nil?
+          populate_link_data(data, links[:read_write]) unless links.nil?
           ids = [data[:id]]
           req_uri = build_uri(path, ids)
         when Array
           ids = []
           data.each do |d|
             d[:type] = type
-            populate_link_data(d, links) unless links.nil?
+            populate_link_data(d, links[:read_write]) unless links.nil?
             d_id = d[:id]
             ids << d_id unless d_id.nil? || d_id.empty?
           end
