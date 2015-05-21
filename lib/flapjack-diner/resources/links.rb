@@ -20,13 +20,14 @@ module Flapjack
                  :test_notifications => 'test_notification',
                  :unscheduled_maintenances => 'unscheduled_maintenance'}
 
-        # copied from flapjack data models' "jsonapi_associations" class methods
+        # copied from flapjack data models' "jsonapi_associations" &
+        # "jsonapi_linked_methods" class methods
         ASSOCIATIONS = {
           :checks => {
             :read_only  => {
-              :singular => [:current_state],
-              :multiple => [:alerting_media, :contacts, :latest_notifications,
-                            :states]
+              :singular => [:current_state, :current_unscheduled_maintenance],
+              :multiple => [:alerting_media, :contacts, :current_scheduled_maintenances,
+                            :latest_notifications, :states]
             },
             :read_write => {
               :singular => [],
