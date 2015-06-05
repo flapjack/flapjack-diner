@@ -121,11 +121,16 @@ module Flapjack
           (read_only_singular + read_write_singular +
            read_only_multiple + read_write_multiple).sort.each do |linked|
 
-            define_method("#{resource}_link_#{linked}") do |resource_id|
+            define_method("#{resource}_link_#{linked}") do |resource_id, opts = {}|
               validate_params(:resource_id => resource_id) do
                 validate :query => :resource_id, :as => resource_id_validator
               end
-              perform_get("/#{resource}/#{resource_id}/#{linked}")
+              validate_params(opts) do
+                validate :query => [:fields, :sort, :include], :as => :string_or_array_of_strings
+                validate :query => :filter, :as => :hash
+                validate :query => [:page, :per_page], :as => :positive_integer
+              end
+              perform_get("/#{resource}/#{resource_id}/#{linked}", opts)
             end
 
           end
