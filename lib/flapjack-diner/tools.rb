@@ -235,46 +235,58 @@ module Flapjack
                  end
         strify = return_keys_as_strings.is_a?(TrueClass)
         if [200, 201].include?(response.code)
-          return handle_response_data(parsed, 'data', strify)
+          return handle_response_data(parsed, strify)
         end
-        @last_error = handle_response_data(parsed, 'errors', strify)
+        @last_error = handle_response_errors(parsed, strify)
         nil
       end
 
-      def handle_response_data(parsed, key, strify)
-        return parsed if parsed.nil? || !parsed.is_a?(Hash) ||
-          !parsed.has_key?(key)
-        @context = {}
-        (['included', 'relationships', 'meta'] & parsed.keys).each do |k|
-          c = parsed[k]
-          @context[k.to_sym] = (strify ? c : symbolize(c))
-        end
-
-        data = parsed[key]
-        unless 'data'.eql?(key)
-          return(strify ? data : symbolize(data))
-        end
+      def flatten_jsonapi_data(data, opts = {})
+        skip = opts[:allow_relationships] ? ['attributes'] : ['attributes', 'relationships']
         ret = nil
         case data
         when Array
           ret = data.inject([]) do |memo, d|
             attrs = d['attributes'] || {}
-            ['id', 'type'].each do |k|
-              next unless d.has_key?(k)
-              attrs.update(k => d[k])
+            d.each_pair do |k, v|
+              next if skip.include?(k)
+              attrs.update(k => v)
             end
             memo += [attrs]
             memo
           end
         when Hash
-          ret = parsed[key]['attributes'] || {}
-          ['id', 'type'].each do |k|
-            next unless parsed[key].has_key?(k)
-            ret.update(k => parsed[key][k])
+          ret = data['attributes'] || {}
+          data.each_pair do |k, v|
+            next if skip.include?(k)
+            ret.update(k => v)
           end
         else
           ret = data
         end
+        ret
+      end
+
+      def handle_response_errors(parsed, strify)
+        return parsed if parsed.nil? || !parsed.is_a?(Hash) ||
+         !parsed.has_key?('errors')
+        errs = parsed['errors']
+        strify ? errs : symbolize(errs)
+      end
+
+      def handle_response_data(parsed, strify)
+        return parsed if parsed.nil? || !parsed.is_a?(Hash) ||
+          !parsed.has_key?('data')
+        @context = {}
+        if parsed.has_key?('included')
+          incl = flatten_jsonapi_data(parsed['included'], :allow_relationships => true)
+          @context[:included] = (strify ? incl : symbolize(incl))
+        end
+        (['relationships', 'meta'] & parsed.keys).each do |k|
+          c = parsed[k]
+          @context[k.to_sym] = (strify ? c : symbolize(c))
+        end
+        ret = flatten_jsonapi_data(parsed['data'], :allow_relationships => false)
         strify ? ret : symbolize(ret)
       end
 
