@@ -130,7 +130,7 @@ module Flapjack
                 validate :query => :filter, :as => :hash
                 validate :query => [:page, :per_page], :as => :positive_integer
               end
-              perform_get("/#{resource}/#{resource_id}/#{linked}", opts)
+              perform_get("/#{resource}/#{resource_id}/#{linked}", [], opts)
             end
 
           end
