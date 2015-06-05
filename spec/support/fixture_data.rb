@@ -402,7 +402,7 @@ module FixtureData
 
   def metrics_data
     @metrics_data ||= {
-      :total_keys         => 0,
+      # :total_keys         => 0,  # test behaviour is inconsistent
       :processed_events   => {
         :all_events     => 0,
         :ok_events      => 0,
