@@ -25,7 +25,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           :body => {:data => resp_data})
 
       result = Flapjack::Diner.create_checks(check_data)
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a POST request for several checks" do
@@ -46,7 +46,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           :body => {'data' => resp_data})
 
       result = Flapjack::Diner.create_checks(check_data, check_2_data)
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     # TODO fails to create with invalid data
@@ -72,7 +72,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           :body => {:data => resp_data})
 
       result = Flapjack::Diner.create_checks(check_data.merge(:tags => [tag_data[:name]]))
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
   end
@@ -106,7 +106,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
             :body => {:data => resp_data} )
 
         result = Flapjack::Diner.checks
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
     end
@@ -129,7 +129,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
             :body => {:data => resp_data})
 
         result = Flapjack::Diner.checks(check_data[:id], check_2_data[:id])
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
       it 'has no data' do
@@ -166,7 +166,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
             :body => {:data => resp_data} )
 
         result = Flapjack::Diner.checks(:filter => {:name => check_data[:name]})
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
       it "can't find check" do
@@ -200,7 +200,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
             :body => {:data => resp_data} )
 
         result = Flapjack::Diner.checks(check_data[:id])
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
       it "can't find check" do

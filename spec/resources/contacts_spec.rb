@@ -26,7 +26,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
       result = Flapjack::Diner.create_contacts(contact_data)
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a POST request for several contacts" do
@@ -48,7 +48,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
       result = Flapjack::Diner.create_contacts(contact_data, contact_2_data)
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a POST request but a contact with that id exists" do
@@ -93,7 +93,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
         result = Flapjack::Diner.contacts
         expect(result).not_to be_nil
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
       it "has no data" do
@@ -128,7 +128,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
         result = Flapjack::Diner.contacts(contact_data[:id])
         expect(result).not_to be_nil
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
       it "can't find the contact" do
@@ -172,7 +172,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
         result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media')
         expect(result).not_to be_nil
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
         expect(Flapjack::Diner.context).to eq(:included => resp_included)
       end
 
@@ -200,7 +200,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
         result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media,rules')
         expect(result).not_to be_nil
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
         expect(Flapjack::Diner.context).to eq(:included => resp_included)
       end
 

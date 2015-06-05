@@ -32,7 +32,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
         result = Flapjack::Diner.create_scheduled_maintenances(scheduled_maintenance_data)
         expect(result).not_to be_nil
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
       it "creates several scheduled maintenance periods" do
@@ -56,7 +56,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
         result = Flapjack::Diner.create_scheduled_maintenances(scheduled_maintenance_data, scheduled_maintenance_2_data)
         expect(result).not_to be_nil
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
     end
@@ -79,7 +79,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
         result = Flapjack::Diner.create_unscheduled_maintenances(unscheduled_maintenance_data)
         expect(result).not_to be_nil
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
       it "creates several unscheduled maintenance periods" do
@@ -103,7 +103,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
         result = Flapjack::Diner.create_unscheduled_maintenances(unscheduled_maintenance_data,
                                                                  unscheduled_maintenance_2_data)
         expect(result).not_to be_nil
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
     end

@@ -21,7 +21,7 @@ describe Flapjack::Diner::Resources::Metrics, :pact => true do
           :body => {:data => resp_data} )
 
       result = Flapjack::Diner.metrics
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it 'gets a subset of metrics' do
@@ -38,7 +38,7 @@ describe Flapjack::Diner::Resources::Metrics, :pact => true do
           :body => {:data => resp_data} )
 
       result = Flapjack::Diner.metrics(:fields => ['total_keys', 'processed_events'])
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
   end
 

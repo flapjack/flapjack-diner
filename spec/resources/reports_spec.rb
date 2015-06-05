@@ -72,7 +72,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
           )
 
         result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym)
-        expect(result).to eq(report[:data])
+        expect(result).to eq(resultify(report[:data]))
       end
 
       it "submits a GET request for a #{report_type} report on one check" do
@@ -91,7 +91,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
           )
 
         result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym, check_data[:id])
-        expect(result).to eq(report[:data])
+        expect(result).to eq(resultify(report[:data]))
       end
 
       it "submits a GET request for a #{report_type} report on several checks" do
@@ -111,7 +111,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
           )
 
         result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym, check_data[:id], check_2_data[:id])
-        expect(result).to eq(report[:data])
+        expect(result).to eq(resultify(report[:data]))
       end
 
       it "submits a GET request for a #{report_type} report on a tag" do
@@ -130,7 +130,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
           )
 
         result = Flapjack::Diner.send("#{report_type}_reports_tags".to_sym, tag_data[:name])
-        expect(result).to eq(report[:data])
+        expect(result).to eq(resultify(report[:data]))
       end
 
       it "submits a time-limited GET request for a #{report_type} report on all checks" do
@@ -150,7 +150,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
 
         result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym,
           :start_time => start_time, :end_time => end_time)
-        expect(result).to eq(report[:data])
+        expect(result).to eq(resultify(report[:data]))
       end
 
       it "submits a time-limited GET request for a #{report_type} report on one check" do
@@ -171,7 +171,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
 
         result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym,
           check_data[:id], :start_time => start_time, :end_time => end_time)
-        expect(result).to eq(report[:data])
+        expect(result).to eq(resultify(report[:data]))
       end
 
       it "submits a time-limited GET request for a #{report_type} report on several checks" do
@@ -192,7 +192,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
         result = Flapjack::Diner.send("#{report_type}_reports_checks".to_sym,
           check_data[:id], check_2_data[:id],
           :start_time => start_time, :end_time => end_time)
-        expect(result).to eq(report[:data])
+        expect(result).to eq(resultify(report[:data]))
       end
 
       it "submits a time-limited GET request for a #{report_type} report on a tag" do
@@ -213,7 +213,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
 
         result = Flapjack::Diner.send("#{report_type}_reports_tags".to_sym,
           tag_data[:name], :start_time => start_time, :end_time => end_time)
-        expect(result).to eq(report[:data])
+        expect(result).to eq(resultify(report[:data]))
       end
 
     end

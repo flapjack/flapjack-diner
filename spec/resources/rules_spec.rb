@@ -27,7 +27,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
       result = Flapjack::Diner.create_rules(rule_data)
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a POST request for several rules" do
@@ -50,7 +50,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
       result = Flapjack::Diner.create_rules(rule_data, rule_2_data)
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     # TODO error due to invalid data
@@ -72,7 +72,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
       result = Flapjack::Diner.rules
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a GET request for one rule" do
@@ -89,7 +89,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
       result = Flapjack::Diner.rules(rule_data[:id])
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a GET request for several rules" do
@@ -111,7 +111,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
       result = Flapjack::Diner.rules(rule_data[:id], rule_2_data[:id])
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "can't find the rule to read" do

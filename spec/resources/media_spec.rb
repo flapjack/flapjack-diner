@@ -28,7 +28,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
       result = Flapjack::Diner.create_media(sms_data)
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a POST request for several media" do
@@ -51,7 +51,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
       result = Flapjack::Diner.create_media(email_data, sms_data)
       expect(result).not_to be_nil
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
   end
@@ -59,9 +59,13 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
   context 'read' do
 
     it "submits a GET request for all media" do
+      result_data = [
+        medium_json(email_data),
+        medium_json(sms_data)
+      ]
       resp_data = [
-        medium_json(email_data).merge(:relationships => medium_rel(email_data)),
-        medium_json(sms_data).merge(:relationships => medium_rel(sms_data))
+        result_data[0].merge(:relationships => medium_rel(email_data)),
+        result_data[1].merge(:relationships => medium_rel(sms_data))
       ]
 
       flapjack.given("two media exist").
@@ -74,7 +78,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
           :body => {:data => resp_data})
 
       result = Flapjack::Diner.media
-      expect(result).to contain_exactly(*resp_data)
+      expect(result).to contain_exactly(resultify(result_data[0]), resultify(result_data[1]))
     end
 
     it "submits a GET request for one medium" do
@@ -89,7 +93,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
           :body => {:data => resp_data} )
 
       result = Flapjack::Diner.media(sms_data[:id])
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a GET request for several media" do
@@ -108,7 +112,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
           :body => {:data => resp_data} )
 
       result = Flapjack::Diner.media(email_data[:id], sms_data[:id])
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
   end

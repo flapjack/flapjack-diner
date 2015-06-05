@@ -15,6 +15,32 @@ module FixtureData
     @time ||= Time.now
   end
 
+  def resultify(resp_data)
+    case resp_data
+    when Array
+      ret = resp_data.inject([]) do |memo, d|
+        attrs = d[:attributes] || {}
+        [:id, :type].each do |k|
+          next unless d.has_key?(k)
+          attrs.update(k => d[k])
+        end
+        memo += [attrs]
+        memo
+      end
+    when Hash
+      ret = resp_data[:attributes] || {}
+      [:id, :type].each do |k|
+        next unless resp_data.has_key?(k)
+        ret.update(k => resp_data[k])
+      end
+    end
+    ret
+  end
+
+  def contextify(resp_data)
+
+  end
+
   def check_data
     @check_data ||= {
      :id   => '1ed80833-6d28-4aba-8603-d81c249b8c23',

@@ -245,13 +245,37 @@ module Flapjack
         return parsed if parsed.nil? || !parsed.is_a?(Hash) ||
           !parsed.has_key?(key)
         @context = {}
-        (['included', 'links', 'meta'] & parsed.keys).each do |k|
+        (['included', 'relationships', 'meta'] & parsed.keys).each do |k|
           c = parsed[k]
           @context[k.to_sym] = (strify ? c : symbolize(c))
         end
-        parsed = parsed[key]
-        return parsed if strify
-        symbolize(parsed)
+
+        data = parsed[key]
+        unless 'data'.eql?(key)
+          return(strify ? data : symbolize(data))
+        end
+        ret = nil
+        case data
+        when Array
+          ret = data.inject([]) do |memo, d|
+            attrs = d['attributes'] || {}
+            ['id', 'type'].each do |k|
+              next unless d.has_key?(k)
+              attrs.update(k => d[k])
+            end
+            memo += [attrs]
+            memo
+          end
+        when Hash
+          ret = parsed[key]['attributes'] || {}
+          ['id', 'type'].each do |k|
+            next unless parsed[key].has_key?(k)
+            ret.update(k => parsed[key][k])
+          end
+        else
+          ret = data
+        end
+        strify ? ret : symbolize(ret)
       end
 
       def validate_params(query = {}, &validation)

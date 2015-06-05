@@ -27,7 +27,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
 
         result = Flapjack::Diner.create_test_notifications_checks(check_data[:id], notification_data)
         expect(result).not_to be_nil
-        expect(result).to eq(data)
+        expect(result).to eq(resultify(data))
       end
 
       it "submits a POST request for checks linked to a tag" do
@@ -45,7 +45,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
 
         result = Flapjack::Diner.create_test_notifications_tags(tag_data[:name], notification_data)
         expect(result).not_to be_nil
-        expect(result).to eq(data)
+        expect(result).to eq(resultify(data))
       end
 
       it "submits a POST request for multiple notifications on a check" do
@@ -64,7 +64,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
 
         result = Flapjack::Diner.create_test_notifications_checks(check_data[:id], notification_data, notification_2_data)
         expect(result).not_to be_nil
-        expect(result).to eq(data)
+        expect(result).to eq(resultify(data))
       end
 
       it "submits a POST request for multiple notifications for checks linked to a tag" do
@@ -83,7 +83,7 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
 
         result = Flapjack::Diner.create_test_notifications_tags(tag_data[:name], notification_data, notification_2_data)
         expect(result).not_to be_nil
-        expect(result).to eq(data)
+        expect(result).to eq(resultify(data))
       end
 
       it "can't find the check to create notifications for" do

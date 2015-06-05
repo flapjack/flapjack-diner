@@ -87,7 +87,7 @@ describe Flapjack::Diner do
 
       result = Flapjack::Diner.create_test_notifications_checks(check_data[:id], nd)
       expect(req).to have_been_requested
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "logs a DELETE request" do

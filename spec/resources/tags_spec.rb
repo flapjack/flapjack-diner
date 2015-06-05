@@ -26,7 +26,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
         )
 
       result = Flapjack::Diner.create_tags(tag_data)
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a POST request for several tags" do
@@ -48,7 +48,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
         )
 
       result = Flapjack::Diner.create_tags(tag_data, tag_2_data)
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     # TODO fails to create with invalid data
@@ -83,7 +83,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
             :body => {:data => resp_data} )
 
         result = Flapjack::Diner.tags
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
     end
@@ -102,7 +102,7 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
             :body => {:data => resp_data} )
 
         result = Flapjack::Diner.tags(tag_data[:name])
-        expect(result).to eq(resp_data)
+        expect(result).to eq(resultify(resp_data))
       end
 
       it "can't find tag" do

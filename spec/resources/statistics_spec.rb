@@ -28,7 +28,7 @@ describe Flapjack::Diner::Resources::Statistics, :pact => true do
           :body => {:data => resp_data})
 
       result = Flapjack::Diner.statistics
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
 
     it 'gets global statistics' do
@@ -51,7 +51,7 @@ describe Flapjack::Diner::Resources::Statistics, :pact => true do
           :body => {:data => resp_data})
 
       result = Flapjack::Diner.statistics(:filter => {:instance_name => global_statistics_data[:instance_name]})
-      expect(result).to eq(resp_data)
+      expect(result).to eq(resultify(resp_data))
     end
   end
 
