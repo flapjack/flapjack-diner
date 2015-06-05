@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner::Resources::Links, :pact => true do
+describe Flapjack::Diner::Resources::Relationships, :pact => true do
 
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
@@ -11,7 +11,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   it 'adds a tag to a check' do
     flapjack.given("a check and a tag exist").
       upon_receiving("a POST request adding a tag to a check").
-      with(:method => :post, :path => "/checks/#{check_data[:id]}/links/tags",
+      with(:method => :post, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
            :body => {:data => [{:id => tag_data[:name], :type => 'tag'}]}).
       will_respond_with(:status => 204,
@@ -24,7 +24,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   it 'adds two tags to a check' do
     flapjack.given("a check and two tags exist").
       upon_receiving("a POST request adding two tags to a check").
-      with(:method => :post, :path => "/checks/#{check_data[:id]}/links/tags",
+      with(:method => :post, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
            :body => {:data => [{:id => tag_data[:name], :type => 'tag'},
                                {:id => tag_2_data[:name], :type => 'tag'}]}).
@@ -52,7 +52,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   it 'updates tags for a check' do
     flapjack.given("a check and a tag exist").
       upon_receiving("a PATCH request updating tags for a check").
-      with(:method => :patch, :path => "/checks/#{check_data[:id]}/links/tags",
+      with(:method => :patch, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
            :body => {:data => [{:id => tag_data[:name], :type => 'tag'}]}).
       will_respond_with(:status => 204,
@@ -66,7 +66,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   it 'clears all tags from a check' do
     flapjack.given("a check and a tag exist").
       upon_receiving("a PATCH request clearing tags for a check").
-      with(:method => :patch, :path => "/checks/#{check_data[:id]}/links/tags",
+      with(:method => :patch, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
            :body => {:data => []}).
       will_respond_with(:status => 204,
@@ -79,7 +79,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   it 'deletes a tag from a check' do
     flapjack.given("a check with a tag exists").
       upon_receiving("a DELETE request deleting a tag from a check").
-      with(:method => :delete, :path => "/checks/#{check_data[:id]}/links/tags",
+      with(:method => :delete, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
            :body => {:data => [{:id => tag_data[:name], :type => 'tag'}]}).
       will_respond_with(:status => 204,
@@ -93,7 +93,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   it 'deletes two tags from a check' do
     flapjack.given("a check with two tags exists").
       upon_receiving("a DELETE request deleting two tags from a check").
-      with(:method => :delete, :path => "/checks/#{check_data[:id]}/links/tags",
+      with(:method => :delete, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
            :body => {:data => [{:id => tag_data[:name], :type => 'tag'},
                                {:id => tag_2_data[:name], :type => 'tag'}]}).
@@ -121,7 +121,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   it 'sets the contact for a medium' do
     flapjack.given("a contact and a medium exist").
       upon_receiving("a PATCH request updating the contact for a medium").
-      with(:method => :patch, :path => "/media/#{email_data[:id]}/links/contact",
+      with(:method => :patch, :path => "/media/#{email_data[:id]}/relationships/contact",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
            :body => {:data => {:id => contact_data[:id], :type => 'contact'}}).
       will_respond_with(:status => 204,
@@ -135,7 +135,7 @@ describe Flapjack::Diner::Resources::Links, :pact => true do
   it 'clears the contact from a rule' do
     flapjack.given("a contact with a rule exists").
       upon_receiving("a PATCH request clearing a contact from a rule").
-      with(:method => :patch, :path => "/rules/#{rule_data[:id]}/links/contact",
+      with(:method => :patch, :path => "/rules/#{rule_data[:id]}/relationships/contact",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
            :body => {:data => nil}).
       will_respond_with(:status => 204,

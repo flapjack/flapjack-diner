@@ -8,7 +8,7 @@ require 'flapjack-diner/argument_validator'
 module Flapjack
   module Diner
     module Resources
-      module Links
+      module Relationships
 
         TYPES = {:checks => 'check',
                  :contacts => 'contact',
@@ -139,7 +139,7 @@ module Flapjack
                 validate :query => :linked_id, :as => linked_id_validator
               end
               perform_post_links(linked,
-                "/#{resource}/#{resource_id}/links/#{linked}", linked_id)
+                "/#{resource}/#{resource_id}/relationships/#{linked}", linked_id)
             end
 
             define_method("update_#{resource}_link_#{linked}") do |resource_id, linked_id|
@@ -148,7 +148,7 @@ module Flapjack
                 validate :query => :linked_id, :as => linked_id_validator
               end
               perform_patch_links(linked,
-                "/#{resource}/#{resource_id}/links/#{linked}", true, linked_id)
+                "/#{resource}/#{resource_id}/relationships/#{linked}", true, linked_id)
             end
 
             define_method("delete_#{resource}_link_#{linked}") do |resource_id, linked_id|
@@ -157,7 +157,7 @@ module Flapjack
                 validate :query => :linked_id, :as => linked_id_validator
               end
               perform_delete_links(linked,
-                "/#{resource}/#{resource_id}/links/#{linked}", linked_id)
+                "/#{resource}/#{resource_id}/relationships/#{linked}", linked_id)
             end
           end
 
@@ -172,7 +172,7 @@ module Flapjack
                 validate :query => :linked_ids, :as => linked_ids_validator
               end
               perform_post_links(type,
-                "/#{resource}/#{resource_id}/links/#{linked}", *linked_ids)
+                "/#{resource}/#{resource_id}/relationships/#{linked}", *linked_ids)
             end
 
             define_method("update_#{resource}_link_#{linked}") do |resource_id, *linked_ids|
@@ -181,7 +181,7 @@ module Flapjack
                 validate :query => :linked_id, :as => linked_ids_validator
               end
               perform_patch_links(type,
-                "/#{resource}/#{resource_id}/links/#{linked}", false, *linked_ids)
+                "/#{resource}/#{resource_id}/relationships/#{linked}", false, *linked_ids)
             end
 
             define_method("delete_#{resource}_link_#{linked}") do |resource_id, *linked_ids|
@@ -190,7 +190,7 @@ module Flapjack
                 validate :query => :linked_ids, :as => linked_ids_validator
               end
               perform_delete_links(type,
-                "/#{resource}/#{resource_id}/links/#{linked}", *linked_ids)
+                "/#{resource}/#{resource_id}/relationships/#{linked}", *linked_ids)
             end
           end
         end

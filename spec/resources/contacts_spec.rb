@@ -11,46 +11,54 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
   context 'create' do
 
     it "submits a POST request for a contact" do
+      req_data  = contact_json(contact_data)
+      resp_data = req_data.merge(:relationships => contact_rel(contact_data))
+
       flapjack.given("no data exists").
         upon_receiving("a POST request with one contact").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {'data' => contact_data.merge('type' => 'contact')}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => contact_data.merge('type' => 'contact')})
+          :body => {:data => resp_data})
 
       result = Flapjack::Diner.create_contacts(contact_data)
       expect(result).not_to be_nil
-      expect(result).to eq(contact_data.merge(:type => 'contact'))
+      expect(result).to eq(resp_data)
     end
 
     it "submits a POST request for several contacts" do
-      contacts_data = [contact_data.merge(:type => 'contact'),
-                       contact_2_data.merge(:type => 'contact')]
+      req_data = [contact_json(contact_data), contact_json(contact_2_data)]
+      resp_data = [
+        req_data[0].merge(:relationships => contact_rel(contact_data)),
+        req_data[1].merge(:relationships => contact_rel(contact_2_data))
+      ]
 
       flapjack.given("no data exists").
         upon_receiving("a POST request with two contacts").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-             :body => {:data => contacts_data}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {:data => contacts_data})
+          :body => {:data => resp_data})
 
-      result = Flapjack::Diner.create_contacts(*contacts_data)
+      result = Flapjack::Diner.create_contacts(contact_data, contact_2_data)
       expect(result).not_to be_nil
-      expect(result).to eq(contacts_data)
+      expect(result).to eq(resp_data)
     end
 
     it "submits a POST request but a contact with that id exists" do
+      req_data  = contact_json(contact_data)
+
       flapjack.given("a contact exists").
         upon_receiving("a POST request with one contact").
         with(:method => :post, :path => '/contacts',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => contact_data.merge(:type => 'contact')}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 409,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
@@ -73,17 +81,19 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     context 'GET all contacts' do
 
       it "has some data" do
+        resp_data = [contact_json(contact_data).merge(:relationships => contact_rel(contact_data))]
+
         flapjack.given("a contact exists").
           upon_receiving("a GET request for all contacts").
           with(:method => :get, :path => '/contacts').
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => [contact_data.merge('type' => 'contact')]})
+            :body => {:data => resp_data})
 
         result = Flapjack::Diner.contacts
         expect(result).not_to be_nil
-        expect(result).to eq([contact_data.merge(:type => 'contact')])
+        expect(result).to eq(resp_data)
       end
 
       it "has no data" do
@@ -106,17 +116,19 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
     context 'GET a single contact' do
 
       it "finds the contact" do
+        resp_data = contact_json(contact_data).merge(:relationships => contact_rel(contact_data))
+
         flapjack.given("a contact exists").
           upon_receiving("a GET request for a single contact").
           with(:method => :get, :path => "/contacts/#{contact_data[:id]}").
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => contact_data.merge('type' => 'contact')})
+            :body => {:data => resp_data})
 
         result = Flapjack::Diner.contacts(contact_data[:id])
         expect(result).not_to be_nil
-        expect(result).to eq(contact_data.merge(:type => 'contact'))
+        expect(result).to eq(resp_data)
       end
 
       it "can't find the contact" do
@@ -140,31 +152,14 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
     end
 
-    context 'GET a single contact by name, including media' do
+    context 'GET a single contact with included data' do
 
       it 'returns a contact with media' do
-        data = contact_data.merge(:type => 'contact', :links => {
-          :self  => "http://example.org/contacts/#{contact_data[:id]}",
-          :media => {
-            :self => "http://example.org/contacts/#{contact_data[:id]}/links/media",
-            :related => "http://example.org/contacts/#{contact_data[:id]}/media",
-            :linkage => [
-              {:type => 'medium', :id => email_data[:id]}
-            ]
-          },
-          :rules => "http://example.org/contacts/#{contact_data[:id]}/rules",
-        })
-
-        context = {:included => [
-          email_data.merge(:type => 'medium', :links => {
-            :self => "http://example.org/media/#{email_data[:id]}",
-            :contact => "http://example.org/media/#{email_data[:id]}/contact",
-            :rules => "http://example.org/media/#{email_data[:id]}/rules"
-          })],
-          :links => {
-            :self  => "http://example.org/contacts/#{contact_data[:id]}?include=media"
-          }
-        }
+        resp_data = contact_json(contact_data).merge(:relationships => contact_rel(contact_data))
+        resp_data[:relationships][:media][:data] = [
+          {:type => 'medium', :id => email_data[:id]}
+        ]
+        resp_included = [medium_json(email_data).merge(:relationships => medium_rel(email_data))]
 
         flapjack.given("a contact with one medium exists").
           upon_receiving("a GET request for a single contact with media").
@@ -173,54 +168,26 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => data, :included => context[:included],
-                      :links => context[:links]})
+            :body => {:data => resp_data, :included => resp_included})
 
         result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media')
         expect(result).not_to be_nil
-        expect(result).to eq(data)
-        expect(Flapjack::Diner.context).to eq(context)
+        expect(result).to eq(resp_data)
+        expect(Flapjack::Diner.context).to eq(:included => resp_included)
       end
 
-    end
-
-    context 'GET a single contact by name, including media and rules' do
-
-      it 'returns a contact with media' do
-        data = contact_data.merge(:type => 'contact', :links => {
-          :self  => "http://example.org/contacts/#{contact_data[:id]}",
-          :media => {
-            :self => "http://example.org/contacts/#{contact_data[:id]}/links/media",
-            :related => "http://example.org/contacts/#{contact_data[:id]}/media",
-            :linkage => [
-              {:type => 'medium', :id => email_data[:id]}
-            ]
-          },
-          :rules => {
-            :self => "http://example.org/contacts/#{contact_data[:id]}/links/rules",
-            :related => "http://example.org/contacts/#{contact_data[:id]}/rules",
-            :linkage => [
-              {:type => 'rule', :id => rule_data[:id]}
-            ]
-          },
-        })
-
-        context = {:included => [
-          email_data.merge(:type => 'medium', :links => {
-            :self => "http://example.org/media/#{email_data[:id]}",
-            :contact => "http://example.org/media/#{email_data[:id]}/contact",
-            :rules => "http://example.org/media/#{email_data[:id]}/rules"
-          }),
-          rule_data.merge(:type => 'rule', :links => {
-            :self => "http://example.org/rules/#{rule_data[:id]}",
-            :contact => "http://example.org/rules/#{rule_data[:id]}/contact",
-            :media => "http://example.org/rules/#{rule_data[:id]}/media",
-            :tags => "http://example.org/rules/#{rule_data[:id]}/tags"
-          })],
-          :links => {
-            :self  => "http://example.org/contacts/#{contact_data[:id]}?include=media%2Crules"
-          }
-        }
+      it 'returns a contact with media and rules' do
+        resp_data = contact_json(contact_data).merge(:relationships => contact_rel(contact_data))
+        resp_data[:relationships][:media][:data] = [
+          {:type => 'medium', :id => email_data[:id]}
+        ]
+        resp_data[:relationships][:rules][:data] = [
+          {:type => 'rule', :id => rule_data[:id]}
+        ]
+        resp_included = [
+          medium_json(email_data).merge(:relationships => medium_rel(email_data)),
+          rule_json(rule_data).merge(:relationships => rule_rel(rule_data))
+        ]
 
         flapjack.given("a contact with one medium and one rule exists").
           upon_receiving("a GET request for a single contact with media and rules").
@@ -229,13 +196,12 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => data, :included => context[:included],
-                      :links => context[:links]})
+            :body => {:data => resp_data, :included => resp_included})
 
         result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media,rules')
         expect(result).not_to be_nil
-        expect(result).to eq(data)
-        expect(Flapjack::Diner.context).to eq(context)
+        expect(result).to eq(resp_data)
+        expect(Flapjack::Diner.context).to eq(:included => resp_included)
       end
 
     end
@@ -249,7 +215,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         upon_receiving("a PATCH request for a single contact").
         with(:method => :patch,
              :path => "/contacts/#{contact_data[:id]}",
-             :body => {:data => {:id => contact_data[:id], :type => 'contact', :name => 'Hello There'}},
+             :body => {:data => {:id => contact_data[:id], :type => 'contact', :attributes => {:name => 'Hello There'}}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 204,
@@ -265,8 +231,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         with(:method => :patch,
              :path => "/contacts",
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-             :body => {:data => [{:id => contact_data[:id], :type => 'contact', :name => 'Hello There'},
-                                 {:id => contact_2_data[:id], :type => 'contact', :name => 'Goodbye Now'}]}).
+             :body => {:data => [{:id => contact_data[:id], :type => 'contact', :attributes => {:name => 'Hello There'}},
+                                 {:id => contact_2_data[:id], :type => 'contact', :attributes => {:name => 'Goodbye Now'}}]}).
         will_respond_with(
           :status => 204,
           :body => '' )
@@ -282,7 +248,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         upon_receiving("a PATCH request for a single contact").
         with(:method => :patch,
              :path => "/contacts/#{contact_data[:id]}",
-             :body => {:data => {:id => contact_data[:id], :type => 'contact', :name => 'Hello There'}},
+             :body => {:data => {:id => contact_data[:id], :type => 'contact', :attributes => {:name => 'Hello There'}}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 404,

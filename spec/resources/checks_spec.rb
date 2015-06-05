@@ -11,55 +11,68 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
   context 'create' do
 
     it "submits a POST request for a check" do
+      req_data  = check_json(check_data)
+      resp_data = req_data.merge(:relationships => check_rel(check_data))
+
       flapjack.given("no data exists").
         upon_receiving("a POST request with one check").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => check_data.merge(:type => 'check')}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => check_data.merge(:type => 'check')})
+          :body => {:data => resp_data})
 
       result = Flapjack::Diner.create_checks(check_data)
-      expect(result).to eq(check_data.merge(:type => 'check'))
+      expect(result).to eq(resp_data)
     end
 
     it "submits a POST request for several checks" do
-      checks_data = [check_data.merge(:type => 'check'),
-                     check_2_data.merge(:type => 'check')]
+      req_data = [check_json(check_data), check_json(check_2_data)]
+      resp_data = [
+        req_data[0].merge(:relationships => check_rel(check_data)),
+        req_data[1].merge(:relationships => check_rel(check_2_data))
+      ]
 
       flapjack.given("no data exists").
         upon_receiving("a POST request with two checks").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-             :body => {:data => checks_data}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => checks_data})
+          :body => {'data' => resp_data})
 
-      result = Flapjack::Diner.create_checks(*checks_data)
-      expect(result).to eq(checks_data)
+      result = Flapjack::Diner.create_checks(check_data, check_2_data)
+      expect(result).to eq(resp_data)
     end
 
     # TODO fails to create with invalid data
 
     it "creates a check and links it to a tag" do
+      req_data  = check_json(check_data).merge(
+        :relationships => {
+          :tags => {
+            :data => [{:type => 'tag', :id => tag_data[:name]}]
+          }
+        }
+      )
+      resp_data = req_data.merge(:relationships => check_rel(check_data))
+
       flapjack.given("a tag exists").
         upon_receiving("a POST request with a check linking to a tag").
         with(:method => :post, :path => '/checks',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => check_data.merge(:type => 'check', :links => {
-               :tags => {:linkage => [{:type => 'tag', :id => tag_data[:name]}]}
-             })}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => check_data.merge(:type => 'check')})
+          :body => {:data => resp_data})
 
       result = Flapjack::Diner.create_checks(check_data.merge(:tags => [tag_data[:name]]))
-      expect(result).to eq(check_data.merge(:type => 'check'))
+      expect(result).to eq(resp_data)
     end
 
   end
@@ -82,16 +95,18 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       end
 
       it "has some data" do
+        resp_data = [check_json(check_data).merge(:relationships => check_rel(check_data))]
+
         flapjack.given("a check exists").
           upon_receiving("a GET request for all checks").
           with(:method => :get, :path => '/checks').
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => [check_data.merge(:type => 'check')]} )
+            :body => {:data => resp_data} )
 
         result = Flapjack::Diner.checks
-        expect(result).to eq([check_data.merge(:type => 'check')])
+        expect(result).to eq(resp_data)
       end
 
     end
@@ -99,6 +114,11 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     context 'GET several checks' do
 
       it 'has some data' do
+        resp_data = [
+          check_json(check_data).merge(:relationships => check_rel(check_data)),
+          check_json(check_2_data).merge(:relationships => check_rel(check_2_data))
+        ]
+
         flapjack.given("two checks exist").
           upon_receiving("a GET request for two checks").
           with(:method => :get, :path => "/checks",
@@ -106,11 +126,10 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => [check_data.merge(:type => 'check'),
-                                check_2_data.merge(:type => 'check')]} )
+            :body => {:data => resp_data})
 
         result = Flapjack::Diner.checks(check_data[:id], check_2_data[:id])
-        expect(result).to eq([check_data.merge(:type => 'check'), check_2_data.merge(:type => 'check')])
+        expect(result).to eq(resp_data)
       end
 
       it 'has no data' do
@@ -135,6 +154,8 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       let(:name) { CGI.escape(check_data[:name]) }
 
       it 'has some data' do
+        resp_data = [check_json(check_data).merge(:relationships => check_rel(check_data))]
+
         flapjack.given("a check exists").
           upon_receiving("a GET request for checks by name").
           with(:method => :get, :path => "/checks",
@@ -142,10 +163,10 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => [check_data.merge(:type => 'check')]} )
+            :body => {:data => resp_data} )
 
         result = Flapjack::Diner.checks(:filter => {:name => check_data[:name]})
-        expect(result).to eq([check_data.merge(:type => 'check')])
+        expect(result).to eq(resp_data)
       end
 
       it "can't find check" do
@@ -168,16 +189,18 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     context 'GET a single check' do
 
       it "has some data" do
+        resp_data = check_json(check_data).merge(:relationships => check_rel(check_data))
+
         flapjack.given("a check exists").
           upon_receiving("a GET request for a check").
           with(:method => :get, :path => "/checks/#{check_data[:id]}").
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => check_data.merge(:type => 'check')} )
+            :body => {:data => resp_data} )
 
         result = Flapjack::Diner.checks(check_data[:id])
-        expect(result).to eq(check_data.merge(:type => 'check'))
+        expect(result).to eq(resp_data)
       end
 
       it "can't find check" do
@@ -208,7 +231,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         upon_receiving("a PATCH request for a single check").
         with(:method => :patch,
              :path => "/checks/#{check_data[:id]}",
-             :body => {:data => {:id => check_data[:id], :type => 'check', :enabled => false}},
+             :body => {:data => {:id => check_data[:id], :type => 'check', :attributes => {:enabled => false}}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 204,
@@ -224,8 +247,8 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         with(:method => :patch,
              :path => "/checks",
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-             :body => {:data => [{:id => check_data[:id], :type => 'check', :enabled => false},
-                                 {:id => check_2_data[:id], :type => 'check', :enabled => true}]}).
+             :body => {:data => [{:id => check_data[:id], :type => 'check',  :attributes => {:enabled => false}},
+                                 {:id => check_2_data[:id], :type => 'check',  :attributes => {:enabled => true}}]}).
         will_respond_with(
           :status => 204,
           :body => '' )
@@ -241,7 +264,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         upon_receiving("a PATCH request for a single check").
         with(:method => :patch,
              :path => "/checks/#{check_data[:id]}",
-             :body => {:data => {:id => check_data[:id], :type => 'check', :enabled => false}},
+             :body => {:data => {:id => check_data[:id], :type => 'check',  :attributes => {:enabled => false}}},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 404,
@@ -259,18 +282,28 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
     end
 
     it "replaces the tags for a check" do
+      req_data = {
+        :id => check_data[:id],
+        :type => 'check',
+        :relationships => {
+          :tags => {
+            :data => [{:type => 'tag', :id => tag_data[:name]}]
+          }
+        }
+      }
+
       flapjack.given("a check and a tag exist").
         upon_receiving("a PATCH request for a single check").
         with(:method => :patch,
              :path => "/checks/#{check_data[:id]}",
-             :body => {:data => {:id => check_data[:id], :type => 'check',
-                                 :links => {:tags => {:linkage => [:type => 'tag', :id => tag_data[:name]]}}}},
+             :body => {:data => req_data},
              :headers => {'Content-Type' => 'application/vnd.api+json'}).
         will_respond_with(
           :status => 204,
           :body => '' )
 
       result = Flapjack::Diner.update_checks(:id => check_data[:id], :tags => [tag_data[:name]])
+      p Flapjack::Diner.last_error
       expect(result).to be_a(TrueClass)
     end
 

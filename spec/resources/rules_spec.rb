@@ -11,39 +11,46 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
   context 'create' do
 
     it "submits a POST request for a rule" do
+      req_data  = rule_json(rule_data)
+      resp_data = req_data.merge(:relationships => rule_rel(rule_data))
+
       flapjack.given("no data exists").
         upon_receiving("a POST request with one rule").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => rule_data.merge(:type => 'rule')}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-         :body => {:data => rule_data.merge(:type => 'rule')}
+         :body => {:data => resp_data}
         )
 
       result = Flapjack::Diner.create_rules(rule_data)
       expect(result).not_to be_nil
-      expect(result).to eq(rule_data.merge(:type => 'rule'))
+      expect(result).to eq(resp_data)
     end
 
     it "submits a POST request for several rules" do
-      rules_data = [rule_data.merge(:type => 'rule'), rule_2_data.merge(:type => 'rule')]
+      req_data = [rule_json(rule_data), rule_json(rule_2_data)]
+      resp_data = [
+        req_data[0].merge(:relationships => rule_rel(rule_data)),
+        req_data[1].merge(:relationships => rule_rel(rule_2_data))
+      ]
 
       flapjack.given("no data exists").
         upon_receiving("a POST request with two rules").
         with(:method => :post, :path => '/rules',
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-             :body => {:data => rules_data}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {:data => rules_data}
+          :body => {:data => resp_data}
         )
 
-      result = Flapjack::Diner.create_rules(*rules_data)
+      result = Flapjack::Diner.create_rules(rule_data, rule_2_data)
       expect(result).not_to be_nil
-      expect(result).to eq(rules_data)
+      expect(result).to eq(resp_data)
     end
 
     # TODO error due to invalid data
@@ -53,34 +60,44 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
   context 'read' do
 
     it "submits a GET request for all rules" do
+      resp_data = [rule_json(rule_data).merge(:relationships => rule_rel(rule_data))]
+
       flapjack.given("a rule exists").
         upon_receiving("a GET request for all rules").
         with(:method => :get, :path => '/rules').
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => [rule_data.merge(:type => 'rule')]} )
+            :body => {:data => resp_data} )
 
       result = Flapjack::Diner.rules
       expect(result).not_to be_nil
-      expect(result).to eq([rule_data.merge(:type => 'rule')])
+      expect(result).to eq(resp_data)
     end
 
     it "submits a GET request for one rule" do
+      resp_data = rule_json(rule_data).merge(:relationships => rule_rel(rule_data))
+
       flapjack.given("a rule exists").
         upon_receiving("a GET request for a single rule").
         with(:method => :get, :path => "/rules/#{rule_data[:id]}").
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => rule_data.merge(:type => 'rule')} )
+            :body => {:data => resp_data}
+        )
 
       result = Flapjack::Diner.rules(rule_data[:id])
       expect(result).not_to be_nil
-      expect(result).to eq(rule_data.merge(:type => 'rule'))
+      expect(result).to eq(resp_data)
     end
 
     it "submits a GET request for several rules" do
+      resp_data = [
+        rule_json(rule_data).merge(:relationships => rule_rel(rule_data)),
+        rule_json(rule_2_data).merge(:relationships => rule_rel(rule_2_data))
+      ]
+
       rules_data = [rule_data.merge(:type => 'rule'), rule_2_data.merge(:type => 'rule')]
 
       flapjack.given("two rules exist").
@@ -90,11 +107,11 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => rules_data} )
+            :body => {:data => resp_data} )
 
       result = Flapjack::Diner.rules(rule_data[:id], rule_2_data[:id])
       expect(result).not_to be_nil
-      expect(result).to eq(rules_data)
+      expect(result).to eq(resp_data)
     end
 
     it "can't find the rule to read" do

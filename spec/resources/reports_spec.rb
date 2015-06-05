@@ -33,7 +33,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
 
       if opts[:paginate]
         rd[:data] = opts[:paginate].times.collect do |n|
-          {:type => "#{rt}_report", rt.to_sym => []}
+          {:type => "#{rt}_report", :attributes => {rt.to_sym => []}}
         end
         if 'downtime'.eql?(rt)
           opts[:paginate].times.each do |n|
@@ -43,7 +43,7 @@ describe Flapjack::Diner::Resources::Reports, :pact => true do
           end
         end
       else
-        rd[:data] = {:type => "#{rt}_report", rt.to_sym => []}
+        rd[:data] = {:type => "#{rt}_report", :attributes => {rt.to_sym => []}}
         if 'downtime'.eql?(rt)
           meta[:statistics][check_data[:id]] = {
             :total_seconds => {}, :percentages => {}

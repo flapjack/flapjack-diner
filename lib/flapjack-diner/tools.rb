@@ -51,65 +51,68 @@ module Flapjack
         handle_response(get(req_uri.request_uri))
       end
 
-      def populate_link_data(data, links)
-        link_data = {}
+      def record_data(source, type, relationships)
+        req_data = {:type => type}
+        ['id', :id].each do |i|
+          req_data[:id] = source[i] if source.has_key?(i)
+        end
+        rel_singular = relationships[:singular] || []
+        rel_multiple = relationships[:multiple] || []
+        excluded = [:id, :type] + rel_singular + rel_multiple
+        attrs = source.reject do |k,v|
+          excluded.include?(k.to_sym)
+        end
 
-        if links.has_key?(:singular)
-          links[:singular].each do |singular_link|
-            converted = false
-            [singular_link, singular_link.to_s].each do |sl|
-              if data.has_key?(sl)
-                sl_data = data.delete(sl)
-                link_data[singular_link] = {:linkage => {:type => singular_link.to_s, :id => sl_data}}
-                converted = true
-              end
-            end
-            next if converted
+        req_data[:attributes] = attrs unless attrs.empty?
+
+        rel_data = {}
+
+        rel_singular.each do |singular_link|
+          converted = false
+          [singular_link, singular_link.to_s].each do |sl|
+            next if converted || !source.has_key?(sl)
+            rel_data[singular_link] = {:data => {:type => singular_link.to_s, :id => source[sl]}}
+            converted = true
           end
         end
 
-        if links.has_key?(:multiple)
-          links[:multiple].each do |multiple_link|
-            converted = false
-            ml_type = Flapjack::Diner::Resources::Links::TYPES[multiple_link]
-            [multiple_link, multiple_link.to_s].each do |ml|
-              if data.has_key?(ml)
-                ml_data = data.delete(ml)
-                link_data[multiple_link] = {:linkage => ml_data.map {|id|
-                  {:type => ml_type, :id => id}}
-                }
-                converted = true
-              end
-            end
-            next if converted
+        rel_multiple.each do |multiple_link|
+          converted = false
+          ml_type = Flapjack::Diner::Resources::Relationships::TYPES[multiple_link]
+          [multiple_link, multiple_link.to_s].each do |ml|
+            next if converted || !source.has_key?(ml)
+            rel_data[multiple_link] = {
+              :data =>  source[ml].map {|id|
+                {:type => ml_type, :id => id}
+              }
+            }
+            converted = true
           end
         end
 
-        data[:links] = link_data unless link_data.empty?
+        req_data[:relationships] = rel_data unless rel_data.empty?
+        req_data
       end
 
       def perform_post(type, path, data = {})
         @last_error = nil
         @context = nil
-        links = Flapjack::Diner::Resources::Links::ASSOCIATIONS[type]
-        type  = Flapjack::Diner::Resources::Links::TYPES[type]
+        links = Flapjack::Diner::Resources::Relationships::ASSOCIATIONS[type] || {}
+        type  = Flapjack::Diner::Resources::Relationships::TYPES[type]
         jsonapi_ext = ""
+        req_data = nil
         case data
         when Array
-          data.each do |d|
-            d[:type] = type
-            populate_link_data(d, links[:read_write]) unless links.nil?
-          end
+          req_data = data.collect {|d| record_data(d, type, links[:read_write] || {}) }
           jsonapi_ext = "; ext=bulk"
         when Hash
-          data[:type] = type
-          populate_link_data(data, links[:read_write]) unless links.nil?
+          req_data = record_data(data, type, links[:read_write] || {})
         end
         req_uri = build_uri(path)
-        log_request('POST', req_uri, :data => data)
+        log_request('POST', req_uri, :data => req_data)
 
         # TODO send current character encoding in content-type ?
-        opts = {:body => prepare_nested_query(:data => data).to_json,
+        opts = {:body => prepare_nested_query(:data => req_data).to_json,
                 :headers => {'Content-Type' => "application/vnd.api+json#{jsonapi_ext}"}}
         handle_response(post(req_uri.request_uri, opts))
       end
@@ -128,38 +131,38 @@ module Flapjack
       def perform_patch(type, path, data = nil)
         @last_error = nil
         @context = nil
-        links = Flapjack::Diner::Resources::Links::ASSOCIATIONS[type]
-        type = Flapjack::Diner::Resources::Links::TYPES[type]
+        links = Flapjack::Diner::Resources::Relationships::ASSOCIATIONS[type]
+        type = Flapjack::Diner::Resources::Relationships::TYPES[type]
 
         req_uri = nil
+        req_data = nil
 
         jsonapi_ext = ""
         case data
         when Hash
           raise "Update data does not contain :id" unless data[:id]
-          data[:type] = type
-          populate_link_data(data, links[:read_write]) unless links.nil?
+          req_data = record_data(data, type, links[:read_write])
           ids = [data[:id]]
           req_uri = build_uri(path, ids)
         when Array
           ids = []
+          req_data = []
           data.each do |d|
-            d[:type] = type
-            populate_link_data(d, links[:read_write]) unless links.nil?
-            d_id = d[:id]
+            d_id = d.has_key?(:id) ? d[:id] : nil
             ids << d_id unless d_id.nil? || d_id.empty?
+            req_data << record_data(d, type, links[:read_write])
           end
           raise "Update data must each contain :id" unless ids.size == data.size
           req_uri = build_uri(path)
           jsonapi_ext = "; ext=bulk"
         end
 
-        log_request('PATCH', req_uri, :data => data)
+        log_request('PATCH', req_uri, :data => req_data)
 
-        opts = if data.nil?
+        opts = if req_data.nil?
                  {}
                else
-                 {:body => prepare_nested_query(:data => data).to_json,
+                 {:body => prepare_nested_query(:data => req_data).to_json,
                   :headers => {'Content-Type' => "application/vnd.api+json#{jsonapi_ext}"}}
                end
         handle_response(patch(req_uri.request_uri, opts))
@@ -186,7 +189,7 @@ module Flapjack
       def perform_delete(type, path, *ids)
         @last_error = nil
         @context = nil
-        type = Flapjack::Diner::Resources::Links::TYPES[type]
+        type = Flapjack::Diner::Resources::Relationships::TYPES[type]
 
         req_uri = build_uri(path, ids)
         opts = if ids.size == 1

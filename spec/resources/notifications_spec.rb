@@ -13,81 +13,87 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
     context 'test notifications' do
 
       it "submits a POST request for a check" do
+        data = notification_json(notification_data)
+
         flapjack.given("a check exists").
           upon_receiving("a POST request with one test notification").
           with(:method => :post, :path => "/test_notifications/checks/#{check_data[:id]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:data => notification_data.merge(:type => 'test_notification')}).
+               :body => {:data => data}).
           will_respond_with(
             :status => 201,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => notification_data.merge(:type => 'test_notification')})
+            :body => {:data => data})
 
         result = Flapjack::Diner.create_test_notifications_checks(check_data[:id], notification_data)
         expect(result).not_to be_nil
-        expect(result).to eq(notification_data.merge(:type => 'test_notification'))
+        expect(result).to eq(data)
       end
 
       it "submits a POST request for checks linked to a tag" do
+        data = notification_json(notification_data)
+
         flapjack.given("a tag with two checks exists").
           upon_receiving("a POST request with one test notification").
           with(:method => :post, :path => "/test_notifications/tags/#{tag_data[:name]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:data => notification_data.merge(:type => 'test_notification')}).
+               :body => {:data => data}).
           will_respond_with(
             :status => 201,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => notification_data.merge(:type => 'test_notification')})
+            :body => {:data => data})
 
         result = Flapjack::Diner.create_test_notifications_tags(tag_data[:name], notification_data)
         expect(result).not_to be_nil
-        expect(result).to eq(notification_data.merge(:type => 'test_notification'))
+        expect(result).to eq(data)
       end
 
       it "submits a POST request for multiple notifications on a check" do
+        data = [notification_json(notification_data),
+                notification_json(notification_2_data)]
+
         flapjack.given("a check exists").
           upon_receiving("a POST request with two test notifications").
           with(:method => :post, :path => "/test_notifications/checks/#{check_data[:id]}",
                :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-               :body => {:data => [notification_data.merge(:type => 'test_notification'),
-                                   notification_2_data.merge(:type => 'test_notification')]}).
+               :body => {:data => data}).
           will_respond_with(
             :status => 201,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => [notification_data.merge(:type => 'test_notification'),
-                                notification_2_data.merge(:type => 'test_notification')]})
+            :body => {:data => data})
 
         result = Flapjack::Diner.create_test_notifications_checks(check_data[:id], notification_data, notification_2_data)
         expect(result).not_to be_nil
-        expect(result).to eq([notification_data.merge(:type => 'test_notification'),
-                              notification_2_data.merge(:type => 'test_notification')])
+        expect(result).to eq(data)
       end
 
       it "submits a POST request for multiple notifications for checks linked to a tag" do
+        data = [notification_json(notification_data),
+                notification_json(notification_2_data)]
+
         flapjack.given("a tag with two checks exists").
           upon_receiving("a POST request with two test notifications").
           with(:method => :post, :path => "/test_notifications/tags/#{tag_data[:name]}",
                :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-               :body => {:data => [notification_data.merge(:type => 'test_notification'),
-                                   notification_2_data.merge(:type => 'test_notification')]}).
+               :body => {:data => data}).
           will_respond_with(
             :status => 201,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => [notification_data.merge(:type => 'test_notification'),
-                                notification_2_data.merge(:type => 'test_notification')]})
+            :body => {:data => data})
 
         result = Flapjack::Diner.create_test_notifications_tags(tag_data[:name], notification_data, notification_2_data)
         expect(result).not_to be_nil
-        expect(result).to eq([notification_data.merge(:type => 'test_notification'),
-                              notification_2_data.merge(:type => 'test_notification')])
+        expect(result).to eq(data)
       end
 
       it "can't find the check to create notifications for" do
+        data = notification_json(notification_data)
+
         flapjack.given("no data exists").
           upon_receiving("a POST request with one test notification for a check").
           with(:method => :post, :path => "/test_notifications/checks/#{check_data[:id]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:data => notification_data.merge(:type => 'test_notification')}).
+               :body => {:data => data}).
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
@@ -104,11 +110,13 @@ describe Flapjack::Diner::Resources::Notifications, :pact => true do
       end
 
       it "can't find the tag to create notifications for" do
+        data = notification_json(notification_data)
+
         flapjack.given("no data exists").
           upon_receiving("a POST request with one test notification for a tag").
           with(:method => :post, :path => "/test_notifications/tags/#{tag_data[:name]}",
                :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:data => notification_data.merge(:type => 'test_notification')}).
+               :body => {:data => data}).
         will_respond_with(
           :status => 404,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},

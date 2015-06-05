@@ -10,19 +10,7 @@ describe Flapjack::Diner::Resources::Metrics, :pact => true do
 
   context 'read' do
     it 'gets all metrics' do
-      metrics_data = {
-        :total_keys         => 0,
-        :processed_events   => {
-          :all_events     => 0,
-          :ok_events      => 0,
-          :failure_events => 0,
-          :action_events  => 0,
-          :invalid_events => 0
-        },
-        :event_queue_length => 0,
-        :check_freshness    => {:"0" => 0, :"60" => 0, :"300" => 0, :"900" => 0, :"3600" => 0},
-        :check_counts       => {:all => 0, :enabled => 0, :failing => 0}
-      }
+      resp_data = metrics_json(metrics_data)
 
       flapjack.given("no data exists").
         upon_receiving("a GET request for all metrics").
@@ -30,23 +18,15 @@ describe Flapjack::Diner::Resources::Metrics, :pact => true do
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {:data => metrics_data} )
+          :body => {:data => resp_data} )
 
       result = Flapjack::Diner.metrics
-      expect(result).to eq(metrics_data)
+      expect(result).to eq(resp_data)
     end
 
     it 'gets a subset of metrics' do
-      metrics_data = {
-        :total_keys         => 0,
-        :processed_events   => {
-          :all_events     => 0,
-          :ok_events      => 0,
-          :failure_events => 0,
-          :action_events  => 0,
-          :invalid_events => 0
-        }
-      }
+      resp_data = metrics_json(metrics_data)
+      resp_data[:attributes].delete_if {|k,v| ![:processed_events, :total_keys].include?(k)}
 
       flapjack.given("no data exists").
         upon_receiving("a GET request for some metrics").
@@ -55,10 +35,10 @@ describe Flapjack::Diner::Resources::Metrics, :pact => true do
         will_respond_with(
           :status => 200,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {:data => metrics_data} )
+          :body => {:data => resp_data} )
 
       result = Flapjack::Diner.metrics(:fields => ['total_keys', 'processed_events'])
-      expect(result).to eq(metrics_data)
+      expect(result).to eq(resp_data)
     end
   end
 

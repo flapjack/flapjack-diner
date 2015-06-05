@@ -3,7 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner::Resources::Tags, :pact => true do
 
-
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
     Flapjack::Diner.logger = nil
@@ -12,37 +11,44 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
   context 'create' do
 
     it "submits a POST request for a tag" do
+      req_data  = tag_json(tag_data)
+      resp_data = req_data.merge(:relationships => tag_rel(tag_data))
+
       flapjack.given("no data exists").
         upon_receiving("a POST request with one tag").
         with(:method => :post, :path => '/tags',
              :headers => {'Content-Type' => 'application/vnd.api+json'},
-             :body => {:data => tag_data.merge(:type => 'tag')}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {:data => tag_data.merge(:type => 'tag')}
+          :body => {:data => resp_data}
         )
 
       result = Flapjack::Diner.create_tags(tag_data)
-      expect(result).to eq(tag_data.merge(:type => 'tag'))
+      expect(result).to eq(resp_data)
     end
 
     it "submits a POST request for several tags" do
-      tags_data = [tag_data.merge(:type => 'tag'), tag_2_data.merge(:type => 'tag')]
+      req_data = [tag_json(tag_data), tag_json(tag_2_data)]
+      resp_data = [
+        req_data[0].merge(:relationships => tag_rel(tag_data)),
+        req_data[1].merge(:relationships => tag_rel(tag_2_data))
+      ]
 
       flapjack.given("no data exists").
         upon_receiving("a POST request with two tags").
         with(:method => :post, :path => '/tags',
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-             :body => {:data => tags_data}).
+             :body => {:data => req_data}).
         will_respond_with(
           :status => 201,
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-          :body => {'data' => tags_data}
+          :body => {'data' => resp_data}
         )
 
-      result = Flapjack::Diner.create_tags(*tags_data)
-      expect(result).to eq(tags_data)
+      result = Flapjack::Diner.create_tags(tag_data, tag_2_data)
+      expect(result).to eq(resp_data)
     end
 
     # TODO fails to create with invalid data
@@ -66,16 +72,18 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
       end
 
       it "has some data" do
+        resp_data = [tag_json(tag_data).merge(:relationships => tag_rel(tag_data))]
+
         flapjack.given("a tag exists").
           upon_receiving("a GET request for all tags").
           with(:method => :get, :path => '/tags').
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => [tag_data.merge(:type => 'tag')]} )
+            :body => {:data => resp_data} )
 
         result = Flapjack::Diner.tags
-        expect(result).to eq([tag_data.merge(:type => 'tag')])
+        expect(result).to eq(resp_data)
       end
 
     end
@@ -83,16 +91,18 @@ describe Flapjack::Diner::Resources::Tags, :pact => true do
     context 'GET a single tag' do
 
       it "has some data" do
+        resp_data = tag_json(tag_data).merge(:relationships => tag_rel(tag_data))
+
         flapjack.given("a tag exists").
           upon_receiving("a GET request for tag 'www.example.com:SSH'").
           with(:method => :get, :path => "/tags/#{tag_data[:name]}").
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-            :body => {:data => tag_data.merge(:type => 'tag')} )
+            :body => {:data => resp_data} )
 
         result = Flapjack::Diner.tags(tag_data[:name])
-        expect(result).to eq(tag_data.merge(:type => 'tag'))
+        expect(result).to eq(resp_data)
       end
 
       it "can't find tag" do
