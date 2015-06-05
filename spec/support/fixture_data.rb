@@ -15,31 +15,34 @@ module FixtureData
     @time ||= Time.now
   end
 
-  def resultify(resp_data)
-    case resp_data
+  def resultify(data)
+    ret = nil
+    case data
     when Array
-      ret = resp_data.inject([]) do |memo, d|
+      ret = data.inject([]) do |memo, d|
         attrs = d[:attributes] || {}
-        [:id, :type].each do |k|
-          next unless d.has_key?(k)
-          attrs.update(k => d[k])
+        d.each_pair do |k, v|
+          next if :attributes.eql?(k)
+          attrs.update(k => v)
         end
         memo += [attrs]
         memo
       end
     when Hash
-      ret = resp_data[:attributes] || {}
-      [:id, :type].each do |k|
-        next unless resp_data.has_key?(k)
-        ret.update(k => resp_data[k])
+      ret = data[:attributes] || {}
+      data.each_pair do |k, v|
+        next if :attributes.eql?(k)
+        ret.update(k => v)
       end
+    else
+      ret = data
     end
     ret
   end
 
-  def contextify(resp_data)
+  # def contextify(resp_data)
 
-  end
+  # end
 
   def check_data
     @check_data ||= {

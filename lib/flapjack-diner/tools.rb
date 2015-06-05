@@ -242,14 +242,13 @@ module Flapjack
       end
 
       def flatten_jsonapi_data(data, opts = {})
-        skip = opts[:allow_relationships] ? ['attributes'] : ['attributes', 'relationships']
         ret = nil
         case data
         when Array
           ret = data.inject([]) do |memo, d|
             attrs = d['attributes'] || {}
             d.each_pair do |k, v|
-              next if skip.include?(k)
+              next if 'attributes'.eql?(k)
               attrs.update(k => v)
             end
             memo += [attrs]
@@ -258,7 +257,7 @@ module Flapjack
         when Hash
           ret = data['attributes'] || {}
           data.each_pair do |k, v|
-            next if skip.include?(k)
+            next if 'attributes'.eql?(k)
             ret.update(k => v)
           end
         else

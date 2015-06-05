@@ -159,7 +159,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         resp_data[:relationships][:media][:data] = [
           {:type => 'medium', :id => email_data[:id]}
         ]
-        resp_included = [resultify(medium_json(email_data)).merge(:relationships => medium_rel(email_data))]
+        resp_included = [medium_json(email_data).merge(:relationships => medium_rel(email_data))]
 
         flapjack.given("a contact with one medium exists").
           upon_receiving("a GET request for a single contact with media").
@@ -173,7 +173,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media')
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
-        expect(Flapjack::Diner.context).to eq(:included => resp_included)
+        expect(Flapjack::Diner.context).to eq(:included => resultify(resp_included))
       end
 
       it 'returns a contact with media and rules' do
@@ -185,8 +185,8 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
           {:type => 'rule', :id => rule_data[:id]}
         ]
         resp_included = [
-          resultify(medium_json(email_data)).merge(:relationships => medium_rel(email_data)),
-          resultify(rule_json(rule_data)).merge(:relationships => rule_rel(rule_data))
+          medium_json(email_data).merge(:relationships => medium_rel(email_data)),
+          rule_json(rule_data).merge(:relationships => rule_rel(rule_data))
         ]
 
         flapjack.given("a contact with one medium and one rule exists").
@@ -201,7 +201,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media,rules')
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
-        expect(Flapjack::Diner.context).to eq(:included => resp_included)
+        expect(Flapjack::Diner.context).to eq(:included => [resultify(resp_included[0]), resultify(resp_included[1])])
       end
 
     end
