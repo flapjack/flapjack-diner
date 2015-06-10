@@ -61,50 +61,11 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
     end
 
-    context 'unscheduled maintenance periods' do
+    context 'acknowledgements' do
 
-      it "creates an unscheduled maintenance period" do
-        req_data  = maintenance_json('unscheduled', unscheduled_maintenance_data)
-        resp_data = req_data.merge(:relationships => maintenance_rel('unscheduled', unscheduled_maintenance_data))
+      it "creates an acknowledgement"
 
-        flapjack.given("no data exists").
-          upon_receiving("a POST request with one unscheduled maintenance period").
-          with(:method => :post,
-               :path => '/unscheduled_maintenances',
-               :headers => {'Content-Type' => 'application/vnd.api+json'},
-               :body => {:data => req_data}).
-          will_respond_with(
-            :status => 201,
-            :body => {:data => resp_data})
-
-        result = Flapjack::Diner.create_unscheduled_maintenances(unscheduled_maintenance_data)
-        expect(result).not_to be_nil
-        expect(result).to eq(resultify(resp_data))
-      end
-
-      it "creates several unscheduled maintenance periods" do
-        req_data = [maintenance_json('unscheduled', unscheduled_maintenance_data),
-                    maintenance_json('unscheduled', unscheduled_maintenance_2_data)]
-        resp_data = [
-          req_data[0].merge(:relationships => maintenance_rel('unscheduled', unscheduled_maintenance_data)),
-          req_data[1].merge(:relationships => maintenance_rel('unscheduled', unscheduled_maintenance_2_data))
-        ]
-
-        flapjack.given("no data exists").
-          upon_receiving("a POST request with two unscheduled maintenance periods").
-          with(:method => :post,
-               :path => '/unscheduled_maintenances',
-               :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
-               :body => {:data => req_data}).
-          will_respond_with(
-            :status => 201,
-            :body => {:data => resp_data})
-
-        result = Flapjack::Diner.create_unscheduled_maintenances(unscheduled_maintenance_data,
-                                                                 unscheduled_maintenance_2_data)
-        expect(result).not_to be_nil
-        expect(result).to eq(resultify(resp_data))
-      end
+      it "creates several acknowledgements"
 
     end
 

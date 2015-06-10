@@ -51,13 +51,24 @@ module Flapjack
         handle_response(get(req_uri.request_uri))
       end
 
-      def record_data(source, type, relationships)
-        req_data = {:type => type}
+      def record_data(source, type, method)
+
+        rel_names = (Flapjack::Diner::Resources::Relationships::RESOURCE_ASSOCIATIONS[type] || {})[method] || []
+
+        r_type  = Flapjack::Diner::Resources::Relationships::TYPES[type]
+        req_data = {:type => r_type}
         ['id', :id].each do |i|
           req_data[:id] = source[i] if source.has_key?(i)
         end
-        rel_singular = relationships[:singular] || []
-        rel_multiple = relationships[:multiple] || []
+
+        assocs = Flapjack::Diner::Resources::Relationships::ASSOCIATIONS[type]
+
+        rel_singular = rel_names.select {|n|
+          assocs.has_key?(n) && :singular.eql?(assocs[n][:number])
+        }
+        rel_multiple = rel_names.select {|n|
+          assocs.has_key?(n) && :multiple.eql?(assocs[n][:number])
+        }
         excluded = [:id, :type] + rel_singular + rel_multiple
         attrs = source.reject do |k,v|
           excluded.include?(k.to_sym)
@@ -97,16 +108,14 @@ module Flapjack
       def perform_post(type, path, data = {})
         @last_error = nil
         @context = nil
-        links = Flapjack::Diner::Resources::Relationships::ASSOCIATIONS[type] || {}
-        type  = Flapjack::Diner::Resources::Relationships::TYPES[type]
         jsonapi_ext = ""
         req_data = nil
         case data
         when Array
-          req_data = data.collect {|d| record_data(d, type, links[:read_write] || {}) }
+          req_data = data.collect {|d| record_data(d, type, :post) }
           jsonapi_ext = "; ext=bulk"
         when Hash
-          req_data = record_data(data, type, links[:read_write] || {})
+          req_data = record_data(data, type, :post)
         end
         req_uri = build_uri(path)
         log_request('POST', req_uri, :data => req_data)
@@ -131,8 +140,6 @@ module Flapjack
       def perform_patch(type, path, data = nil)
         @last_error = nil
         @context = nil
-        links = Flapjack::Diner::Resources::Relationships::ASSOCIATIONS[type]
-        type = Flapjack::Diner::Resources::Relationships::TYPES[type]
 
         req_uri = nil
         req_data = nil
@@ -141,7 +148,7 @@ module Flapjack
         case data
         when Hash
           raise "Update data does not contain :id" unless data[:id]
-          req_data = record_data(data, type, links[:read_write])
+          req_data = record_data(data, type, :patch)
           ids = [data[:id]]
           req_uri = build_uri(path, ids)
         when Array
@@ -150,7 +157,7 @@ module Flapjack
           data.each do |d|
             d_id = d.has_key?(:id) ? d[:id] : nil
             ids << d_id unless d_id.nil? || d_id.empty?
-            req_data << record_data(d, type, links[:read_write])
+            req_data << record_data(d, type, :patch)
           end
           raise "Update data must each contain :id" unless ids.size == data.size
           req_uri = build_uri(path)

@@ -20,107 +20,179 @@ module Flapjack
                  :test_notifications => 'test_notification',
                  :unscheduled_maintenances => 'unscheduled_maintenance'}
 
-        # copied from flapjack data models' "jsonapi_associations" &
-        # "jsonapi_linked_methods" class methods
+        RESOURCE_ASSOCIATIONS = {
+          :checks => {
+            :post => [:tags],
+            :get => [:alerting_media, :contacts, :current_state,
+              :latest_notifications, :scheduled_maintenances, :states, :tags,
+              :unscheduled_maintenances],
+            :patch => [:tags]
+          },
+          :contacts => {
+            :post => [:media, :rules],
+            :get => [:checks, :media, :rules],
+            :patch => [:media, :rules]
+          },
+          :media => {
+            :post => [:contact, :rules],
+            :get => [:alerting_checks, :contact, :rules],
+            :patch => [:rules]
+          },
+          :rules => {
+            :post => [:contact, :media, :tags],
+            :get => [:contact, :media, :tags],
+            :patch => [:media, :tags]
+          },
+          :scheduled_maintenances => {
+            :get => [:check]
+          },
+          :states => {
+            :get => [:check]
+          },
+          :tags => {
+           :post => [:checks, :rules],
+           :get => [:checks, :rules],
+           :patch => [:checks, :rules]
+          },
+          :unscheduled_maintenances => {
+            :get => [:check]
+          }
+        }
+
+        # extracted from flapjack data models' "jsonapi_associations" class method
         ASSOCIATIONS = {
           :checks => {
-            :read_only  => {
-              :singular => [:current_state, :current_unscheduled_maintenance],
-              :multiple => [:alerting_media, :contacts, :current_scheduled_maintenances,
-                            :latest_notifications, :states]
+            :alerting_media => {
+              :get => true,
+              :number => :multiple, :link => true, :include => true
             },
-            :read_write => {
-              :singular => [],
-              :multiple => [:scheduled_maintenances, :tags,
-                            :unscheduled_maintenances]
+            :contacts => {
+              :get => true,
+              :number => :multiple, :link => true, :include => true
+            },
+            :current_scheduled_maintenances => {
+              :get => true,
+              :number => :multiple, :link => true, :include => true
+            },
+            :current_state => {
+              :get => true,
+              :number => :singular, :link => true, :include => true
+            },
+            :current_unscheduled_maintenance => {
+              :get => true,
+              :number => :singular, :link => true, :include => true
+            },
+            :latest_notifications => {
+              :get => true,
+              :number => :multiple, :link => true, :include => true
+            },
+            :scheduled_maintenances => {
+              :post => true, :get => true,
+              :number => :multiple, :link => true, :include => false
+            },
+            :states => {
+              :get => true,
+              :number => :multiple, :link => true, :include => false
+            },
+            :tags => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :include => true
+            },
+            :unscheduled_maintenances => {
+              :get => true,
+              :number => :multiple, :link => true, :include => false
             }
           },
-          :contacts =>         {
-            :read_only => {
-              :singular => [],
-              :multiple => [:checks]
+          :contacts => {
+            :checks => {
+              :get => true,
+              :number => :multiple, :link => true, :include => true
             },
-            :read_write => {
-              :singular => [],
-              :multiple => [:media, :rules]
+            :media => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :include => true
+            },
+            :rules => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :include => true
             }
           },
           :media => {
-            :read_only => {
-              :singular => [],
-              :multiple => [:alerting_checks]
+            :alerting_checks => {
+              :get => true,
+              :number => :multiple, :link => true, :include => true
             },
-            :read_write => {
-              :singular => [:contact],
-              :multiple => [:rules]
+            :contact => {
+              :get => true,
+              :number => :singular, :link => true, :include => true
+            },
+            :rules => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :include => true
             }
           },
           :rules => {
-            :read_only => {
-              :singular => [],
-              :multiple => []
+            :contact => {
+              :get => true,
+              :number => :singular, :link => true, :include => true
             },
-            :read_write => {
-              :singular => [:contact],
-              :multiple => [:media, :tags]
+            :media => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :include => true
+            },
+            :tags => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :include => true
             }
           },
           :scheduled_maintenances => {
-            :read_only => {
-              :singular => [],
-              :multiple => []
-            },
-            :read_write => {
-              :singular => [:check],
-              :multiple => []
+            :check => {
+              :get => true,
+              :number => :singular, :link => true, :include => true
             }
           },
           :states => {
-            :read_only => {
-              :singular => [:check],
-              :multiple => []
-            },
-            :read_write => {
-              :singular => [],
-              :multiple => []
+            :check => {
+              :get => true,
+              :number => :singular, :link => true, :include => true
             }
           },
           :tags => {
-            :read_only => {
-              :singular => [],
-              :multiple => []
+            :checks => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :include => true
             },
-            :read_write => {
-              :singular => [],
-              :multiple => [:checks, :rules]
+            :rules => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :include => true
             }
           },
           :unscheduled_maintenances => {
-            :read_only => {
-              :singular => [],
-              :multiple => []
-            },
-            :read_write => {
-              :singular => [:check],
-              :multiple => []
+            :check => {
+              :get => true,
+              :number => :singular, :link => true, :include => true
             }
           }
-
         }
 
         ASSOCIATIONS.each_pair do |resource, mappings|
+          resource_id_validator = :tags.eql?(resource) ? :string : :uuid
 
-          read_only_singular  = mappings[:read_only][:singular]
-          read_only_multiple  = mappings[:read_only][:multiple]
+          mappings.select {|n, a| a[:post] }.each do |linked, assoc|
 
-          read_write_singular = mappings[:read_write][:singular]
-          read_write_multiple = mappings[:read_write][:multiple]
+            linked_id_validator  = :tags.eql?(linked) ? :string : :uuid
 
-          resource_id_validator  = :tags.eql?(resource) ? :string : :uuid
+            define_method("create_#{resource}_link_#{linked}") do |resource_id, linked_id|
+              validate_params(:resource_id => resource_id, :linked_id => linked_id) do
+                validate :query => :resource_id, :as => resource_id_validator
+                validate :query => :linked_id, :as => linked_id_validator
+              end
+              perform_post_links(linked,
+                "/#{resource}/#{resource_id}/relationships/#{linked}", linked_id)
+            end
+          end
 
-          (read_only_singular + read_write_singular +
-           read_only_multiple + read_write_multiple).sort.each do |linked|
-
+          mappings.select {|n, a| a[:get] }.each do |linked, assoc|
             define_method("#{resource}_link_#{linked}") do |resource_id, opts = {}|
               validate_params(:resource_id => resource_id) do
                 validate :query => :resource_id, :as => resource_id_validator
@@ -132,20 +204,10 @@ module Flapjack
               end
               perform_get("/#{resource}/#{resource_id}/#{linked}", [], opts)
             end
-
           end
 
-          read_write_singular.each do |linked|
+          mappings.select {|n, a| a[:patch] && :singular.eql?(a[:number]) }.each do |linked, assoc|
             linked_id_validator  = :tags.eql?(linked) ? :string : :uuid
-
-            define_method("create_#{resource}_link_#{linked}") do |resource_id, linked_id|
-              validate_params(:resource_id => resource_id, :linked_id => linked_id) do
-                validate :query => :resource_id, :as => resource_id_validator
-                validate :query => :linked_id, :as => linked_id_validator
-              end
-              perform_post_links(linked,
-                "/#{resource}/#{resource_id}/relationships/#{linked}", linked_id)
-            end
 
             define_method("update_#{resource}_link_#{linked}") do |resource_id, linked_id|
               validate_params(:resource_id => resource_id, :linked_id => linked_id) do
@@ -155,6 +217,10 @@ module Flapjack
               perform_patch_links(linked,
                 "/#{resource}/#{resource_id}/relationships/#{linked}", true, linked_id)
             end
+          end
+
+          mappings.select {|n, a| a[:delete] && :singular.eql?(a[:number]) }.each do |linked, assoc|
+            linked_id_validator  = :tags.eql?(linked) ? :string : :uuid
 
             define_method("delete_#{resource}_link_#{linked}") do |resource_id, linked_id|
               validate_params(:resource_id => resource_id, :linked_id => linked_id) do
@@ -166,7 +232,7 @@ module Flapjack
             end
           end
 
-          read_write_multiple.each do |linked|
+          mappings.select {|n, a| a[:post] && :multiple.eql?(a[:number]) }.each do |linked, assoc|
             type = TYPES[linked] || linked
             linked_ids_validator = :tags.eql?(linked) ? :string_or_array_of_strings : :uuid_or_array_of_uuids
 
@@ -179,6 +245,11 @@ module Flapjack
               perform_post_links(type,
                 "/#{resource}/#{resource_id}/relationships/#{linked}", *linked_ids)
             end
+          end
+
+          mappings.select {|n, a| a[:patch] && :multiple.eql?(a[:number]) }.each do |linked, assoc|
+            type = TYPES[linked] || linked
+            linked_ids_validator = :tags.eql?(linked) ? :string_or_array_of_strings : :uuid_or_array_of_uuids
 
             define_method("update_#{resource}_link_#{linked}") do |resource_id, *linked_ids|
               validate_params(:resource_id => resource_id, :linked_ids => linked_ids) do
@@ -188,6 +259,11 @@ module Flapjack
               perform_patch_links(type,
                 "/#{resource}/#{resource_id}/relationships/#{linked}", false, *linked_ids)
             end
+          end
+
+          mappings.select {|n, a| a[:delete] && :multiple.eql?(a[:number]) }.each do |linked, assoc|
+            type = TYPES[linked] || linked
+            linked_ids_validator = :tags.eql?(linked) ? :string_or_array_of_strings : :uuid_or_array_of_uuids
 
             define_method("delete_#{resource}_link_#{linked}") do |resource_id, *linked_ids|
               validate_params(:resource_id => resource_id, :linked_ids => linked_ids) do

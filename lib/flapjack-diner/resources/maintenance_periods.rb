@@ -22,7 +22,7 @@ module Flapjack
           perform_post(:scheduled_maintenances, '/scheduled_maintenances', data)
         end
 
-        def create_unscheduled_maintenances(*args)
+        def create_acknowledgements(*args)
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :uuid
@@ -30,7 +30,7 @@ module Flapjack
             validate :query => :summary,  :as => :string
             validate :query => :check, :as => :singular_link_uuid
           end
-          perform_post(:unscheduled_maintenances, '/unscheduled_maintenances',
+          perform_post(:acknowledgements, '/acknowledgements',
                        data)
         end
 

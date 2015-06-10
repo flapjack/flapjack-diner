@@ -118,31 +118,4 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
     expect(result).to eq(:id => contact_data[:id], :type => 'contact')
   end
 
-  it 'sets the contact for a medium' do
-    flapjack.given("a contact and a medium exist").
-      upon_receiving("a PATCH request updating the contact for a medium").
-      with(:method => :patch, :path => "/media/#{email_data[:id]}/relationships/contact",
-           :headers => {'Content-Type' => 'application/vnd.api+json'},
-           :body => {:data => {:id => contact_data[:id], :type => 'contact'}}).
-      will_respond_with(:status => 204,
-                        :body => '')
-
-    result = Flapjack::Diner.update_media_link_contact(email_data[:id],
-      contact_data[:id])
-    expect(result).to be true
-  end
-
-  it 'clears the contact from a rule' do
-    flapjack.given("a contact with a rule exists").
-      upon_receiving("a PATCH request clearing a contact from a rule").
-      with(:method => :patch, :path => "/rules/#{rule_data[:id]}/relationships/contact",
-           :headers => {'Content-Type' => 'application/vnd.api+json'},
-           :body => {:data => nil}).
-      will_respond_with(:status => 204,
-                        :body => '')
-
-    result = Flapjack::Diner.update_rules_link_contact(rule_data[:id], nil)
-    expect(result).to be true
-  end
-
 end
