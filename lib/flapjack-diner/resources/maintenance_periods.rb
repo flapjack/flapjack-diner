@@ -22,18 +22,6 @@ module Flapjack
           perform_post(:scheduled_maintenances, '/scheduled_maintenances', data)
         end
 
-        def create_acknowledgements(*args)
-          data = unwrap_data(*args)
-          validate_params(data) do
-            validate :query => :id, :as => :uuid
-            validate :query => :end_time, :as => [:required, :time]
-            validate :query => :summary,  :as => :string
-            validate :query => :check, :as => :singular_link_uuid
-          end
-          perform_post(:acknowledgements, '/acknowledgements',
-                       data)
-        end
-
         def update_scheduled_maintenances(*args)
           data = unwrap_data(*args)
           validate_params(data) do
