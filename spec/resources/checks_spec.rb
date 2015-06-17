@@ -303,7 +303,6 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           :body => '' )
 
       result = Flapjack::Diner.update_checks(:id => check_data[:id], :tags => [tag_data[:name]])
-      p Flapjack::Diner.last_error
       expect(result).to be_a(TrueClass)
     end
 

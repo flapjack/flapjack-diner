@@ -10,7 +10,9 @@ module Flapjack
     module Resources
       module Relationships
 
-        TYPES = {:checks => 'check',
+        TYPES = {
+                 :acknowledgements => 'acknowledgement',
+                 :checks => 'check',
                  :contacts => 'contact',
                  :media => 'medium',
                  :rules => 'rule',
@@ -21,6 +23,9 @@ module Flapjack
                  :unscheduled_maintenances => 'unscheduled_maintenance'}
 
         RESOURCE_ASSOCIATIONS = {
+          :acknowledgements => {
+            :post => [:check, :tag]
+          },
           :checks => {
             :post => [:tags],
             :get => [:alerting_media, :contacts, :current_state,
@@ -54,6 +59,9 @@ module Flapjack
            :get => [:checks, :rules],
            :patch => [:checks, :rules]
           },
+          :test_notifications => {
+            :post => [:check, :tag]
+          },
           :unscheduled_maintenances => {
             :get => [:check]
           }
@@ -61,6 +69,16 @@ module Flapjack
 
         # extracted from flapjack data models' "jsonapi_associations" class method
         ASSOCIATIONS = {
+          :acknowledgements => {
+            :check => {
+              :post => true,
+              :number => :singular, :link => false, :include => false
+            },
+            :tag => {
+              :post => true,
+              :number => :singular, :link => false, :include => false
+            }
+          },
           :checks => {
             :alerting_media => {
               :get => true,
@@ -165,6 +183,16 @@ module Flapjack
             :rules => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :include => true
+            }
+          },
+          :test_notifications => {
+            :check => {
+              :post => true,
+              :number => :singular, :link => false, :include => false
+            },
+            :tag => {
+              :post => true,
+              :number => :singular, :link => false, :include => false
             }
           },
           :unscheduled_maintenances => {

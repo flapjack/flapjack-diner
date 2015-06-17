@@ -70,22 +70,24 @@ describe Flapjack::Diner do
     end
 
     it "logs a POST request" do
-      nd = notification_data
-      resp_data = {
-        :type => 'test_notification',
-        :id => nd[:id],
-        :attributes => nd.reject {|k,v| :id.eql?(k) }
-      }
+      req_data  = test_notification_json(test_notification_data).merge(
+        :relationships => {
+          :check => {
+            :data => {:type => 'check', :id => check_data[:id]}
+          }
+        }
+      )
+      resp_data = test_notification_json(test_notification_data)
 
       response = {:data => resp_data}.to_json
-      req = stub_request(:post, "http://#{server}/test_notifications/checks/#{check_data[:id]}").
+      req = stub_request(:post, "http://#{server}/test_notifications").
               to_return(:status => 201, :body => response)
-      expect(logger).to receive(:info).with("POST http://#{server}/test_notifications/checks/#{check_data[:id]}\n" +
-        "  Body: {:data=>#{resp_data.inspect}}")
+      expect(logger).to receive(:info).with("POST http://#{server}/test_notifications\n" +
+        "  Body: {:data=>#{req_data.inspect}}")
       expect(logger).to receive(:info).with("  Response Code: 201")
       expect(logger).to receive(:info).with("  Response Body: #{response}")
 
-      result = Flapjack::Diner.create_test_notifications_checks(check_data[:id], nd)
+      result = Flapjack::Diner.create_test_notifications(test_notification_data.merge(:check => check_data[:id]))
       expect(req).to have_been_requested
       expect(result).to eq(resultify(resp_data))
     end

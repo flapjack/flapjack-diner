@@ -52,14 +52,14 @@ module Flapjack
       end
 
       def record_data(source, type, method)
-
         rel_names = (Flapjack::Diner::Resources::Relationships::RESOURCE_ASSOCIATIONS[type] || {})[method] || []
 
         r_type  = Flapjack::Diner::Resources::Relationships::TYPES[type]
-        req_data = {:type => r_type}
+        req_data = {}
         ['id', :id].each do |i|
           req_data[:id] = source[i] if source.has_key?(i)
         end
+        req_data[:type] = r_type
 
         assocs = Flapjack::Diner::Resources::Relationships::ASSOCIATIONS[type]
 
@@ -102,14 +102,17 @@ module Flapjack
         end
 
         req_data[:relationships] = rel_data unless rel_data.empty?
+
         req_data
       end
 
       def perform_post(type, path, data = {})
         @last_error = nil
         @context = nil
+
         jsonapi_ext = ""
         req_data = nil
+
         case data
         when Array
           req_data = data.collect {|d| record_data(d, type, :post) }
