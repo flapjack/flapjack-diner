@@ -17,10 +17,16 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
     context 'scheduled maintenance periods' do
 
       it "creates a scheduled maintenance period" do
-        req_data  = maintenance_json('scheduled', scheduled_maintenance_data)
+        req_data  = maintenance_json('scheduled', scheduled_maintenance_data).merge(
+          :relationships => {
+            :check => {
+              :data => {:type => 'check', :id => check_data[:id]}
+            }
+          }
+        )
         resp_data = req_data.merge(:relationships => maintenance_rel('scheduled', scheduled_maintenance_data))
 
-        flapjack.given("no data exists").
+        flapjack.given("a check exists").
           upon_receiving("a POST request with one scheduled maintenance period").
           with(:method => :post,
                :path => '/scheduled_maintenances',
@@ -30,7 +36,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
             :status => 201,
             :body => {:data => resp_data})
 
-        result = Flapjack::Diner.create_scheduled_maintenances(scheduled_maintenance_data)
+        result = Flapjack::Diner.create_scheduled_maintenances(scheduled_maintenance_data.merge(:check => check_data[:id]))
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
       end
@@ -58,14 +64,6 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
       end
-
-    end
-
-    context 'acknowledgements' do
-
-      it "creates an acknowledgement"
-
-      it "creates several acknowledgements"
 
     end
 

@@ -49,6 +49,7 @@ module Flapjack
             :patch => [:media, :tags]
           },
           :scheduled_maintenances => {
+            :post => [:check],
             :get => [:check]
           },
           :states => {
@@ -165,7 +166,7 @@ module Flapjack
           },
           :scheduled_maintenances => {
             :check => {
-              :get => true,
+              :post => true, :get => true,
               :number => :singular, :link => true, :include => true
             }
           },

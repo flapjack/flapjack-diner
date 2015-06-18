@@ -14,6 +14,7 @@ module Flapjack
           validate_params(data) do
             validate :query => :duration, :as => :integer
             validate :query => :summary, :as => :string
+            validate :query => :check, :as => :singular_link_uuid
           end
           perform_post(:acknowledgements, "/acknowledgements", data)
         end
@@ -22,6 +23,7 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :summary, :as => :string
+            validate :query => :check, :as => :singular_link_uuid
           end
           perform_post(:test_notifications, "/test_notifications", data)
         end
