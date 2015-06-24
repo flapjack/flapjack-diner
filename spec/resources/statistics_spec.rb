@@ -11,13 +11,10 @@ describe Flapjack::Diner::Resources::Statistics, :pact => true do
   context 'read' do
     it 'gets all statistics' do
       resp_data = [global_statistics_json]
-
-      # # deeply nested Pact::Terms not matched?
-      # resp_data.first[:attributes][:created_at] = Pact::Term.new(
-      #   :generate => global_statistics_data[:created_at],
-      #   :matcher  => ISO8601_RE
-      # )
-      resp_data.first[:attributes].delete(:created_at)
+      resp_data.first[:attributes][:created_at] = Pact::Term.new(
+        :generate => global_statistics_data[:created_at],
+        :matcher  => /\A#{ISO8601_PAT}\z/
+      )
 
       flapjack.given("a global statistics object exists").
         upon_receiving("a GET request for all statistics").
@@ -28,18 +25,16 @@ describe Flapjack::Diner::Resources::Statistics, :pact => true do
           :body => {:data => resp_data})
 
       result = Flapjack::Diner.statistics
-      expect(result).to eq(resultify(resp_data))
+      expect(result).to eq(resultify([global_statistics_json]))
     end
 
     it 'gets global statistics' do
       resp_data = [global_statistics_json]
 
-      # # deeply nested Pact::Terms not matched?
-      # resp_data.first[:attributes][:created_at] = Pact::Term.new(
-      #   :generate => global_statistics_data[:created_at],
-      #   :matcher  => ISO8601_RE
-      # )
-      resp_data.first[:attributes].delete(:created_at)
+      resp_data.first[:attributes][:created_at] = Pact::Term.new(
+        :generate => global_statistics_data[:created_at],
+        :matcher  => /\A#{ISO8601_PAT}\z/
+      )
 
       flapjack.given("a global statistics object exists").
         upon_receiving("a GET request for some statistics").
@@ -51,7 +46,7 @@ describe Flapjack::Diner::Resources::Statistics, :pact => true do
           :body => {:data => resp_data})
 
       result = Flapjack::Diner.statistics(:filter => {:instance_name => global_statistics_data[:instance_name]})
-      expect(result).to eq(resultify(resp_data))
+      expect(result).to eq(resultify([global_statistics_json]))
     end
   end
 
