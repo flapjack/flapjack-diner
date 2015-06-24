@@ -301,6 +301,7 @@ module Flapjack
 
       def validate_params(query = {}, &validation)
         return unless block_given?
+        query = {} if [].eql?(query)
         case query
         when Array
           query.each do |q|

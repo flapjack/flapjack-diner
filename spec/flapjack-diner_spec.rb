@@ -113,7 +113,7 @@ describe Flapjack::Diner do
 
       expect {
         Flapjack::Diner.contacts
-      }.to raise_error
+      }.to raise_error(Timeout::Error)
       expect(req).to have_been_requested
     end
 
@@ -123,7 +123,7 @@ describe Flapjack::Diner do
 
       expect {
         Flapjack::Diner.contacts
-      }.to raise_error
+      }.to raise_error(JSON::ParserError)
       expect(req).to have_been_requested
     end
 
@@ -131,23 +131,18 @@ describe Flapjack::Diner do
       req = stub_request(:get, /http:\/\/#{server}\/*/)
 
       expect {
-        Flapjack::Diner.delete_scheduled_maintenances(scheduled_maintenance_data[:id])
-      }.to raise_error
+        Flapjack::Diner.create_scheduled_maintenances
+      }.to raise_error(ArgumentError)
       expect(req).not_to have_been_requested
     end
 
     it "raises an exception if a time argument is provided with the wrong data type" do
-      start_str  = '2011-08-01T00:00:00+10:00'
-      finish_str = 'yesterday'
-
-      start  = Time.iso8601(start_str)
-
       req = stub_request(:get, /http:\/\/#{server}\/*/)
 
       expect {
-        Flapjack::Diner.downtime_reports(check_data[:id],
-          :start_time => start_time, :end_time => end_time)
-      }.to raise_error
+        Flapjack::Diner.create_scheduled_maintenances(:start_time => Time.now,
+          :end_time => 'tomorrow')
+      }.to raise_error(ArgumentError)
       expect(req).not_to have_been_requested
     end
 
