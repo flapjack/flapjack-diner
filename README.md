@@ -7,8 +7,7 @@
 
 Access the JSON API of a [Flapjack](http://flapjack.io/) system monitoring server.
 
-Note that flapjack-diner [releases](https://github.com/flapjack/flapjack-diner/releases) after [1.0.0.rc1](https://github.com/flapjack/flapjack-diner/releases/tag/v1.0.0.rc1) require the [JSONAPI](http://flapjack.io/docs/jsonapi) gateway of Flapjack to connect to. All previous releases (0.x) require the older [API](http://flapjack.io/docs/0.9/API) Flapjack gateway.
-
+Please note that the following documentation has not yet been updated for the upcoming `v2.0.0alpha1` release of this gem. You may instead be looking for [documentation for the latest released version](https://github.com/flapjack/flapjack-diner/blob/maint/1.x/README.md).
 
 ## Installation
 
