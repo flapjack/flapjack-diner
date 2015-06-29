@@ -13,13 +13,15 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :uuid
-            validate :query => [:transport, :address],
-              :as => [:required, :string]
-            validate :query => [:interval, :rollup_threshold],
-                     :as => [:required, :integer]
-            validate :query => :contact, :as => :singular_link_uuid
+            validate :query => :transport, :as => [:string, :required]
+            validate :query => [:address, :pagerduty_subdomain,
+                                :pagerduty_token], :as => :string
+            validate :query => [:interval, :rollup_threshold,
+                                :pagerduty_ack_duration], :as => :integer
+            validate :query => :contact, :as => [:singular_link_uuid, :required]
             validate :query => :rules, :as => :multiple_link_uuid
           end
+          # FIXME mirror Flapjack's data validation for pagerduty/non-pagerduty
           perform_post(:media, "/media", data)
         end
 
@@ -36,10 +38,10 @@ module Flapjack
         def update_media(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => [:address, :transport], :as => :string
-            validate :query => [:interval, :rollup_threshold],
-                     :as => :integer
-            validate :query => :contact, :as => :singular_link_uuid
+            validate :query => [:transport, :address, :pagerduty_subdomain,
+                                :pagerduty_token], :as => :string
+            validate :query => [:interval, :rollup_threshold,
+                                :pagerduty_ack_duration], :as => :integer
             validate :query => :rules, :as => :multiple_link_uuid
           end
           perform_patch(:media, "/media", data)

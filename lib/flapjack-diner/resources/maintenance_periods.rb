@@ -18,7 +18,9 @@ module Flapjack
             validate :query => :end_time,   :as => [:required, :time]
             validate :query => :summary,    :as => :string
             validate :query => :check, :as => :singular_link_uuid
+            validate :query => :tag, :as => :singular_link_uuid
           end
+          # FIXME validate that check or tag is being passed
           perform_post(:scheduled_maintenances, '/scheduled_maintenances', data)
         end
 

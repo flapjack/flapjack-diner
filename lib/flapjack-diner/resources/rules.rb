@@ -15,7 +15,9 @@ module Flapjack
           validate_params(data) do
             validate :query => :id, :as => :uuid
             # TODO proper validation of time_restrictions field
-            validate :query => :contact, :as => :singular_link_uuid
+            validate :query => :conditions_list, :as => :string
+            validate :query => :is_blackhole, :as => :boolean
+            validate :query => :contact, :as => [:singular_link_uuid, :required]
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end
@@ -36,7 +38,8 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             # TODO proper validation of time_restrictions field
-            validate :query => :contact, :as => :singular_link_uuid
+            validate :query => :conditions_list, :as => :string
+            validate :query => :is_blackhole, :as => :boolean
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end

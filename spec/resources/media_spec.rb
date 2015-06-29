@@ -11,10 +11,19 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
   context 'create' do
 
     it "submits a POST request for a medium" do
-      req_data  = medium_json(sms_data)
-      resp_data = req_data.merge(:relationships => medium_rel(sms_data))
+      req_data  = medium_json(sms_data).merge(
+        :relationships => {
+          :contact => {
+            :data => {
+              :type => 'contact',
+              :id => contact_data[:id]
+            }
+          }
+        }
+      )
+      resp_data = medium_json(sms_data).merge(:relationships => medium_rel(sms_data))
 
-      flapjack.given("no data exists").
+      flapjack.given("a contact exists").
         upon_receiving("a POST request with one medium").
         with(:method => :post,
              :path => '/media',
@@ -26,19 +35,37 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
           :body => { :data => resp_data }
         )
 
-      result = Flapjack::Diner.create_media(sms_data)
+      result = Flapjack::Diner.create_media(sms_data.merge(:contact => contact_data[:id]))
       expect(result).not_to be_nil
       expect(result).to eq(resultify(resp_data))
     end
 
     it "submits a POST request for several media" do
-      req_data = [medium_json(email_data), medium_json(sms_data)]
+      req_data = [medium_json(email_data).merge(
+        :relationships => {
+          :contact => {
+            :data => {
+              :type => 'contact',
+              :id => contact_data[:id]
+            }
+          }
+        }
+      ), medium_json(sms_data).merge(
+        :relationships => {
+          :contact => {
+            :data => {
+              :type => 'contact',
+              :id => contact_data[:id]
+            }
+          }
+        }
+      )]
       resp_data = [
-        req_data[0].merge(:relationships => medium_rel(email_data)),
-        req_data[1].merge(:relationships => medium_rel(sms_data))
+        medium_json(email_data).merge(:relationships => medium_rel(email_data)),
+        medium_json(sms_data).merge(:relationships => medium_rel(sms_data))
       ]
 
-      flapjack.given("no data exists").
+      flapjack.given("a contact exists").
         upon_receiving("a POST request with two media").
         with(:method => :post,
              :path => '/media',
@@ -49,7 +76,8 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:data => resp_data})
 
-      result = Flapjack::Diner.create_media(email_data, sms_data)
+      result = Flapjack::Diner.create_media(email_data.merge(:contact => contact_data[:id]),
+        sms_data.merge(:contact => contact_data[:id]))
       expect(result).not_to be_nil
       expect(result).to eq(resultify(resp_data))
     end

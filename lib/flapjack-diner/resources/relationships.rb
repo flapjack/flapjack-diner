@@ -85,7 +85,7 @@ module Flapjack
               :number => :multiple, :link => true, :includable => true
             },
             :media => {
-              :post => true, :get => true, :patch => true, :delete => true,
+              :get => true,
               :number => :multiple, :link => true, :includable => true
             },
             :rules => {
@@ -99,7 +99,7 @@ module Flapjack
               :number => :multiple, :link => true, :includable => true
             },
             :contact => {
-              :get => true,
+              :post => true, :get => true,
               :number => :singular, :link => true, :includable => true
             },
             :rules => {
@@ -109,7 +109,7 @@ module Flapjack
           },
           :rules => {
             :contact => {
-              :get => true,
+              :post => true, :get => true,
               :number => :singular, :link => true, :includable => true
             },
             :media => {

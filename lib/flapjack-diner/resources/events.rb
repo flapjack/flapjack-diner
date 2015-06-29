@@ -15,7 +15,9 @@ module Flapjack
             validate :query => :duration, :as => :integer
             validate :query => :summary, :as => :string
             validate :query => :check, :as => :singular_link_uuid
+            validate :query => :tag, :as => :string
           end
+          # FIXME validate that check or tag is being passed
           perform_post(:acknowledgements, "/acknowledgements", data)
         end
 
@@ -24,7 +26,9 @@ module Flapjack
           validate_params(data) do
             validate :query => :summary, :as => :string
             validate :query => :check, :as => :singular_link_uuid
+            validate :query => :tag, :as => :string
           end
+          # FIXME validate that check or tag is being passed
           perform_post(:test_notifications, "/test_notifications", data)
         end
       end
