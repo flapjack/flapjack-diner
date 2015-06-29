@@ -52,8 +52,6 @@ module Flapjack
       end
 
       def record_data(source, type, method)
-        rel_names = (Flapjack::Diner::Resources::Relationships::RESOURCE_ASSOCIATIONS[type] || {})[method] || []
-
         r_type  = Flapjack::Diner::Resources::Relationships::TYPES[type]
         req_data = {}
         ['id', :id].each do |i|
@@ -61,14 +59,22 @@ module Flapjack
         end
         req_data[:type] = r_type
 
-        assocs = Flapjack::Diner::Resources::Relationships::ASSOCIATIONS[type]
+        assocs = Flapjack::Diner::Resources::Relationships::ASSOCIATIONS[type] || {}
 
-        rel_singular = rel_names.select {|n|
-          assocs.has_key?(n) && :singular.eql?(assocs[n][:number])
-        }
-        rel_multiple = rel_names.select {|n|
-          assocs.has_key?(n) && :multiple.eql?(assocs[n][:number])
-        }
+        rel_singular = assocs.inject([]) do |memo, (assoc_name, assoc)|
+          if assoc[method].is_a?(TrueClass) && :singular.eql?(assoc[:number])
+            memo << assoc_name
+          end
+          memo
+        end
+
+        rel_multiple = assocs.inject([]) do |memo, (assoc_name, assoc)|
+          if assoc[method].is_a?(TrueClass) && :multiple.eql?(assoc[:number])
+            memo << assoc_name
+          end
+          memo
+        end
+
         excluded = [:id, :type] + rel_singular + rel_multiple
         attrs = source.reject do |k,v|
           excluded.include?(k.to_sym)
