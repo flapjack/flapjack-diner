@@ -17,7 +17,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(:status => 204,
                         :body => '')
 
-    result = Flapjack::Diner.create_checks_link_tags(check_data[:id], tag_data[:name])
+    result = Flapjack::Diner.create_check_link_tags(check_data[:id], tag_data[:name])
     expect(result).to be true
   end
 
@@ -31,7 +31,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(:status => 204,
                         :body => '')
 
-    result = Flapjack::Diner.create_checks_link_tags(check_data[:id],
+    result = Flapjack::Diner.create_check_link_tags(check_data[:id],
       tag_data[:name], tag_2_data[:name])
     expect(result).to be true
   end
@@ -45,7 +45,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
         :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
         :body => {:data => [{:id => tag_data[:name], :type => 'tag'}]})
 
-    result = Flapjack::Diner.checks_link_tags(check_data[:id])
+    result = Flapjack::Diner.check_link_tags(check_data[:id])
     expect(result).to eq([{:id => tag_data[:name], :type => 'tag'}])
   end
 
@@ -58,7 +58,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(:status => 204,
                         :body => '')
 
-    result = Flapjack::Diner.update_checks_link_tags(check_data[:id],
+    result = Flapjack::Diner.update_check_link_tags(check_data[:id],
       tag_data[:name])
     expect(result).to be true
   end
@@ -72,7 +72,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(:status => 204,
                         :body => '')
 
-    result = Flapjack::Diner.update_checks_link_tags(check_data[:id], [])
+    result = Flapjack::Diner.update_check_link_tags(check_data[:id], [])
     expect(result).to be true
   end
 
@@ -85,7 +85,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(:status => 204,
                         :body => '')
 
-    result = Flapjack::Diner.delete_checks_link_tags(check_data[:id],
+    result = Flapjack::Diner.delete_check_link_tags(check_data[:id],
       tag_data[:name])
     expect(result).to be true
   end
@@ -100,7 +100,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(:status => 204,
                         :body => '')
 
-    result = Flapjack::Diner.delete_checks_link_tags(check_data[:id],
+    result = Flapjack::Diner.delete_check_link_tags(check_data[:id],
       tag_data[:name], tag_2_data[:name])
     expect(result).to be true
   end
@@ -114,7 +114,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
         :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
         :body => {:data => {:id => contact_data[:id], :type => 'contact'}})
 
-    result = Flapjack::Diner.media_link_contact(email_data[:id])
+    result = Flapjack::Diner.medium_link_contact(email_data[:id])
     expect(result).to eq(:id => contact_data[:id], :type => 'contact')
   end
 
