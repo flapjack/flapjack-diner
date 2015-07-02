@@ -46,6 +46,17 @@ module Flapjack
           end
         end
 
+        incl = data[:include]
+        unless incl.nil?
+          case incl
+          when Array
+            raise ArgumentError.new() if incl.any? {|i| i =~ /,/}
+            data[:include] = incl.join(",")
+          when String
+            raise ArgumentError.new() if incl =~ /,/
+          end
+        end
+
         req_uri = build_uri(path, ids, data)
         log_request('GET', req_uri, data)
         handle_response(get(req_uri.request_uri))

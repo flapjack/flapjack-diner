@@ -198,7 +198,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:data => resp_data, :included => resp_included})
 
-        result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media,rules')
+        result = Flapjack::Diner.contacts(contact_data[:id], :include => ['media', 'rules'])
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
         expect(Flapjack::Diner.context).to eq(:included => [resultify(resp_included[0]), resultify(resp_included[1])])
