@@ -13,7 +13,7 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :uuid
-            validate :query => :transport, :as => [:string, :required]
+            validate :query => :transport, :as => [:non_empty_string, :required]
             validate :query => [:address, :pagerduty_subdomain,
                                 :pagerduty_token], :as => :non_empty_string
             validate :query => [:interval, :rollup_threshold,
@@ -21,8 +21,6 @@ module Flapjack
             validate :query => :contact, :as => [:singular_link_uuid, :required]
             validate :query => :rules, :as => :multiple_link_uuid
           end
-          # FIXME mirror Flapjack's data validation for pagerduty/non-pagerduty
-          # transport is known, so only check for that case
           perform_post(:media, "/media", data)
         end
 
@@ -46,8 +44,6 @@ module Flapjack
                                 :pagerduty_ack_duration], :as => :positive_integer
             validate :query => :rules, :as => :multiple_link_uuid
           end
-          # FIXME mirror Flapjack's data validation for pagerduty/non-pagerduty --
-          # transport is not known, so test for both cases and at least one must pass
           perform_patch(:media, "/media", data)
         end
 
@@ -56,14 +52,6 @@ module Flapjack
                 'parameter' if ids.nil? || ids.empty?
           perform_delete(:media, '/media', *ids)
         end
-
-        private
-
-        # def _validate_media_non_pagerduty(data)
-        # end
-
-        # def _validate_media_pagerduty(data)
-        # end
 
       end
     end

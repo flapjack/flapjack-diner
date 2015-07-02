@@ -7,7 +7,6 @@ module Flapjack
       @query = query
     end
 
-    # FIXME check that optional string validation will accept nil but reject empty string
     def validate(args)
       args = args.dup
       validations = args.delete(:as)

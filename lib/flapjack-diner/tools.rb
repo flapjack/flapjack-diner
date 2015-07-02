@@ -50,10 +50,10 @@ module Flapjack
         unless incl.nil?
           case incl
           when Array
-            raise ArgumentError.new() if incl.any? {|i| i =~ /,/}
+            raise ArgumentError.new("Include parameters must not contain commas") if incl.any? {|i| i =~ /,/}
             data[:include] = incl.join(",")
           when String
-            raise ArgumentError.new() if incl =~ /,/
+            raise ArgumentError.new("Include parameters must not contain commas") if incl =~ /,/
           end
         end
 
