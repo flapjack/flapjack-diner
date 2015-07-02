@@ -1,3 +1,6 @@
+# fairly similar to the object in Zermelo that this ends up being translated to
+# by Flapjack's JSONAPI, although slightly limited in scope
+
 module Flapjack
   module Diner
     class IndexRange

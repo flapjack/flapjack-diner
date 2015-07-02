@@ -167,28 +167,29 @@ module Flapjack
 
           # puts "\n"
 
-          mappings.select {|n, a| a[:post] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
+          # NB: no remaining non-GET singular link methods, so these are commented out for now
 
-            linked_id_validator  = :tags.eql?(linked) ? :string : :uuid
+          # mappings.select {|n, a| a[:post] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
 
-            # p "S create_#{res}_link_#{linked}"
-            define_method("create_#{res}_link_#{linked}") do |resource_id, linked_id|
-              validate_params(:resource_id => resource_id, :linked_id => linked_id) do
-                validate :query => :resource_id, :as => resource_id_validator
-                validate :query => :linked_id, :as => linked_id_validator
-              end
-              perform_post_links(linked,
-                "/#{resource}/#{resource_id}/relationships/#{linked}", linked_id)
-            end
-          end
+          #   linked_id_validator  = :tag.eql?(linked) ? :singular_link : :singular_link_uuid
+
+          #   # p "S create_#{res}_link_#{linked}"
+          #   define_method("create_#{res}_link_#{linked}") do |resource_id, linked_id|
+          #     validate_params(:resource_id => resource_id, :linked_id => linked_id) do
+          #       validate :query => :resource_id, :as => resource_id_validator
+          #       validate :query => :linked_id, :as => linked_id_validator
+          #     end
+          #     perform_post_links(linked,
+          #       "/#{resource}/#{resource_id}/relationships/#{linked}", linked_id)
+          #   end
+          # end
 
           mappings.select {|n, a| a[:post] && a[:link] && :multiple.eql?(a[:number]) }.each do |linked, assoc|
             type = TYPES[linked] || linked
-            linked_ids_validator = :tags.eql?(linked) ? :string_or_array_of_strings : :uuid_or_array_of_uuids
+            linked_ids_validator = :tags.eql?(linked) ? :multiple_link : :multiple_link_uuid
 
             # p "M create_#{res}_link_#{linked}"
             define_method("create_#{res}_link_#{linked}") do |resource_id, *linked_ids|
-              linked_ids = linked_ids.first if linked_ids.size == 1
               validate_params(:resource_id => resource_id, :linked_ids => linked_ids) do
                 validate :query => :resource_id, :as => resource_id_validator
                 validate :query => :linked_ids, :as => linked_ids_validator
@@ -213,23 +214,23 @@ module Flapjack
             end
           end
 
-          mappings.select {|n, a| a[:patch] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
-            linked_id_validator  = :tags.eql?(linked) ? :string : :uuid
+          # mappings.select {|n, a| a[:patch] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
+          #   linked_id_validator  = :tag.eql?(linked) ? :singular_link : :singular_link_uuid
 
-            # p "S update_#{res}_link_#{linked}"
-            define_method("update_#{res}_link_#{linked}") do |resource_id, linked_id|
-              validate_params(:resource_id => resource_id, :linked_id => linked_id) do
-                validate :query => :resource_id, :as => resource_id_validator
-                validate :query => :linked_id, :as => linked_id_validator
-              end
-              perform_patch_links(linked,
-                "/#{resource}/#{resource_id}/relationships/#{linked}", true, linked_id)
-            end
-          end
+          #   # p "S update_#{res}_link_#{linked}"
+          #   define_method("update_#{res}_link_#{linked}") do |resource_id, linked_id|
+          #     validate_params(:resource_id => resource_id, :linked_id => linked_id) do
+          #       validate :query => :resource_id, :as => resource_id_validator
+          #       validate :query => :linked_id, :as => linked_id_validator
+          #     end
+          #     perform_patch_links(linked,
+          #       "/#{resource}/#{resource_id}/relationships/#{linked}", true, linked_id)
+          #   end
+          # end
 
           mappings.select {|n, a| a[:patch] && a[:link] && :multiple.eql?(a[:number]) }.each do |linked, assoc|
             type = TYPES[linked] || linked
-            linked_ids_validator = :tags.eql?(linked) ? :string_or_array_of_strings : :uuid_or_array_of_uuids
+            linked_ids_validator = :tags.eql?(linked) ? :multiple_link : :multiple_link_uuid
 
             # p "M update_#{res}_link_#{linked}"
             define_method("update_#{res}_link_#{linked}") do |resource_id, *linked_ids|
@@ -242,19 +243,19 @@ module Flapjack
             end
           end
 
-          mappings.select {|n, a| a[:delete] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
-            linked_id_validator  = :tags.eql?(linked) ? :string : :uuid
+          # mappings.select {|n, a| a[:delete] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
+          #   linked_id_validator  = :tag.eql?(linked) ? :singular_link : :singular_link_uuid
 
-            # p "S delete_#{res}_link_#{linked}"
-            define_method("delete_#{res}_link_#{linked}") do |resource_id, linked_id|
-              validate_params(:resource_id => resource_id, :linked_id => linked_id) do
-                validate :query => :resource_id, :as => resource_id_validator
-                validate :query => :linked_id, :as => linked_id_validator
-              end
-              perform_delete_links(linked,
-                "/#{resource}/#{resource_id}/relationships/#{linked}", linked_id)
-            end
-          end
+          #   # p "S delete_#{res}_link_#{linked}"
+          #   define_method("delete_#{res}_link_#{linked}") do |resource_id, linked_id|
+          #     validate_params(:resource_id => resource_id, :linked_id => linked_id) do
+          #       validate :query => :resource_id, :as => resource_id_validator
+          #       validate :query => :linked_id, :as => linked_id_validator
+          #     end
+          #     perform_delete_links(linked,
+          #       "/#{resource}/#{resource_id}/relationships/#{linked}", linked_id)
+          #   end
+          # end
 
           mappings.select {|n, a| a[:delete] && a[:link] && :multiple.eql?(a[:number]) }.each do |linked, assoc|
             type = TYPES[linked] || linked

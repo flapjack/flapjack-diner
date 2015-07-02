@@ -7,6 +7,7 @@ module Flapjack
       @query = query
     end
 
+    # FIXME check that optional string validation will accept nil but reject empty string
     def validate(args)
       args = args.dup
       validations = args.delete(:as)
@@ -45,7 +46,7 @@ module Flapjack
         next if target.nil? || target.respond_to?(:iso8601) ||
           (target.is_a?(String) && valid_time_str?(target))
         @errors << "'#{target}' must be a time object or ISO " \
-                   '8601-formatted string.'
+                   '8601-formatted String.'
       end
     end
 
@@ -61,7 +62,15 @@ module Flapjack
       elements.each do |element|
         target = @query[element]
         next if target.nil? || (target.is_a?(Integer) && (target > 0))
-        @errors << "'#{target}' must be an integer greater than 0."
+        @errors << "'#{target}' must be an Integer greater than 0."
+      end
+    end
+
+    def non_empty_string(*elements)
+      elements.each do |element|
+        target = @query[element]
+        next if target.nil? || (target.is_a?(String) && !target.empty?)
+        @errors << "'#{target}' must be a non-empty String."
       end
     end
 
@@ -103,6 +112,14 @@ module Flapjack
       end
     end
 
+    def singular_link(*elements)
+      elements.each do |element|
+        target = @query[element]
+        next if target.nil? || (target.is_a?(String) && !target.empty?)
+        @errors << "'#{target}' association must be a String ID."
+      end
+    end
+
     def singular_link_uuid(*elements)
       elements.each do |element|
         target = @query[element]
@@ -116,7 +133,7 @@ module Flapjack
       elements.each do |element|
         target = @query[element]
         next if target.nil? || (target.is_a?(Array) &&
-          target.all? {|t| t.is_a?(String) })
+          target.all? {|t| t.is_a?(String) && !t.empty? })
         @errors << "'#{target}' association must be an Array of String IDs."
       end
     end

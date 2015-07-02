@@ -41,7 +41,7 @@ describe Flapjack::ArgumentValidator do
   context 'time' do
 
     let(:query) do
-      {:start_time => Time.now, :duration => 10}
+      {:start_time => Time.now}
     end
 
     subject { Flapjack::ArgumentValidator.new(query) }
@@ -98,7 +98,7 @@ describe Flapjack::ArgumentValidator do
   context 'integer via method missing' do
 
     let(:query) do
-      {:start_time => Time.now, :duration => 10}
+      {:duration => 10}
     end
 
     subject { Flapjack::ArgumentValidator.new(query) }
@@ -113,6 +113,35 @@ describe Flapjack::ArgumentValidator do
       query[:duration] = '23'
       expect {
         subject.validate(:query => :duration, :as => :integer)
+      }.to raise_error(ArgumentError)
+    end
+  end
+
+  context 'string via method missing' do
+
+    let(:query) do
+      {:name => 'Herbert'}
+    end
+
+    subject { Flapjack::ArgumentValidator.new(query) }
+
+    it 'does not raise an error when query name is valid' do
+      expect {
+        subject.validate(:query => :name, :as => :non_empty_string)
+      }.not_to raise_error
+    end
+
+    it 'raises an error when query name is empty' do
+      query[:name] = ''
+      expect {
+        subject.validate(:query => :name, :as => :non_empty_string)
+      }.to raise_error(ArgumentError)
+    end
+
+    it 'raises an error when query name is invalid' do
+      query[:name] = 23
+      expect {
+        subject.validate(:query => :name, :as => :non_empty_string)
       }.to raise_error(ArgumentError)
     end
   end

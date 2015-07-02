@@ -12,10 +12,10 @@ module Flapjack
         def create_acknowledgements(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :duration, :as => :integer
-            validate :query => :summary, :as => :string
+            validate :query => :duration, :as => :positive_integer
+            validate :query => :summary, :as => :non_empty_string
             validate :query => :check, :as => :singular_link_uuid
-            validate :query => :tag, :as => :string
+            validate :query => :tag, :as => :singular_link
           end
           # FIXME validate that check or tag is being passed
           perform_post(:acknowledgements, "/acknowledgements", data)
@@ -24,9 +24,9 @@ module Flapjack
         def create_test_notifications(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :summary, :as => :string
+            validate :query => :summary, :as => :non_empty_string
             validate :query => :check, :as => :singular_link_uuid
-            validate :query => :tag, :as => :string
+            validate :query => :tag, :as => :singular_link
           end
           # FIXME validate that check or tag is being passed
           perform_post(:test_notifications, "/test_notifications", data)

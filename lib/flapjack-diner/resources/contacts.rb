@@ -13,10 +13,11 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :uuid
-            validate :query => :name, :as => [:required, :string]
-            validate :query => :timezone, :as => :string
-            validate :query => [:media, :rules], :as => :multiple_link_uuid
+            validate :query => :name, :as => [:required, :non_empty_string]
+            validate :query => :timezone, :as => :non_empty_string
           end
+          # FIXME validate timezone string, if it's possible to do
+          # this without an extra gem dependency
           perform_post(:contacts, '/contacts', data)
         end
 
@@ -33,9 +34,11 @@ module Flapjack
         def update_contacts(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => [:name, :timezone], :as => :string
-            validate :query => [:media, :rules], :as => :multiple_link_uuid
+            validate :query => :id, :as => [:required, :uuid]
+            validate :query => [:name, :timezone], :as => :non_empty_string
           end
+          # FIXME validate timezone string, if it's possible to do
+          # this without an extra gem dependency
           perform_patch(:contacts, "/contacts", data)
         end
 

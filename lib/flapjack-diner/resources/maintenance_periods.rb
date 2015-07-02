@@ -16,9 +16,9 @@ module Flapjack
             validate :query => :id, :as => :uuid
             validate :query => :start_time, :as => [:required, :time]
             validate :query => :end_time,   :as => [:required, :time]
-            validate :query => :summary,    :as => :string
+            validate :query => :summary,    :as => :non_empty_string
             validate :query => :check, :as => :singular_link_uuid
-            validate :query => :tag, :as => :singular_link_uuid
+            validate :query => :tag, :as => :singular_link
           end
           # FIXME validate that check or tag is being passed
           perform_post(:scheduled_maintenances, '/scheduled_maintenances', data)
@@ -27,7 +27,8 @@ module Flapjack
         def update_scheduled_maintenances(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :check, :as => :singular_link_uuid
+            validate :query => :id, :as => [:required, :uuid]
+            validate :query => [:start_time, :end_time], :as => :time
           end
           perform_patch(:scheduled_maintenances, '/scheduled_maintenances',
                         data)
@@ -36,8 +37,8 @@ module Flapjack
         def update_unscheduled_maintenances(*args)
           data = unwrap_data(*args)
           validate_params(data) do
+            validate :query => :id, :as => [:required, :uuid]
             validate :query => :end_time, :as => :time
-            validate :query => :check, :as => :singular_link_uuid
           end
           perform_patch(:unscheduled_maintenances, '/unscheduled_maintenances',
                         data)

@@ -13,10 +13,8 @@ module Flapjack
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :uuid
-            validate :query => :name, :as => [:required, :string]
+            validate :query => :name, :as => [:required, :non_empty_string]
             validate :query => :enabled, :as => :boolean
-            validate :query => [:scheduled_maintenances,
-              :unscheduled_maintenances], :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end
           perform_post(:checks, '/checks', data)
@@ -35,10 +33,9 @@ module Flapjack
         def update_checks(*args)
           data = unwrap_data(*args)
           validate_params(data) do
-            validate :query => :name,                  :as => :string
-            validate :query => :enabled,               :as => :boolean
-            validate :query => [:scheduled_maintenances,
-              :unscheduled_maintenances], :as => :multiple_link_uuid
+            validate :query => :id, :as => [:required, :uuid]
+            validate :query => :name, :as => :non_empty_string
+            validate :query => :enabled, :as => :boolean
             validate :query => :tags, :as => :multiple_link
           end
           perform_patch(:checks, "/checks", data)
