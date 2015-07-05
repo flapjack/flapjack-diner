@@ -7,7 +7,7 @@
 
 Access the JSON API of a [Flapjack](http://flapjack.io/) system monitoring server.
 
-Please note that the following documentation has not yet been updated for the upcoming `v2.0.0alpha1` release of this gem. You may instead be looking for [documentation for the latest released version](https://github.com/flapjack/flapjack-diner/blob/maint/1.x/README.md).
+Please note that the following documentation is currently being updated for the upcoming `v2.0.0alpha1` release of this gem. You may instead be looking for [documentation for the latest released version](https://github.com/flapjack/flapjack-diner/blob/maint/1.x/README.md).
 
 ## Installation
 
@@ -56,57 +56,59 @@ Flapjack::Diner.return_keys_as_strings = true
 Parameters for all of **flapjack-diner**'s functions are organised into three categories:
 
 * Ids -- One or more String or Integer values
-* Query parameters -- Top-level hash values
-* Payload data -- Arrays of Hashes
+* Parameters -- One or more Hashes
 
 While these can be passed in in any order, the convention is that they will be ordered as listed above.
 
 If any operation fails (returning nil), `Flapjack::Diner.last_error` will contain an error message regarding the failure.
 
-### Checks
+### [Checks](#section_checks)
 
 * [create_checks](#create_checks)
 * [checks](#checks)
 * [update_checks](#update_checks)
 * [delete_checks](#delete_checks)
 
-### Contacts
+### [Contacts](#section_contacts)
 
 * [create_contacts](#create_contacts)
 * [contacts](#contacts)
 * [update_contacts](#update_contacts)
 * [delete_contacts](#delete_contacts)
 
-### Media
+### [Media](#section_media)
 
 * [create_media](#create_media)
 * [media](#media)
 * [update_media](#update_media)
 * [delete_media](#delete_media)
 
-### Rules
+### [Rules](#section_rules)
 
 * [create_rules](#create_rules)
 * [rules](#rules)
 * [update_rules](#update_rules)
 * [delete_rules](#delete_rules)
 
-### Tags
+### [Tags](#section_tags)
 
 * [create_tags](#create_tags)
 * [tags](#tags)
 * [update_tags](#update_tags)
 * [delete_tags](#delete_tags)
 
-### Maintenance periods
+### [Maintenance periods](#section_maintenance_periods)
 
 * [create_scheduled_maintenances](#create_scheduled_maintenances)
+* [scheduled_maintenances](#scheduled_maintenances)
 * [update_scheduled_maintenances](#update_scheduled_maintenances)
 * [delete_scheduled_maintenances](#delete_scheduled_maintenances)
 
+* [unscheduled_maintenances](#unscheduled_maintenances)
 * [update_unscheduled_maintenances](#update_unscheduled_maintenances)
+* [delete_unscheduled_maintenances](#delete_unscheduled_maintenances)
 
-### Events
+### [Events]((#section_events)
 
 * [create_acknowledgements](#create_acknowledgements)
 * [create_test_notifications](#create_test_notifications)
@@ -345,7 +347,7 @@ Returns true if deletion succeeded or false if deletion failed.
 
 ---
 
-<a name="section_checks">&nbsp;</a>
+<a name="section_rules">&nbsp;</a>
 ### Rules
 
 <a name="create_rules">&nbsp;</a>
@@ -454,6 +456,11 @@ FIXME create return values
 
 Returns true if creation succeeded or false if creation failed.
 
+<a name="scheduled_maintenances">&nbsp;</a>
+### scheduled_maintenances
+
+FIXME documentation needed here
+
 <a name="update_scheduled_maintenances">&nbsp;</a>
 ### update_scheduled_maintenances
 
@@ -470,6 +477,35 @@ Flapjack::Diner.delete_scheduled_maintenances(SCHEDULED_MAINTENANCE_ID, SCHEDULE
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
+
+<a name="unscheduled_maintenances">&nbsp;</a>
+### unscheduled_maintenances
+
+FIXME documentation needed here
+
+<a name="update_unscheduled_maintenances">&nbsp;</a>
+### update_unscheduled_maintenances
+
+Finalises currently existing unscheduled maintenance periods for acknowledged checks. The periods end at the time provided in the `:end_time` parameter.
+
+```ruby
+Flapjack::Diner.update_unscheduled_maintenances(:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE)
+
+Flapjack::Diner.update_unscheduled_maintenances({:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE},
+  {:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE}, ...)
+```
+
+Returns true if the finalisation succeeded or false if deletion failed.
+
+<a name="delete_unscheduled_maintenances">&nbsp;</a>
+### delete_scheduled_maintenances
+
+FIXME documentation needed here
+
+---
+
+<a name="section_events">&nbsp;</a>
+### Events
 
 <a name="create_acknowledgements">&nbsp;</a>
 ### create_acknowledgements
@@ -493,20 +529,6 @@ Flapjack::Diner.create_acknowledgements(ACKNOWLEDGEMENT, ...)
 FIXME create return values
 
 Returns true if creation succeeded or false if creation failed.
-
-<a name="update_unscheduled_maintenances">&nbsp;</a>
-### update_unscheduled_maintenances
-
-Finalises currently existing unscheduled maintenance periods for acknowledged checks. The periods end at the time provided in the `:end_time` parameter.
-
-```ruby
-Flapjack::Diner.update_unscheduled_maintenances(:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE)
-
-Flapjack::Diner.update_unscheduled_maintenances({:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE},
-  {:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE}, ...)
-```
-
-Returns true if the finalisation succeeded or false if deletion failed.
 
 <a name="create_test_notifications">&nbsp;</a>
 ### create_test_notifications
