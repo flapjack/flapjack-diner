@@ -65,60 +65,60 @@ If any operation fails (returning nil), the `Flapjack::Diner.last_error` method 
 <a name="contents_section_checks">&nbsp;</a>
 ### <a name="contents_section_checks">&nbsp;</a>[Checks](#section_checks)
 
-* [create_checks](#create_checks)
-* [checks](#checks)
-* [update_checks](#update_checks)
-* [delete_checks](#delete_checks)
+* <a name="contents_create_checks">&nbsp;</a>[create_checks](#create_checks)
+* <a name="contents_checks">&nbsp;</a>[checks](#checks)
+* <a name="contents_update_checks">&nbsp;</a>[update_checks](#update_checks)
+* <a name="contents_delete_checks">&nbsp;</a>[delete_checks](#delete_checks)
 
 ### <a name="contents_section_contacts">&nbsp;</a>[Contacts](#section_contacts)
 
-* [create_contacts](#create_contacts)
-* [contacts](#contacts)
-* [update_contacts](#update_contacts)
-* [delete_contacts](#delete_contacts)
+* <a name="contents_create_contacts">&nbsp;</a>[create_contacts](#create_contacts)
+* <a name="contents_contacts">&nbsp;</a>[contacts](#contacts)
+* <a name="contents_update_contacts">&nbsp;</a>[update_contacts](#update_contacts)
+* <a name="contents_delete_contacts">&nbsp;</a>[delete_contacts](#delete_contacts)
 
 ### <a name="contents_section_media">&nbsp;</a>[Media](#section_media)
 
-* [create_media](#create_media)
-* [media](#media)
-* [update_media](#update_media)
-* [delete_media](#delete_media)
+* <a name="contents_create_media">&nbsp;</a>[create_media](#create_media)
+* <a name="contents_media">&nbsp;</a>[media](#media)
+* <a name="contents_update_media">&nbsp;</a>[update_media](#update_media)
+* <a name="contents_delete_media">&nbsp;</a>[delete_media](#delete_media)
 
 ### <a name="contents_section_rules">&nbsp;</a>[Rules](#section_rules)
 
-* [create_rules](#create_rules)
-* [rules](#rules)
-* [update_rules](#update_rules)
-* [delete_rules](#delete_rules)
+* <a name="contents_create_rules">&nbsp;</a>[create_rules](#create_rules)
+* <a name="contents_rules">&nbsp;</a>[rules](#rules)
+* <a name="contents_update_rules">&nbsp;</a>[update_rules](#update_rules)
+* <a name="contents_delete_rules">&nbsp;</a>[delete_rules](#delete_rules)
 
 ### <a name="contents_section_tags">&nbsp;</a>[Tags](#section_tags)
 
-* [create_tags](#create_tags)
-* [tags](#tags)
-* [update_tags](#update_tags)
-* [delete_tags](#delete_tags)
+* <a name="contents_create_tags">&nbsp;</a>[create_tags](#create_tags)
+* <a name="contents_tags">&nbsp;</a>[tags](#tags)
+* <a name="contents_update_tags">&nbsp;</a>[update_tags](#update_tags)
+* <a name="contents_delete_tags">&nbsp;</a>[delete_tags](#delete_tags)
 
 ### <a name="contents_section_maintenance_periods">&nbsp;</a>[Maintenance periods](#section_maintenance_periods)
 
-* [create_scheduled_maintenances](#create_scheduled_maintenances)
-* [scheduled_maintenances](#scheduled_maintenances)
-* [update_scheduled_maintenances](#update_scheduled_maintenances)
-* [delete_scheduled_maintenances](#delete_scheduled_maintenances)
+* <a name="contents_create_scheduled_maintenances">&nbsp;</a>[create_scheduled_maintenances](#create_scheduled_maintenances)
+* <a name="contents_scheduled_maintenances">&nbsp;</a>[scheduled_maintenances](#scheduled_maintenances)
+* <a name="contents_update_scheduled_maintenances">&nbsp;</a>[update_scheduled_maintenances](#update_scheduled_maintenances)
+* <a name="contents_delete_scheduled_maintenances">&nbsp;</a>[delete_scheduled_maintenances](#delete_scheduled_maintenances)
 
-* [unscheduled_maintenances](#unscheduled_maintenances)
-* [update_unscheduled_maintenances](#update_unscheduled_maintenances)
-* [delete_unscheduled_maintenances](#delete_unscheduled_maintenances)
+* <a name="contents_unscheduled_maintenances">&nbsp;</a>[unscheduled_maintenances](#unscheduled_maintenances)
+* <a name="contents_update_unscheduled_maintenances">&nbsp;</a>[update_unscheduled_maintenances](#update_unscheduled_maintenances)
+* <a name="contents_delete_unscheduled_maintenances">&nbsp;</a>[delete_unscheduled_maintenances](#delete_unscheduled_maintenances)
 
 ### <a name="contents_section_events">&nbsp;</a>[Events]((#section_events)
 
-* [create_acknowledgements](#create_acknowledgements)
-* [create_test_notifications](#create_test_notifications)
+* <a name="contents_create_acknowledgements">&nbsp;</a>[create_acknowledgements](#create_acknowledgements)
+* <a name="contents_create_test_notifications">&nbsp;</a>[create_test_notifications](#create_test_notifications)
 
 ### <a name="contents_section_miscellaneous">&nbsp;</a>[Miscellaneous](#section_miscellaneous)
 
-* [states](#states)
-* [metrics](#metrics)
-* [statistics](#statistics)
+* <a name="contents_states">&nbsp;</a>[states](#states)
+* <a name="contents_metrics">&nbsp;</a>[metrics](#metrics)
+* <a name="contents_statistics">&nbsp;</a>[statistics](#statistics)
 
 ---
 
