@@ -104,12 +104,11 @@ If any operation fails (returning nil), the `Flapjack::Diner.last_error` method 
 * <a name="contents_scheduled_maintenances">&nbsp;</a>[scheduled_maintenances](#get_scheduled_maintenances)
 * <a name="contents_update_scheduled_maintenances">&nbsp;</a>[update_scheduled_maintenances](#update_scheduled_maintenances)
 * <a name="contents_delete_scheduled_maintenances">&nbsp;</a>[delete_scheduled_maintenances](#delete_scheduled_maintenances)
-
 * <a name="contents_unscheduled_maintenances">&nbsp;</a>[unscheduled_maintenances](#get_unscheduled_maintenances)
 * <a name="contents_update_unscheduled_maintenances">&nbsp;</a>[update_unscheduled_maintenances](#update_unscheduled_maintenances)
 * <a name="contents_delete_unscheduled_maintenances">&nbsp;</a>[delete_unscheduled_maintenances](#delete_unscheduled_maintenances)
 
-### <a name="contents_section_events">&nbsp;</a>[Events]((#section_events)
+### <a name="contents_section_events">&nbsp;</a>[Events](#section_events)
 
 * <a name="contents_create_acknowledgements">&nbsp;</a>[create_acknowledgements](#create_acknowledgements)
 * <a name="contents_create_test_notifications">&nbsp;</a>[create_test_notifications](#create_test_notifications)
