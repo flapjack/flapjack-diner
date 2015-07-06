@@ -66,7 +66,6 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
                   :included => included_data})
 
     result = Flapjack::Diner.check_link_tags(check_data[:id], :include => 'tags')
-    p Flapjack::Diner.last_error
     expect(result).to eq([{:id => tag_data[:name], :type => 'tag'}])
     expect(Flapjack::Diner.context[:included]).to eq([resultify(included_data[0])])
   end
