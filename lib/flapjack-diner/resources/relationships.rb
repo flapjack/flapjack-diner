@@ -169,15 +169,12 @@ module Flapjack
           res = TYPES[resource]
           resource_id_validator = :tags.eql?(resource) ? :string : :uuid
 
-          # puts "\n"
-
           # NB: no remaining non-GET singular link methods, so these are commented out for now
 
           # mappings.select {|n, a| a[:post] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
 
           #   linked_id_validator  = :tag.eql?(linked) ? :singular_link : :singular_link_uuid
 
-          #   # p "S create_#{res}_link_#{linked}"
           #   define_method("create_#{res}_link_#{linked}") do |resource_id, linked_id|
           #     validate_params(:resource_id => resource_id, :linked_id => linked_id) do
           #       validate :query => :resource_id, :as => resource_id_validator
@@ -192,7 +189,6 @@ module Flapjack
             type = TYPES[linked] || linked
             linked_ids_validator = :tags.eql?(linked) ? :multiple_link : :multiple_link_uuid
 
-            # p "M create_#{res}_link_#{linked}"
             define_method("create_#{res}_link_#{linked}") do |resource_id, *linked_ids|
               validate_params(:resource_id => resource_id, :linked_ids => linked_ids) do
                 validate :query => :resource_id, :as => resource_id_validator
@@ -204,7 +200,6 @@ module Flapjack
           end
 
           mappings.select {|n, a| a[:get] && a[:link] }.each do |linked, assoc|
-            # p "  #{res}_link_#{linked}"
             define_method("#{res}_link_#{linked}") do |resource_id, opts = {}|
               validate_params(:resource_id => resource_id) do
                 validate :query => :resource_id, :as => resource_id_validator
@@ -221,7 +216,6 @@ module Flapjack
           # mappings.select {|n, a| a[:patch] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
           #   linked_id_validator  = :tag.eql?(linked) ? :singular_link : :singular_link_uuid
 
-          #   # p "S update_#{res}_link_#{linked}"
           #   define_method("update_#{res}_link_#{linked}") do |resource_id, linked_id|
           #     validate_params(:resource_id => resource_id, :linked_id => linked_id) do
           #       validate :query => :resource_id, :as => resource_id_validator
@@ -236,7 +230,6 @@ module Flapjack
             type = TYPES[linked] || linked
             linked_ids_validator = :tags.eql?(linked) ? :multiple_link : :multiple_link_uuid
 
-            # p "M update_#{res}_link_#{linked}"
             define_method("update_#{res}_link_#{linked}") do |resource_id, *linked_ids|
               validate_params(:resource_id => resource_id, :linked_ids => linked_ids) do
                 validate :query => :resource_id, :as => resource_id_validator
@@ -250,7 +243,6 @@ module Flapjack
           # mappings.select {|n, a| a[:delete] && a[:link] && :singular.eql?(a[:number]) }.each do |linked, assoc|
           #   linked_id_validator  = :tag.eql?(linked) ? :singular_link : :singular_link_uuid
 
-          #   # p "S delete_#{res}_link_#{linked}"
           #   define_method("delete_#{res}_link_#{linked}") do |resource_id, linked_id|
           #     validate_params(:resource_id => resource_id, :linked_id => linked_id) do
           #       validate :query => :resource_id, :as => resource_id_validator
@@ -265,7 +257,6 @@ module Flapjack
             type = TYPES[linked] || linked
             linked_ids_validator = :tags.eql?(linked) ? :string_or_array_of_strings : :uuid_or_array_of_uuids
 
-            # p "M delete_#{res}_link_#{linked}"
             define_method("delete_#{res}_link_#{linked}") do |resource_id, *linked_ids|
               validate_params(:resource_id => resource_id, :linked_ids => linked_ids) do
                 validate :query => :resource_id, :as => resource_id_validator
