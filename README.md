@@ -7,7 +7,7 @@
 
 Access the JSON API of a [Flapjack](http://flapjack.io/) system monitoring server.
 
-Please note that the following documentation is currently being updated for the upcoming `v2.0.0alpha1` release of this gem. You may instead be looking for [documentation for the latest released version](https://github.com/flapjack/flapjack-diner/blob/maint/1.x/README.md).
+Please note that the following documentation refers to the `v2.0.0alpha1` pre-release of this gem. You may instead be looking for [documentation for the latest stable version](https://github.com/flapjack/flapjack-diner/blob/maint/1.x/README.md).
 
 ## Installation
 
