@@ -376,9 +376,9 @@ Create one or more notification rules.
 Flapjack::Diner.create_rules(RULE, ...)
 ```
 
-FIXME time_restrictions data structure isn't handled yet
+**FIXME** time_restrictions data structure isn't handled yet
 
-FIXME should empty `conditions_list` implicitly specify blackhole -- thus
+**FIXME** should empty `conditions_list` implicitly specify blackhole -- thus
 remove the `is_blackhole` boolean?
 
 ```ruby
@@ -685,9 +685,7 @@ Flapjack::Diner.create_acknowledgements(ACKNOWLEDGEMENT, ...)
 }
 ```
 
-FIXME create return values
-
-Returns true if creation succeeded or false if creation failed.
+Returns false if creation failed, or the created object(s) if it succeeded.
 
 [^](#contents_create_acknowledgements)
 
@@ -709,9 +707,7 @@ Flapjack::Diner.create_test_notifications(TEST_NOTIFICATION, ...)
 }
 ```
 
-FIXME create return values
-
-Returns true if creation succeeded or false if creation failed.
+Returns false if creation failed, or the created object(s) if it succeeded.
 
 [^](#contents_create_test_notifications)
 
@@ -856,7 +852,7 @@ tag_link_checks(tag_name, opts = {})
 tag_link_rules(tag_name, opts = {})
 ```
 
-All returned results are paginated, and the [common options for GET requests](#common_options_get) apply here too. (`:include` and `:sort` option strings must start with the type of the related resource (FIXME flapjack-diner should prepend this automatically.))
+All returned results are paginated, and the [common options for GET requests](#common_options_get) apply here too.
 
 <a name="object_relationships_write">&nbsp;</a>
 ### Manipulating object relationships
@@ -892,7 +888,7 @@ delete_tag_link_rules(tag_name, *rules_ids)
 <a name="object_relationships_write_create">&nbsp;</a>
 #### `create_{resource}_link_{related}`
 
-Creates new links between the `resource` represented by the first argument and the `related` resources represented by the rest of the arguments. At least one `related` resource identifier must be provided. If the `related` resource is already linked, it is skipped. (FIXME check JSONAPI spec)
+Creates new links between the `resource` represented by the first argument and the `related` resources represented by the rest of the arguments. At least one `related` resource identifier must be provided. If the `related` resource is already linked, it is skipped.
 
 <a name="object_relationships_write_update">&nbsp;</a>
 #### `update_{resource}_link_{related}`
@@ -902,7 +898,7 @@ Replace all current links between the `resource` represented by the first argume
 <a name="object_relationships_write_delete">&nbsp;</a>
 #### `delete_{resource}_link_{related}`
 
-Remove the link between the `resource` represented by the first argument, and the `related` resources represented by the rest of the arguments. If there is no link for a related resource, deletion is skipped. (FIXME check JSONAPI spec)
+Remove the link between the `resource` represented by the first argument, and the `related` resources represented by the rest of the arguments. If there is no link for a related resource, deletion is skipped for that linkage.
 
 ---
 

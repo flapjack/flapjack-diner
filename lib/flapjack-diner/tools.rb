@@ -18,7 +18,7 @@ module Flapjack
         logger.info log_msg
       end
 
-      def perform_get(path, ids = [], data = {})
+      def perform_get(path, ids = [], data = {}, opts = {})
         @last_error = nil
         @context = nil
 
@@ -42,7 +42,11 @@ module Flapjack
             else
               v.to_s
             end
-            memo << "#{k}:#{value}"
+            if opts[:assoc].nil?
+              memo << "#{k}:#{value}"
+            else
+              memo << "#{opts[:assoc]}.#{k}:#{value}"
+            end
           end
         end
 
@@ -51,9 +55,22 @@ module Flapjack
           case incl
           when Array
             raise ArgumentError.new("Include parameters must not contain commas") if incl.any? {|i| i =~ /,/}
-            data[:include] = incl.join(",")
+            data[:include] = if opts[:assoc].nil?
+              incl.join(",")
+            else
+              incl.map {|i|
+                if i.eql?(opts[:assoc].to_s) || (i =~ /^#{opts[:assoc]}\./)
+                  i
+                else
+                  "#{opts[:assoc]}.#{i}"
+                end
+              }.join(",")
+            end
           when String
             raise ArgumentError.new("Include parameters must not contain commas") if incl =~ /,/
+            unless opts[:assoc].nil? || (incl.eql?(opts[:assoc].to_s)) || (incl =~ /^#{opts[:assoc]}\./)
+              data[:include] = "#{opts[:assoc]}.#{incl}"
+            end
           end
         end
 
