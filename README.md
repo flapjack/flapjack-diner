@@ -66,46 +66,46 @@ If any operation fails (returning nil), the `Flapjack::Diner.last_error` method 
 ### <a name="contents_section_checks">&nbsp;</a>[Checks](#section_checks)
 
 * <a name="contents_create_checks">&nbsp;</a>[create_checks](#create_checks)
-* <a name="contents_checks">&nbsp;</a>[checks](#checks)
+* <a name="contents_checks">&nbsp;</a>[checks](#get_checks)
 * <a name="contents_update_checks">&nbsp;</a>[update_checks](#update_checks)
 * <a name="contents_delete_checks">&nbsp;</a>[delete_checks](#delete_checks)
 
 ### <a name="contents_section_contacts">&nbsp;</a>[Contacts](#section_contacts)
 
 * <a name="contents_create_contacts">&nbsp;</a>[create_contacts](#create_contacts)
-* <a name="contents_contacts">&nbsp;</a>[contacts](#contacts)
+* <a name="contents_contacts">&nbsp;</a>[contacts](#get_contacts)
 * <a name="contents_update_contacts">&nbsp;</a>[update_contacts](#update_contacts)
 * <a name="contents_delete_contacts">&nbsp;</a>[delete_contacts](#delete_contacts)
 
 ### <a name="contents_section_media">&nbsp;</a>[Media](#section_media)
 
 * <a name="contents_create_media">&nbsp;</a>[create_media](#create_media)
-* <a name="contents_media">&nbsp;</a>[media](#media)
+* <a name="contents_media">&nbsp;</a>[media](#get_media)
 * <a name="contents_update_media">&nbsp;</a>[update_media](#update_media)
 * <a name="contents_delete_media">&nbsp;</a>[delete_media](#delete_media)
 
 ### <a name="contents_section_rules">&nbsp;</a>[Rules](#section_rules)
 
 * <a name="contents_create_rules">&nbsp;</a>[create_rules](#create_rules)
-* <a name="contents_rules">&nbsp;</a>[rules](#rules)
+* <a name="contents_rules">&nbsp;</a>[rules](#get_rules)
 * <a name="contents_update_rules">&nbsp;</a>[update_rules](#update_rules)
 * <a name="contents_delete_rules">&nbsp;</a>[delete_rules](#delete_rules)
 
 ### <a name="contents_section_tags">&nbsp;</a>[Tags](#section_tags)
 
 * <a name="contents_create_tags">&nbsp;</a>[create_tags](#create_tags)
-* <a name="contents_tags">&nbsp;</a>[tags](#tags)
+* <a name="contents_tags">&nbsp;</a>[tags](#get_tags)
 * <a name="contents_update_tags">&nbsp;</a>[update_tags](#update_tags)
 * <a name="contents_delete_tags">&nbsp;</a>[delete_tags](#delete_tags)
 
 ### <a name="contents_section_maintenance_periods">&nbsp;</a>[Maintenance periods](#section_maintenance_periods)
 
 * <a name="contents_create_scheduled_maintenances">&nbsp;</a>[create_scheduled_maintenances](#create_scheduled_maintenances)
-* <a name="contents_scheduled_maintenances">&nbsp;</a>[scheduled_maintenances](#scheduled_maintenances)
+* <a name="contents_scheduled_maintenances">&nbsp;</a>[scheduled_maintenances](#get_scheduled_maintenances)
 * <a name="contents_update_scheduled_maintenances">&nbsp;</a>[update_scheduled_maintenances](#update_scheduled_maintenances)
 * <a name="contents_delete_scheduled_maintenances">&nbsp;</a>[delete_scheduled_maintenances](#delete_scheduled_maintenances)
 
-* <a name="contents_unscheduled_maintenances">&nbsp;</a>[unscheduled_maintenances](#unscheduled_maintenances)
+* <a name="contents_unscheduled_maintenances">&nbsp;</a>[unscheduled_maintenances](#get_unscheduled_maintenances)
 * <a name="contents_update_unscheduled_maintenances">&nbsp;</a>[update_unscheduled_maintenances](#update_unscheduled_maintenances)
 * <a name="contents_delete_unscheduled_maintenances">&nbsp;</a>[delete_unscheduled_maintenances](#delete_unscheduled_maintenances)
 
@@ -116,9 +116,9 @@ If any operation fails (returning nil), the `Flapjack::Diner.last_error` method 
 
 ### <a name="contents_section_miscellaneous">&nbsp;</a>[Miscellaneous](#section_miscellaneous)
 
-* <a name="contents_states">&nbsp;</a>[states](#states)
-* <a name="contents_metrics">&nbsp;</a>[metrics](#metrics)
-* <a name="contents_statistics">&nbsp;</a>[statistics](#statistics)
+* <a name="contents_states">&nbsp;</a>[states](#get_states)
+* <a name="contents_metrics">&nbsp;</a>[metrics](#get_metrics)
+* <a name="contents_statistics">&nbsp;</a>[statistics](#get_statistics)
 
 ---
 
@@ -148,7 +148,7 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 
 [^](#contents_create_checks)
 
-<a name="checks">&nbsp;</a>
+<a name="get_checks">&nbsp;</a>
 ### checks
 
 Return data for one, some or all checks.
@@ -227,7 +227,7 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 
 [^](#contents_create_contacts)
 
-<a name="contacts">&nbsp;</a>
+<a name="get_contacts">&nbsp;</a>
 #### contacts
 
 Return data for one, some or all contacts.
@@ -312,7 +312,7 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 
 [^](#contents_create_media)
 
-<a name="media">&nbsp;</a>
+<a name="get_media">&nbsp;</a>
 #### media
 
 Return data for one, some or all notification media.
@@ -400,7 +400,7 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 
 [^](#contents_create_rules)
 
-<a name="rules">&nbsp;</a>
+<a name="get_rules">&nbsp;</a>
 #### rules
 
 Return data for one, some or all notification rules.
@@ -453,6 +453,84 @@ Returns true if deletion succeeded or false if deletion failed.
 
 ---
 
+<a name="section_tags">&nbsp;</a>
+### Tags [^](#contents_section_tags)
+
+<a name="create_tags">&nbsp;</a>
+#### create_tags
+
+Create one or more tags.
+
+```ruby
+Flapjack::Diner.create_tags(TAG, ...)
+```
+
+```ruby
+# TAG
+{
+  :name    => STRING,         # required
+  :checks  => [CHECK_ID, ...]
+  :rules   => [RULE_ID, ...]
+}
+```
+
+Returns false if creation failed, or the created object(s) if it succeeded.
+
+[^](#contents_create_tags)
+
+<a name="get_tags">&nbsp;</a>
+#### tags
+
+Return data for one, some or all tags.
+
+```ruby
+tag = Flapjack::Diner.tags(TAG_NAME)
+some_tags = Flapjack::Diner.tags(TAG_NAME, TAG_NAME, ...)
+first_page_of_tags = Flapjack::Diner.tags
+```
+
+[^](#contents_tags)
+
+<a name="update_tags">&nbsp;</a>
+#### update_tags
+
+Update data for one or more tags.
+
+```ruby
+# update values for one tag
+Flapjack::Diner.update_tags(:id => TAG_NAME, KEY => VALUE, ...)
+
+# update values for multiple tags
+Flapjack::Diner.update_tags({:id => TAG_NAME, KEY => VALUE, ...}, {:id => TAG_NAME, KEY => VALUE, ...})
+```
+
+Acceptable update field keys are
+
+  `:checks` and `:rules`
+
+Returns true if updating succeeded or false if updating failed.
+
+[^](#contents_update_tags)
+
+<a name="delete_tags">&nbsp;</a>
+#### delete_tags
+
+Delete one or more tags.
+
+```ruby
+# delete one tag
+Flapjack::Diner.delete_tags(TAG_NAME)
+
+# delete multiple tags
+Flapjack::Diner.delete_tags(TAG_NAME, TAG_NAME, ...)
+```
+
+Returns true if deletion succeeded or false if deletion failed.
+
+[^](#contents_delete_tags)
+
+---
+
 <a name="section_maintenance_periods">&nbsp;</a>
 ### Maintenance periods [^](#contents_section_maintenance_periods)
 
@@ -481,7 +559,7 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 
 [^](#contents_create_scheduled_maintenances)
 
-<a name="scheduled_maintenances">&nbsp;</a>
+<a name="get_scheduled_maintenances">&nbsp;</a>
 ### scheduled_maintenances
 
 Return data for one, some or all scheduled maintenance periods.
@@ -533,7 +611,7 @@ Returns true if deletion succeeded or false if deletion failed.
 
 [^](#contents_delete_scheduled_maintenances)
 
-<a name="unscheduled_maintenances">&nbsp;</a>
+<a name="get_unscheduled_maintenances">&nbsp;</a>
 ### unscheduled_maintenances
 
 Return data for one, some or all unscheduled maintenance periods.
@@ -643,6 +721,7 @@ Returns true if creation succeeded or false if creation failed.
 <a name="section_miscellaneous">&nbsp;</a>
 ### Miscellaneous [^](#contents_section_miscellaneous)
 
+<a name="get_states">&nbsp;</a>
 ### states
 
 Return data for one, some or all check states.
@@ -655,6 +734,7 @@ first_page_of_states = Flapjack::Diner.states
 
 [^](#contents_states)
 
+<a name="get_metrics">&nbsp;</a>
 ### metrics
 
 Return global metric data for the flapjack instance (i.e. all components backed by the shared data store).
@@ -665,6 +745,7 @@ metrics = Flapjack::Diner.metrics
 
 [^](#contents_metrics)
 
+<a name="get_statistics">&nbsp;</a>
 ### statistics
 
 Return data for one, some or all flapjack processor instances.
