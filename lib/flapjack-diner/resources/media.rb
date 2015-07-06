@@ -53,6 +53,22 @@ module Flapjack
           perform_delete(:media, '/media', *ids)
         end
 
+        private
+
+        def _media_validate_association(data)
+          case data
+          when Array
+            data.each do |d|
+              unless d.has_key?(:contact)
+                raise ArgumentError.new("Contact association must be provided for all media")
+              end
+            end
+          when Hash
+            unless data.has_key?(:contact)
+              raise ArgumentError.new("Contact association must be provided for medium")
+            end
+          end
+        end
       end
     end
   end

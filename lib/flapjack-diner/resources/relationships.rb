@@ -124,7 +124,11 @@ module Flapjack
           :scheduled_maintenances => {
             :check => {
               :post => true, :get => true,
-              :number => :singular, :link => false, :includable => true
+              :number => :singular, :link => true, :includable => true
+            },
+            :tag => {
+              :post => true,
+              :number => :singular, :link => false, :includable => false
             }
           },
           :states => {

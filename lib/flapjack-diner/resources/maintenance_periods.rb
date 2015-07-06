@@ -20,7 +20,7 @@ module Flapjack
             validate :query => :check, :as => :singular_link_uuid
             validate :query => :tag, :as => :singular_link
           end
-          # FIXME validate that check or tag is being passed
+          _maintenance_periods_validate_association(data, 'scheduled maintenance period')
           perform_post(:scheduled_maintenances, '/scheduled_maintenances', data)
         end
 
@@ -52,6 +52,24 @@ module Flapjack
           perform_delete(:scheduled_maintenances, '/scheduled_maintenances',
             *ids)
         end
+
+        private
+
+        def _maintenance_periods_validate_association(data, type)
+          case data
+          when Array
+            data.each do |d|
+              unless d.has_key?(:check) || d.has_key?(:tag)
+                raise ArgumentError.new("Check or tag association must be provided for all #{type}s")
+              end
+            end
+          when Hash
+            unless data.has_key?(:check) || data.has_key?(:tag)
+              raise ArgumentError.new("Check or tag association must be provided for #{type}")
+            end
+          end
+        end
+
       end
     end
   end

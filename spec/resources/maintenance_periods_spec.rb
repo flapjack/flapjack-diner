@@ -24,7 +24,8 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
             }
           }
         )
-        resp_data = req_data.merge(:relationships => maintenance_rel('scheduled', scheduled_maintenance_data))
+        resp_data = maintenance_json('scheduled', scheduled_maintenance_data).
+          merge(:relationships => maintenance_rel('scheduled', scheduled_maintenance_data))
 
         flapjack.given("a check exists").
           upon_receiving("a POST request with one scheduled maintenance period").
@@ -42,14 +43,30 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
       end
 
       it "creates several scheduled maintenance periods" do
-        req_data = [maintenance_json('scheduled', scheduled_maintenance_data),
-                    maintenance_json('scheduled', scheduled_maintenance_2_data)]
+        req_data = [
+          maintenance_json('scheduled', scheduled_maintenance_data).merge(
+            :relationships => {
+              :check => {
+                :data => {:type => 'check', :id => check_data[:id]}
+              }
+            }
+          ),
+          maintenance_json('scheduled', scheduled_maintenance_2_data).merge(
+            :relationships => {
+              :check => {
+                :data => {:type => 'check', :id => check_data[:id]}
+              }
+            }
+          )
+        ]
         resp_data = [
-          req_data[0].merge(:relationships => maintenance_rel('scheduled', scheduled_maintenance_data)),
-          req_data[1].merge(:relationships => maintenance_rel('scheduled', scheduled_maintenance_2_data))
+          maintenance_json('scheduled', scheduled_maintenance_data).
+            merge(:relationships => maintenance_rel('scheduled', scheduled_maintenance_data)),
+          maintenance_json('scheduled', scheduled_maintenance_2_data).
+            merge(:relationships => maintenance_rel('scheduled', scheduled_maintenance_2_data))
         ]
 
-        flapjack.given("no data exists").
+        flapjack.given("a check exists").
           upon_receiving("a POST request with two scheduled maintenance periods").
           with(:method => :post,
                :path => '/scheduled_maintenances',
@@ -60,7 +77,8 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:data => resp_data})
 
-        result = Flapjack::Diner.create_scheduled_maintenances(scheduled_maintenance_data, scheduled_maintenance_2_data)
+        result = Flapjack::Diner.create_scheduled_maintenances(scheduled_maintenance_data.merge(:check => check_data[:id]),
+          scheduled_maintenance_2_data.merge(:check => check_data[:id]))
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
       end

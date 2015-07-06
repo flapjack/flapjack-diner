@@ -48,7 +48,6 @@ module Flapjack
             end
           end
         end
-
       end
     end
   end

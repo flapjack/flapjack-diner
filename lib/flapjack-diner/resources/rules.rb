@@ -21,6 +21,7 @@ module Flapjack
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end
+          _rules_validate_association(data)
           perform_post(:rules, '/rules', data)
         end
 
@@ -50,6 +51,23 @@ module Flapjack
         def delete_rules(*ids)
           raise "'delete_rules' requires at least one rule id parameter" if ids.nil? || ids.empty?
           perform_delete(:rules, '/rules', *ids)
+        end
+
+        private
+
+        def _rules_validate_association(data)
+          case data
+          when Array
+            data.each do |d|
+              unless d.has_key?(:contact)
+                raise ArgumentError.new("Contact association must be provided for all rules")
+              end
+            end
+          when Hash
+            unless data.has_key?(:contact)
+              raise ArgumentError.new("Contact association must be provided for rule")
+            end
+          end
         end
       end
     end
