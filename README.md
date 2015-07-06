@@ -53,51 +53,52 @@ Flapjack::Diner.return_keys_as_strings = true
 
 ## Functions
 
-Parameters for all of **flapjack-diner**'s functions are organised into three categories:
+Options for all of **flapjack-diner**'s functions are organised as either:
 
-* Ids -- One or more String or Integer values
-* Parameters -- One or more Hashes
+* Ids &emdash; One or more String or Integer values; or
+* Parameters &emdash; One or more Hashes
 
 While these can be passed in in any order, the convention is that they will be ordered as listed above.
 
-If any operation fails (returning nil), `Flapjack::Diner.last_error` will contain an error message regarding the failure.
+If any operation fails (returning nil), the `Flapjack::Diner.last_error` method will return an error message regarding the failure.
 
-### [Checks](#section_checks)
+<a name="contents_section_checks">&nbsp;</a>
+### <a name="contents_section_checks">&nbsp;</a>[Checks](#section_checks)
 
 * [create_checks](#create_checks)
 * [checks](#checks)
 * [update_checks](#update_checks)
 * [delete_checks](#delete_checks)
 
-### [Contacts](#section_contacts)
+### <a name="contents_section_contacts">&nbsp;</a>[Contacts](#section_contacts)
 
 * [create_contacts](#create_contacts)
 * [contacts](#contacts)
 * [update_contacts](#update_contacts)
 * [delete_contacts](#delete_contacts)
 
-### [Media](#section_media)
+### <a name="contents_section_media">&nbsp;</a>[Media](#section_media)
 
 * [create_media](#create_media)
 * [media](#media)
 * [update_media](#update_media)
 * [delete_media](#delete_media)
 
-### [Rules](#section_rules)
+### <a name="contents_section_rules">&nbsp;</a>[Rules](#section_rules)
 
 * [create_rules](#create_rules)
 * [rules](#rules)
 * [update_rules](#update_rules)
 * [delete_rules](#delete_rules)
 
-### [Tags](#section_tags)
+### <a name="contents_section_tags">&nbsp;</a>[Tags](#section_tags)
 
 * [create_tags](#create_tags)
 * [tags](#tags)
 * [update_tags](#update_tags)
 * [delete_tags](#delete_tags)
 
-### [Maintenance periods](#section_maintenance_periods)
+### <a name="contents_section_maintenance_periods">&nbsp;</a>[Maintenance periods](#section_maintenance_periods)
 
 * [create_scheduled_maintenances](#create_scheduled_maintenances)
 * [scheduled_maintenances](#scheduled_maintenances)
@@ -108,24 +109,21 @@ If any operation fails (returning nil), `Flapjack::Diner.last_error` will contai
 * [update_unscheduled_maintenances](#update_unscheduled_maintenances)
 * [delete_unscheduled_maintenances](#delete_unscheduled_maintenances)
 
-### [Events]((#section_events)
+### <a name="contents_section_events">&nbsp;</a>[Events]((#section_events)
 
 * [create_acknowledgements](#create_acknowledgements)
 * [create_test_notifications](#create_test_notifications)
 
-### Check states
+### <a name="contents_section_miscellaneous">&nbsp;</a>[Miscellaneous](#section_miscellaneous)
 
 * [states](#states)
-
-### Metrics
-
 * [metrics](#metrics)
 * [statistics](#statistics)
 
 ---
 
 <a name="section_checks">&nbsp;</a>
-### Checks
+### Checks [^](#contents_section_checks)
 
 <a name="create_checks">&nbsp;</a>
 ### create_checks
@@ -146,9 +144,9 @@ CHECK
 }
 ```
 
-FIXME create return values
+Returns false if creation failed, or the created object(s) if it succeeded.
 
-Returns an array of check ids if creation succeeded, or false if creation failed.
+[^](#contents_create_checks)
 
 <a name="checks">&nbsp;</a>
 ### checks
@@ -160,6 +158,8 @@ check = Flapjack::Diner.checks(CHECK_ID)
 some_checks = Flapjack::Diner.checks(CHECK_ID, CHECK_ID, ...)
 first_page_of_checks = Flapjack::Diner.checks
 ```
+
+[^](#contents_checks)
 
 <a name="update_checks">&nbsp;</a>
 ### update_checks
@@ -180,6 +180,8 @@ Acceptable update field keys are
 
 Returns true if updating succeeded or false if updating failed.
 
+[^](#contents_update_checks)
+
 <a name="delete_checks">&nbsp;</a>
 #### delete_checks
 
@@ -195,10 +197,12 @@ Flapjack::Diner.delete_checks(CHECK_ID, CHECK_ID, ...)
 
 Returns true if deletion succeeded or false if deletion failed.
 
+[^](#contents_delete_checks)
+
 ---
 
 <a name="section_contacts">&nbsp;</a>
-### Contacts
+### Contacts [^](#contents_section_contacts)
 
 <a name="create_contacts">&nbsp;</a>
 #### create_contacts
@@ -206,7 +210,7 @@ Returns true if deletion succeeded or false if deletion failed.
 Create one or more contacts.
 
 ```ruby
-Flapjack::Diner.create_contacts([CONTACT, ...])
+Flapjack::Diner.create_contacts(CONTACT, ...)
 ```
 
 ```
@@ -219,9 +223,9 @@ CONTACT
 }
 ```
 
-FIXME create return values
+Returns false if creation failed, or the created object(s) if it succeeded.
 
-Returns an array of contact ids if creation succeeded, or false if creation failed.
+[^](#contents_create_contacts)
 
 <a name="contacts">&nbsp;</a>
 #### contacts
@@ -233,6 +237,8 @@ contact = Flapjack::Diner.contacts(CONTACT_ID)
 some_contacts = Flapjack::Diner.contacts(CONTACT_ID, CONTACT_ID, ...)
 first_page_of_contacts = Flapjack::Diner.contacts
 ```
+
+[^](#contents_contacts)
 
 <a name="update_contacts">&nbsp;</a>
 #### update_contacts
@@ -253,6 +259,8 @@ Acceptable update field keys are
 
 Returns true if updating succeeded, false if updating failed.
 
+[^](#contents_update_contacts)
+
 <a name="delete_contacts">&nbsp;</a>
 #### delete_contacts
 
@@ -268,10 +276,12 @@ Flapjack::Diner.delete_contacts(CONTACT_ID, CONTACT_ID, ...)
 
 Returns true if deletion succeeded or false if deletion failed.
 
+[^](#contents_delete_contacts)
+
 ---
 
 <a name="section_media">&nbsp;</a>
-### Media
+### Media [^](#contents_section_media)
 
 <a name="create_media">&nbsp;</a>
 #### create_media
@@ -298,7 +308,9 @@ Flapjack::Diner.create_media(MEDIUM, MEDIUM, ...)
 }
 ```
 
-Returns an array of media ids if creation succeeded, or false if creation failed.
+Returns false if creation failed, or the created object(s) if it succeeded.
+
+[^](#contents_create_media)
 
 <a name="media">&nbsp;</a>
 #### media
@@ -310,6 +322,8 @@ medium = Flapjack::Diner.media(MEDIUM_ID)
 some_media = Flapjack::Diner.media(MEDIUM_ID, MEDIUM_ID, ...)
 first_page_of_media = Flapjack::Diner.media
 ```
+
+[^](#contents_media)
 
 <a name="update_media">&nbsp;</a>
 #### update_media
@@ -330,6 +344,8 @@ Acceptable update field keys are
 
 Returns true if updating succeeded or false if updating failed.
 
+[^](#contents_update_media)
+
 <a name="delete_media">&nbsp;</a>
 #### delete_media
 
@@ -345,10 +361,12 @@ Flapjack::Diner.delete_media(MEDIUM_ID, MEDIUM_ID, ...)
 
 Returns true if deletion succeeded or false if deletion failed.
 
+[^](#contents_delete_media)
+
 ---
 
 <a name="section_rules">&nbsp;</a>
-### Rules
+### Rules [^](#contents_section_rules)
 
 <a name="create_rules">&nbsp;</a>
 #### create_rules
@@ -359,13 +377,18 @@ Create one or more notification rules.
 Flapjack::Diner.create_rules(RULE, ...)
 ```
 
-FIXME accept conditions_list as an array of strings and create the array that Flapjack accepts here
+FIXME time_restrictions data structure isn't handled yet
+
+FIXME should empty `conditions_list` implicitly specify blackhole -- thus
+remove the `is_blackhole` boolean?
 
 ```ruby
 # RULE
 {
   :id              => UUID_STRING,
-  :conditions_list => STRING,
+  :conditions_list => STRING,           # which conditions the rule will match;
+                                        # all if empty, or comma-separated subset
+                                        # of 'critical,warning,unknown'
   :is_blackhole    => BOOLEAN,
   :contact         => CONTACT_ID,       # required
   :media           => [MEDIUM_ID, ...]
@@ -373,16 +396,14 @@ FIXME accept conditions_list as an array of strings and create the array that Fl
 }
 ```
 
-FIXME create return values
+Returns false if creation failed, or the created object(s) if it succeeded.
 
-Returns a single rule or array of rules (depending on what was passed in), or false if creation failed.
+[^](#contents_create_rules)
 
 <a name="rules">&nbsp;</a>
 #### rules
 
 Return data for one, some or all notification rules.
-
-FIXME convert the conditions_list string to an array
 
 ```ruby
 rule = Flapjack::Diner.rules(RULE_ID)
@@ -390,12 +411,12 @@ some_rules = Flapjack::Diner.rules(RULE_ID, RULE_ID, ...)
 first_page_of_rules = Flapjack::Diner.rules
 ```
 
+[^](#contents_rules)
+
 <a name="update_rules">&nbsp;</a>
 #### update_rules
 
 Update data for one or more notification rules.
-
-FIXME accept conditions_list as an array of strings and create the array that Flapjack accepts here
 
 ```ruby
 # update values for one rule
@@ -410,6 +431,8 @@ Acceptable update field keys are
   `:conditions_list`, `:is_blackhole`, `:media` and `:tags`
 
 Returns true if updating succeeded or false if updating failed.
+
+[^](#contents_update_rules)
 
 <a name="delete_rules">&nbsp;</a>
 #### delete_rules
@@ -426,10 +449,12 @@ Flapjack::Diner.delete_rules(RULE_ID, RULE_ID, ...)
 
 Returns true if deletion succeeded or false if deletion failed.
 
+[^](#contents_delete_rules)
+
 ---
 
 <a name="section_maintenance_periods">&nbsp;</a>
-### Maintenance periods
+### Maintenance periods [^](#contents_section_maintenance_periods)
 
 <a name="create_scheduled_maintenances">&nbsp;</a>
 ### create_scheduled_maintenances
@@ -445,26 +470,52 @@ SCHEDULED_MAINTENANCE
 {
   :id => UUID,
   :start_time => DATETIME, # required
-  :duration => INTEGER,    # defaults to 14400 (i.e. 4 hours in seconds)
+  :end_time => DATETIME,   # required
   :summary => STRING,
   :check => CHECK_ID,      # one (and only one) of :check or :tag must be provided
   :tag => TAG_NAME         # :tag will create scheduled maintenance periods for all checks that this tag is associated with
 }
 ```
 
-FIXME create return values
+Returns false if creation failed, or the created object(s) if it succeeded.
 
-Returns true if creation succeeded or false if creation failed.
+[^](#contents_create_scheduled_maintenances)
 
 <a name="scheduled_maintenances">&nbsp;</a>
 ### scheduled_maintenances
 
-FIXME documentation needed here
+Return data for one, some or all scheduled maintenance periods.
+
+```ruby
+scheduled_maintenance = Flapjack::Diner.scheduled_maintenances(SCHEDULED_MAINTENANCE_ID)
+some_scheduled_maintenances = Flapjack::Diner.scheduled_maintenances(SCHEDULED_MAINTENANCE_ID, SCHEDULED_MAINTENANCE_ID, ...)
+first_page_of_scheduled_maintenances = Flapjack::Diner.scheduled_maintenances
+```
+
+[^](#contents_scheduled_maintenances)
 
 <a name="update_scheduled_maintenances">&nbsp;</a>
 ### update_scheduled_maintenances
 
-FIXME documentation needed here
+Update data for one or more scheduled maintenance periods.
+
+```ruby
+# update values for one scheduled maintenance period
+Flapjack::Diner.update_scheduled_maintenances(:id => SCHEDULED_MAINTENANCE_ID, KEY => VALUE, ...)
+
+# update values for multiple scheduled maintenance periods
+Flapjack::Diner.update_scheduled_maintenances({:id => SCHEDULED_MAINTENANCE_ID, KEY => VALUE, ...}, {:id => SCHEDULED_MAINTENANCE_ID, KEY => VALUE, ...})
+```
+
+Acceptable update field keys are
+
+  `:start_time`, `:end_time` and `:summary`
+
+Returns true if updating succeeded or false if updating failed.
+
+**FIXME** we may make it a configuration setting as to whether times in the past may be edited
+
+[^](#contents_update_scheduled_maintenances)
 
 <a name="delete_scheduled_maintenances">&nbsp;</a>
 ### delete_scheduled_maintenances
@@ -478,15 +529,27 @@ Flapjack::Diner.delete_scheduled_maintenances(SCHEDULED_MAINTENANCE_ID, SCHEDULE
 
 Returns true if deletion succeeded or false if deletion failed.
 
+**FIXME** we may make it a configuration setting as to whether scheduled maintenance periods that have already started (or finished) may be deleted
+
+[^](#contents_delete_scheduled_maintenances)
+
 <a name="unscheduled_maintenances">&nbsp;</a>
 ### unscheduled_maintenances
 
-FIXME documentation needed here
+Return data for one, some or all unscheduled maintenance periods.
+
+```ruby
+unscheduled_maintenance = Flapjack::Diner.unscheduled_maintenances(UNSCHEDULED_MAINTENANCE_ID)
+some_unscheduled_maintenances = Flapjack::Diner.unscheduled_maintenances(UNSCHEDULED_MAINTENANCE_ID, UNSCHEDULED_MAINTENANCE_ID, ...)
+first_page_of_unscheduled_maintenances = Flapjack::Diner.unscheduled_maintenances
+```
+
+[^](#contents_unscheduled_maintenances)
 
 <a name="update_unscheduled_maintenances">&nbsp;</a>
 ### update_unscheduled_maintenances
 
-Finalises currently existing unscheduled maintenance periods for acknowledged checks. The periods end at the time provided in the `:end_time` parameter.
+Update data for one or more unscheduled maintenance periods.
 
 ```ruby
 Flapjack::Diner.update_unscheduled_maintenances(:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE)
@@ -495,17 +558,36 @@ Flapjack::Diner.update_unscheduled_maintenances({:id => UNSCHEDULED_MAINTENANCE_
   {:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE}, ...)
 ```
 
-Returns true if the finalisation succeeded or false if deletion failed.
+Acceptable update field keys are
+
+  `:start_time`, `:end_time` and `:summary`
+
+Returns true if updating succeeded or false if updating failed.
+
+**FIXME** we may make it a configuration setting as to whether times in the past may be edited
+
+[^](#contents_update_unscheduled_maintenances)
 
 <a name="delete_unscheduled_maintenances">&nbsp;</a>
-### delete_scheduled_maintenances
+### delete_unscheduled_maintenances
 
-FIXME documentation needed here
+Delete one or more unscheduled maintenance periods.
+
+```ruby
+Flapjack::Diner.delete_unscheduled_maintenances(UNSCHEDULED_MAINTENANCE_ID)
+Flapjack::Diner.delete_unscheduled_maintenances(UNSCHEDULED_MAINTENANCE_ID, UNSCHEDULED_MAINTENANCE_ID, ...)
+```
+
+Returns true if deletion succeeded or false if deletion failed.
+
+**FIXME** we may make it a configuration setting as to whether unscheduled maintenance periods may be deleted
+
+[^](#contents_delete_unscheduled_maintenances)
 
 ---
 
 <a name="section_events">&nbsp;</a>
-### Events
+### Events [^](#contents_section_events)
 
 <a name="create_acknowledgements">&nbsp;</a>
 ### create_acknowledgements
@@ -530,6 +612,8 @@ FIXME create return values
 
 Returns true if creation succeeded or false if creation failed.
 
+[^](#contents_create_acknowledgements)
+
 <a name="create_test_notifications">&nbsp;</a>
 ### create_test_notifications
 
@@ -552,6 +636,47 @@ FIXME create return values
 
 Returns true if creation succeeded or false if creation failed.
 
+[^](#contents_create_test_notifications)
+
+---
+
+<a name="section_miscellaneous">&nbsp;</a>
+### Miscellaneous [^](#contents_section_miscellaneous)
+
+### states
+
+Return data for one, some or all check states.
+
+```ruby
+states = Flapjack::Diner.states(STATE_ID)
+some_states = Flapjack::Diner.states(STATE_ID, STATE_ID, ...)
+first_page_of_states = Flapjack::Diner.states
+```
+
+[^](#contents_states)
+
+### metrics
+
+Return global metric data for the flapjack instance (i.e. all components backed by the shared data store).
+
+```ruby
+metrics = Flapjack::Diner.metrics
+```
+
+[^](#contents_metrics)
+
+### statistics
+
+Return data for one, some or all flapjack processor instances.
+
+```ruby
+statistics = Flapjack::Diner.statistics(STATISTICS_ID)
+some_statistics = Flapjack::Diner.statistics(STATISTICS_ID, STATISTICS_ID, ...)
+first_page_of_statistics = Flapjack::Diner.statistics
+```
+
+[^](#contents_statistics)
+
 ---
 
 <a name="common_options_get">&nbsp;</a>
@@ -565,6 +690,42 @@ Returns true if creation succeeded or false if creation failed.
 | `:sort`      |  String or Array of Strings | How the resources should be sorted |
 | `:page`      |  Integer, > 0               | Page number |
 | `:per_page`  |  Integer, > 0               | Number of resources per page |
+
+
+<a name="common_options_get_include">&nbsp;</a>
+### Associated data allowed for the include parameter
+
+| Method    |  Association | Assoc. Type |
+|-----------|--------------|-------------|
+| `.checks` | 'alerting_media'    | ['medium', ...] |
+| `.checks` | 'contacts'    | ['contact', ...] |
+| `.checks` | 'current_scheduled_maintenances'    | ['scheduled_maintenance', ...] |
+| `.checks` | 'current_state'    | 'state' |
+| `.checks` | 'current_unscheduled_maintenance'    | 'unscheduled_maintenance' |
+| `.checks` | 'latest_notifications'    | ['state', ...] |
+| `.checks` | 'tags'    | ['tag', ...] |
+| `.contacts` | 'checks' | ['check', ...] |
+| `.contacts` | 'media' | ['medium', ...] |
+| `.contacts` | 'rules' | ['rule', ...] |
+| `.media` | 'alerting_checks' | ['check', ...] |
+| `.media` | 'contact' | 'contact' |
+| `.media` | 'rules' | ['rule', ...] |
+| `.rules` | 'contact' | 'contact' |
+| `.rules` | 'media' | ['medium', ...] |
+| `.rules` | 'tags'    | ['tag', ...] |
+| `.scheduled_maintenances` | 'check' | 'check' |
+| `.states` | 'check' | 'check' |
+| `.tags` | 'checks' | ['check', ...] |
+| `.tags` | 'rules' | ['rule', ...] |
+| `.unscheduled_maintenances` | 'check' | 'check' |
+
+NB: these may be chained, as long as they follow the allowed paths above; e.g.
+
+```ruby
+Flapjack::Diner.contacts(CONTACT_ID, :include => 'media.alerting_checks')
+```
+
+The above will include both the contact's media *and* any alerting checks in extra data accessible via the `Flapjack::Diner.context` method; specifically, from the value held for`:included` key in the resulting Hash.
 
 ---
 
