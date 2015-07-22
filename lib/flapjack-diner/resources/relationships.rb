@@ -15,6 +15,7 @@ module Flapjack
                   :checks => 'check',
                   :contacts => 'contact',
                   :media => 'medium',
+                  :rollups => 'rollup',
                   :rules => 'rule',
                   :scheduled_maintenances   => 'scheduled_maintenance',
                   :states => 'state',
@@ -102,9 +103,23 @@ module Flapjack
               :post => true, :get => true,
               :number => :singular, :link => true, :includable => true
             },
+            :rollups => {
+              :get => true,
+              :number => :multiple, :link => true, :includable => true
+            },
             :rules => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
+            }
+          },
+          :rollups => {
+            :medium => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :singular, :link => true, :includable => true
+            },
+            :tag => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :singular, :link => true, :includable => true
             }
           },
           :rules => {
@@ -140,6 +155,10 @@ module Flapjack
           :tags => {
             :checks => {
               :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :includable => true
+            },
+            :rollups => {
+              :get => true,
               :number => :multiple, :link => true, :includable => true
             },
             :rules => {

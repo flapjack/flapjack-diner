@@ -15,9 +15,9 @@ module Flapjack
             validate :query => :id, :as => :uuid
             validate :query => :transport, :as => [:non_empty_string, :required]
             validate :query => [:address, :pagerduty_subdomain,
-                                :pagerduty_token], :as => :non_empty_string
-            validate :query => [:interval, :rollup_threshold,
-                                :pagerduty_ack_duration], :as => :positive_integer
+                                :pagerduty_token],
+                     :as => :non_empty_string
+            validate :query => [:interval, :pagerduty_ack_duration], :as => :positive_integer
             validate :query => :contact, :as => [:singular_link_uuid, :required]
             validate :query => :rules, :as => :multiple_link_uuid
           end
@@ -40,8 +40,8 @@ module Flapjack
             validate :query => :id, :as => [:uuid, :required]
             validate :query => [:address, :pagerduty_subdomain,
                                 :pagerduty_token], :as => :non_empty_string
-            validate :query => [:interval, :rollup_threshold,
-                                :pagerduty_ack_duration], :as => :positive_integer
+            validate :query => [:interval, :pagerduty_ack_duration],
+                     :as => :positive_integer
             validate :query => :rules, :as => :multiple_link_uuid
           end
           perform_patch(:media, "/media", data)

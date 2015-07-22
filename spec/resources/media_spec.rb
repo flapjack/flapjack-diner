@@ -169,14 +169,14 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
              :path => "/media",
              :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
              :body => {:data => [{:id => email_data[:id], :type => 'medium', :attributes => {:interval => 50}},
-                                 {:id => sms_data[:id], :type => 'medium', :attributes => {:rollup_threshold => 5}}]}).
+                                 {:id => sms_data[:id], :type => 'medium', :attributes => {:interval => 25}}]}).
         will_respond_with(
           :status => 204,
           :body => '' )
 
       result = Flapjack::Diner.update_media(
         {:id => email_data[:id], :interval => 50},
-        {:id => sms_data[:id], :rollup_threshold => 5})
+        {:id => sms_data[:id], :interval => 25})
       expect(result).to be_a(TrueClass)
     end
 
