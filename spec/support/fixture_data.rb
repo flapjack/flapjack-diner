@@ -162,6 +162,12 @@ module FixtureData
   def contact_rel(co_data)
     id = co_data[:id]
     {
+      :blackholes => {
+        :links => {
+          :self => "http://#{api_host}/contacts/#{id}/relationships/blackholes",
+          :related => "http://#{api_host}/contacts/#{id}/blackholes"
+        }
+      },
       :checks => {
         :links => {
           :self => "http://#{api_host}/contacts/#{id}/relationships/checks",
@@ -301,7 +307,6 @@ module FixtureData
   def rule_data
     @rule_data ||= {
       :id          => '05983623-fcef-42da-af44-ed6990b500fa',
-      :is_blackhole => false,
       :conditions_list => 'critical'
     }
   end
@@ -309,7 +314,6 @@ module FixtureData
   def rule_2_data
     @rule_2_data ||= {
       :id          => '20f182fc-6e32-4794-9007-97366d162c51',
-      :is_blackhole => false,
       :conditions_list => 'warning'
     }
   end
@@ -346,12 +350,58 @@ module FixtureData
     }
   end
 
+  def blackhole_data
+    @blackhole_data ||= {
+      :id          => '05983623-fcef-42da-af44-ed6990b500fa',
+      :conditions_list => 'critical'
+    }
+  end
+
+  def blackhole_2_data
+    @blackhole_2_data ||= {
+      :id          => '20f182fc-6e32-4794-9007-97366d162c51',
+      :conditions_list => 'warning'
+    }
+  end
+
+  def blackhole_json(bl_data)
+    {
+      :id => bl_data[:id],
+      :type => 'blackhole',
+      :attributes => bl_data.reject {|k,v| :id.eql?(k) }
+    }
+  end
+
+  def blackhole_rel(bl_data)
+    id = bl_data[:id]
+    {
+      :contact => {
+        :links => {
+          :self => "http://example.org/blackholes/#{id}/relationships/contact",
+          :related => "http://example.org/blackholes/#{id}/contact"
+        }
+      },
+      :media => {
+        :links => {
+          :self => "http://example.org/blackholes/#{id}/relationships/media",
+          :related => "http://example.org/blackholes/#{id}/media"
+        }
+      },
+      :tags => {
+        :links => {
+          :self => "http://example.org/blackholes/#{id}/relationships/tags",
+          :related => "http://example.org/blackholes/#{id}/tags"
+        }
+      }
+    }
+  end
+
   def state_data
     @state_data ||= {
       :id => '142acf62-31e7-4074-ada9-a30ae73d880d',
       :created_at => (fixture_time - 30).iso8601,
       :updated_at => (fixture_time - 30).iso8601,
-      :condition => 'critical'
+      :condition => 'critical',
     }
   end
 
@@ -360,7 +410,7 @@ module FixtureData
       :id => '008d78fc-1c72-4c2a-8057-0d44b64c6f3d',
       :created_at => (fixture_time - 10).iso8601,
       :updated_at => (fixture_time - 10).iso8601,
-      :condition => 'ok'
+      :condition => 'ok',
     }
   end
 
@@ -408,6 +458,12 @@ module FixtureData
   def tag_rel(ta_data)
     id = ta_data[:name]
     {
+      :blackholes => {
+        :links => {
+          :self => "http://#{api_host}/tags/#{id}/relationships/blackholes",
+          :related => "http://#{api_host}/tags/#{id}/blackholes"
+        }
+      },
       :checks => {
         :links => {
           :self => "http://#{api_host}/tags/#{id}/relationships/checks",

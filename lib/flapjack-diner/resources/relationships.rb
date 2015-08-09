@@ -12,6 +12,7 @@ module Flapjack
 
         TYPES = {
                   :acknowledgements => 'acknowledgement',
+                  :blackholes => 'blackhole',
                   :checks => 'check',
                   :contacts => 'contact',
                   :media => 'medium',
@@ -35,6 +36,20 @@ module Flapjack
             :tag => {
               :post => true,
               :number => :singular, :link => false, :includable => false
+            }
+          },
+          :blackholes => {
+            :contact => {
+              :post => true, :get => true,
+              :number => :singular, :link => true, :includable => true
+            },
+            :media => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :includable => true
+            },
+            :tags => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :includable => true
             }
           },
           :checks => {
@@ -80,6 +95,10 @@ module Flapjack
             }
           },
           :contacts => {
+            :blackholes => {
+              :get => true,
+              :number => :multiple, :link => true, :includable => true
+            },
             :checks => {
               :get => true,
               :number => :multiple, :link => true, :includable => true
@@ -96,6 +115,10 @@ module Flapjack
           :media => {
             :alerting_checks => {
               :get => true,
+              :number => :multiple, :link => true, :includable => true
+            },
+            :blackholes => {
+              :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             },
             :contact => {
@@ -138,6 +161,10 @@ module Flapjack
             }
           },
           :tags => {
+            :blackholes => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :includable => true
+            },
             :checks => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true

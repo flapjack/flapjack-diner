@@ -4,7 +4,7 @@ require 'json'
 require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
 
-%w(checks contacts events maintenance_periods media metrics rules
+%w(blackholes checks contacts events maintenance_periods media metrics rules
    states statistics tags relationships).each do |resource|
   require "flapjack-diner/resources/#{resource}"
 end
@@ -26,6 +26,7 @@ module Flapjack
     class << self
       attr_accessor :logger, :return_keys_as_strings
 
+      include Flapjack::Diner::Resources::Blackholes
       include Flapjack::Diner::Resources::Checks
       include Flapjack::Diner::Resources::Contacts
       include Flapjack::Diner::Resources::Events
