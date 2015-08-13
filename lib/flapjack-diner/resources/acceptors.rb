@@ -8,62 +8,66 @@ require 'flapjack-diner/argument_validator'
 module Flapjack
   module Diner
     module Resources
-      module Rules
+      module Acceptors
 
-        def create_rules(*args)
+        def create_acceptors(*args)
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :uuid
-            # TODO proper validation of time_restrictions field
+            validate :query => :name, :as => :string
+            validate :query => :all, :as => :boolean
             validate :query => :conditions_list, :as => :string
+            # TODO proper validation of time_restrictions field
             validate :query => :contact, :as => [:singular_link_uuid, :required]
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end
-          _rules_validate_association(data)
-          perform_post(:rules, '/rules', data)
+          _acceptors_validate_association(data)
+          perform_post(:acceptors, '/acceptors', data)
         end
 
-        def rules(*args)
+        def acceptors(*args)
           ids, data = unwrap_uuids(*args), unwrap_data(*args)
           validate_params(data) do
             validate :query => [:fields, :sort, :include], :as => :string_or_array_of_strings
             validate :query => :filter,  :as => :hash
             validate :query => [:page, :per_page], :as => :positive_integer
           end
-          perform_get('/rules', ids, data)
+          perform_get('/acceptors', ids, data)
         end
 
-        def update_rules(*args)
+        def update_acceptors(*args)
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => [:uuid, :required]
-            # TODO proper validation of time_restrictions field
+            validate :query => :name, :as => :string
+            validate :query => :all, :as => :boolean
             validate :query => :conditions_list, :as => :string
+            # TODO proper validation of time_restrictions field
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end
-          perform_patch(:rules, "/rules", data)
+          perform_patch(:acceptors, "/acceptors", data)
         end
 
-        def delete_rules(*ids)
-          raise "'delete_rules' requires at least one rule id parameter" if ids.nil? || ids.empty?
-          perform_delete(:rules, '/rules', *ids)
+        def delete_acceptors(*ids)
+          raise "'delete_acceptors' requires at least one acceptor id parameter" if ids.nil? || ids.empty?
+          perform_delete(:acceptors, '/acceptors', *ids)
         end
 
         private
 
-        def _rules_validate_association(data)
+        def _acceptors_validate_association(data)
           case data
           when Array
             data.each do |d|
               unless d.has_key?(:contact)
-                raise ArgumentError.new("Contact association must be provided for all rules")
+                raise ArgumentError.new("Contact association must be provided for all acceptors")
               end
             end
           when Hash
             unless data.has_key?(:contact)
-              raise ArgumentError.new("Contact association must be provided for rule")
+              raise ArgumentError.new("Contact association must be provided for acceptor")
             end
           end
         end

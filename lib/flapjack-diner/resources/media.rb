@@ -19,7 +19,7 @@ module Flapjack
             validate :query => [:interval, :rollup_threshold,
                                 :pagerduty_ack_duration], :as => :positive_integer
             validate :query => :contact, :as => [:singular_link_uuid, :required]
-            validate :query => :rules, :as => :multiple_link_uuid
+            validate :query => [:acceptors, :rejectors], :as => :multiple_link_uuid
           end
           perform_post(:media, "/media", data)
         end
@@ -42,7 +42,7 @@ module Flapjack
                                 :pagerduty_token], :as => :non_empty_string
             validate :query => [:interval, :rollup_threshold,
                                 :pagerduty_ack_duration], :as => :positive_integer
-            validate :query => :rules, :as => :multiple_link_uuid
+            validate :query => [:acceptors, :rejectors], :as => :multiple_link_uuid
           end
           perform_patch(:media, "/media", data)
         end

@@ -11,12 +11,12 @@ module Flapjack
       module Relationships
 
         TYPES = {
+                  :acceptors => 'acceptor',
                   :acknowledgements => 'acknowledgement',
-                  :blackholes => 'blackhole',
                   :checks => 'check',
                   :contacts => 'contact',
                   :media => 'medium',
-                  :rules => 'rule',
+                  :rejectors => 'rejector',
                   :scheduled_maintenances   => 'scheduled_maintenance',
                   :states => 'state',
                   :tags => 'tag',
@@ -28,17 +28,7 @@ module Flapjack
 
         # extracted from flapjack data models' "jsonapi_associations" class method
         ASSOCIATIONS = {
-          :acknowledgements => {
-            :check => {
-              :post => true,
-              :number => :singular, :link => false, :includable => false
-            },
-            :tag => {
-              :post => true,
-              :number => :singular, :link => false, :includable => false
-            }
-          },
-          :blackholes => {
+          :acceptors => {
             :contact => {
               :post => true, :get => true,
               :number => :singular, :link => true, :includable => true
@@ -50,6 +40,16 @@ module Flapjack
             :tags => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
+            }
+          },
+          :acknowledgements => {
+            :check => {
+              :post => true,
+              :number => :singular, :link => false, :includable => false
+            },
+            :tag => {
+              :post => true,
+              :number => :singular, :link => false, :includable => false
             }
           },
           :checks => {
@@ -95,7 +95,7 @@ module Flapjack
             }
           },
           :contacts => {
-            :blackholes => {
+            :acceptors => {
               :get => true,
               :number => :multiple, :link => true, :includable => true
             },
@@ -107,30 +107,30 @@ module Flapjack
               :get => true,
               :number => :multiple, :link => true, :includable => true
             },
-            :rules => {
+            :rejectors => {
               :get => :true,
               :number => :multiple, :link => true, :includable => true
             }
           },
           :media => {
-            :alerting_checks => {
-              :get => true,
+            :acceptors => {
+              :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             },
-            :blackholes => {
-              :post => true, :get => true, :patch => true, :delete => true,
+            :alerting_checks => {
+              :get => true,
               :number => :multiple, :link => true, :includable => true
             },
             :contact => {
               :post => true, :get => true,
               :number => :singular, :link => true, :includable => true
             },
-            :rules => {
+            :rejectors => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             }
           },
-          :rules => {
+          :rejectors => {
             :contact => {
               :post => true, :get => true,
               :number => :singular, :link => true, :includable => true
@@ -161,7 +161,7 @@ module Flapjack
             }
           },
           :tags => {
-            :blackholes => {
+            :acceptors => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             },
@@ -169,9 +169,21 @@ module Flapjack
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             },
-            :rules => {
+            :rejectors => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
+            },
+            :scheduled_maintenances => {
+              :get => true,
+              :number => :multiple, :link => true, :includable => false
+            },
+            :states => {
+              :get => true,
+              :number => :multiple, :link => true, :includable => false
+            },
+            :unscheduled_maintenances => {
+              :get => true,
+              :number => :multiple, :link => true, :includable => false
             }
           },
           :test_notifications => {
