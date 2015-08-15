@@ -176,7 +176,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         expect(Flapjack::Diner.context).to eq(:included => resultify(resp_included))
       end
 
-      it 'returns a contact with media and rules' do
+      it 'returns a contact with media and acceptors' do
         resp_data = contact_json(contact_data).merge(:relationships => contact_rel(contact_data))
         resp_data[:relationships][:media][:data] = [
           {:type => 'medium', :id => email_data[:id]}
