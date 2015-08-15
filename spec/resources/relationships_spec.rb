@@ -71,8 +71,6 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
   end
 
   it 'gets tags for a check with full tag and rule record' do
-    skip "locking for linked classes is broken"
-
     included_data = [
       tag_json(tag_data).merge(:relationships => tag_rel(tag_data)),
       acceptor_json(acceptor_data).merge(:relationships => acceptor_rel(acceptor_data))
