@@ -561,6 +561,7 @@ Flapjack::Diner.create_tags(TAG, ...)
 {
   :name      => STRING,         # required
   :checks    => [CHECK_ID, ...],
+  :contacts  => [CONTACT_ID, ...],
   :acceptors => [ACCEPTOR_ID, ...],
   :rejectors => [REJECTOR_ID, ...]
 }
@@ -598,7 +599,7 @@ Flapjack::Diner.update_tags({:id => TAG_NAME, KEY => VALUE, ...}, {:id => TAG_NA
 
 Acceptable update field keys are
 
-  `:checks`, `:acceptors` and `:rejectors`
+  `:checks`, `:contacts`, `:acceptors` and `:rejectors`
 
 Returns true if updating succeeded or false if updating failed.
 
@@ -877,6 +878,7 @@ first_page_of_statistics = Flapjack::Diner.statistics
 | `.contacts`                 | 'checks'                          | ['check', ...]                 |
 | `.contacts`                 | 'media'                           | ['medium', ...]                |
 | `.contacts`                 | 'rejectors'                       | ['rejector', ...]              |
+| `.contacts`                 | 'tags'                            | ['tag', ...]                   |
 | `.media`                    | 'acceptors'                       | ['acceptor', ...]              |
 | `.media`                    | 'alerting_checks'                 | ['check', ...]                 |
 | `.media`                    | 'contact'                         | 'contact'                      |
@@ -891,6 +893,7 @@ first_page_of_statistics = Flapjack::Diner.statistics
 | `.states`                   | 'check'                           | 'check'                        |
 | `.tags`                     | 'acceptors'                       | ['acceptor', ...]              |
 | `.tags`                     | 'checks'                          | ['check', ...]                 |
+| `.tags`                     | 'contacts'                        | ['contact', ...]               |
 | `.tags`                     | 'rejectors'                       | ['acceptor', ...]              |
 | `.unscheduled_maintenances` | 'check'                           | 'check'                        |
 
@@ -937,6 +940,7 @@ contact_link_acceptors(contact_id, opts = {})
 contact_link_checks(contact_id, opts = {})
 contact_link_media(contact_id, opts = {})
 contact_link_rejectors(contact_id, opts = {})
+contact_link_tags(contact_id, opts = {})
 
 medium_link_acceptors(medium_id, opts = {})
 medium_link_alerting_checks(medium_id, opts = {})
@@ -955,6 +959,7 @@ state_link_check(state_id, opts = {})
 
 tag_link_acceptors(tag_name, opts = {})
 tag_link_checks(tag_name, opts = {})
+tag_link_contacts(tag_name, opts = {})
 tag_link_rejectors(tag_name, opts = {})
 tag_link_scheduled_maintenances(tag_name, opts = {})
 tag_link_states(tag_name, opts = {})
@@ -972,6 +977,10 @@ The following operations are supported; please note that some associations (e.g.
 create_check_link_tags(check_id, *tags_names)
 update_check_link_tags(check_id, *tags_names)
 delete_check_link_tags(check_id, *tags_names)
+
+create_contact_link_tags(contact_id, *tags_names)
+update_contact_link_tags(contact_id, *tags_names)
+delete_contact_link_tags(contact_id, *tags_names)
 
 create_medium_link_acceptors(medium_id, *acceptors_ids)
 update_medium_link_acceptors(medium_id, *acceptors_ids)
@@ -1000,6 +1009,10 @@ delete_rejector_link_tags(rejector_id, *tags_names)
 create_tag_link_checks(tag_name, *checks_ids)
 update_tag_link_checks(tag_name, *checks_ids)
 delete_tag_link_checks(tag_name, *checks_ids)
+
+create_tag_link_contacts(tag_name, *contacts_ids)
+update_tag_link_contacts(tag_name, *contacts_ids)
+delete_tag_link_contacts(tag_name, *contacts_ids)
 
 create_tag_link_acceptors(tag_name, *acceptors_ids)
 update_tag_link_acceptors(tag_name, *acceptors_ids)

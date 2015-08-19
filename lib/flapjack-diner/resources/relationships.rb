@@ -110,6 +110,10 @@ module Flapjack
             :rejectors => {
               :get => :true,
               :number => :multiple, :link => true, :includable => true
+            },
+            :tags => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :includable => true
             }
           },
           :media => {
@@ -166,6 +170,10 @@ module Flapjack
               :number => :multiple, :link => true, :includable => true
             },
             :checks => {
+              :post => true, :get => true, :patch => true, :delete => true,
+              :number => :multiple, :link => true, :includable => true
+            },
+            :contacts => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             },
