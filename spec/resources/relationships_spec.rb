@@ -162,4 +162,48 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
     expect(result).to eq(:id => contact_data[:id], :type => 'contact')
   end
 
+  it "doesn't duplicate linked data references in included data" do
+    resp_check = check_json(check_data).merge(:relationships => check_rel(check_data))
+    resp_check[:relationships][:current_state][:data] = {
+      :type => 'state', :id => state_data[:id]
+    }
+
+    # NB: this is missing from the first piece of data in the pact response,
+    # but it's included in the spec-breaking *second* included check data record :(
+    resp_check[:relationships][:latest_notifications][:data] = [
+      {:type => 'state', :id => state_data[:id]}
+    ]
+
+    sd = state_data.delete_if {|k, _| [:created_at, :updated_at].include?(k)}
+
+    included_data = [
+      resp_check,
+      state_json(sd).merge(:relationships => state_rel(sd)),
+    ]
+
+    flapjack.given("a check with a tag, current state and a latest notification exists").
+      upon_receiving("a GET request for a check's ").
+      with(:method => :get,
+           :path => "/tags/#{tag_data[:name]}/checks",
+           :query => 'include=checks.current_state%2Cchecks.latest_notifications').
+      will_respond_with(
+        :status => 200,
+        :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+        :body => {
+          :data => [
+            {:id => check_data[:id], :type => 'check'},
+          ],
+          :included => included_data
+        })
+
+    result = Flapjack::Diner.tag_link_checks(tag_data[:name],
+      :include => ['checks.current_state', 'checks.latest_notifications'])
+    expect(result).to eq([
+      {:id => check_data[:id], :type => 'check'}
+    ])
+    expect(Flapjack::Diner.context[:included]).to eq(
+      included_data.map {|d| resultify(d) }
+    )
+  end
+
 end
