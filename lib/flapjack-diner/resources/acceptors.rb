@@ -15,7 +15,7 @@ module Flapjack
           validate_params(data) do
             validate :query => :id, :as => :uuid
             validate :query => :name, :as => :string
-            validate :query => :all, :as => :boolean
+            validate :query => :strategy, :as => :string
             validate :query => :conditions_list, :as => :string
             # TODO proper validation of time_restrictions field
             validate :query => :contact, :as => [:singular_link_uuid, :required]
@@ -41,7 +41,7 @@ module Flapjack
           validate_params(data) do
             validate :query => :id, :as => [:uuid, :required]
             validate :query => :name, :as => :string
-            validate :query => :all, :as => :boolean
+            validate :query => :strategy, :as => :string
             validate :query => :conditions_list, :as => :string
             # TODO proper validation of time_restrictions field
             validate :query => :media, :as => :multiple_link_uuid
