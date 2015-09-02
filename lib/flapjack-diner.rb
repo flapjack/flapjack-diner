@@ -3,6 +3,7 @@ require 'json'
 
 require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
+require 'flapjack-diner/index_range'
 
 %w(acceptors checks contacts events maintenance_periods media metrics rejectors
    states statistics tags relationships).each do |resource|
