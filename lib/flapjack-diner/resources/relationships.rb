@@ -11,12 +11,11 @@ module Flapjack
       module Relationships
 
         TYPES = {
-                  :acceptors => 'acceptor',
                   :acknowledgements => 'acknowledgement',
                   :checks => 'check',
                   :contacts => 'contact',
                   :media => 'medium',
-                  :rejectors => 'rejector',
+                  :rules => 'rule',
                   :scheduled_maintenances   => 'scheduled_maintenance',
                   :states => 'state',
                   :tags => 'tag',
@@ -28,20 +27,6 @@ module Flapjack
 
         # extracted from flapjack data models' "jsonapi_associations" class method
         ASSOCIATIONS = {
-          :acceptors => {
-            :contact => {
-              :post => true, :get => true,
-              :number => :singular, :link => true, :includable => true
-            },
-            :media => {
-              :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
-            },
-            :tags => {
-              :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
-            }
-          },
           :acknowledgements => {
             :check => {
               :post => true,
@@ -95,10 +80,6 @@ module Flapjack
             }
           },
           :contacts => {
-            :acceptors => {
-              :get => true,
-              :number => :multiple, :link => true, :includable => true
-            },
             :checks => {
               :get => true,
               :number => :multiple, :link => true, :includable => true
@@ -107,7 +88,7 @@ module Flapjack
               :get => true,
               :number => :multiple, :link => true, :includable => true
             },
-            :rejectors => {
+            :rules => {
               :get => :true,
               :number => :multiple, :link => true, :includable => true
             },
@@ -117,10 +98,6 @@ module Flapjack
             }
           },
           :media => {
-            :acceptors => {
-              :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
-            },
             :alerting_checks => {
               :get => true,
               :number => :multiple, :link => true, :includable => true
@@ -129,12 +106,12 @@ module Flapjack
               :post => true, :get => true,
               :number => :singular, :link => true, :includable => true
             },
-            :rejectors => {
+            :rules => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             }
           },
-          :rejectors => {
+          :rules => {
             :contact => {
               :post => true, :get => true,
               :number => :singular, :link => true, :includable => true
@@ -165,10 +142,6 @@ module Flapjack
             }
           },
           :tags => {
-            :acceptors => {
-              :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
-            },
             :checks => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
@@ -177,7 +150,7 @@ module Flapjack
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             },
-            :rejectors => {
+            :rules => {
               :post => true, :get => true, :patch => true, :delete => true,
               :number => :multiple, :link => true, :includable => true
             },

@@ -8,13 +8,14 @@ require 'flapjack-diner/argument_validator'
 module Flapjack
   module Diner
     module Resources
-      module Rejectors
+      module Rules
 
-        def create_rejectors(*args)
+        def create_rules(*args)
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => :uuid
             validate :query => :name, :as => :string
+            validate :query => :blackhole, :as => :boolean
             validate :query => :strategy, :as => :string
             validate :query => :conditions_list, :as => :string
             # TODO proper validation of time_restrictions field
@@ -22,52 +23,53 @@ module Flapjack
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end
-          _rejectors_validate_association(data)
-          perform_post(:rejectors, '/rejectors', data)
+          _rules_validate_association(data)
+          perform_post(:rules, '/rules', data)
         end
 
-        def rejectors(*args)
+        def rules(*args)
           ids, data = unwrap_uuids(*args), unwrap_data(*args)
           validate_params(data) do
             validate :query => [:fields, :sort, :include], :as => :string_or_array_of_strings
             validate :query => :filter,  :as => :hash
             validate :query => [:page, :per_page], :as => :positive_integer
           end
-          perform_get('/rejectors', ids, data)
+          perform_get('/rules', ids, data)
         end
 
-        def update_rejectors(*args)
+        def update_rules(*args)
           data = unwrap_data(*args)
           validate_params(data) do
             validate :query => :id, :as => [:uuid, :required]
             validate :query => :name, :as => :string
+            validate :query => :blackhole, :as => :boolean
             validate :query => :strategy, :as => :string
             validate :query => :conditions_list, :as => :string
             # TODO proper validation of time_restrictions field
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end
-          perform_patch(:rejectors, "/rejectors", data)
+          perform_patch(:rules, "/rules", data)
         end
 
-        def delete_rejectors(*ids)
-          raise "'delete_rejectors' requires at least one rejector id parameter" if ids.nil? || ids.empty?
-          perform_delete(:rejectors, '/rejectors', *ids)
+        def delete_rules(*ids)
+          raise "'delete_rules' requires at least one rule id parameter" if ids.nil? || ids.empty?
+          perform_delete(:rules, '/rules', *ids)
         end
 
         private
 
-        def _rejectors_validate_association(data)
+        def _rules_validate_association(data)
           case data
           when Array
             data.each do |d|
               unless d.has_key?(:contact)
-                raise ArgumentError.new("Contact association must be provided for all rejectors")
+                raise ArgumentError.new("Contact association must be provided for all rules")
               end
             end
           when Hash
             unless data.has_key?(:contact)
-              raise ArgumentError.new("Contact association must be provided for rejector")
+              raise ArgumentError.new("Contact association must be provided for rule")
             end
           end
         end

@@ -5,8 +5,8 @@ require 'flapjack-diner/version'
 require 'flapjack-diner/argument_validator'
 require 'flapjack-diner/index_range'
 
-%w(acceptors checks contacts events maintenance_periods media metrics rejectors
-   states statistics tags relationships).each do |resource|
+%w(checks contacts events maintenance_periods media metrics rules states
+   statistics tags relationships).each do |resource|
   require "flapjack-diner/resources/#{resource}"
 end
 
@@ -27,14 +27,13 @@ module Flapjack
     class << self
       attr_accessor :logger, :return_keys_as_strings
 
-      include Flapjack::Diner::Resources::Acceptors
       include Flapjack::Diner::Resources::Checks
       include Flapjack::Diner::Resources::Contacts
       include Flapjack::Diner::Resources::Events
       include Flapjack::Diner::Resources::MaintenancePeriods
       include Flapjack::Diner::Resources::Media
       include Flapjack::Diner::Resources::Metrics
-      include Flapjack::Diner::Resources::Rejectors
+      include Flapjack::Diner::Resources::Rules
       include Flapjack::Diner::Resources::States
       include Flapjack::Diner::Resources::Statistics
       include Flapjack::Diner::Resources::Tags

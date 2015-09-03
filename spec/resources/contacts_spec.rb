@@ -176,29 +176,29 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
         expect(Flapjack::Diner.context).to eq(:included => resultify(resp_included))
       end
 
-      it 'returns a contact with media and acceptors' do
+      it 'returns a contact with media and rules' do
         resp_data = contact_json(contact_data).merge(:relationships => contact_rel(contact_data))
         resp_data[:relationships][:media][:data] = [
           {:type => 'medium', :id => email_data[:id]}
         ]
-        resp_data[:relationships][:acceptors][:data] = [
-          {:type => 'acceptor', :id => acceptor_data[:id]}
+        resp_data[:relationships][:rules][:data] = [
+          {:type => 'rule', :id => rule_data[:id]}
         ]
         resp_included = [
           medium_json(email_data).merge(:relationships => medium_rel(email_data)),
-          acceptor_json(acceptor_data).merge(:relationships => acceptor_rel(acceptor_data))
+          rule_json(rule_data).merge(:relationships => rule_rel(rule_data))
         ]
 
-        flapjack.given("a contact with one medium and one acceptor exists").
-          upon_receiving("a GET request for a single contact with media and acceptors").
+        flapjack.given("a contact with one medium and one rule exists").
+          upon_receiving("a GET request for a single contact with media and rules").
           with(:method => :get, :path => "/contacts/#{contact_data[:id]}",
-            :query => 'include=media%2Cacceptors').
+            :query => 'include=media%2Crules').
           will_respond_with(
             :status => 200,
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:data => resp_data, :included => resp_included})
 
-        result = Flapjack::Diner.contacts(contact_data[:id], :include => ['media', 'acceptors'])
+        result = Flapjack::Diner.contacts(contact_data[:id], :include => ['media', 'rules'])
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
         expect(Flapjack::Diner.context).to eq(:included => [resultify(resp_included[0]), resultify(resp_included[1])])

@@ -73,21 +73,21 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
   it 'gets tags for a check with full tag and rule record' do
     included_data = [
       tag_json(tag_data).merge(:relationships => tag_rel(tag_data)),
-      acceptor_json(acceptor_data).merge(:relationships => acceptor_rel(acceptor_data))
+      rule_json(rule_data).merge(:relationships => rule_rel(rule_data))
     ]
 
-    flapjack.given("a check with a tag and an acceptor exists").
-      upon_receiving("a GET request for all tags on a check, with full tag and acceptor records").
+    flapjack.given("a check with a tag and a rule exists").
+      upon_receiving("a GET request for all tags on a check, with full tag and rule records").
       with(:method => :get,
            :path => "/checks/#{check_data[:id]}/tags",
-           :query => 'include=tags.acceptors').
+           :query => 'include=tags.rules').
       will_respond_with(
         :status => 200,
         :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
         :body => {:data => [{:id => tag_data[:name], :type => 'tag'}],
                   :included => included_data})
 
-    result = Flapjack::Diner.check_link_tags(check_data[:id], :include => 'acceptors')
+    result = Flapjack::Diner.check_link_tags(check_data[:id], :include => 'rules')
     expect(result).to eq([{:id => tag_data[:name], :type => 'tag'}])
     expect(Flapjack::Diner.context[:included]).to eq([resultify(included_data[0]),
       resultify(included_data[1])])
