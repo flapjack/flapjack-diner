@@ -18,7 +18,7 @@ module Flapjack
             validate :query => :blackhole, :as => :boolean
             validate :query => :strategy, :as => :string
             validate :query => :conditions_list, :as => :string
-            # TODO proper validation of time_restrictions field
+            validate :query => :time_restriction_ical, :as => :string
             validate :query => :contact, :as => [:singular_link_uuid, :required]
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
@@ -45,7 +45,7 @@ module Flapjack
             validate :query => :blackhole, :as => :boolean
             validate :query => :strategy, :as => :string
             validate :query => :conditions_list, :as => :string
-            # TODO proper validation of time_restrictions field
+            validate :query => :time_restriction_ical, :as => :string
             validate :query => :media, :as => :multiple_link_uuid
             validate :query => :tags, :as => :multiple_link
           end

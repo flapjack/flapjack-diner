@@ -163,63 +163,63 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
   end
 
-  # # Not immediately relevant, no data fields to update until time_restrictions are fixed
-  # context 'update' do
-  #   it 'submits a PUT request for an rule' do
-  #     flapjack.given("a rule exists").
-  #       upon_receiving("a PUT request for a single rule").
-  #       with(:method => :put,
-  #            :path => "/rules/#{rule_data[:id]}",
-  #            :body => {:rules => {:id => rule_data[:id], :time_restrictions => []}},
-  #            :headers => {'Content-Type' => 'application/vnd.api+json'}).
-  #       will_respond_with(
-  #         :status => 204,
-  #         :body => '' )
+  context 'update' do
 
-  #     result = Flapjack::Diner.update_rules(:id => rule_data[:id], :time_restrictions => [])
-  #     expect(result).to be_a(TrueClass)
-  #   end
+    it 'submits a PATCH request for a rule' do
+      flapjack.given("a rule exists").
+        upon_receiving("a PATCH request for a single rule").
+        with(:method => :patch,
+             :path => "/rules/#{rule_data[:id]}",
+             :body => {:data => {:id => rule_data[:id], :type => 'rule', :attributes => {:strategy => 'global'}}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-  #   it 'submits a PUT request for several rules' do
-  #     flapjack.given("two rules exist").
-  #       upon_receiving("a PUT request for two rules").
-  #       with(:method => :put,
-  #            :path => "/rules/#{rule_data[:id]},#{rule_2_data[:id]}",
-  #            :body => {:rules => [{:id => rule_data[:id], :time_restrictions => []},
-  #            {:id => rule_2_data[:id], :enabled => true}]},
-  #            :headers => {'Content-Type' => 'application/vnd.api+json'}).
-  #       will_respond_with(
-  #         :status => 204,
-  #         :body => '' )
+      result = Flapjack::Diner.update_rules(:id => rule_data[:id], :strategy => 'global')
+      expect(result).to be_a(TrueClass)
+    end
 
-  #     result = Flapjack::Diner.update_rules(
-  #       {:id => rule_data[:id], :time_restrictions => []},
-  #       {:id => rule_2_data[:id], :enabled => true})
-  #     expect(result).to be_a(TrueClass)
-  #   end
+    it 'submits a PATCH request for several rules' do
+      flapjack.given("two rules exist").
+        upon_receiving("a PATCH request for two rules").
+        with(:method => :patch,
+             :path => "/rules",
+             :headers => {'Content-Type' => 'application/vnd.api+json; ext=bulk'},
+             :body => {:data => [{:id => rule_data[:id], :type => 'rule', :attributes => {:conditions_list => 'warning'}},
+                                 {:id => rule_2_data[:id], :type => 'rule', :attributes => {:strategy => 'any_tag'}}]}).
+        will_respond_with(
+          :status => 204,
+          :body => '' )
 
-  #   it "can't find the rule to update" do
-  #     flapjack.given("no data exists").
-  #       upon_receiving("a PUT request for a single rule").
-  #       with(:method => :put,
-  #            :path => "/rules/#{rule_data[:id]}",
-  #            :body => {:rules => {:id => rule_data[:id], :time_restrictions => []}},
-  #            :headers => {'Content-Type' => 'application/vnd.api+json'}).
-  #       will_respond_with(
-  #         :status => 404,
-  #         :headers => {'Content-Type' => 'application/vnd.api+json; charset=utf-8'},
-  #         :body => {:errors => [{
-  #             :status => '404',
-  #             :detail => "could not find Rule records, ids: '#{rule_data[:id]}'"
-  #           }]}
-  #         )
+      result = Flapjack::Diner.update_rules(
+        {:id => rule_data[:id], :conditions_list => 'warning'},
+        {:id => rule_2_data[:id], :strategy => 'any_tag'})
+      expect(result).to be_a(TrueClass)
+    end
 
-  #     result = Flapjack::Diner.update_rules(:id => rule_data[:id], :time_restrictions => [])
-  #     expect(result).to be_nil
-  #     expect(Flapjack::Diner.last_error).to eq([{:status => '404',
-  #       :detail => "could not find Rule records, ids: '#{rule_data[:id]}'"}])
-  #   end
-  # end
+    it "can't find the rule to update" do
+      flapjack.given("no data exists").
+        upon_receiving("a PATCH request for a single rule").
+        with(:method => :patch,
+             :path => "/rules/#{rule_data[:id]}",
+             :body => {:data => {:id => rule_data[:id], :type => 'rule', :attributes => {:strategy => 'global'}}},
+             :headers => {'Content-Type' => 'application/vnd.api+json'}).
+        will_respond_with(
+          :status => 404,
+          :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+          :body => {:errors => [{
+              :status => '404',
+              :detail => "could not find Rule record, id: '#{rule_data[:id]}'"
+            }]}
+          )
+
+      result = Flapjack::Diner.update_rules(:id => rule_data[:id], :strategy => 'global')
+      expect(result).to be_nil
+      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        :detail => "could not find Rule record, id: '#{rule_data[:id]}'"}])
+    end
+  end
 
   context 'delete' do
 

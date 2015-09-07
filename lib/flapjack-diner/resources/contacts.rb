@@ -16,8 +16,6 @@ module Flapjack
             validate :query => :name, :as => [:required, :non_empty_string]
             validate :query => :timezone, :as => :non_empty_string
           end
-          # FIXME validate timezone string, if it's possible to do
-          # this without an extra gem dependency
           perform_post(:contacts, '/contacts', data)
         end
 
@@ -37,8 +35,6 @@ module Flapjack
             validate :query => :id, :as => [:required, :uuid]
             validate :query => [:name, :timezone], :as => :non_empty_string
           end
-          # FIXME validate timezone string, if it's possible to do
-          # this without an extra gem dependency
           perform_patch(:contacts, "/contacts", data)
         end
 
