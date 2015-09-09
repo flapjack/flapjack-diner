@@ -41,7 +41,7 @@ describe Flapjack::Diner::Resources::Events, :pact => true do
         req_data  = test_notification_json(test_notification_data).merge(
           :relationships => {
             :tag => {
-              :data => {:type => 'tag', :id => tag_data[:name]}
+              :data => {:type => 'tag', :id => tag_data[:id]}
             }
           }
         )
@@ -57,7 +57,7 @@ describe Flapjack::Diner::Resources::Events, :pact => true do
             :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
             :body => {:data => resp_data})
 
-        result = Flapjack::Diner.create_test_notifications(test_notification_data.merge(:tag => tag_data[:name]))
+        result = Flapjack::Diner.create_test_notifications(test_notification_data.merge(:tag => tag_data[:id]))
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
       end
@@ -107,14 +107,14 @@ describe Flapjack::Diner::Resources::Events, :pact => true do
           test_notification_json(test_notification_data).merge(
             :relationships => {
               :tag => {
-                :data => {:type => 'tag', :id => tag_data[:name]}
+                :data => {:type => 'tag', :id => tag_data[:id]}
               }
             }
           ),
           test_notification_json(test_notification_2_data).merge(
             :relationships => {
               :tag => {
-                :data => {:type => 'tag', :id => tag_data[:name]}
+                :data => {:type => 'tag', :id => tag_data[:id]}
               }
             }
           )
@@ -136,8 +136,8 @@ describe Flapjack::Diner::Resources::Events, :pact => true do
             :body => {:data => resp_data})
 
         result = Flapjack::Diner.create_test_notifications(
-          test_notification_data.merge(:tag => tag_data[:name]),
-          test_notification_2_data.merge(:tag => tag_data[:name])
+          test_notification_data.merge(:tag => tag_data[:id]),
+          test_notification_2_data.merge(:tag => tag_data[:id])
         )
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
@@ -176,7 +176,7 @@ describe Flapjack::Diner::Resources::Events, :pact => true do
         req_data  = test_notification_json(test_notification_data).merge(
           :relationships => {
             :tag => {
-              :data => {:type => 'tag', :id => tag_data[:name]}
+              :data => {:type => 'tag', :id => tag_data[:id]}
             }
           }
         )
@@ -191,14 +191,14 @@ describe Flapjack::Diner::Resources::Events, :pact => true do
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:errors => [{
               :status => '404',
-              :detail => "could not find Tag record, id: '#{tag_data[:name]}'"
+              :detail => "could not find Tag record, id: '#{tag_data[:id]}'"
             }]}
           )
 
-        result = Flapjack::Diner.create_test_notifications(test_notification_data.merge(:tag => tag_data[:name]))
+        result = Flapjack::Diner.create_test_notifications(test_notification_data.merge(:tag => tag_data[:id]))
         expect(result).to be_nil
         expect(Flapjack::Diner.last_error).to eq([{:status => '404',
-          :detail => "could not find Tag record, id: '#{tag_data[:name]}'"}])
+          :detail => "could not find Tag record, id: '#{tag_data[:id]}'"}])
       end
 
     end

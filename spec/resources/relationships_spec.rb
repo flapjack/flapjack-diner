@@ -13,11 +13,11 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       upon_receiving("a POST request adding a tag to a check").
       with(:method => :post, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
-           :body => {:data => [{:id => tag_data[:name], :type => 'tag'}]}).
+           :body => {:data => [{:id => tag_data[:id], :type => 'tag'}]}).
       will_respond_with(:status => 204,
                         :body => '')
 
-    result = Flapjack::Diner.create_check_link_tags(check_data[:id], tag_data[:name])
+    result = Flapjack::Diner.create_check_link_tags(check_data[:id], tag_data[:id])
     expect(result).to be true
   end
 
@@ -26,13 +26,13 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       upon_receiving("a POST request adding two tags to a check").
       with(:method => :post, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
-           :body => {:data => [{:id => tag_data[:name], :type => 'tag'},
-                               {:id => tag_2_data[:name], :type => 'tag'}]}).
+           :body => {:data => [{:id => tag_data[:id], :type => 'tag'},
+                               {:id => tag_2_data[:id], :type => 'tag'}]}).
       will_respond_with(:status => 204,
                         :body => '')
 
     result = Flapjack::Diner.create_check_link_tags(check_data[:id],
-      tag_data[:name], tag_2_data[:name])
+      tag_data[:id], tag_2_data[:id])
     expect(result).to be true
   end
 
@@ -43,10 +43,10 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(
         :status => 200,
         :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-        :body => {:data => [{:id => tag_data[:name], :type => 'tag'}]})
+        :body => {:data => [{:id => tag_data[:id], :type => 'tag'}]})
 
     result = Flapjack::Diner.check_link_tags(check_data[:id])
-    expect(result).to eq([{:id => tag_data[:name], :type => 'tag'}])
+    expect(result).to eq([{:id => tag_data[:id], :type => 'tag'}])
   end
 
   it 'gets tags for a check with full tag records' do
@@ -62,11 +62,11 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(
         :status => 200,
         :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-        :body => {:data => [{:id => tag_data[:name], :type => 'tag'}],
+        :body => {:data => [{:id => tag_data[:id], :type => 'tag'}],
                   :included => included_data})
 
     result = Flapjack::Diner.check_link_tags(check_data[:id], :include => 'tags')
-    expect(result).to eq([{:id => tag_data[:name], :type => 'tag'}])
+    expect(result).to eq([{:id => tag_data[:id], :type => 'tag'}])
     expect(Flapjack::Diner.context[:included]).to eq([resultify(included_data[0])])
   end
 
@@ -84,11 +84,11 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       will_respond_with(
         :status => 200,
         :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
-        :body => {:data => [{:id => tag_data[:name], :type => 'tag'}],
+        :body => {:data => [{:id => tag_data[:id], :type => 'tag'}],
                   :included => included_data})
 
     result = Flapjack::Diner.check_link_tags(check_data[:id], :include => 'rules')
-    expect(result).to eq([{:id => tag_data[:name], :type => 'tag'}])
+    expect(result).to eq([{:id => tag_data[:id], :type => 'tag'}])
     expect(Flapjack::Diner.context[:included]).to eq([resultify(included_data[0]),
       resultify(included_data[1])])
   end
@@ -98,12 +98,12 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       upon_receiving("a PATCH request updating tags for a check").
       with(:method => :patch, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
-           :body => {:data => [{:id => tag_data[:name], :type => 'tag'}]}).
+           :body => {:data => [{:id => tag_data[:id], :type => 'tag'}]}).
       will_respond_with(:status => 204,
                         :body => '')
 
     result = Flapjack::Diner.update_check_link_tags(check_data[:id],
-      tag_data[:name])
+      tag_data[:id])
     expect(result).to be true
   end
 
@@ -125,12 +125,12 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       upon_receiving("a DELETE request deleting a tag from a check").
       with(:method => :delete, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
-           :body => {:data => [{:id => tag_data[:name], :type => 'tag'}]}).
+           :body => {:data => [{:id => tag_data[:id], :type => 'tag'}]}).
       will_respond_with(:status => 204,
                         :body => '')
 
     result = Flapjack::Diner.delete_check_link_tags(check_data[:id],
-      tag_data[:name])
+      tag_data[:id])
     expect(result).to be true
   end
 
@@ -139,13 +139,13 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
       upon_receiving("a DELETE request deleting two tags from a check").
       with(:method => :delete, :path => "/checks/#{check_data[:id]}/relationships/tags",
            :headers => {'Content-Type' => 'application/vnd.api+json'},
-           :body => {:data => [{:id => tag_data[:name], :type => 'tag'},
-                               {:id => tag_2_data[:name], :type => 'tag'}]}).
+           :body => {:data => [{:id => tag_data[:id], :type => 'tag'},
+                               {:id => tag_2_data[:id], :type => 'tag'}]}).
       will_respond_with(:status => 204,
                         :body => '')
 
     result = Flapjack::Diner.delete_check_link_tags(check_data[:id],
-      tag_data[:name], tag_2_data[:name])
+      tag_data[:id], tag_2_data[:id])
     expect(result).to be true
   end
 
@@ -184,7 +184,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
     flapjack.given("a check with a tag, current state and a latest notification exists").
       upon_receiving("a GET request for a check's ").
       with(:method => :get,
-           :path => "/tags/#{tag_data[:name]}/checks",
+           :path => "/tags/#{tag_data[:id]}/checks",
            :query => 'include=checks.current_state%2Cchecks.latest_notifications').
       will_respond_with(
         :status => 200,
@@ -196,7 +196,7 @@ describe Flapjack::Diner::Resources::Relationships, :pact => true do
           :included => included_data
         })
 
-    result = Flapjack::Diner.tag_link_checks(tag_data[:name],
+    result = Flapjack::Diner.tag_link_checks(tag_data[:id],
       :include => ['checks.current_state', 'checks.latest_notifications'])
     expect(result).to eq([
       {:id => check_data[:id], :type => 'check'}

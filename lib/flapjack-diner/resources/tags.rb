@@ -12,6 +12,7 @@ module Flapjack
         def create_tags(*args)
           data = unwrap_data(*args)
           validate_params(data) do
+            validate :query => :id, :as => :uuid
             validate :query => :name, :as => [:required, :non_empty_string]
             validate :query => [:checks, :acceptors, :rejectors], :as => :multiple_link_uuid
           end
@@ -31,6 +32,8 @@ module Flapjack
         def update_tags(*args)
           data = unwrap_data(*args)
           validate_params(data) do
+            validate :query => :id, :as => [:required, :uuid]
+            validate :query => :name, :as => :non_empty_string
             validate :query => [:checks, :acceptors, :rejectors], :as => :multiple_link_uuid
           end
           perform_patch(:tags, "/tags", data)

@@ -55,7 +55,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
       req_data  = check_json(check_data).merge(
         :relationships => {
           :tags => {
-            :data => [{:type => 'tag', :id => tag_data[:name]}]
+            :data => [{:type => 'tag', :id => tag_data[:id]}]
           }
         }
       )
@@ -71,7 +71,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
           :body => {:data => resp_data})
 
-      result = Flapjack::Diner.create_checks(check_data.merge(:tags => [tag_data[:name]]))
+      result = Flapjack::Diner.create_checks(check_data.merge(:tags => [tag_data[:id]]))
       expect(result).to eq(resultify(resp_data))
     end
 
@@ -287,7 +287,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
         :type => 'check',
         :relationships => {
           :tags => {
-            :data => [{:type => 'tag', :id => tag_data[:name]}]
+            :data => [{:type => 'tag', :id => tag_data[:id]}]
           }
         }
       }
@@ -302,7 +302,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
           :status => 204,
           :body => '' )
 
-      result = Flapjack::Diner.update_checks(:id => check_data[:id], :tags => [tag_data[:name]])
+      result = Flapjack::Diner.update_checks(:id => check_data[:id], :tags => [tag_data[:id]])
       expect(result).to be_a(TrueClass)
     end
 
