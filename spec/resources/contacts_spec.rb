@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner::Resources::Contacts, :pact => true do
+describe Flapjack::Diner::Resources, :pact => true do
 
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
@@ -70,7 +70,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
       result = Flapjack::Diner.create_contacts(contact_data)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '409',
+      expect(Flapjack::Diner.error).to eq([{:status => '409',
         :detail => "Contacts already exist with the following ids: #{contact_data[:id]}"}])
     end
 
@@ -146,7 +146,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
         result = Flapjack::Diner.contacts(contact_data[:id])
         expect(result).to be_nil
-        expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        expect(Flapjack::Diner.error).to eq([{:status => '404',
           :detail => "could not find Contact record, id: '#{contact_data[:id]}'"}])
       end
 
@@ -261,7 +261,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
       result = Flapjack::Diner.update_contacts(:id => contact_data[:id], :name => 'Hello There')
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find Contact record, id: '#{contact_data[:id]}'"}])
     end
   end
@@ -315,7 +315,7 @@ describe Flapjack::Diner::Resources::Contacts, :pact => true do
 
       result = Flapjack::Diner.delete_contacts(contact_data[:id])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find Contact record, id: '#{contact_data[:id]}'"}])
     end
   end

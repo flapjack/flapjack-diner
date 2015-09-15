@@ -111,29 +111,12 @@ module Flapjack
       end
     end
 
-    def singular_link(*elements)
-      elements.each do |element|
-        target = @query[element]
-        next if target.nil? || (target.is_a?(String) && !target.empty?)
-        @errors << "'#{target}' association must be a String ID."
-      end
-    end
-
     def singular_link_uuid(*elements)
       elements.each do |element|
         target = @query[element]
         next if target.nil? || (target.is_a?(String) &&
           (target =~ /^#{Flapjack::Diner::UUID_RE}$/i))
         @errors << "'#{target}' association must be a RFC 4122-compliant UUID."
-      end
-    end
-
-    def multiple_link(*elements)
-      elements.each do |element|
-        target = @query[element]
-        next if target.nil? || (target.is_a?(Array) &&
-          target.all? {|t| t.is_a?(String) && !t.empty? })
-        @errors << "'#{target}' association must be an Array of String IDs."
       end
     end
 

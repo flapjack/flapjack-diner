@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     flapjack-diner (2.0.0.pre.alpha.3)
-      httparty (>= 0.10)
+      httparty (= 0.13.5)
       json (>= 1.7.7)
 
 GEM
@@ -42,7 +42,7 @@ GEM
       term-ansicolor (~> 1.0)
       thor
       webrick
-    pact-support (0.5.1)
+    pact-support (0.5.3)
       awesome_print (~> 1.1)
       find_a_port (~> 1.0.1)
       json

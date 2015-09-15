@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner::Resources::Rules, :pact => true do
+describe Flapjack::Diner::Resources, :pact => true do
 
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
@@ -157,7 +157,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
       result = Flapjack::Diner.rules(rule_data[:id])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find Rule record, id: '#{rule_data[:id]}'"}])
     end
 
@@ -216,7 +216,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
       result = Flapjack::Diner.update_rules(:id => rule_data[:id], :strategy => 'global')
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find Rule record, id: '#{rule_data[:id]}'"}])
     end
   end
@@ -270,7 +270,7 @@ describe Flapjack::Diner::Resources::Rules, :pact => true do
 
       result = Flapjack::Diner.delete_rules(rule_data[:id])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find Rule record, id: '#{rule_data[:id]}'"}])
     end
   end

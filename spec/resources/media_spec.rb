@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner::Resources::Media, :pact => true do
+describe Flapjack::Diner::Resources, :pact => true do
 
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
@@ -198,7 +198,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
       result = Flapjack::Diner.update_media(:id => email_data[:id], :interval => 50)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find Medium record, id: '#{email_data[:id]}'"}])
     end
 
@@ -254,7 +254,7 @@ describe Flapjack::Diner::Resources::Media, :pact => true do
 
       result = Flapjack::Diner.delete_media(sms_data[:id])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find Medium record, id: '#{sms_data[:id]}'"}])
     end
 

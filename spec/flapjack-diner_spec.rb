@@ -3,8 +3,6 @@ require 'flapjack-diner'
 
 describe Flapjack::Diner do
 
-  # include_context 'fixture data'
-
   let(:server) { 'flapjack.com' }
 
   let(:time) { Time.now }
@@ -18,9 +16,9 @@ describe Flapjack::Diner do
     WebMock.reset!
   end
 
-  context 'argument parsing' do
+  # context 'argument parsing' do
 
-  end
+  # end
 
   context 'keys as strings' do
 
@@ -41,8 +39,8 @@ describe Flapjack::Diner do
       expect(result).not_to be_nil
       expect(result).to be_an_instance_of(Array)
       expect(result.length).to be(1)
-      expect(result[0]).to be_an_instance_of(Hash)
-      expect(result[0]).to have_key('id')
+      expect(result.first).to be_an_instance_of(Hash)
+      expect(result.first).to have_key('id')
     end
 
   end
@@ -60,9 +58,7 @@ describe Flapjack::Diner do
       req = stub_request(:get, "http://#{server}/contacts").
         to_return(:body => response)
 
-      expect(logger).to receive(:info).with("GET http://#{server}/contacts")
-      expect(logger).to receive(:info).with("  Response Code: 200")
-      expect(logger).to receive(:info).with("  Response Body: #{response}")
+      expect(logger).to receive(:info).with(%r{\[Flapjack::Diner\] \[[^\]]+\] 200 "GET /contacts" - $})
 
       result = Flapjack::Diner.contacts
       expect(req).to have_been_requested
@@ -82,10 +78,8 @@ describe Flapjack::Diner do
       response = {:data => resp_data}.to_json
       req = stub_request(:post, "http://#{server}/test_notifications").
               to_return(:status => 201, :body => response)
-      expect(logger).to receive(:info).with("POST http://#{server}/test_notifications\n" +
-        "  Body: {:data=>#{req_data.inspect}}")
-      expect(logger).to receive(:info).with("  Response Code: 201")
-      expect(logger).to receive(:info).with("  Response Body: #{response}")
+
+      expect(logger).to receive(:info).with(%r{\[Flapjack::Diner\] \[[^\]]+\] 201 "POST /test_notifications" - $})
 
       result = Flapjack::Diner.create_test_notifications(test_notification_data.merge(:check => check_data[:id]))
       expect(req).to have_been_requested
@@ -96,8 +90,8 @@ describe Flapjack::Diner do
       req = stub_request(:delete, "http://#{server}/scheduled_maintenances/#{scheduled_maintenance_data[:id]}").
         to_return(:status => 204)
 
-      expect(logger).to receive(:info).with("DELETE http://#{server}/scheduled_maintenances/#{scheduled_maintenance_data[:id]}")
-      expect(logger).to receive(:info).with("  Response Code: 204")
+      expect(logger).to receive(:info).
+        with(%r{\[Flapjack::Diner\] \[[^\]]+\] 204 "DELETE /scheduled_maintenances/#{scheduled_maintenance_data[:id]}" - $})
 
       result = Flapjack::Diner.delete_scheduled_maintenances(scheduled_maintenance_data[:id])
       expect(req).to have_been_requested
@@ -107,7 +101,6 @@ describe Flapjack::Diner do
   end
 
   context "problems" do
-
     it "raises an exception on network failure" do
       req = stub_request(:get, "http://#{server}/contacts").to_timeout
 
@@ -145,7 +138,5 @@ describe Flapjack::Diner do
       }.to raise_error(ArgumentError)
       expect(req).not_to have_been_requested
     end
-
   end
-
 end

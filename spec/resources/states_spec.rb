@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'flapjack-diner'
 require 'flapjack-diner/index_range'
 
-describe Flapjack::Diner::Resources::States, :pact => true do
+describe Flapjack::Diner::Resources, :pact => true do
 
   let(:time) { Time.now }
 

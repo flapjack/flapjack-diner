@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner::Resources::Checks, :pact => true do
+describe Flapjack::Diner::Resources, :pact => true do
 
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
@@ -218,7 +218,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
         result = Flapjack::Diner.checks(check_data[:id])
         expect(result).to be_nil
-        expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        expect(Flapjack::Diner.error).to eq([{:status => '404',
           :detail => "could not find Check record, id: '#{check_data[:id]}'"}])
       end
     end
@@ -277,7 +277,7 @@ describe Flapjack::Diner::Resources::Checks, :pact => true do
 
       result = Flapjack::Diner.update_checks(:id => check_data[:id], :enabled => false)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find Check record, id: '#{check_data[:id]}'"}])
     end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner::Resources::Relationships, :pact => true do
+describe Flapjack::Diner::Relationships, :pact => true do
 
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')

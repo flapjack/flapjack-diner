@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
+describe Flapjack::Diner::Resources, :pact => true do
 
   let(:time) { Time.now }
 
@@ -148,7 +148,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
       result = Flapjack::Diner.update_unscheduled_maintenances(:id => unscheduled_maintenance_data[:id], :end_time => time)
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find UnscheduledMaintenance record, id: '#{unscheduled_maintenance_data[:id]}'"}])
     end
 
@@ -206,7 +206,7 @@ describe Flapjack::Diner::Resources::MaintenancePeriods, :pact => true do
 
       result = Flapjack::Diner.delete_scheduled_maintenances(scheduled_maintenance_data[:id])
       expect(result).to be_nil
-      expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+      expect(Flapjack::Diner.error).to eq([{:status => '404',
         :detail => "could not find ScheduledMaintenance record, id: '#{scheduled_maintenance_data[:id]}'"}])
     end
 

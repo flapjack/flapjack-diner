@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'flapjack-diner'
 
-describe Flapjack::Diner::Resources::Events, :pact => true do
+describe Flapjack::Diner::Resources, :pact => true do
 
   before(:each) do
     Flapjack::Diner.base_uri('localhost:19081')
@@ -168,7 +168,7 @@ describe Flapjack::Diner::Resources::Events, :pact => true do
 
         result = Flapjack::Diner.create_test_notifications(test_notification_data.merge(:check => check_data[:id]))
         expect(result).to be_nil
-        expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        expect(Flapjack::Diner.error).to eq([{:status => '404',
           :detail => "could not find Check record, id: '#{check_data[:id]}'"}])
       end
 
@@ -197,7 +197,7 @@ describe Flapjack::Diner::Resources::Events, :pact => true do
 
         result = Flapjack::Diner.create_test_notifications(test_notification_data.merge(:tag => tag_data[:id]))
         expect(result).to be_nil
-        expect(Flapjack::Diner.last_error).to eq([{:status => '404',
+        expect(Flapjack::Diner.error).to eq([{:status => '404',
           :detail => "could not find Tag record, id: '#{tag_data[:id]}'"}])
       end
 
