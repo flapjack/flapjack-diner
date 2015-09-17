@@ -196,6 +196,7 @@ module Flapjack
             :post => {
               :id                    => :uuid,
               :name                  => :string,
+              :enabled               => :boolean,
               :blackhole             => :boolean,
               :strategy              => :string,
               :conditions_list       => :string,
@@ -207,6 +208,7 @@ module Flapjack
             :patch => {
               :id                    => [:uuid, :required],
               :name                  => :string,
+              :enabled               => :boolean,
               :blackhole             => :boolean,
               :strategy              => :string,
               :conditions_list       => :string,
