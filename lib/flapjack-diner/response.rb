@@ -9,6 +9,9 @@ module Flapjack
 
       def initialize(resp, opts = {})
         @response = resp
+        @output = nil
+        @context = nil
+        @error = nil
         @return_keys_as_strings = Flapjack::Diner.return_keys_as_strings
       end
 
@@ -28,7 +31,6 @@ module Flapjack
           return
         end
         @error = handle_errors(parsed, strify)
-        @output = nil
       end
 
       private

@@ -53,17 +53,17 @@ module Flapjack
       end
 
       def output
-        return if @response.nil?
+        return if !instance_variable_defined?('@response') || @response.nil?
         @response.output
       end
 
       def context
-        return if @response.nil?
+        return if !instance_variable_defined?('@response') || @response.nil?
         @response.context
       end
 
       def error
-        return if @response.nil?
+        return if !instance_variable_defined?('@response') || @response.nil?
         @response.error
       end
     end
