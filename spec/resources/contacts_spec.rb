@@ -159,7 +159,7 @@ describe Flapjack::Diner::Resources, :pact => true do
         resp_data[:relationships][:media][:data] = [
           {:type => 'medium', :id => email_data[:id]}
         ]
-        resp_included = [medium_json(email_data).merge(:relationships => medium_rel(email_data))]
+        resp_included = [medium_json(email_data)]
 
         flapjack.given("a contact with one medium exists").
           upon_receiving("a GET request for a single contact with media").
@@ -185,8 +185,8 @@ describe Flapjack::Diner::Resources, :pact => true do
           {:type => 'rule', :id => rule_data[:id]}
         ]
         resp_included = [
-          medium_json(email_data).merge(:relationships => medium_rel(email_data)),
-          rule_json(rule_data).merge(:relationships => rule_rel(rule_data))
+          medium_json(email_data),
+          rule_json(rule_data)
         ]
 
         flapjack.given("a contact with one medium and one rule exists").
@@ -203,9 +203,7 @@ describe Flapjack::Diner::Resources, :pact => true do
         expect(result).to eq(resultify(resp_data))
         expect(Flapjack::Diner.context).to eq(:included => [resultify(resp_included[0]), resultify(resp_included[1])])
       end
-
     end
-
   end
 
   context 'update' do

@@ -51,7 +51,7 @@ describe Flapjack::Diner::Relationships, :pact => true do
 
   it 'gets tags for a check with full tag records' do
     included_data = [
-      tag_json(tag_data).merge(:relationships => tag_rel(tag_data))
+      tag_json(tag_data)
     ]
 
     flapjack.given("a check with a tag exists").
@@ -72,8 +72,8 @@ describe Flapjack::Diner::Relationships, :pact => true do
 
   it 'gets tags for a check with full tag and rule record' do
     included_data = [
-      tag_json(tag_data).merge(:relationships => tag_rel(tag_data)),
-      rule_json(rule_data).merge(:relationships => rule_rel(rule_data))
+      tag_json(tag_data),
+      rule_json(rule_data)
     ]
 
     flapjack.given("a check with a tag and a rule exists").
@@ -163,26 +163,25 @@ describe Flapjack::Diner::Relationships, :pact => true do
   end
 
   it "doesn't duplicate linked data references in included data" do
-    resp_check = check_json(check_data).merge(:relationships => check_rel(check_data))
-    resp_check[:relationships][:current_state][:data] = {
-      :type => 'state', :id => state_data[:id]
+    resp_check = check_json(check_data)
+    resp_check[:relationships] = {
+      :current_state => {
+        :data => {:type => 'state', :id => state_data[:id]}
+      },
+      :latest_notifications => {
+        :data => [{:type => 'state', :id => state_data[:id]}]
+      }
     }
-
-    # NB: this is missing from the first piece of data in the pact response,
-    # but it's included in the spec-breaking *second* included check data record :(
-    resp_check[:relationships][:latest_notifications][:data] = [
-      {:type => 'state', :id => state_data[:id]}
-    ]
 
     sd = state_data.delete_if {|k, _| [:created_at, :updated_at].include?(k)}
 
     included_data = [
       resp_check,
-      state_json(sd).merge(:relationships => state_rel(sd)),
+      state_json(sd)
     ]
 
     flapjack.given("a check with a tag, current state and a latest notification exists").
-      upon_receiving("a GET request for a check's ").
+      upon_receiving("a GET request for a check (via tag)'s state and notifications").
       with(:method => :get,
            :path => "/tags/#{tag_data[:id]}/checks",
            :query => 'include=checks.current_state%2Cchecks.latest_notifications').
