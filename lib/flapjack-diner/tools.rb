@@ -7,8 +7,7 @@ module Flapjack
           context[return_keys_as_strings ? 'included' : :included]
         end
 
-        def related(record, rel)
-          incl = included
+        def related(record, rel, incl = included)
           return if incl.nil?
 
           type = record[return_keys_as_strings ? 'type' : :type]
