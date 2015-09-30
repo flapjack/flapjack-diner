@@ -34,11 +34,13 @@ module Flapjack
           :relationships => {
             :check => {
               :post => true,
-              :number => :singular, :link => false, :includable => false
+              :number => :singular, :link => false, :includable => false,
+              :resource => 'check'
             },
             :tag => {
               :post => true,
-              :number => :singular, :link => false, :includable => false
+              :number => :singular, :link => false, :includable => false,
+              :resource => 'tag'
             }
           }
         },
@@ -64,43 +66,53 @@ module Flapjack
           :relationships => {
             :alerting_media => {
               :get => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'medium'
             },
             :contacts => {
               :get => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'contact'
             },
             :current_scheduled_maintenances => {
               :get => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'scheduled_maintenance'
             },
             :current_state => {
               :get => true,
-              :number => :singular, :link => true, :includable => true
+              :number => :singular, :link => true, :includable => true,
+              :resource => 'state'
             },
             :current_unscheduled_maintenance => {
               :get => true,
-              :number => :singular, :link => true, :includable => true
+              :number => :singular, :link => true, :includable => true,
+              :resource => 'unscheduled_maintenance'
             },
             :latest_notifications => {
               :get => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'state'
             },
             :scheduled_maintenances => {
               :get => true,
-              :number => :multiple, :link => true, :includable => false
+              :number => :multiple, :link => true, :includable => false,
+              :resource => 'scheduled_maintenance'
             },
             :states => {
               :get => true,
-              :number => :multiple, :link => true, :includable => false
+              :number => :multiple, :link => true, :includable => false,
+              :resource => 'state'
             },
             :tags => {
               :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'tag'
             },
             :unscheduled_maintenances => {
               :get => true,
-              :number => :multiple, :link => true, :includable => false
+              :number => :multiple, :link => true, :includable => false,
+              :resource => 'unscheduled_maintenance'
             }
           }
         },
@@ -124,19 +136,23 @@ module Flapjack
           :relationships => {
             :checks => {
               :get => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'check'
             },
             :media => {
               :get => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'medium'
             },
             :rules => {
               :get => :true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'rule'
             },
             :tags => {
               :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'tag'
             }
           }
         },
@@ -168,15 +184,18 @@ module Flapjack
           :relationships => {
             :alerting_checks => {
               :get => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'check'
             },
             :contact => {
               :post => true, :get => true,
-              :number => :singular, :link => true, :includable => true
+              :number => :singular, :link => true, :includable => true,
+              :resource => 'contact'
             },
             :rules => {
               :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'rule'
             }
           }
         },
@@ -220,15 +239,18 @@ module Flapjack
           :relationships => {
             :contact => {
               :post => true, :get => true,
-              :number => :singular, :link => true, :includable => true
+              :number => :singular, :link => true, :includable => true,
+              :resource => 'contact'
             },
             :media => {
               :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'medium'
             },
             :tags => {
               :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'tag'
             }
           }
         },
@@ -256,11 +278,13 @@ module Flapjack
           :relationships => {
             :check => {
               :post => true, :get => true,
-              :number => :singular, :link => true, :includable => true
+              :number => :singular, :link => true, :includable => true,
+              :resource => 'check'
             },
             :tag => {
               :post => true,
-              :number => :singular, :link => false, :includable => false
+              :number => :singular, :link => false, :includable => false,
+              :resource => 'tag'
             }
           }
         },
@@ -273,7 +297,8 @@ module Flapjack
           :relationships => {
             :check => {
               :get => true,
-              :number => :singular, :link => true, :includable => true
+              :number => :singular, :link => true, :includable => true,
+              :resource => 'check'
             }
           }
         },
@@ -304,27 +329,33 @@ module Flapjack
           :relationships => {
             :checks => {
               :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'check'
             },
             :contacts => {
               :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'contact'
             },
             :rules => {
               :post => true, :get => true, :patch => true, :delete => true,
-              :number => :multiple, :link => true, :includable => true
+              :number => :multiple, :link => true, :includable => true,
+              :resource => 'rule'
             },
             :scheduled_maintenances => {
               :get => true,
-              :number => :multiple, :link => true, :includable => false
+              :number => :multiple, :link => true, :includable => false,
+              :resource => 'scheduled_maintenance'
             },
             :states => {
               :get => true,
-              :number => :multiple, :link => true, :includable => false
+              :number => :multiple, :link => true, :includable => false,
+              :resource => 'state'
             },
             :unscheduled_maintenances => {
               :get => true,
-              :number => :multiple, :link => true, :includable => false
+              :number => :multiple, :link => true, :includable => false,
+              :resource => 'unscheduled_maintenance'
             }
           }
         },
@@ -345,11 +376,13 @@ module Flapjack
           :relationships => {
             :check => {
               :post => true,
-              :number => :singular, :link => false, :includable => false
+              :number => :singular, :link => false, :includable => false,
+              :resource => 'check'
             },
             :tag => {
               :post => true,
-              :number => :singular, :link => false, :includable => false
+              :number => :singular, :link => false, :includable => false,
+              :resource => 'tag'
             }
           }
         },
@@ -365,7 +398,8 @@ module Flapjack
           :relationships => {
             :check => {
               :get => true,
-              :number => :singular, :link => false, :includable => true
+              :number => :singular, :link => false, :includable => true,
+              :resource => 'check'
             }
           }
         }

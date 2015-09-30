@@ -23,9 +23,9 @@ module Flapjack
 
           case rel_cfg[:number]
           when :singular
-            singularly_related(record, rel, type, incl)
+            singularly_related(record, rel, rel_cfg[:resource], incl)
           else
-            multiply_related(record, rel, type, incl)
+            multiply_related(record, rel, rel_cfg[:resource], incl)
           end
         end
 
@@ -43,7 +43,7 @@ module Flapjack
         end
 
         def multiply_related(record, rel, type, incl)
-          relat, data, id, rel, type_a = related_accessors(rel, type)
+          relat, data, id, type_a, rel = related_accessors(rel)
           return [] if record[relat].nil? ||
                        record[relat][rel].nil? ||
                        record[relat][rel][data].nil? ||
@@ -55,7 +55,7 @@ module Flapjack
         end
 
         def related_accessors(*args)
-          acc = [:relationships, :data, :id]
+          acc = [:relationships, :data, :id, :type]
           return (acc + args).map(&:to_s) if return_keys_as_strings
           (acc + args.map(&:to_sym))
         end
