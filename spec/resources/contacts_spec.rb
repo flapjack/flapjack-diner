@@ -173,7 +173,7 @@ describe Flapjack::Diner::Resources, :pact => true do
         result = Flapjack::Diner.contacts(contact_data[:id], :include => 'media')
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
-        expect(Flapjack::Diner.context).to eq(:included => resultify(resp_included))
+        expect(Flapjack::Diner.context).to eq(:included => {'medium' => {email_data[:id] => resultify(resp_included.first)}})
       end
 
       it 'returns a contact with media and rules' do
@@ -201,7 +201,11 @@ describe Flapjack::Diner::Resources, :pact => true do
         result = Flapjack::Diner.contacts(contact_data[:id], :include => ['media', 'rules'])
         expect(result).not_to be_nil
         expect(result).to eq(resultify(resp_data))
-        expect(Flapjack::Diner.context).to eq(:included => [resultify(resp_included[0]), resultify(resp_included[1])])
+        expect(Flapjack::Diner.context).to eq(:included => {
+          'medium' => {email_data[:id] => resultify(resp_included[0])},
+          'rule'  => {rule_data[:id] => resultify(resp_included[1])}
+        })
+
       end
     end
   end

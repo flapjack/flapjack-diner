@@ -1,3 +1,4 @@
+require 'set'
 require 'uri'
 
 require 'flapjack-diner/query'

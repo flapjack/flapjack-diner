@@ -67,7 +67,10 @@ module Flapjack
         c_incl_key = strify ? 'included' : :included
         if parsed.key?('included')
           incl = flatten_jsonapi_data(parsed['included'])
-          @context[c_incl_key] = (strify ? incl : Flapjack::Diner::Utility.symbolize(incl))
+          @context[c_incl_key] = incl.each_with_object({}) do |i, memo|
+            memo[i['type']] ||= {}
+            memo[i['type']][i['id']] = strify ? i : Flapjack::Diner::Utility.symbolize(i)
+          end
         end
         (%w(relationships meta) & parsed.keys).each do |k|
           c = parsed[k]

@@ -67,7 +67,7 @@ describe Flapjack::Diner::Relationships, :pact => true do
 
     result = Flapjack::Diner.check_link_tags(check_data[:id], :include => 'tags')
     expect(result).to eq([{:id => tag_data[:id], :type => 'tag'}])
-    expect(Flapjack::Diner.context[:included]).to eq([resultify(included_data[0])])
+    expect(Flapjack::Diner.context[:included]).to eq('tag' => {tag_data[:id] => resultify(included_data[0])})
   end
 
   it 'gets tags for a check with full tag and rule record' do
@@ -89,8 +89,10 @@ describe Flapjack::Diner::Relationships, :pact => true do
 
     result = Flapjack::Diner.check_link_tags(check_data[:id], :include => 'rules')
     expect(result).to eq([{:id => tag_data[:id], :type => 'tag'}])
-    expect(Flapjack::Diner.context[:included]).to eq([resultify(included_data[0]),
-      resultify(included_data[1])])
+    expect(Flapjack::Diner.context[:included]).to eq(
+      'tag'  => {tag_data[:id] => resultify(included_data[0])},
+      'rule' => {rule_data[:id] => resultify(included_data[1])}
+    )
   end
 
   it 'updates tags for a check' do
@@ -201,7 +203,8 @@ describe Flapjack::Diner::Relationships, :pact => true do
       {:id => check_data[:id], :type => 'check'}
     ])
     expect(Flapjack::Diner.context[:included]).to eq(
-      included_data.map {|d| resultify(d) }
+      'check' => {check_data[:id] => resultify(resp_check)},
+      'state' => {sd[:id] => resultify(state_json(sd))}
     )
   end
 
