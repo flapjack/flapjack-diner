@@ -84,19 +84,12 @@ If any operation fails (returning nil), the `Flapjack::Diner.last_error` method 
 * <a name="contents_update_media">&nbsp;</a>[update_media](#update_media)
 * <a name="contents_delete_media">&nbsp;</a>[delete_media](#delete_media)
 
-### <a name="contents_section_acceptors">&nbsp;</a>[Acceptors](#section_acceptors)
+### <a name="contents_section_rules">&nbsp;</a>[Rules](#section_rules)
 
-* <a name="contents_create_acceptors">&nbsp;</a>[create_acceptors](#create_acceptors)
-* <a name="contents_acceptors">&nbsp;</a>[acceptors](#get_acceptors)
-* <a name="contents_update_acceptors">&nbsp;</a>[update_acceptors](#update_acceptors)
-* <a name="contents_delete_acceptors">&nbsp;</a>[delete_acceptors](#delete_acceptors)
-
-### <a name="contents_section_rejectors">&nbsp;</a>[Rejectors](#section_rejectors)
-
-* <a name="contents_create_rejectors">&nbsp;</a>[create_rejectors](#create_rejectors)
-* <a name="contents_rejectors">&nbsp;</a>[rejectors](#get_rejectors)
-* <a name="contents_update_rejectors">&nbsp;</a>[update_rejectors](#update_rejectors)
-* <a name="contents_delete_rejectors">&nbsp;</a>[delete_rejectors](#delete_rejectors)
+* <a name="contents_create_rules">&nbsp;</a>[create_rules](#create_rules)
+* <a name="contents_rules">&nbsp;</a>[rules](#get_rules)
+* <a name="contents_update_rules">&nbsp;</a>[update_rules](#update_rules)
+* <a name="contents_delete_rules">&nbsp;</a>[delete_rules](#delete_rules)
 
 ### <a name="contents_section_tags">&nbsp;</a>[Tags](#section_tags)
 
@@ -310,8 +303,7 @@ Flapjack::Diner.create_media(MEDIUM, MEDIUM, ...)
   :pagerduty_token => STRING,         # required (if transport == 'pagerduty')
   :pagerduty_ack_duration => INTEGER, # required (if transport == 'pagerduty')
   :contact => CONTACT_ID,             # required
-  :acceptors => [ACCEPTOR_ID, ACCEPTOR_ID, ...],
-  :rejectors => [REJECTOR_ID, REJECTOR_ID, ...]
+  :rules => [RULE_ID, RULE_ID, ...]
 }
 ```
 
@@ -347,7 +339,7 @@ Flapjack::Diner.update_media({MEDIUM_ID, KEY => VALUE, ...}, {MEDIUM_ID, KEY => 
 
 Acceptable update field keys are
 
-`:address`, `:interval`, `:rollup_threshold`, `:pagerduty_subdomain`, `:pagerduty_token`, `:pagerduty_ack_duration`, `:acceptors` and `:rejectors`
+`:address`, `:interval`, `:rollup_threshold`, `:pagerduty_subdomain`, `:pagerduty_token`, `:pagerduty_ack_duration` and `:rules`
 
 Returns true if updating succeeded or false if updating failed.
 
@@ -372,175 +364,92 @@ Returns true if deletion succeeded or false if deletion failed.
 
 ---
 
-<a name="section_acceptors">&nbsp;</a>
-### Acceptors [^](#contents_section_acceptors)
+<a name="section_rules">&nbsp;</a>
+### Acceptors [^](#contents_section_rules)
 
-<a name="create_acceptors">&nbsp;</a>
-#### create_acceptors
+<a name="create_rules">&nbsp;</a>
+#### create_rules
 
-Create one or more notification acceptors.
+Create one or more notification rules.
 
 ```ruby
-Flapjack::Diner.create_acceptors(ACCEPTOR, ...)
+Flapjack::Diner.create_rules(RULE, ...)
 ```
 
 **FIXME** time_restrictions data structure isn't handled yet
 
 ```ruby
-# ACCEPTOR
+# RULE
 {
-  :id              => UUID_STRING,
-  :name            => STRING,
-  :all             => BOOLEAN,          # apply to all checks, ignore tag linkages
-  :conditions_list => STRING,           # which conditions the acceptor will match;
+  :id                    => UUID_STRING,
+  :name                  => STRING,
+  :enabled               => BOOLEAN,
+  :blackhole             => BOOLEAN,
+  :strategy              => STRING,           # one of ['global', 'all_tags', 'any_tag', 'no_tag']
+  :conditions_list       => STRING,           # which conditions the rule will match;
                                         # all if empty, or comma-separated subset
                                         # of 'critical,warning,unknown'
-  :contact         => CONTACT_ID,       # required
-  :media           => [MEDIUM_ID, ...]
-  :tags            => [TAG_NAME, ...]
+  :time_restriction_ical => STRING,
+  :contact               => CONTACT_ID,       # required
+  :media                 => [MEDIUM_ID, ...]
+  :tags                  => [TAG_NAME, ...]
 }
 ```
 
 Returns false if creation failed, or the created object(s) if it succeeded.
 
-[^](#contents_create_acceptors)
+[^](#contents_create_rules)
 
-<a name="get_acceptors">&nbsp;</a>
-#### acceptors
+<a name="get_rules">&nbsp;</a>
+#### rules
 
-Return data for one, some or all notification acceptors.
+Return data for one, some or all notification rules.
 
 ```ruby
-acceptor = Flapjack::Diner.acceptors(ACCEPTOR_ID)
-some_acceptors = Flapjack::Diner.acceptors(ACCEPTOR_ID, ACCEPTOR_ID, ...)
-first_page_of_acceptors = Flapjack::Diner.acceptors
+rule = Flapjack::Diner.rules(RULE_ID)
+some_rules = Flapjack::Diner.rules(RULE_ID, RULE_ID, ...)
+first_page_of_rules = Flapjack::Diner.rules
 ```
 
-[^](#contents_acceptors)
+[^](#contents_rules)
 
-<a name="update_acceptors">&nbsp;</a>
-#### update_acceptors
+<a name="update_rules">&nbsp;</a>
+#### update_rules
 
-Update data for one or more notification acceptors.
-
-```ruby
-# update values for one acceptor
-Flapjack::Diner.update_acceptors(:id => ACCEPTOR_ID, KEY => VALUE, ...)
-
-# update values for multiple acceptors
-Flapjack::Diner.update_acceptors({:id => ACCEPTOR_ID, KEY => VALUE, ...}, {:id => ACCEPTOR_ID, KEY => VALUE, ...})
-```
-
-Acceptable update field keys are
-
-  `:conditions_list`, `:is_blackhole`, `:media` and `:tags`
-
-Returns true if updating succeeded or false if updating failed.
-
-[^](#contents_update_acceptors)
-
-<a name="delete_acceptors">&nbsp;</a>
-#### delete_acceptors
-
-Delete one or more notification acceptors.
+Update data for one or more notification rules.
 
 ```ruby
-# delete one acceptor
-Flapjack::Diner.delete_acceptors(ACCEPTOR_ID)
+# update values for one rule
+Flapjack::Diner.update_rules(:id => RULE_ID, KEY => VALUE, ...)
 
-# delete multiple acceptors
-Flapjack::Diner.delete_acceptors(ACCEPTOR_ID, ACCEPTOR_ID, ...)
-```
-
-Returns true if deletion succeeded or false if deletion failed.
-
-[^](#contents_delete_acceptors)
-
----
-
-<a name="section_rejectors">&nbsp;</a>
-### Rules [^](#contents_section_rejectors)
-
-<a name="create_rejectors">&nbsp;</a>
-#### create_rejectors
-
-Create one or more notification rejectors.
-
-```ruby
-Flapjack::Diner.create_rejectors(REJECTOR, ...)
-```
-
-**FIXME** time_restrictions data structure isn't handled yet
-
-```ruby
-# REJECTOR
-{
-  :id              => UUID_STRING,
-  :name            => STRING,
-  :all             => BOOLEAN,          # apply to all checks, ignore tag linkages
-  :conditions_list => STRING,           # which conditions the rejector will match;
-                                        # all if empty, or comma-separated subset
-                                        # of 'critical,warning,unknown'
-  :contact         => CONTACT_ID,       # required
-  :media           => [MEDIUM_ID, ...]
-  :tags            => [TAG_NAME, ...]
-}
-```
-
-Returns false if creation failed, or the created object(s) if it succeeded.
-
-[^](#contents_create_rejectors)
-
-<a name="get_rejectors">&nbsp;</a>
-#### rejectors
-
-Return data for one, some or all notification rejectors.
-
-```ruby
-rejector = Flapjack::Diner.rejectors(REJECTOR_ID)
-some_rejectors = Flapjack::Diner.rejectors(REJECTOR_ID, REJECTOR_ID, ...)
-first_page_of_rejectors = Flapjack::Diner.rejectors
-```
-
-[^](#contents_rejectors)
-
-<a name="update_rejectors">&nbsp;</a>
-#### update_rejectors
-
-Update data for one or more notification rejectors.
-
-```ruby
-# update values for one rejector
-Flapjack::Diner.update_rejectors(:id => REJECTOR_ID, KEY => VALUE, ...)
-
-# update values for multiple rejectors
-Flapjack::Diner.update_rejectors({:id => REJECTOR_ID, KEY => VALUE, ...}, {:id => REJECTOR_ID, KEY => VALUE, ...})
+# update values for multiple rules
+Flapjack::Diner.update_rules({:id => RULE_ID, KEY => VALUE, ...}, {:id => RULE_ID, KEY => VALUE, ...})
 ```
 
 Acceptable update field keys are
 
-  `:conditions_list`, `:is_blackhole`, `:media` and `:tags`
+  `:name`, `:enabled`, `:blackhole`, `:strategy`, `:conditions_list`, `:time_restrictiosn_ical`, `:media` and `:tags`
 
 Returns true if updating succeeded or false if updating failed.
 
-[^](#contents_update_rejectors)
+[^](#contents_update_rules)
 
-<a name="delete_rejectors">&nbsp;</a>
-#### delete_rejectors
+<a name="delete_rules">&nbsp;</a>
+#### delete_rules
 
-Delete one or more notification rejectors.
+Delete one or more notification rules.
 
 ```ruby
-# delete one rejector
-Flapjack::Diner.delete_rejectors(REJECTOR_ID)
+# delete one rule
+Flapjack::Diner.delete_rules(RULE_ID)
 
-# delete multiple rejectors
-Flapjack::Diner.delete_rejectors(REJECTOR_ID, REJECTOR_ID, ...)
+# delete multiple rules
+Flapjack::Diner.delete_rules(RULE_ID, RULE_ID, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
 
-[^](#contents_delete_rejectors)
+[^](#contents_delete_rules)
 
 ---
 
@@ -562,9 +471,7 @@ Flapjack::Diner.create_tags(TAG, ...)
   :name      => STRING,         # required
   :checks    => [CHECK_ID, ...],
   :contacts  => [CONTACT_ID, ...],
-  :acceptors => [ACCEPTOR_ID, ...],
-  :rejectors => [REJECTOR_ID, ...]
-}
+  :rules     => [RULE_ID, ...]
 ```
 
 Returns false if creation failed, or the created object(s) if it succeeded.
@@ -599,7 +506,7 @@ Flapjack::Diner.update_tags({:id => TAG_NAME, KEY => VALUE, ...}, {:id => TAG_NA
 
 Acceptable update field keys are
 
-  `:checks`, `:contacts`, `:acceptors` and `:rejectors`
+  `:checks`, `:contacts` and `:rules`
 
 Returns true if updating succeeded or false if updating failed.
 
@@ -874,27 +781,21 @@ first_page_of_statistics = Flapjack::Diner.statistics
 | `.checks`                   | 'current_unscheduled_maintenance' | 'unscheduled_maintenance'      |
 | `.checks`                   | 'latest_notifications'            | ['state', ...]                 |
 | `.checks`                   | 'tags'                            | ['tag', ...]                   |
-| `.contacts`                 | 'acceptors'                       | ['acceptor', ...]              |
 | `.contacts`                 | 'checks'                          | ['check', ...]                 |
 | `.contacts`                 | 'media'                           | ['medium', ...]                |
-| `.contacts`                 | 'rejectors'                       | ['rejector', ...]              |
+| `.contacts`                 | 'rules'                           | ['rule', ...]                  |
 | `.contacts`                 | 'tags'                            | ['tag', ...]                   |
-| `.media`                    | 'acceptors'                       | ['acceptor', ...]              |
 | `.media`                    | 'alerting_checks'                 | ['check', ...]                 |
 | `.media`                    | 'contact'                         | 'contact'                      |
-| `.media`                    | 'rejectors'                       | ['rejector', ...]              |
-| `.acceptors`                | 'contact'                         | 'contact'                      |
-| `.acceptors`                | 'media'                           | ['medium', ...]                |
-| `.acceptors`                | 'tags'                            | ['tag', ...]                   |
-| `.rejectors`                | 'contact'                         | 'contact'                      |
-| `.rejectors`                | 'media'                           | ['medium', ...]                |
-| `.rejectors`                | 'tags'                            | ['tag', ...]                   |
+| `.media`                    | 'rules'                           | ['rule', ...]                  |
+| `.rules`                    | 'contact'                         | 'contact'                      |
+| `.rules`                    | 'media'                           | ['medium', ...]                |
+| `.rules`                    | 'tags'                            | ['tag', ...]                   |
 | `.scheduled_maintenances`   | 'check'                           | 'check'                        |
 | `.states`                   | 'check'                           | 'check'                        |
-| `.tags`                     | 'acceptors'                       | ['acceptor', ...]              |
 | `.tags`                     | 'checks'                          | ['check', ...]                 |
 | `.tags`                     | 'contacts'                        | ['contact', ...]               |
-| `.tags`                     | 'rejectors'                       | ['acceptor', ...]              |
+| `.tags`                     | 'rules'                           | ['rule', ...]                  |
 | `.unscheduled_maintenances` | 'check'                           | 'check'                        |
 
 NB: these may be chained, as long as they follow the allowed paths above; e.g.
@@ -936,31 +837,24 @@ check_link_states(check_id, opts = {})
 check_link_tags(check_id, opts = {})
 check_link_unscheduled_maintenances(check_id, opts = {})
 
-contact_link_acceptors(contact_id, opts = {})
 contact_link_checks(contact_id, opts = {})
 contact_link_media(contact_id, opts = {})
-contact_link_rejectors(contact_id, opts = {})
+contact_link_rules(contact_id, opts = {})
 contact_link_tags(contact_id, opts = {})
 
-medium_link_acceptors(medium_id, opts = {})
 medium_link_alerting_checks(medium_id, opts = {})
 medium_link_contact(medium_id, opts = {})
-medium_link_rejectors(medium_id, opts = {})
+medium_link_rules(medium_id, opts = {})
 
-acceptor_link_contact(acceptor_id, opts = {})
-acceptor_link_media(acceptor_id, opts = {})
-acceptor_link_tags(acceptor_id, opts = {})
-
-rejector_link_contact(rejector_id, opts = {})
-rejector_link_media(rejector_id, opts = {})
-rejector_link_tags(rejector_id, opts = {})
+rule_link_contact(rule_id, opts = {})
+rule_link_media(rule_id, opts = {})
+rule_link_tags(rule_id, opts = {})
 
 state_link_check(state_id, opts = {})
 
-tag_link_acceptors(tag_name, opts = {})
 tag_link_checks(tag_name, opts = {})
 tag_link_contacts(tag_name, opts = {})
-tag_link_rejectors(tag_name, opts = {})
+tag_link_rules(tag_name, opts = {})
 tag_link_scheduled_maintenances(tag_name, opts = {})
 tag_link_states(tag_name, opts = {})
 tag_link_unscheduled_maintenances(tag_name, opts = {})
@@ -971,7 +865,7 @@ All returned results are paginated, and the [common options for GET requests](#c
 <a name="object_relationships_write">&nbsp;</a>
 ### Manipulating object relationships
 
-The following operations are supported; please note that some associations (e.g. associating an acceptor with a contact) must be made on object creation, via the secondary resource's create method, and cannot be altered later.
+The following operations are supported; please note that some associations (e.g. associating an rule with a contact) must be made on object creation, via the secondary resource's create method, and cannot be altered later.
 
 ```
 create_check_link_tags(check_id, *tags_names)
@@ -982,29 +876,17 @@ create_contact_link_tags(contact_id, *tags_names)
 update_contact_link_tags(contact_id, *tags_names)
 delete_contact_link_tags(contact_id, *tags_names)
 
-create_medium_link_acceptors(medium_id, *acceptors_ids)
-update_medium_link_acceptors(medium_id, *acceptors_ids)
-delete_medium_link_acceptors(medium_id, *acceptors_ids)
+create_medium_link_rules(medium_id, *rules_ids)
+update_medium_link_rules(medium_id, *rules_ids)
+delete_medium_link_rules(medium_id, *rules_ids)
 
-create_medium_link_rejectors(medium_id, *rejectors_ids)
-update_medium_link_rejectors(medium_id, *rejectors_ids)
-delete_medium_link_rejectors(medium_id, *rejectors_ids)
+create_rule_link_media(rule_id, *media_ids)
+update_rule_link_media(rule_id, *media_ids)
+delete_rule_link_media(rule_id, *media_ids)
 
-create_acceptor_link_media(acceptor_id, *media_ids)
-update_acceptor_link_media(acceptor_id, *media_ids)
-delete_acceptor_link_media(acceptor_id, *media_ids)
-
-create_acceptor_link_tags(acceptor_id, *tags_names)
-update_acceptor_link_tags(acceptor_id, *tags_names)
-delete_acceptor_link_tags(acceptor_id, *tags_names)
-
-create_rejector_link_media(rejector_id, *media_ids)
-update_rejector_link_media(rejector_id, *media_ids)
-delete_rejector_link_media(rejector_id, *media_ids)
-
-create_rejector_link_tags(rejector_id, *tags_names)
-update_rejector_link_tags(rejector_id, *tags_names)
-delete_rejector_link_tags(rejector_id, *tags_names)
+create_rule_link_tags(rule_id, *tags_names)
+update_rule_link_tags(rule_id, *tags_names)
+delete_rule_link_tags(rule_id, *tags_names)
 
 create_tag_link_checks(tag_name, *checks_ids)
 update_tag_link_checks(tag_name, *checks_ids)
@@ -1014,13 +896,9 @@ create_tag_link_contacts(tag_name, *contacts_ids)
 update_tag_link_contacts(tag_name, *contacts_ids)
 delete_tag_link_contacts(tag_name, *contacts_ids)
 
-create_tag_link_acceptors(tag_name, *acceptors_ids)
-update_tag_link_acceptors(tag_name, *acceptors_ids)
-delete_tag_link_acceptors(tag_name, *acceptors_ids)
-
-create_tag_link_rejectors(tag_name, *rejectors_ids)
-update_tag_link_rejectors(tag_name, *rejectors_ids)
-delete_tag_link_rejectors(tag_name, *rejectors_ids)
+create_tag_link_rules(tag_name, *rules_ids)
+update_tag_link_rules(tag_name, *rules_ids)
+delete_tag_link_rules(tag_name, *rules_ids)
 ```
 
 <a name="object_relationships_write_create">&nbsp;</a>
