@@ -136,10 +136,10 @@ Flapjack::Diner.create_checks(CHECK, ...)
 ```
 CHECK
 {
-  :id      => STRING,
+  :id      => UUID_STRING,
   :name    => STRING,
   :enabled => BOOLEAN,
-  :tags    => [TAG_NAME, ...]
+  :tags    => [UUID_STRING, ...]
 }
 ```
 
@@ -153,8 +153,8 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 Return data for one, some or all checks.
 
 ```ruby
-check = Flapjack::Diner.checks(CHECK_ID)
-some_checks = Flapjack::Diner.checks(CHECK_ID, CHECK_ID, ...)
+check = Flapjack::Diner.checks(UUID_STRING)
+some_checks = Flapjack::Diner.checks(UUID_STRING, UUID_STRING, ...)
 first_page_of_checks = Flapjack::Diner.checks
 ```
 
@@ -167,10 +167,10 @@ Update data for one or more checks.
 
 ```ruby
 # update values for one check
-Flapjack::Diner.update_checks(CHECK_ID, KEY => VALUE, ...)
+Flapjack::Diner.update_checks(UUID_STRING, KEY => VALUE, ...)
 
 # update values for multiple checks
-Flapjack::Diner.update_checks({CHECK_ID, KEY => VALUE, ...}, {CHECK_ID, KEY => VALUE, ...})
+Flapjack::Diner.update_checks({UUID_STRING, KEY => VALUE, ...}, {UUID_STRING, KEY => VALUE, ...})
 ```
 
 Acceptable update field keys are
@@ -188,10 +188,10 @@ Delete one or more checks.
 
 ```ruby
 # delete one check
-Flapjack::Diner.delete_checks(CHECK_ID)
+Flapjack::Diner.delete_checks(UUID_STRING)
 
 # delete multiple check
-Flapjack::Diner.delete_checks(CHECK_ID, CHECK_ID, ...)
+Flapjack::Diner.delete_checks(UUID_STRING, UUID_STRING, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
@@ -212,13 +212,13 @@ Create one or more contacts.
 Flapjack::Diner.create_contacts(CONTACT, ...)
 ```
 
-```
-CONTACT
+```ruby
+# CONTACT
 {
-  :id => STRING,
+  :id => UUID_STRING,
   :name => STRING,
   :timezone => STRING,
-  :tags => [TAG_NAME, ...]
+  :tags => [UUID_STRING, ...]
 }
 ```
 
@@ -232,8 +232,8 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 Return data for one, some or all contacts.
 
 ```ruby
-contact = Flapjack::Diner.contacts(CONTACT_ID)
-some_contacts = Flapjack::Diner.contacts(CONTACT_ID, CONTACT_ID, ...)
+contact = Flapjack::Diner.contacts(UUID_STRING)
+some_contacts = Flapjack::Diner.contacts(UUID_STRING, UUID_STRING, ...)
 first_page_of_contacts = Flapjack::Diner.contacts
 ```
 
@@ -246,10 +246,10 @@ Update data for one or more contacts.
 
 ```ruby
 # update values for one contact
-Flapjack::Diner.update_contacts(CONTACT_ID, KEY => VALUE, ...)
+Flapjack::Diner.update_contacts(UUID_STRING, KEY => VALUE, ...)
 
 # update values for multiple contacts
-Flapjack::Diner.update_contacts({CONTACT_ID, KEY => VALUE, ...}, {CONTACT_ID, KEY => VALUE, ...})
+Flapjack::Diner.update_contacts({UUID_STRING, KEY => VALUE, ...}, {UUID_STRING, KEY => VALUE, ...})
 ```
 
 Acceptable update field keys are
@@ -267,10 +267,10 @@ Delete one or more contacts.
 
 ```ruby
 # delete one contact
-Flapjack::Diner.delete_contacts(CONTACT_ID)
+Flapjack::Diner.delete_contacts(UUID_STRING)
 
 # delete multiple contacts
-Flapjack::Diner.delete_contacts(CONTACT_ID, CONTACT_ID, ...)
+Flapjack::Diner.delete_contacts(UUID_STRING, UUID_STRING, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
@@ -294,7 +294,7 @@ Flapjack::Diner.create_media(MEDIUM, MEDIUM, ...)
 ```ruby
 # MEDIUM
 {
-  :id => UUID,
+  :id => UUID_STRING,
   :transport => STRING,               # required
   :address => STRING,                 # required (context depends on transport)
   :interval => INTEGER,               # required (if transport != 'pagerduty')
@@ -302,8 +302,8 @@ Flapjack::Diner.create_media(MEDIUM, MEDIUM, ...)
   :pagerduty_subdomain => STRING,     # required (if transport == 'pagerduty')
   :pagerduty_token => STRING,         # required (if transport == 'pagerduty')
   :pagerduty_ack_duration => INTEGER, # required (if transport == 'pagerduty')
-  :contact => CONTACT_ID,             # required
-  :rules => [RULE_ID, RULE_ID, ...]
+  :contact => UUID_STRING,            # required
+  :rules => [UUID_STRING, UUID_STRING, ...]
 }
 ```
 
@@ -317,8 +317,8 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 Return data for one, some or all notification media.
 
 ```ruby
-medium = Flapjack::Diner.media(MEDIUM_ID)
-some_media = Flapjack::Diner.media(MEDIUM_ID, MEDIUM_ID, ...)
+medium = Flapjack::Diner.media(UUID_STRING)
+some_media = Flapjack::Diner.media(UUID_STRING, UUID_STRING, ...)
 first_page_of_media = Flapjack::Diner.media
 ```
 
@@ -331,10 +331,10 @@ Update data for one or more notification media.
 
 ```ruby
 # update values for one medium
-Flapjack::Diner.update_media(MEDIUM_ID, KEY => VALUE, ...)
+Flapjack::Diner.update_media(UUID_STRING, KEY => VALUE, ...)
 
 # update values for multiple media
-Flapjack::Diner.update_media({MEDIUM_ID, KEY => VALUE, ...}, {MEDIUM_ID, KEY => VALUE, ...})
+Flapjack::Diner.update_media({UUID_STRING, KEY => VALUE, ...}, {UUID_STRING, KEY => VALUE, ...})
 ```
 
 Acceptable update field keys are
@@ -352,10 +352,10 @@ Delete one or more notification media.
 
 ```ruby
 # delete one medium
-Flapjack::Diner.delete_media(MEDIUM_ID)
+Flapjack::Diner.delete_media(UUID_STRING)
 
 # delete multiple media
-Flapjack::Diner.delete_media(MEDIUM_ID, MEDIUM_ID, ...)
+Flapjack::Diner.delete_media(UUID_STRING, UUID_STRING, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
@@ -365,7 +365,7 @@ Returns true if deletion succeeded or false if deletion failed.
 ---
 
 <a name="section_rules">&nbsp;</a>
-### Acceptors [^](#contents_section_rules)
+### Rules [^](#contents_section_rules)
 
 <a name="create_rules">&nbsp;</a>
 #### create_rules
@@ -376,8 +376,6 @@ Create one or more notification rules.
 Flapjack::Diner.create_rules(RULE, ...)
 ```
 
-**FIXME** time_restrictions data structure isn't handled yet
-
 ```ruby
 # RULE
 {
@@ -387,12 +385,12 @@ Flapjack::Diner.create_rules(RULE, ...)
   :blackhole             => BOOLEAN,
   :strategy              => STRING,           # one of ['global', 'all_tags', 'any_tag', 'no_tag']
   :conditions_list       => STRING,           # which conditions the rule will match;
-                                        # all if empty, or comma-separated subset
-                                        # of 'critical,warning,unknown'
+                                              #   all if empty, or comma-separated subset
+                                              #   of 'critical,warning,unknown'
   :time_restriction_ical => STRING,
-  :contact               => CONTACT_ID,       # required
-  :media                 => [MEDIUM_ID, ...]
-  :tags                  => [TAG_NAME, ...]
+  :contact               => UUID_STRING,      # required
+  :media                 => [UUID_STRING, ...]
+  :tags                  => [UUID_STRING, ...]
 }
 ```
 
@@ -406,8 +404,8 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 Return data for one, some or all notification rules.
 
 ```ruby
-rule = Flapjack::Diner.rules(RULE_ID)
-some_rules = Flapjack::Diner.rules(RULE_ID, RULE_ID, ...)
+rule = Flapjack::Diner.rules(UUID_STRING)
+some_rules = Flapjack::Diner.rules(UUID_STRING, UUID_STRING, ...)
 first_page_of_rules = Flapjack::Diner.rules
 ```
 
@@ -420,10 +418,10 @@ Update data for one or more notification rules.
 
 ```ruby
 # update values for one rule
-Flapjack::Diner.update_rules(:id => RULE_ID, KEY => VALUE, ...)
+Flapjack::Diner.update_rules(:id => UUID_STRING, KEY => VALUE, ...)
 
 # update values for multiple rules
-Flapjack::Diner.update_rules({:id => RULE_ID, KEY => VALUE, ...}, {:id => RULE_ID, KEY => VALUE, ...})
+Flapjack::Diner.update_rules({:id => UUID_STRING, KEY => VALUE, ...}, {:id => UUID_STRING, KEY => VALUE, ...})
 ```
 
 Acceptable update field keys are
@@ -441,10 +439,10 @@ Delete one or more notification rules.
 
 ```ruby
 # delete one rule
-Flapjack::Diner.delete_rules(RULE_ID)
+Flapjack::Diner.delete_rules(UUID_STRING)
 
 # delete multiple rules
-Flapjack::Diner.delete_rules(RULE_ID, RULE_ID, ...)
+Flapjack::Diner.delete_rules(UUID_STRING, UUID_STRING, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
@@ -468,10 +466,11 @@ Flapjack::Diner.create_tags(TAG, ...)
 ```ruby
 # TAG
 {
+  :id        => UUID_STRING,
   :name      => STRING,         # required
-  :checks    => [CHECK_ID, ...],
-  :contacts  => [CONTACT_ID, ...],
-  :rules     => [RULE_ID, ...]
+  :checks    => [UUID_STRING, ...],
+  :contacts  => [UUID_STRING, ...],
+  :rules     => [UUID_STRING, ...]
 ```
 
 Returns false if creation failed, or the created object(s) if it succeeded.
@@ -484,8 +483,8 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 Return data for one, some or all tags.
 
 ```ruby
-tag = Flapjack::Diner.tags(TAG_NAME)
-some_tags = Flapjack::Diner.tags(TAG_NAME, TAG_NAME, ...)
+tag = Flapjack::Diner.tags(UUID_STRING)
+some_tags = Flapjack::Diner.tags(UUID_STRING, UUID_STRING, ...)
 first_page_of_tags = Flapjack::Diner.tags
 ```
 
@@ -498,10 +497,10 @@ Update data for one or more tags.
 
 ```ruby
 # update values for one tag
-Flapjack::Diner.update_tags(:id => TAG_NAME, KEY => VALUE, ...)
+Flapjack::Diner.update_tags(:id => UUID_STRING, KEY => VALUE, ...)
 
 # update values for multiple tags
-Flapjack::Diner.update_tags({:id => TAG_NAME, KEY => VALUE, ...}, {:id => TAG_NAME, KEY => VALUE, ...})
+Flapjack::Diner.update_tags({:id => UUID_STRING, KEY => VALUE, ...}, {:id => UUID_STRING, KEY => VALUE, ...})
 ```
 
 Acceptable update field keys are
@@ -519,10 +518,10 @@ Delete one or more tags.
 
 ```ruby
 # delete one tag
-Flapjack::Diner.delete_tags(TAG_NAME)
+Flapjack::Diner.delete_tags(UUID_STRING)
 
 # delete multiple tags
-Flapjack::Diner.delete_tags(TAG_NAME, TAG_NAME, ...)
+Flapjack::Diner.delete_tags(UUID_STRING, UUID_STRING, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
@@ -546,12 +545,12 @@ Flapjack::Diner.create_scheduled_maintenances(SCHEDULED_MAINTENANCE, ...)
 ```ruby
 SCHEDULED_MAINTENANCE
 {
-  :id => UUID,
+  :id => UUID_STRING,
   :start_time => DATETIME, # required
   :end_time => DATETIME,   # required
   :summary => STRING,
-  :check => CHECK_ID,      # one (and only one) of :check or :tag must be provided
-  :tag => TAG_NAME         # :tag will create scheduled maintenance periods for all checks that this tag is associated with
+  :check => UUID_STRING,   # one (and only one) of :check or :tag must be provided
+  :tag => UUID_STRING      # :tag will create scheduled maintenance periods for all checks that this tag is associated with
 }
 ```
 
@@ -565,8 +564,8 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 Return data for one, some or all scheduled maintenance periods.
 
 ```ruby
-scheduled_maintenance = Flapjack::Diner.scheduled_maintenances(SCHEDULED_MAINTENANCE_ID)
-some_scheduled_maintenances = Flapjack::Diner.scheduled_maintenances(SCHEDULED_MAINTENANCE_ID, SCHEDULED_MAINTENANCE_ID, ...)
+scheduled_maintenance = Flapjack::Diner.scheduled_maintenances(UUID_STRING)
+some_scheduled_maintenances = Flapjack::Diner.scheduled_maintenances(UUID_STRING, UUID_STRING, ...)
 first_page_of_scheduled_maintenances = Flapjack::Diner.scheduled_maintenances
 ```
 
@@ -579,10 +578,10 @@ Update data for one or more scheduled maintenance periods.
 
 ```ruby
 # update values for one scheduled maintenance period
-Flapjack::Diner.update_scheduled_maintenances(:id => SCHEDULED_MAINTENANCE_ID, KEY => VALUE, ...)
+Flapjack::Diner.update_scheduled_maintenances(:id => UUID_STRING, KEY => VALUE, ...)
 
 # update values for multiple scheduled maintenance periods
-Flapjack::Diner.update_scheduled_maintenances({:id => SCHEDULED_MAINTENANCE_ID, KEY => VALUE, ...}, {:id => SCHEDULED_MAINTENANCE_ID, KEY => VALUE, ...})
+Flapjack::Diner.update_scheduled_maintenances({:id => UUID_STRING, KEY => VALUE, ...}, {:id => UUID_STRING, KEY => VALUE, ...})
 ```
 
 Acceptable update field keys are
@@ -601,8 +600,8 @@ Returns true if updating succeeded or false if updating failed.
 Delete one or more scheduled maintenance periods.
 
 ```ruby
-Flapjack::Diner.delete_scheduled_maintenances(SCHEDULED_MAINTENANCE_ID)
-Flapjack::Diner.delete_scheduled_maintenances(SCHEDULED_MAINTENANCE_ID, SCHEDULED_MAINTENANCE_ID, ...)
+Flapjack::Diner.delete_scheduled_maintenances(UUID_STRING)
+Flapjack::Diner.delete_scheduled_maintenances(UUID_STRING, UUID_STRING, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
@@ -617,8 +616,8 @@ Returns true if deletion succeeded or false if deletion failed.
 Return data for one, some or all unscheduled maintenance periods.
 
 ```ruby
-unscheduled_maintenance = Flapjack::Diner.unscheduled_maintenances(UNSCHEDULED_MAINTENANCE_ID)
-some_unscheduled_maintenances = Flapjack::Diner.unscheduled_maintenances(UNSCHEDULED_MAINTENANCE_ID, UNSCHEDULED_MAINTENANCE_ID, ...)
+unscheduled_maintenance = Flapjack::Diner.unscheduled_maintenances(UUID_STRING)
+some_unscheduled_maintenances = Flapjack::Diner.unscheduled_maintenances(UUID_STRING, UUID_STRING, ...)
 first_page_of_unscheduled_maintenances = Flapjack::Diner.unscheduled_maintenances
 ```
 
@@ -630,10 +629,10 @@ first_page_of_unscheduled_maintenances = Flapjack::Diner.unscheduled_maintenance
 Update data for one or more unscheduled maintenance periods.
 
 ```ruby
-Flapjack::Diner.update_unscheduled_maintenances(:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE)
+Flapjack::Diner.update_unscheduled_maintenances(:id => UUID_STRING, KEY => VALUE)
 
-Flapjack::Diner.update_unscheduled_maintenances({:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE},
-  {:id => UNSCHEDULED_MAINTENANCE_ID, KEY => VALUE}, ...)
+Flapjack::Diner.update_unscheduled_maintenances({:id => UUID_STRING, KEY => VALUE},
+  {:id => UUID_STRING, KEY => VALUE}, ...)
 ```
 
 Acceptable update field keys are
@@ -652,8 +651,8 @@ Returns true if updating succeeded or false if updating failed.
 Delete one or more unscheduled maintenance periods.
 
 ```ruby
-Flapjack::Diner.delete_unscheduled_maintenances(UNSCHEDULED_MAINTENANCE_ID)
-Flapjack::Diner.delete_unscheduled_maintenances(UNSCHEDULED_MAINTENANCE_ID, UNSCHEDULED_MAINTENANCE_ID, ...)
+Flapjack::Diner.delete_unscheduled_maintenances(UUID_STRING)
+Flapjack::Diner.delete_unscheduled_maintenances(UUID_STRING, UUID_STRING, ...)
 ```
 
 Returns true if deletion succeeded or false if deletion failed.
@@ -681,8 +680,8 @@ Flapjack::Diner.create_acknowledgements(ACKNOWLEDGEMENT, ...)
 {
   :summary => STRING,
   :duration => INTEGER,
-  :check => CHECK_ID,   # one (and only one) of :check or :tag must be provided
-  :tag => TAG_NAME      # :tag will acknowledge all failing checks that this tag is associated with
+  :check => UUID_STRING,   # one (and only one) of :check or :tag must be provided
+  :tag => UUID_STRING      # :tag will acknowledge all failing checks that this tag is associated with
 }
 ```
 
@@ -703,8 +702,8 @@ Flapjack::Diner.create_test_notifications(TEST_NOTIFICATION, ...)
 # TEST_NOTIFICATION
 {
   :summary => STRING,
-  :check => CHECK_ID, # one (and only one) of :check or :tag must be provided
-  :tag => TAG_NAME    # :tag will send test notifications for all checks that this tag is associated with
+  :check => UUID_STRING, # one (and only one) of :check or :tag must be provided
+  :tag => UUID_STRING    # :tag will send test notifications for all checks that this tag is associated with
 }
 ```
 
@@ -723,8 +722,8 @@ Returns false if creation failed, or the created object(s) if it succeeded.
 Return data for one, some or all check states.
 
 ```ruby
-states = Flapjack::Diner.states(STATE_ID)
-some_states = Flapjack::Diner.states(STATE_ID, STATE_ID, ...)
+states = Flapjack::Diner.states(UUID_STRING)
+some_states = Flapjack::Diner.states(UUID_STRING, UUID_STRING, ...)
 first_page_of_states = Flapjack::Diner.states
 ```
 
@@ -747,8 +746,8 @@ metrics = Flapjack::Diner.metrics
 Return data for one, some or all flapjack processor instances.
 
 ```ruby
-statistics = Flapjack::Diner.statistics(STATISTICS_ID)
-some_statistics = Flapjack::Diner.statistics(STATISTICS_ID, STATISTICS_ID, ...)
+statistics = Flapjack::Diner.statistics(UUID_STRING)
+some_statistics = Flapjack::Diner.statistics(UUID_STRING, UUID_STRING, ...)
 first_page_of_statistics = Flapjack::Diner.statistics
 ```
 
@@ -852,12 +851,12 @@ rule_link_tags(rule_id, opts = {})
 
 state_link_check(state_id, opts = {})
 
-tag_link_checks(tag_name, opts = {})
-tag_link_contacts(tag_name, opts = {})
-tag_link_rules(tag_name, opts = {})
-tag_link_scheduled_maintenances(tag_name, opts = {})
-tag_link_states(tag_name, opts = {})
-tag_link_unscheduled_maintenances(tag_name, opts = {})
+tag_link_checks(tag_id, opts = {})
+tag_link_contacts(tag_id, opts = {})
+tag_link_rules(tag_id, opts = {})
+tag_link_scheduled_maintenances(tag_id, opts = {})
+tag_link_states(tag_id, opts = {})
+tag_link_unscheduled_maintenances(tag_id, opts = {})
 ```
 
 All returned results are paginated, and the [common options for GET requests](#common_options_get) apply here too.
@@ -868,13 +867,13 @@ All returned results are paginated, and the [common options for GET requests](#c
 The following operations are supported; please note that some associations (e.g. associating an rule with a contact) must be made on object creation, via the secondary resource's create method, and cannot be altered later.
 
 ```
-create_check_link_tags(check_id, *tags_names)
-update_check_link_tags(check_id, *tags_names)
-delete_check_link_tags(check_id, *tags_names)
+create_check_link_tags(check_id, *tags_ids)
+update_check_link_tags(check_id, *tags_ids)
+delete_check_link_tags(check_id, *tags_ids)
 
-create_contact_link_tags(contact_id, *tags_names)
-update_contact_link_tags(contact_id, *tags_names)
-delete_contact_link_tags(contact_id, *tags_names)
+create_contact_link_tags(contact_id, *tags_ids)
+update_contact_link_tags(contact_id, *tags_ids)
+delete_contact_link_tags(contact_id, *tags_ids)
 
 create_medium_link_rules(medium_id, *rules_ids)
 update_medium_link_rules(medium_id, *rules_ids)
@@ -884,21 +883,21 @@ create_rule_link_media(rule_id, *media_ids)
 update_rule_link_media(rule_id, *media_ids)
 delete_rule_link_media(rule_id, *media_ids)
 
-create_rule_link_tags(rule_id, *tags_names)
-update_rule_link_tags(rule_id, *tags_names)
-delete_rule_link_tags(rule_id, *tags_names)
+create_rule_link_tags(rule_id, *tags_ids)
+update_rule_link_tags(rule_id, *tags_ids)
+delete_rule_link_tags(rule_id, *tags_ids)
 
-create_tag_link_checks(tag_name, *checks_ids)
-update_tag_link_checks(tag_name, *checks_ids)
-delete_tag_link_checks(tag_name, *checks_ids)
+create_tag_link_checks(tag_id, *checks_ids)
+update_tag_link_checks(tag_id, *checks_ids)
+delete_tag_link_checks(tag_id, *checks_ids)
 
-create_tag_link_contacts(tag_name, *contacts_ids)
-update_tag_link_contacts(tag_name, *contacts_ids)
-delete_tag_link_contacts(tag_name, *contacts_ids)
+create_tag_link_contacts(tag_id, *contacts_ids)
+update_tag_link_contacts(tag_id, *contacts_ids)
+delete_tag_link_contacts(tag_id, *contacts_ids)
 
-create_tag_link_rules(tag_name, *rules_ids)
-update_tag_link_rules(tag_name, *rules_ids)
-delete_tag_link_rules(tag_name, *rules_ids)
+create_tag_link_rules(tag_id, *rules_ids)
+update_tag_link_rules(tag_id, *rules_ids)
+delete_tag_link_rules(tag_id, *rules_ids)
 ```
 
 <a name="object_relationships_write_create">&nbsp;</a>

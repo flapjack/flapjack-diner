@@ -129,7 +129,8 @@ module Flapjack
             :get => RESOURCES_GET,
             :patch => {
               :id                => [:required, :uuid],
-              [:name, :timezone] => :non_empty_string
+              [:name, :timezone] => :non_empty_string,
+              :tags              => :multiple_link_uuid
             },
             :delete => {}
           },
