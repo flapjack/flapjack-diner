@@ -49,17 +49,23 @@ module Flapjack
           :resource => 'check',
           :requests => {
             :post => {
-              :id       => :uuid,
-              :name     => [:required, :non_empty_string],
-              :enabled  => :boolean,
-              :tags     => :multiple_link_uuid
+              :id                     => :uuid,
+              :name                   => [:required, :non_empty_string],
+              :enabled                => :boolean,
+              :initial_failure_delay  => :positive_integer,
+              :repeat_failure_delay   => :positive_integer,
+              # :initial_recovery_delay => :positive_integer,
+              :tags                   => :multiple_link_uuid
             },
             :get => RESOURCES_GET,
             :patch => {
-              :id       => [:required, :uuid],
-              :name     => :non_empty_string,
-              :enabled  => :boolean,
-              :tags     => :multiple_link_uuid
+              :id                     => [:required, :uuid],
+              :name                   => :non_empty_string,
+              :enabled                => :boolean,
+              :initial_failure_delay  => :positive_integer,
+              :repeat_failure_delay   => :positive_integer,
+              # :initial_recovery_delay => :positive_integer,
+              :tags                   => :multiple_link_uuid
             },
             :delete => {}
           },
