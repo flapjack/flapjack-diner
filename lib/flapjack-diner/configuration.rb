@@ -366,6 +366,7 @@ module Flapjack
           :requests => {
             :post => {
               :summary       => :non_empty_string,
+              :condition     => :non_empty_string,
               [:check, :tag] => :singular_link_uuid
             }
           },
