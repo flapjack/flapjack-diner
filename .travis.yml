@@ -5,17 +5,12 @@ rvm:
 - '2.1'
 - '2.2'
 cache: bundler
-script: "bundle exec rspec"
+script: bundle exec rspec
 notifications:
   irc:
     channels:
-      - 'irc.freenode.net#flapjack'
+    - irc.freenode.net#flapjack
     template:
-      - '%{message} %{repository}#%{build_number} (%{branch} - %{commit} : %{author})'
-  hipchat:
-    template:
-      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}
-        (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
-    format: html
-    rooms:
-      secure: BfENxsVOSS6YKJn/kMr8ctXTvOvZHHlpgRN8AWshCEEaorPwFlCwlQuEYz+DSR7COjwLNZav5xnTFRaPkcCG8wc4ztMgSdv9XkrGjwJHxEEIzsjPT556LtLF4d8U2Di1MNsD6YGU7kvvzhh5hAPpEn0LBGhYlz+TCv+XCjI8/6I=
+    - "%{message} %{repository}#%{build_number} (%{branch} - %{commit} : %{author})"
+  slack:
+    secure: OSSVSOzOOsGV58lo88tiXQiOlFt4YeRz7yQ0r2kaGV1IFpCISbLxMPTCR6qyngGJWV/QB7cgfKs39xUiAD/bU0cqz1D8BgnhLjRKcU53CymMEWV6s/TTyCgoQy+b/7DM3d7ebvEySS7fxWtApJ/DdpqbkhcgGJbNMIpaXuWd5Ro=
