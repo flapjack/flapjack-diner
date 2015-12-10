@@ -7,7 +7,7 @@
 
 Access the JSON API of a [Flapjack](http://flapjack.io/) system monitoring server.
 
-Please note that the following documentation refers to the `v2.0.0-alpha.3` pre-release of this gem. You may instead be looking for [documentation for the latest stable version](https://github.com/flapjack/flapjack-diner/blob/maint/1.x/README.md).
+Please note that the following documentation refers to the `v2.0.0b1` pre-release of this gem. You may instead be looking for [documentation for the latest stable version](https://github.com/flapjack/flapjack-diner/blob/maint/1.x/README.md).
 
 ## Installation
 
@@ -45,7 +45,7 @@ Flapjack::Diner.open_timeout(30)
 Flapjack::Diner.read_timeout(300)
 ```
 
-If you want the old behaviour wrt returning hashes with keys as strings (they're now symbols by default) then:
+If you want the old behaviour with respect to returning hashes with keys as strings (they're now symbols by default) then:
 
 ```ruby
 Flapjack::Diner.return_keys_as_strings = true
@@ -55,8 +55,8 @@ Flapjack::Diner.return_keys_as_strings = true
 
 Options for all of **flapjack-diner**'s functions are organised as either:
 
-* Ids &emdash; One or more String or Integer values; or
-* Parameters &emdash; One or more Hashes
+* Ids -- One or more String or Integer values; or
+* Parameters -- One or more Hashes
 
 While these can be passed in in any order, the convention is that they will be ordered as listed above.
 
@@ -139,6 +139,8 @@ CHECK
   :id      => UUID_STRING,
   :name    => STRING,
   :enabled => BOOLEAN,
+  :initial_failure_delay => INTEGER,
+  :repeat_failure_delay => INTEGER,
   :tags    => [UUID_STRING, ...]
 }
 ```
@@ -175,7 +177,7 @@ Flapjack::Diner.update_checks({UUID_STRING, KEY => VALUE, ...}, {UUID_STRING, KE
 
 Acceptable update field keys are
 
-`:enabled`, `:name` and `:tags`
+`:enabled`, `:name`, `:initial_failure_delay`, `:repeat_failure_delay` and `:tags`
 
 Returns true if updating succeeded or false if updating failed.
 
@@ -702,6 +704,7 @@ Flapjack::Diner.create_test_notifications(TEST_NOTIFICATION, ...)
 # TEST_NOTIFICATION
 {
   :summary => STRING,
+  :condition => STRING,
   :check => UUID_STRING, # one (and only one) of :check or :tag must be provided
   :tag => UUID_STRING    # :tag will send test notifications for all checks that this tag is associated with
 }
