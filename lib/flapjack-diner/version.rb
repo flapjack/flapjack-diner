@@ -1,5 +1,5 @@
 module Flapjack
   module Diner
-    VERSION = '2.0.0.a4'
+    VERSION = '2.0.0b1'
   end
 end

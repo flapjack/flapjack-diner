@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    flapjack-diner (2.0.0.a4)
+    flapjack-diner (2.0.0b1)
       httparty (= 0.13.5)
       json (>= 1.7.7)
 
