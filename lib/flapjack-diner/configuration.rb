@@ -54,7 +54,7 @@ module Flapjack
               :enabled                => :boolean,
               :initial_failure_delay  => :positive_integer,
               :repeat_failure_delay   => :positive_integer,
-              # :initial_recovery_delay => :positive_integer,
+              :initial_recovery_delay => :positive_integer,
               :tags                   => :multiple_link_uuid
             },
             :get => RESOURCES_GET,
@@ -64,7 +64,7 @@ module Flapjack
               :enabled                => :boolean,
               :initial_failure_delay  => :positive_integer,
               :repeat_failure_delay   => :positive_integer,
-              # :initial_recovery_delay => :positive_integer,
+              :initial_recovery_delay => :positive_integer,
               :tags                   => :multiple_link_uuid
             },
             :delete => {}

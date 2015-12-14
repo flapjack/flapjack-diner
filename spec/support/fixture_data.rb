@@ -46,7 +46,8 @@ module FixtureData
      :name => 'www.example.com:SSH',
      :enabled => true,
      :initial_failure_delay => nil,
-     :repeat_failure_delay => nil
+     :repeat_failure_delay => nil,
+     :initial_recovery_delay => nil
     }
   end
 
@@ -56,7 +57,8 @@ module FixtureData
      :name => 'www2.example.com:PING',
      :enabled => true,
      :initial_failure_delay => nil,
-     :repeat_failure_delay => nil
+     :repeat_failure_delay => nil,
+     :initial_recovery_delay => nil
     }
   end
 
