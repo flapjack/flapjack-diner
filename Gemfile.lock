@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    flapjack-diner (2.0.0b1)
+    flapjack-diner (2.0.0)
       httparty (= 0.13.5)
       json (>= 1.7.7)
 
@@ -96,4 +96,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
