@@ -94,6 +94,19 @@ describe Flapjack::Diner::Resources, :pact => true do
         expect(result).to eq([])
       end
 
+      it "has no data, requests second page" do
+        flapjack.given("no data exists").
+          upon_receiving("a GET request for second page of all checks").
+          with(:method => :get, :path => '/checks', :query => 'page=2').
+          will_respond_with(
+            :status => 200,
+            :headers => {'Content-Type' => 'application/vnd.api+json; supported-ext=bulk; charset=utf-8'},
+            :body => {:data => []} )
+
+        result = Flapjack::Diner.checks(page: 2)
+        expect(result).to eq([])
+      end
+
       it "has some data" do
         resp_data = [check_json(check_data).merge(:relationships => check_rel(check_data))]
 
